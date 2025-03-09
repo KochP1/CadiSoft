@@ -1,0 +1,23 @@
+{
+  "name": "cadisoft",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KochP1/CadiSoft.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KochP1/CadiSoft/issues"
+  },
+  "homepage": "https://github.com/KochP1/CadiSoft#readme",
+  "description": "",
+  "devDependencies": {
+    "electron": "^35.0.0"
+  }
+}
