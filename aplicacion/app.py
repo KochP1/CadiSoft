@@ -50,7 +50,12 @@ def create_app():
 
     # importar blueprints
     from aplicacion.blueprints.usuarios.routes import usuario
+    from aplicacion.blueprints.cursos.routes import cursos
+    from aplicacion.blueprints.facturacion.routes import facturacion
+
     app.register_blueprint(usuario, url_prefix='/')
+    app.register_blueprint(cursos, url_prefix='/cursos')
+    app.register_blueprint(facturacion, url_prefix='/facturacion')
 
     # Pasar la conexión a la base de datos al Blueprint
     app.config['db'] = db
