@@ -2,12 +2,23 @@
 {% block title %} Inicio de sesion {% endblock %}
 
 {% block content %} 
-    <h1>Hello world!!</h1>
+        <div class="login_wrapper">
+            <div class="img-background">
 
-    <h2>ALUMNOS</h2>
-    <ul>
-        {% for alumno in alumnos %}
-            <li>{{alumno.nombre}} {{alumno.apellido}}</li>
-        {% endfor %}
-    </ul>
+            </div>
+
+            <div class="login-form__container">
+                <form action="" method="post">
+                    <div class="input__container">
+                        <label for="cedula">Cédula</label>
+                        <input type="number" placeholder="30897643" maxlength="6" id="cedula" name="cedula">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="contraseña">Contraseña</label>
+                        <input type="password" id="contraseña" name="contraseña">
+                    </div>
+                </form>
+            </div>
+        </div>
 {% endblock %}

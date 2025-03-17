@@ -1,0 +1,18 @@
+body{
+    margin: 0;
+    font-size: 16px;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+.login__wrapper{
+    display: flex;
+}
+
+.img-background{
+    width: 50%;
+    height: 100%;
+    background-image: url('../../static/'); /* Ruta de la imagen */
+}
