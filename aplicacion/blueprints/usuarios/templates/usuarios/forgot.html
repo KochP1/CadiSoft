@@ -9,8 +9,8 @@
             <div class="login-form__container">
                 <form action="" method="post" class="user-form">
                     <div class="input__container">
-                        <label for="cedula">Cédula</label>
-                        <input type="number" placeholder="30897643" maxlength="6" id="cedula" name="cedula">
+                        <label for="email">Corre electrónico</label>
+                        <input type="email" placeholder="example@gmail.com" id="email" name="email">
                     </div>
 
                     <div class="input__container">
@@ -19,9 +19,8 @@
                     </div>
 
                     <div class="button__container">
-                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-                        <a href="{{url_for('usuario.regist_user')}}" class="login-link">¿No tienes una cuenta?</a>
-                        <a href="{{url_for('usuario.forgot_password')}}" class="login-link">¿Olvidaste tu contraseña?</a>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                        <a href="{{url_for('usuario.index')}}" class="login-link">Volver</a>
                     </div>
                 </form>
             </div>

@@ -8,3 +8,11 @@ bcrypt = Bcrypt()
 @usuario.route('/', methods = ['GET', 'POST'])
 def index():
     return render_template('usuarios/index.html')
+
+@usuario.route('/regist_user', methods = ['GET', 'POST'])
+def regist_user():
+    return render_template('usuarios/regist.html')
+
+@usuario.route('/forgot_password', methods = ['GET', 'POST'])
+def forgot_password():
+    return render_template('usuarios/forgot.html')
