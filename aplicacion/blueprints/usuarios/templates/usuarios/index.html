@@ -2,5 +2,36 @@
 {% block title %} Inicio de sesion {% endblock %}
 
 {% block content %} 
-    
+        <div class="login__wrapper">
+            <div class="img-background">
+            </div>
+
+            <div class="login-form__container">
+
+                {% if message_error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{message_error}}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                {% endif %}
+                <form action="" method="post" class="user-form">
+                    <div class="input__container">
+                        <label for="cedula">Cédula</label>
+                        <input type="number" placeholder="30897643" maxlength="6" id="cedula" name="cedula">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="contraseña">Contraseña</label>
+                        <input type="password" id="contraseña" name="contraseña">
+                    </div>
+
+                    <div class="button__container">
+                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                        <a href="{{url_for('usuario.regist_user')}}" class="login-link">¿No tienes una cuenta?</a>
+                        <a href="{{url_for('usuario.forgot_password')}}" class="login-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
 {% endblock %}

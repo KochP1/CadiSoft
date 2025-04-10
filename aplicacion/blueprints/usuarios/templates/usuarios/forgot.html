@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %} Inicio de sesion {% endblock %}
+
+{% block content %} 
+        <div class="login__wrapper">
+            <div class="img-background">
+            </div>
+
+            <div class="login-form__container">
+                <form action="" method="post" class="user-form">
+                    <div class="input__container">
+                        <label for="email">Corre electrónico</label>
+                        <input type="email" placeholder="example@gmail.com" id="email" name="email">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="contraseña">Contraseña</label>
+                        <input type="password" id="contraseña" name="contraseña">
+                    </div>
+
+                    <div class="button__container">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                        <a href="{{url_for('usuario.index')}}" class="login-link">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+{% endblock %}

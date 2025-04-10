@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %} Registro {% endblock %}
+
+{% block content %} 
+        <div class="login__wrapper">
+            <div class="img-background">
+            </div>
+
+            <div class="login-form__container">
+                <form action="{{url_for('usuario.regist_user')}}" method="post" class="user-form regist-form">
+                    <div class="input__container">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" name="nombre">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="surname">Segundo nombre</label>
+                        <input type="text" id="surname" name="segundoNombre">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="lastname">Apellido</label>
+                        <input type="text" id="lastname" name="apellido">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="second_lastname">Segundo apellido</label>
+                        <input type="text" id="second_lastname" name="segundoApellido">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="cedula">Cédula</label>
+                        <input type="number" placeholder="30897643" maxlength="6" id="cedula" name="cedula">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="email">Corre electrónico</label>
+                        <input type="email" placeholder="example@gmail.com" id="email" name="email">
+                    </div>
+
+                    <div class="input__container">
+                        <label for="contraseña">Contraseña</label>
+                        <input type="password" id="contraseña" name="contraseña">
+                    </div>
+
+                    <div class="button__container">
+                        <button type="submit" class="btn btn-primary">Registrame</button>
+                        <a href="{{url_for('usuario.index')}}" class="login-link">¿Ya tienes una cuenta?</a>
+                        <a href="{{url_for('usuario.forgot_password')}}" class="login-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+{% endblock %}
