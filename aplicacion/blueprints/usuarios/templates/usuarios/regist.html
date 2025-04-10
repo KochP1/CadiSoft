@@ -7,25 +7,25 @@
             </div>
 
             <div class="login-form__container">
-                <form action="" method="post" class="user-form regist-form">
+                <form action="{{url_for('usuario.regist_user')}}" method="post" class="user-form regist-form">
                     <div class="input__container">
                         <label for="name">Nombre</label>
-                        <input type="text" id="name" name="name">
+                        <input type="text" id="name" name="nombre">
                     </div>
 
                     <div class="input__container">
                         <label for="surname">Segundo nombre</label>
-                        <input type="text" id="surname" name="surname">
+                        <input type="text" id="surname" name="segundoNombre">
                     </div>
 
                     <div class="input__container">
                         <label for="lastname">Apellido</label>
-                        <input type="text" id="lastname" name="lastname">
+                        <input type="text" id="lastname" name="apellido">
                     </div>
 
                     <div class="input__container">
                         <label for="second_lastname">Segundo apellido</label>
-                        <input type="text" id="second_lastname" name="second_lastname">
+                        <input type="text" id="second_lastname" name="segundoApellido">
                     </div>
 
                     <div class="input__container">

@@ -2,3 +2,4 @@ venv/
 package-lock.json
 node_modules/
 .env
+__psycache__/

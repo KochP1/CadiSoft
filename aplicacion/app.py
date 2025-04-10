@@ -2,8 +2,6 @@ from flask import Flask
 from flask_login import LoginManager
 import pymysql
 from os import getenv
-from dotenv import load_dotenv
-from flask_bcrypt import Bcrypt, generate_password_hash
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
@@ -41,12 +39,11 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.init_app(app)
-    bcrypt = Bcrypt(app)
 
-
+    from aplicacion.blueprints.usuarios.model import User
     @login_manager.user_loader
-    def load_users():
-        return 
+    def load_users(user_id):
+        return User.get_by_id(db, user_id)
 
     # importar blueprints
     from aplicacion.blueprints.usuarios.routes import usuario

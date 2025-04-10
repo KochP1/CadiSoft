@@ -7,6 +7,14 @@
             </div>
 
             <div class="login-form__container">
+
+                {% if message_error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{message_error}}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                {% endif %}
                 <form action="" method="post" class="user-form">
                     <div class="input__container">
                         <label for="cedula">Cédula</label>
