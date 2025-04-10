@@ -80,8 +80,8 @@ def regist_user():
 def forgot_password():
     return render_template('usuarios/forgot.html')
 
-@usuario.route('/log_out', methods = ['POST'])
+@usuario.route('/log_out')
 def log_out():
     usuarioid = current_user.id
     logout_user()
-    return redirect(url_for('usuario.index')), jsonify({'exito': True, 'mensaje': 'sesion terminada', 'idusuario': usuarioid}), 200
+    return redirect(url_for('usuario.index'))
