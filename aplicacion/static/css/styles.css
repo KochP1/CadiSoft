@@ -59,7 +59,7 @@ body{
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none; /* Oculta las flechas en Chrome, Safari, Edge y Opera */
-  margin: 0; /* Elimina el margen predeterminado */
+margin: 0;
 }
 
 /* Para Firefox (si es necesario) */
@@ -101,6 +101,41 @@ input[type=number] {
     text-decoration: underline;
 }
 
+@media (max-width: 1024px) {
+    .img-background{
+        display: none;
+    }
+
+    .login__wrapper{
+        justify-content: center;
+    }
+    
+    .login-form__container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .user-form{
+        border-radius: 6px;
+        box-shadow: 0px 0px 5px 0px #333;
+        width: 400px;
+        height: 400px;
+    }
+
+    .input__container:first-child{
+        margin-top: 40px;
+    }
+    
+}
+
+@media (max-width: 450px) {
+    .user-form{
+        box-shadow: none;
+    }
+    
+}
+
 /* REGISTRO DE USUARIOS */
 
 .regist-form{
@@ -122,8 +157,20 @@ input[type=number] {
 }
 
 .user{
-    display: flex !important;
-    margin-left: 330px;
+    width: 100px !important;
+    display: flex;
+    width: fit-content;
+    margin-left: 300px;
+}
+
+.user-icon__container{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #333;
+    border-radius: 100%;
 }
 
 @media (max-width: 1800px) {
@@ -150,7 +197,11 @@ input[type=number] {
 
 @media (max-width: 1598px) {
     .user{
-        margin-left: 0px !important;
+        margin-left: 200px !important;
+    }
+
+    .nav-list{
+        gap: 30px !important;
     }
 }
 
@@ -158,4 +209,23 @@ input[type=number] {
     .navbar{
         width: 100% !important;
     }
+}
+
+/* transición de desvanecido */
+html {
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Opcional: transición al hacer clic */
+a {
+    transition: opacity 0.2s;
+}
+
+a:hover {
+    opacity: 0.8;
 }
