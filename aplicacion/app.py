@@ -49,10 +49,12 @@ def create_app():
     from aplicacion.blueprints.usuarios.routes import usuario
     from aplicacion.blueprints.cursos.routes import cursos
     from aplicacion.blueprints.facturacion.routes import facturacion
+    from aplicacion.blueprints.profesores.routes import profesores
 
     app.register_blueprint(usuario, url_prefix='/')
     app.register_blueprint(cursos, url_prefix='/cursos')
     app.register_blueprint(facturacion, url_prefix='/facturacion')
+    app.register_blueprint(profesores, url_prefix='/profesores')
 
     # Pasar la conexión a la base de datos al Blueprint
     app.config['db'] = db
