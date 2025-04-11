@@ -21,7 +21,7 @@ def index():
                 login_user(user)
                 return redirect(url_for('usuario.inicio'))
             else:
-                return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas'), jsonify({'error': True, 'mensaje': 'No tienes autorización para ingresar al sistema'}), 401
+                return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
         else:
             return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
 
@@ -49,19 +49,19 @@ def regist_user():
         contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
 
         if len(nombre) > 12:
-            return render_template('usuarios/regist.html', message = 'El nombre es muy largo (max 12 caracteres)')
+            return render_template('usuarios/regist.html', message_error = 'El nombre es muy largo (max 12 caracteres)')
         if len(segundoNombre) > 12:
-            return render_template('usuarios/regist.html', message = 'El segundo nombre es muy largo (max 12 caracteres)')
+            return render_template('usuarios/regist.html', message_error = 'El segundo nombre es muy largo (max 12 caracteres)')
         if len(apellido) > 20:
-            return render_template('usuarios/regist.html', message = 'El apellido es muy largo (max 20 caracteres)')
+            return render_template('usuarios/regist.html', message_error = 'El apellido es muy largo (max 20 caracteres)')
         if len(segundoApellido) > 20:
-            return render_template('usuarios/regist.html', message = 'El segundo apellido es muy largo (max 20 caracteres)')
+            return render_template('usuarios/regist.html', message_error = 'El segundo apellido es muy largo (max 20 caracteres)')
         if len(cedula) > 11:
-            return render_template('usuarios/regist.html', message = 'La cédula es muy larga (max 11 numeros enteros)')
+            return render_template('usuarios/regist.html', message_error = 'La cédula es muy larga (max 11 numeros enteros)')
         if len(email) > 12:
-            return render_template('usuarios/regist.html', message = 'El email es muy largo (max 50 caracteres)')
+            return render_template('usuarios/regist.html', message_error = 'El email es muy largo (max 50 caracteres)')
         if len(contraseña) > 8:
-            return render_template('usuarios/regist.html', message = 'La contraseña es muy larga (max 8 caracteres)')
+            return render_template('usuarios/regist.html', message_error = 'La contraseña es muy larga (max 8 caracteres)')
         try:
             db = current_app.config['db']
             cur = db.cursor()
@@ -69,10 +69,10 @@ def regist_user():
             data = (nombre, segundoNombre, apellido, segundoApellido, cedula, email, contraseña_hash, rol)
             cur.execute(sql, data)
             db.commit()
-            return render_template('usuarios/index.html', message = 'El usuario fue creado satisfactoriamente'), jsonify({'exito': True, 'mensaje': 'Usuario creado'}), 200
+            return render_template('usuarios/index.html', message = 'El usuario fue creado satisfactoriamente')
         except Exception as e:
             print(f'Error: {e}')
-            return redirect(url_for('usuario.regist_user')), jsonify({"error": True, "mensaje": "El usuario no se puedo eliminar."}), 404
+            return redirect(url_for('usuario.regist_user'))
         finally:
             cur.close()
 
