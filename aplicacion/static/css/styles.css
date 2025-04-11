@@ -12,13 +12,13 @@ body{
 /* INICIO DE SESION */
 .login__wrapper{
     display: flex;
-    height: 100vh;
+    height: max-content;
     width: 100vw;
 }
 
 .img-background{
     width: 60vw;
-    height: 100%;
+    height: 100vh;
     background-image: url('../images/fondoCadi.jpg');
     background-size: cover;
     background-repeat: no-repeat;
