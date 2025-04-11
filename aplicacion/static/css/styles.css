@@ -59,7 +59,7 @@ body{
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none; /* Oculta las flechas en Chrome, Safari, Edge y Opera */
-  margin: 0; /* Elimina el margen predeterminado */
+margin: 0;
 }
 
 /* Para Firefox (si es necesario) */
@@ -99,6 +99,41 @@ input[type=number] {
 
 .login-link:hover{
     text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+    .img-background{
+        display: none;
+    }
+
+    .login__wrapper{
+        justify-content: center;
+    }
+    
+    .login-form__container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .user-form{
+        border-radius: 6px;
+        box-shadow: 0px 0px 5px 0px #333;
+        width: 400px;
+        height: 400px;
+    }
+
+    .input__container:first-child{
+        margin-top: 40px;
+    }
+    
+}
+
+@media (max-width: 450px) {
+    .user-form{
+        box-shadow: none;
+    }
+    
 }
 
 /* REGISTRO DE USUARIOS */
