@@ -21,7 +21,7 @@ def index():
                 login_user(user)
                 return redirect(url_for('usuario.inicio'))
             else:
-                return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
+                return render_template('usuarios/index.html', message_error = 'Permisos insuficientes')
         else:
             return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
 
