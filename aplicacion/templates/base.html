@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="../images/icono-cadi.ico" type="image/x-icon">
     <title>{% block title %} Default {% endblock %}</title>
 </head>
 <body>
@@ -14,7 +15,7 @@
     <nav class="navbar navbar-expand-xxl bg-body-tertiary px-0" style="background-color: #ffffff !important;">
         <div class="container-fluid">
           <a class="navbar-brand" href="{{url_for('usuario.inicio')}}">
-            <img src="../images/Cadi_logo.png" alt="Cadi" width="70px" height="70px">
+            <img src="../images/Cadi_logo-removeBG.png" alt="Cadi" width="70px" height="70px">
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -28,10 +29,9 @@
                     <span>Alumnos</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" href="#">Crear alumno</a></li>
+                  <li><a class="dropdown-item" href="#">Filtrar por curso</a></li>
+                  <li><a class="dropdown-item" href="#">Registro familiar</a></li>
                 </ul>
               </li>
 
@@ -41,10 +41,8 @@
                     <span>Profesores</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" href="#">Crear profesor</a></li>
+                  <li><a class="dropdown-item" href="#">Filtrar por departamento</a></li>
                 </ul>
               </li>
 
@@ -54,10 +52,8 @@
                     <span>Cursos</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" href="#">Crear curso</a></li>
+                  <li><a class="dropdown-item" href="#">Filtrar por departamento</a></li>
                 </ul>
               </li>
 
@@ -75,9 +71,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Inventario</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" href="#">Historial de facturas</a></li>
                 </ul>
               </li>
 
@@ -88,9 +82,9 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Ajustes</a></li>
-                  <li><a class="dropdown-item" href="#">Acerca del sistema</a></li>
-                  <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Manual de usuario</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Acerca del sistema</a></li>
                 </ul>
               </li>
 
