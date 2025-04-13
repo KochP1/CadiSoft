@@ -95,7 +95,7 @@
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Usuario</a></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{{url_for('usuario.log_out')}}">Cerrar sesión</a></li>
+                  <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
                 </ul>
               </li>
 
@@ -109,5 +109,6 @@
     
     {% endblock %}
     <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 </html>
