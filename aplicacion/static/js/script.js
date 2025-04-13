@@ -1,3 +1,4 @@
+// Cierre de sesion
 async function log_out() {
     const response = await fetch('/log_out', {
         method: 'POST',

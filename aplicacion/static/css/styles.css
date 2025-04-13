@@ -153,7 +153,7 @@ input[type=number] {
 }
 
 .nav-list{
-    gap: 60px !important;
+    gap: 20px !important;
 }
 
 .user{
@@ -197,7 +197,7 @@ input[type=number] {
 
 @media (max-width: 1598px) {
     .user{
-        margin-left: 200px !important;
+        margin-left: 0px !important;
     }
 
     .nav-list{
@@ -246,6 +246,9 @@ input[type=number] {
         height: 380px;
     }
 }
+
+/* VISTA DE ALUMNOS */
+
 
 /* transición de desvanecido */
 html {

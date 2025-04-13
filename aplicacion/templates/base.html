@@ -29,7 +29,7 @@
                     <span>Alumnos</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Crear alumno</a></li>
+                  <li><a class="dropdown-item" href="{{url_for('alumnos.index')}}">Vista de alumnos</a></li>
                   <li><a class="dropdown-item" href="#">Filtrar por curso</a></li>
                   <li><a class="dropdown-item" href="#">Registro familiar</a></li>
                 </ul>
@@ -41,9 +41,16 @@
                     <span>Profesores</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Crear profesor</a></li>
+                  <li><a class="dropdown-item" href="#">Vista de profesores</a></li>
                   <li><a class="dropdown-item" href="#">Filtrar por departamento</a></li>
                 </ul>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa-solid fa-person-chalkboard"></i>
+                    <span>Departamentos</span>
+                </a>
               </li>
 
               <li class="nav-item dropdown">
@@ -52,16 +59,21 @@
                     <span>Cursos</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Crear curso</a></li>
+                  <li><a class="dropdown-item" href="#">Vista de cursos</a></li>
                   <li><a class="dropdown-item" href="#">Filtrar por departamento</a></li>
+                  <li><a class="dropdown-item" href="#">Buscar departamento</a></li>
                 </ul>
               </li>
 
-              <li class="nav-item">
-                <a class="nav-link" href="#">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-user-plus"></i>
                     <span>Inscripciones</span>
                 </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Nuevo ingreso</a></li>
+                  <li><a class="dropdown-item" href="#">Alumnos regulares</a></li>
+                </ul>
               </li>
 
               <li class="nav-item dropdown">
@@ -70,6 +82,7 @@
                     <span>Facturación</span>
                 </a>
                 <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Generar factura</a></li>
                   <li><a class="dropdown-item" href="#">Inventario</a></li>
                   <li><a class="dropdown-item" href="#">Historial de facturas</a></li>
                 </ul>
@@ -98,6 +111,7 @@
                   <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
                 </ul>
               </li>
+            </ul>
 
           </div>
         </div>
