@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 
@@ -32,6 +32,9 @@ def buscar_alumno():
     data = (cedula,)
     cur.execute(sql, data)
     registros = cur.fetchall()
+    if len(registros) == 0:
+        flash('Cédula incorrecta', 'error')
+        return redirect(url_for('alumnos.index'))
     insertRegistros = []
     columNames = [column[0] for column in cur.description]
     for record in registros:
@@ -53,15 +56,23 @@ def registro_familiar():
 
 @alumnos.route('/buscar_registro_familiar', methods = ['POST'])
 def buscar_registro_familiar():
-    db = current_app.config['db']
-    cedula = request.form['cedula']
-    cur = db.cursor()
-    sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
-    data = (cedula,)
-    cur.execute(sql, data)
-    registros = cur.fetchall()
-    insertRegistros = []
-    columNames = [column[0] for column in cur.description]
-    for record in registros:
-        insertRegistros.append(dict(zip(columNames, record)))
-    return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
+    try:
+        db = current_app.config['db']
+        cedula = request.form['cedula']
+        cur = db.cursor()
+        sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
+        data = (cedula,)
+        cur.execute(sql, data)
+        registros = cur.fetchall()
+
+        if len(registros) == 0:
+            flash('Cédula incorrecta', 'error')
+            return redirect(url_for('alumnos.registro_familiar'))
+        insertRegistros = []
+        columNames = [column[0] for column in cur.description]
+        for record in registros:
+            insertRegistros.append(dict(zip(columNames, record)))
+        return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
+    except Exception as e:
+        print(e)
+        return redirect(url_for('alumnos.registro_familiar'))

@@ -2,6 +2,18 @@
 {% block title %} Alumnos {% endblock %}
 
 {% block content %}
+
+    {% with errors = get_flashed_messages(category_filter=["error"])%}
+    {% if errors %}
+    {% for error in errors%}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>{{error}}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     
     <div class="alumnos-options__wrapper">
         <h1>Registro familiar del alumno</h1>

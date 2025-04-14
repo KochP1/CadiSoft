@@ -86,6 +86,10 @@ def forgot_password():
 
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():
-    usuarioid = current_user.id
-    logout_user()
-    return jsonify({'mensaje': 'sesión cerrada', 'usuario': usuarioid}), 200
+    try:
+        usuarioid = current_user.id
+        logout_user()
+        return jsonify({'mensaje': 'sesión cerrada', 'usuario': usuarioid}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'mensaje': 'Error al cerrar sesión'}), 400
