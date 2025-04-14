@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 
@@ -72,7 +72,8 @@ def regist_user():
             data = (nombre, segundoNombre, apellido, segundoApellido, cedula, email, contraseña_hash, rol)
             cur.execute(sql, data)
             db.commit()
-            return render_template('usuarios/index.html', message = 'El usuario fue creado satisfactoriamente')
+            flash('Usuario creado satisfactoriamente')
+            return redirect(url_for('usuario.index'))
         except Exception as e:
             print(f'Error: {e}')
             return redirect(url_for('usuario.regist_user'))

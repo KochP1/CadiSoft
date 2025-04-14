@@ -50,3 +50,18 @@ def registro_familiar():
     for record in registros:
         insertRegistros.append(dict(zip(columNames, record)))
     return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
+
+@alumnos.route('/buscar_registro_familiar', methods = ['POST'])
+def buscar_registro_familiar():
+    db = current_app.config['db']
+    cedula = request.form['cedula']
+    cur = db.cursor()
+    sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
+    data = (cedula,)
+    cur.execute(sql, data)
+    registros = cur.fetchall()
+    insertRegistros = []
+    columNames = [column[0] for column in cur.description]
+    for record in registros:
+        insertRegistros.append(dict(zip(columNames, record)))
+    return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
