@@ -16,10 +16,22 @@ def index():
         columNames = [column[0] for column in cur.description]
         for record in registros:
             InsertRegistros.append(dict(zip(columNames, record)))
-        print(InsertRegistros)
         return render_template('alumnos/index.html', alumnos = InsertRegistros)
     except Exception as e:
         print(e)
         return render_template('alumnos/index.html')
     finally:
         cur.close()
+
+@alumnos.route('/registro_familiar', methods = ['GET'])
+def registro_familiar():
+    db = current_app.config['db']
+    cur = db.cursor()
+    sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios'
+    cur.execute(sql)
+    registros = cur.fetchall()
+    insertRegistros = []
+    columNames = [column[0] for column in cur.description]
+    for record in registros:
+        insertRegistros.append(dict(zip(columNames, record)))
+    return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
