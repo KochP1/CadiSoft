@@ -23,6 +23,21 @@ def index():
     finally:
         cur.close()
 
+@alumnos.route('/buscar_alumno', methods = ['POST'])
+def buscar_alumno():
+    db = current_app.config['db']
+    cedula = request.form['cedula']
+    cur = db.cursor()
+    sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
+    data = (cedula,)
+    cur.execute(sql, data)
+    registros = cur.fetchall()
+    insertRegistros = []
+    columNames = [column[0] for column in cur.description]
+    for record in registros:
+        insertRegistros.append(dict(zip(columNames, record)))
+    return render_template('alumnos/index.html', alumnos = insertRegistros)
+
 @alumnos.route('/registro_familiar', methods = ['GET'])
 def registro_familiar():
     db = current_app.config['db']
