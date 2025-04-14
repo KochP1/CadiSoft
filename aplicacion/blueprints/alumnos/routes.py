@@ -6,4 +6,20 @@ alumnos = Blueprint('alumnos', __name__, template_folder='templates', static_fol
 
 @alumnos.route('/', methods = ['GET'])
 def index():
-    return render_template('alumnos/index.html')
+    try:
+        db = current_app.config['db']
+        cur = db.cursor()
+        sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios'
+        cur.execute(sql)
+        registros = cur.fetchall()
+        InsertRegistros = []
+        columNames = [column[0] for column in cur.description]
+        for record in registros:
+            InsertRegistros.append(dict(zip(columNames, record)))
+        print(InsertRegistros)
+        return render_template('alumnos/index.html', alumnos = InsertRegistros)
+    except Exception as e:
+        print(e)
+        return render_template('alumnos/index.html')
+    finally:
+        cur.close()

@@ -29,17 +29,19 @@
                 <th>Email</th>
             </tr>
 
+            {% for alumno in alumnos %}
             <tr>
-                <td>1</td>
-                <td>Juan</td>
-                <td>Andrés</td>
-                <td>Koch</td>
-                <td>Padrón</td>
-                <td>30139712</td>
-                <td>juanandreskochp@gmail.com</td>
-                <td><button class="btn btn-primary">Editar</button></td>
-                <td><button class="btn btn-danger">Eliminar</button></td>
+                <td>{{alumno.idAlumno}}</td>
+                <td>{{alumno.nombre}}</td>
+                <td>{{alumno.segundoNombre}}</td>
+                <td>{{alumno.apellido}}</td>
+                <td>{{alumno.SegundoApellido}}</td>
+                <td>{{alumno.cedula}}</td>
+                <td>{{alumno.email}}</td>
+                <td class="tabla-btn"><button class="btn btn-primary">Editar</button></td>
+                <td class="tabla-btn"><button class="btn btn-danger">Eliminar</button></td>
             </tr>
+            {% endfor %}
         </table>
     </div>
 
