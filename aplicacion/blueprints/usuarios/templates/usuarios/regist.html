@@ -7,6 +7,14 @@
             </div>
 
             <div class="login-form__container">
+                {% if message_error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{message_error}}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                {% endif %}
+
                 <form action="{{url_for('usuario.regist_user')}}" method="post" class="user-form regist-form">
                     <div class="input__container">
                         <label for="name">Nombre</label>
@@ -46,7 +54,6 @@
                     <div class="button__container">
                         <button type="submit" class="btn btn-primary">Registrame</button>
                         <a href="{{url_for('usuario.index')}}" class="login-link">¿Ya tienes una cuenta?</a>
-                        <a href="{{url_for('usuario.forgot_password')}}" class="login-link">¿Olvidaste tu contraseña?</a>
                     </div>
                 </form>
             </div>

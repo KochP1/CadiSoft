@@ -38,33 +38,36 @@ def regist_user():
         return render_template('usuarios/regist.html')
     
     if request.method == 'POST':
-        nombre = request.form['nombre']
-        segundoNombre = request.form['segundoNombre']
-        apellido = request.form['apellido']
-        segundoApellido = request.form['segundoApellido']
-        cedula = request.form['cedula']
-        email = request.form['email']
-        contraseña = request.form['contraseña']
-        rol = 'administrador'
-        contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
 
-        if len(nombre) > 12:
-            return render_template('usuarios/regist.html', message_error = 'El nombre es muy largo (max 12 caracteres)')
-        if len(segundoNombre) > 12:
-            return render_template('usuarios/regist.html', message_error = 'El segundo nombre es muy largo (max 12 caracteres)')
-        if len(apellido) > 20:
-            return render_template('usuarios/regist.html', message_error = 'El apellido es muy largo (max 20 caracteres)')
-        if len(segundoApellido) > 20:
-            return render_template('usuarios/regist.html', message_error = 'El segundo apellido es muy largo (max 20 caracteres)')
-        if len(cedula) > 11:
-            return render_template('usuarios/regist.html', message_error = 'La cédula es muy larga (max 11 numeros enteros)')
-        if len(email) > 12:
-            return render_template('usuarios/regist.html', message_error = 'El email es muy largo (max 50 caracteres)')
-        if len(contraseña) > 8:
-            return render_template('usuarios/regist.html', message_error = 'La contraseña es muy larga (max 8 caracteres)')
         try:
             db = current_app.config['db']
             cur = db.cursor()
+
+            campos = {
+                'nombre': (request.form['nombre'], 12),
+                'segundoNombre': (request.form['segundoNombre'], 12),
+                'apellido': (request.form['apellido'], 20),
+                'segundoApellido': (request.form['segundoApellido'], 20),
+                'cedula': (request.form['cedula'], 11),
+                'email': (request.form['email'], 50),
+                'contraseña': (request.form['contraseña'], 8)
+            }
+            for campo, (valor, max_len) in campos.items():
+                if len(valor) > max_len:
+                    return render_template('usuarios/regist.html', message_error=f'El campo {campo.replace("Nombre", "nombre")} es muy largo (máx {max_len} caracteres)')
+                elif len(valor) == 0:
+                    return render_template('usuarios/regist.html', message_error=f'El campo {campo.replace("Nombre", "nombre")} esta vacio')
+            
+            nombre = request.form['nombre']
+            segundoNombre = request.form['segundoNombre']
+            apellido = request.form['apellido']
+            segundoApellido = request.form['segundoApellido']
+            cedula = request.form['cedula']
+            email = request.form['email']
+            contraseña = request.form['contraseña']
+            rol = 'administrador'
+            contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+
             sql = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
             data = (nombre, segundoNombre, apellido, segundoApellido, cedula, email, contraseña_hash, rol)
             cur.execute(sql, data)
