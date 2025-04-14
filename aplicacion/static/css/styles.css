@@ -268,6 +268,38 @@ input[type=number] {
     gap: 15px;
 }
 
+.btn-excel{
+    background-color: #1D6F42 !important;
+    border-color: #1D6F42 !important;
+    color: #fff !important;
+}
+
+.btn-excel:hover{
+    border-color: #1D6F42;
+    background-color: #0f4628 !important;
+}
+
+.btn-excel:active{
+    border-color: #1D6F42;
+    background-color: #1D6F42;
+}
+
+.btn-crear {
+    background-color: #e2896b !important;
+    border-color: #e2896b !important;
+}
+
+.btn-crear:active {
+    background-color: #e2896b !important;
+    border-color: #e2896b !important;
+}
+
+.btn-crear:hover {
+    background-color: #9f634e !important;
+    border-color: #e2896b !important;
+}
+
+
 /* FILTRAR ALUMNO */
 
 .filtrar-alumno__input{

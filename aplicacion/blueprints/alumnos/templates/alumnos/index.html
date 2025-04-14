@@ -30,17 +30,17 @@
             </tr>
 
             {% for alumno in alumnos %}
-            <tr>
-                <td>{{alumno.idAlumno}}</td>
-                <td>{{alumno.nombre}}</td>
-                <td>{{alumno.segundoNombre}}</td>
-                <td>{{alumno.apellido}}</td>
-                <td>{{alumno.SegundoApellido}}</td>
-                <td>{{alumno.cedula}}</td>
-                <td>{{alumno.email}}</td>
-                <td class="tabla-btn"><button class="btn btn-primary">Editar</button></td>
-                <td class="tabla-btn"><button class="btn btn-danger">Eliminar</button></td>
-            </tr>
+                <tr>
+                    <td>{{alumno.idAlumno}}</td>
+                    <td>{{alumno.nombre}}</td>
+                    <td>{{alumno.segundoNombre}}</td>
+                    <td>{{alumno.apellido}}</td>
+                    <td>{{alumno.SegundoApellido}}</td>
+                    <td>{{alumno.cedula}}</td>
+                    <td>{{alumno.email}}</td>
+                    <td class="tabla-btn"><button class="btn btn-primary">Editar</button></td>
+                    <td class="tabla-btn"><button class="btn btn-danger">Eliminar</button></td>
+                </tr>
             {% endfor %}
         </table>
     </div>
