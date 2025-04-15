@@ -10,7 +10,7 @@
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte">Generar reporte</button>
             <button class="btn btn-primary btn-excel">Migrar a excel</button>
-            <button class="btn btn-primary btn-crear">Crear profesor</button>
+            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-profesor-modal">Crear profesor</button>
             <form action="" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar por cédula" class="filtrar-alumno__input" name="cedula">
             </form>
@@ -51,5 +51,51 @@
 
         </table>
     </div>
+
+    <div class="modal fade" id="crear-profesor-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Profesor</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="" method="post" id="crear-profesor-form">
+
+                <label>Nombre</label>
+                <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor" maxlength="12">
+
+                <label>Segundo nombre</label>
+                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor">
+
+                <label>Apellido</label>
+                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor">
+
+                <label>Segundo apellido</label>
+                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor">
+
+                <label>Cedula</label>
+                <input type="number" class="form-control mb-3" name="cedula" id="cedulaProfesor">
+
+                <label>Email</label>
+                <input type="email" class="form-control mb-3" name="email" id="emailProfesor">
+
+                <label>Contraseña</label>
+                <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor">
+
+                <label class="label-tipo">Departamento</label>
+                <select name="tipo" class=" form-control mb-3 select" id="departamentoProfesor">
+                          <option value="">Seleccionar departamento</option>
+                  {% for record in especialidades %}
+                        <option value="{{record.idespecialidad}}">{{record.especialidad}}</option>
+                  {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearProfesor()">Guardar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
 {% endblock %}
