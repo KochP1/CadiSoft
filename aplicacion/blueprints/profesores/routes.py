@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 
@@ -80,18 +80,36 @@ def index():
     finally:
         cur.close()
 
+@profesores.route('/get_profile_image/<int:idusuarios>')
+def get_profile_image(idusuarios):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+    image_data = cur.fetchone()[0]
+
+    # Determinar el tipo MIME basado en los primeros bytes
+    mime_type = 'image/jpeg'
+    if image_data.startswith(b'\x89PNG'):
+        mime_type = 'image/png'
+    elif image_data.startswith(b'\xff\xd8'):
+        mime_type = 'image/jpeg'
+    
+    return Response(image_data, mimetype=mime_type)
+
 @profesores.route('edit_profesores/<int:idusuarios>')
 def edit_profesores(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
 
     try:
-        cur.execute('SELECT * FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+        cur.execute('SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.email, u.imagen, e.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios JOIN especialidad e ON p.idespecialidad = e.idespecialidad WHERE p.idusuarios = %s', (idusuarios,))
         registros = cur.fetchall()
         InsertRegistros = []
         columNames = [column[0] for column in cur.description]
         for record in registros:
             InsertRegistros.append(dict(zip(columNames, record)))
+        
         return render_template('profesores/editProfesor.html', profesor = InsertRegistros)
     except Exception as e:
         print(e)

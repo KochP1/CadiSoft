@@ -15,44 +15,50 @@
         <hr class="divider">
     </div>
 
-    <div class="edit-h2__container first-h2"><h2>Imágen</h2></div>
-    <hr class="divider">
-    <div class="edit__container">
-        <div class="img-editar-profesor">
-            <img src="" alt="">
-        </div>
-        <input type="file">
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-    </div>
+    {% for record in profesor %}
 
-    <div class="edit-h2__container"><h2>Nombres del profesor</h2></div>
-    <hr class="divider">
-    <div class="edit__container">
-        <input type="text" name="nombre">
-        <input type="text" name="segundoNombre">
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-    </div>
+            <div class="edit-h2__container first-h2"><h2>Imágen</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <div class="img-editar">
+                    {% if record.imagen %}
+                        <img src="{{url_for('profesores.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
+                    {% endif %}
+                </div>
+                <input type="file">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
 
-    <div class="edit-h2__container"><h2>Apellidos del profesor</h2></div>
-    <hr class="divider">
-    <div class="edit__container">
-        <input type="text" name="apellido">
-        <input type="text" name="segundoApellido">
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-    </div>
+            <div class="edit-h2__container"><h2>Nombres del profesor</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="nombre" value="{{record.nombre}}">
+                <input type="text" name="segundoNombre" value="{{record.segundoNombre}}">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
 
-    <div class="edit-h2__container"><h2>Email del profesor</h2></div>
-    <hr class="divider">
-    <div class="edit__container">
-        <input type="email" name="email">
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-    </div>
+            <div class="edit-h2__container"><h2>Apellidos del profesor</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="apellido" value="{{record.apellido}}">
+                <input type="text" name="segundoApellido" value="{{record.segundoApellido}}">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
 
-    <div class="edit-h2__container"><h2>Especialidad del profesor</h2></div>
-    <hr class="divider">
-    <div class="edit__container">
-        <input type="text" name="especialidad">
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-    </div>
+            <div class="edit-h2__container"><h2>Email del profesor</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="email" name="email" value="{{record.email}}">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+
+            <div class="edit-h2__container"><h2>Especialidad del profesor</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="especialidad" value="{{record.especialidad}}">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+
+    {% endfor %}
 
 {% endblock %}
