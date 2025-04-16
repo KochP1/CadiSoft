@@ -82,4 +82,19 @@ def index():
 
 @profesores.route('edit_profesores/<int:idusuarios>')
 def edit_profesores(idusuarios):
-    return render_template('profesores/editProfesor.html')
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    try:
+        cur.execute('SELECT * FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+        registros = cur.fetchall()
+        InsertRegistros = []
+        columNames = [column[0] for column in cur.description]
+        for record in registros:
+            InsertRegistros.append(dict(zip(columNames, record)))
+        return render_template('profesores/editProfesor.html', profesor = InsertRegistros)
+    except Exception as e:
+        print(e)
+        return redirect(url_for('profesores.index'))
+    finally:
+        cur.close()

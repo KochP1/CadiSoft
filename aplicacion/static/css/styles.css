@@ -299,6 +299,10 @@ input[type=number] {
     border-color: #e2896b !important;
 }
 
+.divider{
+    width: 100vw;
+}
+
 
 /* FILTRAR ALUMNO */
 
@@ -312,6 +316,54 @@ input[type=number] {
 .editar-link{
     text-decoration: none;
     color: #fff;
+}
+
+/* VISTA DE EDITAR */
+
+.edit__container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 60px;
+    width: 100%;
+}
+
+.edit__container input{
+    width: 300px;
+    height: 45px;
+    font-size: 1.3rem;
+}
+
+.edit__container input:focus{
+    border-color: #e2896b;
+    outline: 1px solid #e2896b;
+}
+
+.edit__container button{
+    width: 300px !important;
+    height: 45px !important;
+    background-color: #e2896b;
+    border-color: #e2896b;
+    font-size: 1.4rem;
+}
+
+.edit__container button:hover{
+    background-color: #e2896b;
+    border-color: #e2896b;
+}
+
+.edit-h2__container {
+    margin-top: 100px;
+    margin-left: 60px;
+}
+
+.edit-h2__container h2{
+    font-size: 3rem !important;
+    color: #8a8484;
+}
+
+.first-h2{
+    margin-top: 40px !important;
 }
 
 
