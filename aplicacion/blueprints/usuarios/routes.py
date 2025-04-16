@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 
@@ -83,6 +83,23 @@ def regist_user():
 @usuario.route('/forgot_password', methods = ['GET', 'POST'])
 def forgot_password():
     return render_template('usuarios/forgot.html')
+
+@usuario.route('/get_profile_image/<int:idusuarios>')
+def get_profile_image(idusuarios):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+    image_data = cur.fetchone()[0]
+
+    # Determinar el tipo MIME basado en los primeros bytes
+    mime_type = 'image/jpeg'
+    if image_data.startswith(b'\x89PNG'):
+        mime_type = 'image/png'
+    elif image_data.startswith(b'\xff\xd8'):
+        mime_type = 'image/jpeg'
+    
+    return Response(image_data, mimetype=mime_type)
 
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():

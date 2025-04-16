@@ -22,7 +22,7 @@
             <div class="edit__container">
                 <div class="img-editar">
                     {% if record.imagen %}
-                        <img src="{{url_for('profesores.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
                     {% endif %}
                 </div>
                 <input type="file">

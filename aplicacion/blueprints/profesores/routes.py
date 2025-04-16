@@ -80,22 +80,6 @@ def index():
     finally:
         cur.close()
 
-@profesores.route('/get_profile_image/<int:idusuarios>')
-def get_profile_image(idusuarios):
-    db = current_app.config['db']
-    cur = db.cursor()
-
-    cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
-    image_data = cur.fetchone()[0]
-
-    # Determinar el tipo MIME basado en los primeros bytes
-    mime_type = 'image/jpeg'
-    if image_data.startswith(b'\x89PNG'):
-        mime_type = 'image/png'
-    elif image_data.startswith(b'\xff\xd8'):
-        mime_type = 'image/jpeg'
-    
-    return Response(image_data, mimetype=mime_type)
 
 @profesores.route('edit_profesores/<int:idusuarios>')
 def edit_profesores(idusuarios):
