@@ -79,3 +79,7 @@ def index():
         return render_template('profesores/index.html')
     finally:
         cur.close()
+
+@profesores.route('edit_profesores/<int:idusuarios>')
+def edit_profesores(idusuarios):
+    return render_template('profesores/editProfesor.html')
