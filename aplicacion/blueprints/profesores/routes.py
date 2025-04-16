@@ -80,6 +80,22 @@ def index():
     finally:
         cur.close()
 
+@profesores.route('/eliminar_profesor/<int:idusuarios>', methods = ['DELETE'])
+def eliminar_profesor(idusuarios):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    try:
+        cur.execute('DELETE FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+        db.commit()
+        return jsonify({'mensaje': 'profesor eliminado'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'el profesor no pudo ser eliminado'}), 400
+    finally:
+        cur.close()
+
 
 @profesores.route('edit_profesores/<int:idusuarios>')
 def edit_profesores(idusuarios):

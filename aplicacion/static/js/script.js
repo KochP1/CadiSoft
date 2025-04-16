@@ -65,3 +65,22 @@ function crearProfesor() {
         }
     })
 }
+
+// Eliminar profesor
+async function eliminar_profesor(idusuarios) {
+    if (confirm('Estas seguro de que quieres eliminar el profesor?')) {
+        const response = await fetch(`/profesores/eliminar_profesor/${idusuarios}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+    
+        if (response.ok) {
+            alert('Profesor eliminado satisfactoriamente');
+            window.location.reload();
+        } else {
+            alert('Error al eliminar el profesor');
+        }
+    }
+}

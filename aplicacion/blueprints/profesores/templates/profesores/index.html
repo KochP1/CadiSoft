@@ -47,7 +47,7 @@
                         <a href="{{url_for('profesores.edit_profesores', idusuarios=profesor.idusuarios)}}" class="editar-link"">Editar</a>
                       </button>
                     </td>
-                    <td class="tabla-btn"><button class="btn btn-danger">Eliminar</button></td>
+                    <td class="tabla-btn"><button class="btn btn-danger" idusuarios="{{profesor.idusuarios}}" onclick="eliminar_profesor(this.getAttribute('idusuarios'))">Eliminar</button></td>
                     
                 </tr>
 
