@@ -1,5 +1,3 @@
-import base64
-
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
@@ -87,7 +85,6 @@ def index():
         columNames = [column[0] for column in cur.description]
         for record in registros:
             InsertRegistros.append(dict(zip(columNames, record)))
-        cur.close()
 
         return render_template('profesores/index.html', profesores = InsertRegistros)
     except Exception as e:
@@ -130,5 +127,26 @@ def edit_profesores(idusuarios):
     except Exception as e:
         print(e)
         return redirect(url_for('profesores.index'))
+    finally:
+        cur.close()
+
+@profesores.route('/filtrar_profesor', methods = ['POST'])
+def filtrar_profesor():
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    cedula = request.form['cedula']
+
+    try:
+        cur.execute('SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE u.cedula = %s', (cedula,))
+        registros = cur.fetchall()
+        InsertRegistros = []
+        columNames = [column[0] for column in cur.description]
+        for record in registros:
+            InsertRegistros.append(dict(zip(columNames, record)))
+        return render_template('profesores/index.html', profesores = InsertRegistros)
+    except Exception as e:
+        print(e)
+        return url_for('profesores.index')
     finally:
         cur.close()

@@ -1,5 +1,3 @@
-import base64
-
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt

@@ -11,7 +11,7 @@
             <button class="btn btn-primary btn-reporte">Generar reporte</button>
             <button class="btn btn-primary btn-excel">Migrar a excel</button>
             <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-profesor-modal">Crear profesor</button>
-            <form action="" method="post" class="filtrar-alumno__form">
+            <form action="{{url_for('profesores.filtrar_profesor')}}" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar por cédula" class="filtrar-alumno__input" name="cedula">
             </form>
         </div>
@@ -43,9 +43,11 @@
                     <td>{{profesor.email}}</td>
                     <td>{{profesor.especialidad}}</td>
                     <td class="tabla-btn">
-                      <button class="btn btn-primary">
-                        <a href="{{url_for('profesores.edit_profesores', idusuarios=profesor.idusuarios)}}" class="editar-link">Editar</a>
-                      </button>
+                      <a href="{{url_for('profesores.edit_profesores', idusuarios=profesor.idusuarios)}}" class="editar-link">
+                        <button class="btn btn-primary">
+                          Editar
+                        </button>
+                      </a>
                     </td>
                     <td class="tabla-btn"><button class="btn btn-danger" idusuarios="{{profesor.idusuarios}}" onclick="eliminar_profesor(this.getAttribute('idusuarios'))">Eliminar</button></td>
                     
