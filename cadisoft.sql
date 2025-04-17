@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 17-04-2025 a las 08:08:43
+-- Tiempo de generación: 17-04-2025 a las 20:33:53
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -57,21 +57,10 @@ CREATE TABLE `calificaciones` (
 CREATE TABLE `cursos` (
   `idCurso` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
-  `idDepartamento` int(11) NOT NULL,
-  `Materia` varchar(40) NOT NULL,
-  `Seccion` varchar(8) DEFAULT NULL,
-  `precio_curso` double NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `departamento`
---
-
-CREATE TABLE `departamento` (
-  `idDepartamento` int(11) NOT NULL,
-  `departamento` varchar(30) NOT NULL
+  `idFacultad` int(11) NOT NULL,
+  `nombre_curso` varchar(40) NOT NULL,
+  `precio_curso` double NOT NULL,
+  `imagen` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -99,6 +88,17 @@ CREATE TABLE `factura_productos` (
   `idProducto` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_unitario` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `facultades`
+--
+
+CREATE TABLE `facultades` (
+  `idFacultad` int(11) NOT NULL,
+  `facultad` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -245,14 +245,8 @@ ALTER TABLE `calificaciones`
 --
 ALTER TABLE `cursos`
   ADD PRIMARY KEY (`idCurso`),
-  ADD UNIQUE KEY `Seccion_UNIQUE` (`Seccion`),
-  ADD KEY `profesor_fk_idx` (`idProfesor`);
-
---
--- Indices de la tabla `departamento`
---
-ALTER TABLE `departamento`
-  ADD PRIMARY KEY (`idDepartamento`);
+  ADD KEY `profesor_fk_idx` (`idProfesor`),
+  ADD KEY `facultad_fk` (`idFacultad`);
 
 --
 -- Indices de la tabla `facturas`
@@ -268,6 +262,12 @@ ALTER TABLE `factura_productos`
   ADD PRIMARY KEY (`idFactura_producto`),
   ADD KEY `factura_idx` (`idFactura`),
   ADD KEY `idProduco_idx` (`idProducto`);
+
+--
+-- Indices de la tabla `facultades`
+--
+ALTER TABLE `facultades`
+  ADD PRIMARY KEY (`idFacultad`);
 
 --
 -- Indices de la tabla `horario`
@@ -347,12 +347,6 @@ ALTER TABLE `cursos`
   MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `departamento`
---
-ALTER TABLE `departamento`
-  MODIFY `idDepartamento` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
@@ -363,6 +357,12 @@ ALTER TABLE `facturas`
 --
 ALTER TABLE `factura_productos`
   MODIFY `idFactura_producto` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `facultades`
+--
+ALTER TABLE `facultades`
+  MODIFY `idFacultad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -434,6 +434,7 @@ ALTER TABLE `calificaciones`
 -- Filtros para la tabla `cursos`
 --
 ALTER TABLE `cursos`
+  ADD CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `profesor_fk` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
