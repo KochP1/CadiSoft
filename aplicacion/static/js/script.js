@@ -182,3 +182,32 @@ async function edit_nombres(idusuarios) {
         console.log(`Error: ${e}`)
     }
 }
+
+async function edit_apellidos(idusuarios) {
+    const apellido = document.getElementById('editApellido').value;
+    const segundoApellido = document.getElementById('editSegundoApellido').value;
+
+    if (!apellido || !segundoApellido) {
+        alert('Debe llenar todos los campos');
+        return;
+    }
+
+    try{
+        const response = await fetch(`/edit_apellidos/${idusuarios}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'apellido': apellido, 'segundoApellido': segundoApellido})
+        });
+    
+        if (response.ok) {
+            alert('Apellidos actualizados satisfactoriamente')
+            window.location.reload();
+        } else {
+            alert('Error actualizando apellidos')
+        }
+    } catch (e) {
+        console.log(`Error: ${e}`)
+    }
+}
