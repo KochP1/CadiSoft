@@ -1,3 +1,5 @@
+import base64
+
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
@@ -21,8 +23,13 @@ def index():
         contraseña = request.form.get('email')
         rol = request.form.get('rol')
         especialidad = request.form.get('especialidad')
-        imagen = request.form.get('imagen')
-        
+        contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+
+        try:
+            imagen = request.files['imagen']
+        except KeyError as e:
+            imagen = None
+
         try:
 
             if imagen == None:
@@ -38,19 +45,22 @@ def index():
                     contraseña_hash,
                     rol
                     )
-            sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
-            usuario = (
-                nombre,
-                segundoNombre,
-                apellido,
-                segundoApellido,
-                cedula,
-                email,
-                contraseña_hash,
-                rol,
-                imagen
-                )
+            
+            else:
+                sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                imagen_blob = imagen.read()
+                usuario = (
+                    nombre,
+                    segundoNombre,
+                    apellido,
+                    segundoApellido,
+                    cedula,
+                    email,
+                    contraseña_hash,
+                    rol,
+                    imagen_blob
+                    )
+            
             cur.execute(sql_usuario, usuario)
             db.commit()
 

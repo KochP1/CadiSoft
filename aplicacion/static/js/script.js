@@ -30,6 +30,12 @@ function crearProfesor() {
     const especialidad = document.getElementById('especialidadProfesor').value;
     const imagen = document.getElementById('imagenProfesor').files[0];
 
+
+    if (nombre === '' || segundoNombre === '' || apellido === '' || segundoApellido === '' || cedula === '' || email === '' || contraseña === '' || especialidad === '') {
+        alert('Todos los campos deben ser llenados')
+        window.location.reload()
+    }
+
     
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -44,12 +50,10 @@ function crearProfesor() {
         formData.append('contraseña', contraseña);
         formData.append('rol', rol);
         formData.append('especialidad', especialidad);
-
-        if (imagen !== '') {
-            formData.append('imagen', imagen)
-        }
+        formData.append('imagen', imagen);
 
         try {
+            console.log('ey')
             const response = await fetch('/profesores/', {
                 method: 'POST',
                 body: formData

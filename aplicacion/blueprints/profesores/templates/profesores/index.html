@@ -29,7 +29,7 @@
                 <th>Segundo apellido</th>
                 <th>Cédula</th>
                 <th>Email</th>
-                <th>Departamento</th>
+                <th>Especialidad</th>
             </tr>
 
             {% for profesor in profesores %}
@@ -64,7 +64,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form action="" method="post" id="crear-profesor-form">
+              <form id="crear-profesor-form">
 
                 <label>Nombre</label>
                 <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor" maxlength="12">

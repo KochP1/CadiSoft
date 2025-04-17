@@ -20,7 +20,7 @@
             <div class="edit-h2__container first-h2"><h2>Imágen</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                {% if record.imagen != '' %}
+                {% if record.imagen != None %}
                     <div class="img-editar">
                         <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
                     </div>
