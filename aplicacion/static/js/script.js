@@ -327,3 +327,26 @@ function editar_facultad(idfacultad) {
         }
     })
 }
+
+async function elim_facultad(idfacultad) {
+
+    if(confirm('¿Estas seguro de quieres eliminar esta facultad?')) {
+        try {
+            const response = await fetch(`/facultades/edit_facultad/${idfacultad}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            if (response.ok) {
+                alert('Facultad eliminada satisfactoriamente')
+                window.location.href = '/facultades/'
+            } else {
+                alert('Error al eliminar facultad')
+            }
+        } catch (e) {
+            console.log(`Error: ${e}`)
+        }
+    }
+}

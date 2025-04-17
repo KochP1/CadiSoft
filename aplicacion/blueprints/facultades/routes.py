@@ -29,23 +29,36 @@ def index():
         insertRegistros.append(dict(zip(columNames, record)))
     return render_template('facultades/index.html', facultades = insertRegistros)
 
-@facultades.route('/edit_facultad/<int:idfacultad>', methods = ['PATCH'])
+@facultades.route('/edit_facultad/<int:idfacultad>', methods = ['PATCH', 'DELETE'])
 def edit_facultad(idfacultad):
     db = current_app.config['db']
     cur = db.cursor()
 
-    facultad = request.form.get('nombreFacultad')
+    if request.method == 'PATCH':
+        facultad = request.form.get('nombreFacultad')
 
-    try:
-        cur.execute('UPDATE facultades SET facultad = %s WHERE idfacultad = %s', (facultad, idfacultad))
-        db.commit()
-        return jsonify({'mensaje': 'facultad actualizada', 'facultad': f'{idfacultad}'}), 200
-    except Exception as e:
-        db.rollback()
-        print(e)
-        return jsonify({'error': f'error al actualizar la facultad: {e}'}), 400
-    finally:
-        cur.close()
+        try:
+            cur.execute('UPDATE facultades SET facultad = %s WHERE idFacultad = %s', (facultad, idfacultad))
+            db.commit()
+            return jsonify({'mensaje': 'facultad actualizada', 'facultad': f'{idfacultad}'}), 200
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': f'error al actualizar la facultad: {e}'}), 400
+        finally:
+            cur.close()
+    
+    if request.method == 'DELETE':
+        try:
+            cur.execute('DELETE FROM facultades WHERE idFacultad = %s', (idfacultad))
+            db.commit()
+            return jsonify({'mensaje': 'facultad eliminada', 'facultad': f'{idfacultad}'})
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': 'error al eliminar la facultad'}), 400
+        finally:
+            cur.close()
 
 @facultades.route('/filtrar_facultad', methods = ['POST'])
 def filtrar_facultad():

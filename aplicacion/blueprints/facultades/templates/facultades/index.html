@@ -30,7 +30,7 @@
                         <td id="facultad-id-{{facultad.idFacultad}}">{{facultad.idFacultad}}</td>
                         <td id="nombre-facultad-{{facultad.idFacultad}}">{{facultad.facultad}}</td>
                         <td class="tabla-btn"><button class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#edit-facultad-modal" idfacultad="{{facultad.idFacultad}}" onclick="obtener_campos_facultad(this.getAttribute('idfacultad'))">Editar</button></td>
-                        <td class="tabla-btn"><button class="btn btn-danger" idfacultad="{{facultad.idFacultad}}">Eliminar</button></td>
+                        <td class="tabla-btn"><button class="btn btn-danger" idfacultad="{{facultad.idFacultad}}" onclick="elim_facultad(this.getAttribute('idfacultad'))">Eliminar</button></td>
                     </tr>
                 {% endfor %}
             </table>
