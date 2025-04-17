@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 14-04-2025 a las 20:22:07
+-- Tiempo de generación: 17-04-2025 a las 08:08:43
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -57,6 +57,7 @@ CREATE TABLE `calificaciones` (
 CREATE TABLE `cursos` (
   `idCurso` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
+  `idDepartamento` int(11) NOT NULL,
   `Materia` varchar(40) NOT NULL,
   `Seccion` varchar(8) DEFAULT NULL,
   `precio_curso` double NOT NULL
@@ -65,12 +66,12 @@ CREATE TABLE `cursos` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `especialidad`
+-- Estructura de tabla para la tabla `departamento`
 --
 
-CREATE TABLE `especialidad` (
-  `idespecialidad` int(11) NOT NULL,
-  `especialidad` varchar(30) NOT NULL
+CREATE TABLE `departamento` (
+  `idDepartamento` int(11) NOT NULL,
+  `departamento` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -174,7 +175,7 @@ CREATE TABLE `productos` (
 CREATE TABLE `profesores` (
   `idProfesor` int(11) NOT NULL,
   `idusuarios` int(11) NOT NULL,
-  `idespecialidad` int(11) NOT NULL
+  `especialidad` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -205,7 +206,7 @@ CREATE TABLE `usuarios` (
   `segundoNombre` varchar(12) NOT NULL,
   `apellido` varchar(20) NOT NULL,
   `segundoApellido` varchar(20) NOT NULL,
-  `cedula` int(11) NOT NULL,
+  `cedula` varchar(8) NOT NULL,
   `email` varchar(50) NOT NULL,
   `contraseña` varchar(200) NOT NULL,
   `rol` varchar(13) NOT NULL,
@@ -217,7 +218,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idusuarios`, `nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES
-(1, 'Juan', 'Andrés', 'Koch', 'Padrón', 30139712, 'juanandreskochp@gmail.com', '$2b$12$ccRfI8EHg/arbtEmt4l4Ge8reuglnzEeH8GuWJS0.dtAhowxIJ/3q', 'administrador', NULL);
+(32, 'Juan', 'Andrés', 'Koch', 'Padrón', '30139712', 'juanandreskochp@gmail.com', '$2b$12$bzg9tsH9uaOVMH7dDwZfceSJCgydQ6c8zhK7.mnbDPs.I4pMk9Bty', 'administrador', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -248,10 +249,10 @@ ALTER TABLE `cursos`
   ADD KEY `profesor_fk_idx` (`idProfesor`);
 
 --
--- Indices de la tabla `especialidad`
+-- Indices de la tabla `departamento`
 --
-ALTER TABLE `especialidad`
-  ADD PRIMARY KEY (`idespecialidad`);
+ALTER TABLE `departamento`
+  ADD PRIMARY KEY (`idDepartamento`);
 
 --
 -- Indices de la tabla `facturas`
@@ -308,8 +309,7 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `profesores`
   ADD PRIMARY KEY (`idProfesor`),
-  ADD KEY `usuario_p_idx` (`idusuarios`),
-  ADD KEY `especialidad_p_idx` (`idespecialidad`);
+  ADD KEY `usuario_p_idx` (`idusuarios`);
 
 --
 -- Indices de la tabla `registro_familiar`
@@ -332,7 +332,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `alumnos`
 --
 ALTER TABLE `alumnos`
-  MODIFY `idAlumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idAlumno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `calificaciones`
@@ -347,10 +347,10 @@ ALTER TABLE `cursos`
   MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `especialidad`
+-- AUTO_INCREMENT de la tabla `departamento`
 --
-ALTER TABLE `especialidad`
-  MODIFY `idespecialidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `departamento`
+  MODIFY `idDepartamento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`
@@ -398,19 +398,19 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `profesores`
 --
 ALTER TABLE `profesores`
-  MODIFY `idProfesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idProfesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `registro_familiar`
 --
 ALTER TABLE `registro_familiar`
-  MODIFY `idfamilia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idfamilia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idusuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idusuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Restricciones para tablas volcadas
@@ -473,7 +473,6 @@ ALTER TABLE `insc_x_cursos`
 -- Filtros para la tabla `profesores`
 --
 ALTER TABLE `profesores`
-  ADD CONSTRAINT `especialidad_p` FOREIGN KEY (`idespecialidad`) REFERENCES `especialidad` (`idespecialidad`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `usuario_p` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
