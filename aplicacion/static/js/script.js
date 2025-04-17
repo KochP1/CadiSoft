@@ -27,36 +27,32 @@ function crearProfesor() {
     const cedula = document.getElementById('cedulaProfesor').value;
     const email = document.getElementById('emailProfesor').value;
     const contraseña = document.getElementById('contraseñaProfesor').value;
-    const especialidad = document.getElementById('departamentoProfesor').value;
-    const imagen = document.getElementById('imagenProfesor').value;
-
-    if (especialidad == '') {
-        alert('Debe escoger una especialidad')
-        return;
-    }
+    const especialidad = document.getElementById('especialidadProfesor').value;
+    const imagen = document.getElementById('imagenProfesor').files[0];
 
     
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('segundoNombre', segundoNombre);
+        formData.append('apellido', apellido);
+        formData.append('segundoApellido', segundoApellido);
+        formData.append('cedula', cedula);
+        formData.append('email', email);
+        formData.append('contraseña', contraseña);
+        formData.append('rol', rol);
+        formData.append('especialidad', especialidad);
+
+        if (imagen !== '') {
+            formData.append('imagen', imagen)
+        }
+
         try {
             const response = await fetch('/profesores/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    nombre: nombre,
-                    segundoNombre: segundoNombre,
-                    apellido: apellido,
-                    segundoApellido: segundoApellido,
-                    cedula: cedula,
-                    email: email,
-                    contraseña: contraseña,
-                    rol: rol,
-                    especialidad: especialidad,
-                    imagen: imagen
-                })
+                body: formData
             });
     
             if (response.ok) {

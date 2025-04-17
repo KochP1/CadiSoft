@@ -12,38 +12,53 @@ def index():
 
     # POST profesor
     if request.method == 'POST':
-        if not request.is_json:
-            return jsonify({"error": "El cuerpo debe ser JSON"}), 400
-            
-        data = request.get_json()
-
-        required_fields = ['nombre', 'segundoNombre', 'apellido', 'segundoApellido', 'cedula', 'email', 'contraseña', 'rol', 'especialidad']
-
-        if not all(field in data for field in required_fields):
-            return jsonify({'error': 'faltan campos'}), 400
+        nombre = request.form.get('nombre')
+        segundoNombre = request.form.get('segundoNombre')
+        apellido = request.form.get('apellido')
+        segundoApellido = request.form.get('segundoApellido')
+        cedula = request.form.get('cedula')
+        email = request.form.get('email')
+        contraseña = request.form.get('email')
+        rol = request.form.get('rol')
+        especialidad = request.form.get('especialidad')
+        imagen = request.form.get('imagen')
         
         try:
+
+            if imagen == None:
+                sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+                contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+                usuario = (
+                    nombre,
+                    segundoNombre,
+                    apellido,
+                    segundoApellido,
+                    cedula,
+                    email,
+                    contraseña_hash,
+                    rol
+                    )
             sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            contraseña_hash = bcrypt.generate_password_hash(data['contraseña']).decode('utf-8')
+            contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
             usuario = (
-                data['nombre'], 
-                data['segundoNombre'], 
-                data['apellido'],
-                data['segundoApellido'],
-                data['cedula'],
-                data['email'],
+                nombre,
+                segundoNombre,
+                apellido,
+                segundoApellido,
+                cedula,
+                email,
                 contraseña_hash,
-                data['rol'],
-                data['imagen']
+                rol,
+                imagen
                 )
             cur.execute(sql_usuario, usuario)
             db.commit()
 
-            cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (data['cedula'],))
+            cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
             idusuario = cur.fetchone()
 
-            sql_profesor = 'INSERT INTO profesores (`idusuarios`, `idespecialidad`) VALUES (%s, %s)'
-            profesor = (idusuario, data['especialidad'])
+            sql_profesor = 'INSERT INTO profesores (`idusuarios`, `especialidad`) VALUES (%s, %s)'
+            profesor = (idusuario, especialidad)
             cur.execute(sql_profesor, profesor)
             db.commit()
             return jsonify({'mensaje': 'profesor creado satisfactiramente'}), 200
@@ -55,7 +70,7 @@ def index():
 
     # GET PROFESORES
     try:
-        sql = 'SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email, e.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios JOIN especialidad e ON p.idespecialidad = e.idespecialidad'
+        sql = 'SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios'
         cur.execute(sql)
         registros = cur.fetchall()
         InsertRegistros = []
@@ -64,17 +79,7 @@ def index():
             InsertRegistros.append(dict(zip(columNames, record)))
         cur.close()
 
-        cur = db.cursor()
-        sql_especialidades = 'SELECT * FROM especialidad'
-        cur.execute(sql_especialidades)
-        especialidad = cur.fetchall()
-        insertEspecialidad = []
-        columNamesEspecialidad = [column[0] for column in cur.description]
-        for record in especialidad:
-            insertEspecialidad.append(dict(zip(columNamesEspecialidad, record)))
-        print(insertEspecialidad)
-
-        return render_template('profesores/index.html', profesores = InsertRegistros, especialidades = insertEspecialidad)
+        return render_template('profesores/index.html', profesores = InsertRegistros)
     except Exception as e:
         print(e)
         return render_template('profesores/index.html')
@@ -104,7 +109,7 @@ def edit_profesores(idusuarios):
     cur = db.cursor()
 
     try:
-        cur.execute('SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.email, u.imagen, e.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios JOIN especialidad e ON p.idespecialidad = e.idespecialidad WHERE p.idusuarios = %s', (idusuarios,))
+        cur.execute('SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.email, u.imagen, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE p.idusuarios = %s', (idusuarios,))
         registros = cur.fetchall()
         InsertRegistros = []
         columNames = [column[0] for column in cur.description]

@@ -70,33 +70,28 @@
                 <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor" maxlength="12">
 
                 <label>Segundo nombre</label>
-                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor">
+                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor" maxlength="12">
 
                 <label>Apellido</label>
-                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor">
+                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor" maxlength="20">
 
                 <label>Segundo apellido</label>
-                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor">
+                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor" maxlength="20">
 
                 <label>Cedula</label>
-                <input type="number" class="form-control mb-3" name="cedula" id="cedulaProfesor">
+                <input type="number" class="form-control mb-3" name="cedula" id="cedulaProfesor" maxlength="8">
 
                 <label>Email</label>
-                <input type="email" class="form-control mb-3" name="email" id="emailProfesor">
+                <input type="email" class="form-control mb-3" name="email" id="emailProfesor" maxlength="50">
 
                 <label>Contraseña</label>
-                <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor">
+                <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor" maxlength="8">
 
                 <label>Imagen</label>
                 <input type="file" class="form-control mb-3" name="imagen" id="imagenProfesor">
 
-                <label class="label-tipo">Departamento</label>
-                <select name="tipo" class=" form-control mb-3 select" id="departamentoProfesor">
-                          <option value="">Seleccionar departamento</option>
-                  {% for record in especialidades %}
-                        <option value="{{record.idespecialidad}}">{{record.especialidad}}</option>
-                  {% endfor %}
-                </select>
+                <label class="label-tipo">Especialidad</label>
+                <input type="text" class="form-control mb-3" name="especialidad" id="especialidadProfesor" maxlength="20">
 
                 <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearProfesor()">Guardar</button>
               </form>
