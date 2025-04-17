@@ -34,16 +34,16 @@
             <div class="edit-h2__container"><h2>Nombres del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="nombre" value="{{record.nombre}}">
-                <input type="text" name="segundoNombre" value="{{record.segundoNombre}}">
-                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <input type="text" name="nombre" value="{{record.nombre}}" id="editNombre" maxlength="12">
+                <input type="text" name="segundoNombre" value="{{record.segundoNombre}}" id="editSegundoNombre" maxlength="12">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_nombres(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Apellidos del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="apellido" value="{{record.apellido}}">
-                <input type="text" name="segundoApellido" value="{{record.segundoApellido}}">
+                <input type="text" name="apellido" value="{{record.apellido}}" maxlength="20">
+                <input type="text" name="segundoApellido" value="{{record.segundoApellido}}" maxlength="20">
                 <button type="submit" class="btn btn-primary">Actualizar</button>
             </div>
 

@@ -153,3 +153,32 @@ async function edit_email(idusuarios) {
         console.log(`Error: ${e}`);
     }
 }
+
+async function edit_nombres(idusuarios) {
+    const nombre = document.getElementById('editNombre').value;
+    const segundoNombre = document.getElementById('editSegundoNombre').value;
+
+    if (!nombre || !segundoNombre) {
+        alert('Debe llenar todos los campos');
+        return;
+    }
+
+    try{
+        const response = await fetch(`/edit_nombres/${idusuarios}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'nombre': nombre, 'segundoNombre': segundoNombre})
+        });
+    
+        if (response.ok) {
+            alert('Nombres actualizados satisfactoriamente')
+            window.location.reload();
+        } else {
+            alert('Error actualizando nombres')
+        }
+    } catch (e) {
+        console.log(`Error: ${e}`)
+    }
+}
