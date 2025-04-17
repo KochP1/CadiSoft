@@ -52,6 +52,11 @@ function crearProfesor() {
         formData.append('especialidad', especialidad);
         formData.append('imagen', imagen);
 
+        if (cedula.length > 8) {
+            alert('La cédula puede tener máximo 8 caracteres');
+            window.location.reload();
+        }
+
         try {
             console.log('ey')
             const response = await fetch('/profesores/', {
@@ -209,5 +214,38 @@ async function edit_apellidos(idusuarios) {
         }
     } catch (e) {
         console.log(`Error: ${e}`)
+    }
+}
+
+async function edit_cedula(idusuarios) {
+    const cedula = document.getElementById('edit-cedula').value;
+
+    if(!cedula) {
+        alert('Debe ingresar el correo electrónico')
+        return;
+    }
+
+    if (cedula.length > 8) {
+        alert('La cédula puede tener máximo 8 caracteres')
+        window.location.reload();
+    }
+
+    try {
+        const response = await fetch(`/edit_cedula/${idusuarios}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'cedula': cedula})
+        });
+    
+        if (response.ok) {
+            alert('cedula actualizada satisfactoriamente');
+            window.location.reload();
+        } else {
+            alert('Error al actualizar la cedula');
+        }
+    } catch (e) {
+        console.log(`Error: ${e}`);
     }
 }

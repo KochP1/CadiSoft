@@ -199,6 +199,32 @@ def edit_apellidos(idusuarios):
     finally:
         cur.close()
 
+@usuario.route('/edit_cedula/<int:idusuarios>', methods = ['PATCH'])
+def edit_cedula(idusuarios):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    if not request.is_json:
+        return jsonify({"error": "El cuerpo debe ser JSON"}), 400
+            
+    data = request.get_json()
+
+    required_fields = ['cedula']
+
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "faltan campos"}), 400
+    
+    try:
+        cur.execute('UPDATE usuarios SET cedula = %s WHERE idusuarios = %s', (data['cedula'], idusuarios))
+        db.commit()
+        return jsonify({'mensaje': 'cedula actualizada', 'usuario': f'{idusuarios}'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': f'{e}'}), 400
+    finally:
+        cur.close()
+
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():
     try:

@@ -116,7 +116,7 @@ def edit_profesores(idusuarios):
     cur = db.cursor()
 
     try:
-        cur.execute('SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.email, u.imagen, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE p.idusuarios = %s', (idusuarios,))
+        cur.execute('SELECT p.idProfesor, p.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, u.email, u.imagen, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE p.idusuarios = %s', (idusuarios,))
         registros = cur.fetchall()
         InsertRegistros = []
         columNames = [column[0] for column in cur.description]
