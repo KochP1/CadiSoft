@@ -28,10 +28,14 @@ function crearProfesor() {
     const email = document.getElementById('emailProfesor').value;
     const contraseña = document.getElementById('contraseñaProfesor').value;
     const especialidad = document.getElementById('departamentoProfesor').value;
+    const imagen = document.getElementById('imagenProfesor').value;
 
     if (especialidad == '') {
         alert('Debe escoger una especialidad')
+        return;
     }
+
+    
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -50,7 +54,8 @@ function crearProfesor() {
                     email: email,
                     contraseña: contraseña,
                     rol: rol,
-                    especialidad: especialidad
+                    especialidad: especialidad,
+                    imagen: imagen
                 })
             });
     
@@ -83,4 +88,41 @@ async function eliminar_profesor(idusuarios) {
             alert('Error al eliminar el profesor');
         }
     }
+}
+
+function update_foto(idusuarios) {
+    const form = document.getElementById('updateFoto');
+    const imagen = document.getElementById('fotoPerfil').files[0];
+
+    if (!imagen) {
+        alert('Por favor, seleccione una imagen');
+        return;
+    }
+
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+
+        formData.append('imagen', imagen);
+
+        try {
+            const response = await fetch(`/update_foto/${idusuarios}`, {
+                method: 'PATCH',
+                body: formData,
+            });
+
+            if (response.ok) {
+                alert('Imágen actualizada satisfactoriamente');
+                window.location.reload();
+            } else {
+                alert('La imágen no pudo ser actualizada');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+
+    });
 }

@@ -1,3 +1,5 @@
+import base64
+
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
@@ -100,6 +102,26 @@ def get_profile_image(idusuarios):
         mime_type = 'image/jpeg'
     
     return Response(image_data, mimetype=mime_type)
+
+@usuario.route('/update_foto/<int:idusuarios>', methods = ['PATCH'])
+def update_foto(idusuarios):
+    imagen = request.files['imagen']  # Archivo binario
+        
+    # Convertir imagen a Base64 o guardarla como BLOB
+    imagen_blob = imagen.read()  # Binario puro (para MySQL LONGBLOB)
+
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    try:
+        cur.execute('UPDATE usuarios SET imagen = %s WHERE idusuarios = %s', (imagen_blob, idusuarios))
+        db.commit()
+        return jsonify({'mensaje': 'imagen de perfil actualizada', 'usuario': f'{idusuarios}'}), 200
+    except Exception as e:
+        db.rollback()
+        return jsonify({'error': f'{e}'}), 400
+
+
 
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():

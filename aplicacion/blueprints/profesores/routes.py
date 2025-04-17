@@ -23,7 +23,7 @@ def index():
             return jsonify({'error': 'faltan campos'}), 400
         
         try:
-            sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+            sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
             contraseña_hash = bcrypt.generate_password_hash(data['contraseña']).decode('utf-8')
             usuario = (
                 data['nombre'], 
@@ -33,7 +33,8 @@ def index():
                 data['cedula'],
                 data['email'],
                 contraseña_hash,
-                data['rol']
+                data['rol'],
+                data['imagen']
                 )
             cur.execute(sql_usuario, usuario)
             db.commit()
