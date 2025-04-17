@@ -348,13 +348,13 @@ input[type=number] {
 }
 
 .edit__container button:hover{
-    background-color: #b26c55;
-    border-color: #e2896b;
+    background-color: #b26c55 !important;
+    border-color: #e2896b !important;
 }
 
 .edit__container button:active{
-    background-color: #e2896b;
-    border-color: #e2896b;
+    background-color: #e2896b !important;
+    border-color: #e2896b !important;
 }
 
 .edit-h2__container {

@@ -99,7 +99,6 @@ function update_foto(idusuarios) {
         return;
     }
 
-
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -125,4 +124,32 @@ function update_foto(idusuarios) {
 
 
     });
+}
+
+async function edit_email(idusuarios) {
+    const email = document.getElementById('edit-email').value;
+
+    if(!email) {
+        alert('Debe ingresar el correo electrónico')
+        return;
+    }
+
+    try {
+        const response = await fetch(`/update_email/${idusuarios}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'email': email})
+        });
+    
+        if (response.ok) {
+            alert('Email actualizado satisfactoriamente');
+            window.location.reload();
+        } else {
+            alert('Error al actualizar el email');
+        }
+    } catch (e) {
+        console.log(`Error: ${e}`);
+    }
 }

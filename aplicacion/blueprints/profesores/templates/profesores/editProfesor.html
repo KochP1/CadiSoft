@@ -50,8 +50,8 @@
             <div class="edit-h2__container"><h2>Email del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="email" name="email" value="{{record.email}}">
-                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <input type="email" name="email" value="{{record.email}}" id="edit-email">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_email(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Especialidad del profesor</h2></div>
