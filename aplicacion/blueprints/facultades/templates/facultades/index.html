@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Facultades{% endblock %}
+
+{% block content %}
+        <div class="alumnos-options__wrapper">
+            <h1>Facultades</h1>
+
+            <div class="alumnos-options__container">
+                <button class="btn btn-primary btn-reporte">Generar reporte</button>
+                <button class="btn btn-primary btn-excel">Migrar a excel</button>
+                <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-facultad-modal">Crear facultad</button>
+                <form action="{{url_for('facultades.filtrar_facultad')}}" method="post" class="filtrar-alumno__form">
+                    <input type="search" placeholder="Buscar facultad" class="filtrar-alumno__input" name="facultad">
+                </form>
+            </div>
+
+            <hr class="divider">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped-columns table-alumnos" id="tablaAlumnos">
+                <tr>
+                    <th>ID</th>
+                    <th>Facultad</th>
+                </tr>
+
+                {% for facultad in facultades %}
+                    <tr>
+                        <td id="facultad-id-{{facultad.idFacultad}}">{{facultad.idFacultad}}</td>
+                        <td id="nombre-facultad-{{facultad.idFacultad}}">{{facultad.facultad}}</td>
+                        <td class="tabla-btn"><button class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#edit-facultad-modal" idfacultad="{{facultad.idFacultad}}" onclick="obtener_campos_facultad(this.getAttribute('idfacultad'))">Editar</button></td>
+                        <td class="tabla-btn"><button class="btn btn-danger" idfacultad="{{facultad.idFacultad}}">Eliminar</button></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="modal fade" id="crear-facultad-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Nueva Facultad</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="crear-facultad-form">
+    
+                    <label>Nombre de la facultad</label>
+                    <input type="text" class="form-control mb-3" name="facultad" id="nombreFacultad" maxlength="40">
+                    <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearFacultad()">Guardar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="edit-facultad-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Facultad</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="edit-facultad-form">
+    
+                    <label>Nombre de la facultad</label>
+                    <input type="text" class="form-control mb-3" name="facultad" id="edit-nombreFacultad" maxlength="40">
+                    <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="editar_facultad(this.getAttribute('idfacultad'))" id="btn-edit-facultad">Guardar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+{% endblock %}

@@ -249,3 +249,81 @@ async function edit_cedula(idusuarios) {
         console.log(`Error: ${e}`);
     }
 }
+
+// Crear facultad
+
+function crearFacultad() {
+    const form = document.getElementById('crear-facultad-form');
+    const nombreFacultad = document.getElementById('nombreFacultad').value;
+
+    if (nombreFacultad === '') {
+        alert('Debe introducir el nombre de la facultad')
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData;
+
+        formData.append('nombreFacultad', nombreFacultad)
+
+        try {
+            const response = await fetch('/facultades/', {
+                method: 'POST',
+                body: formData
+            })
+    
+            if (response.ok) {
+                alert('Facultad creada satisfactoriamente');
+                window.location.reload();
+            } else{
+                alert('Error al crear la facultad')
+            }
+        } catch(e) {
+            console.log(e)
+        }
+    })
+}
+
+function obtener_campos_facultad(idfacultad) {
+    const editNombreFacultad = document.getElementById('edit-nombreFacultad');
+    const nombreFacultad = document.getElementById(`nombre-facultad-${idfacultad}`).textContent;
+    const btnModalEditFacultad = document.getElementById('btn-edit-facultad')
+
+    btnModalEditFacultad.setAttribute('idfacultad', idfacultad)
+
+    editNombreFacultad.value = nombreFacultad
+}
+
+function editar_facultad(idfacultad) {
+    const form = document.getElementById('edit-facultad-form');
+    const nombreFacultad = document.getElementById('edit-nombreFacultad').value;
+
+    if (nombreFacultad === '') {
+        alert('Debe introducir el nombre de la facultad')
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData;
+
+        formData.append('nombreFacultad', nombreFacultad)
+
+        try {
+            const response = await fetch(`/facultades/edit_facultad/${idfacultad}`, {
+                method: 'PATCH',
+                body: formData
+            })
+    
+            if (response.ok) {
+                alert('Facultad actualizada satisfactoriamente');
+                window.location.href = '/facultades/';
+            } else{
+                alert('Error al actualizar la facultad')
+            }
+        } catch(e) {
+            console.log(e)
+        }
+    })
+}
