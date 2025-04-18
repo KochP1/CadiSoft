@@ -171,6 +171,19 @@ input[type=number] {
     align-items: center;
     border: 3px solid #333;
     border-radius: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.user-icon__container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
+
+.dropdown-menu[data-bs-popper]{
+    left: -80px !important;
 }
 
 @media (max-width: 1800px) {

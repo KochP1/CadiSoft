@@ -9,6 +9,22 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/icono-cadi.ico') }}" type="image/x-icon">
     <title>{% block title %} Default {% endblock %}</title>
 </head>
+
+{% if current_user.imagen %}
+
+    <style>
+      .user-icon__container{
+        width: 50px;
+        height: 50px;
+        background: url('{{url_for("usuario.get_profile_image", idusuarios=current_user.id)}}');
+        border: none;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    </style>
+
+{% endif %}
 <body>
     {% if current_user.is_authenticated %}
 
@@ -100,7 +116,11 @@
 
               <li class="nav-item dropdown user">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="user-icon__container"><i class="fa-solid fa-user"></i></div>
+                    <div class="user-icon__container">
+                      {% if current_user.imagen == None %}
+                        <i class="fa-solid fa-user"></i>
+                      {% endif %}
+                    </div>
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="{{url_for('usuario.ajuestes_usuario')}}">Usuario</a></li>
