@@ -84,6 +84,10 @@ def regist_user():
 def forgot_password():
     return render_template('usuarios/forgot.html')
 
+@usuario.route('/ajuestes_usuario')
+def ajuestes_usuario():
+    return render_template('usuarios/ajustes.html')
+
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):
     db = current_app.config['db']
