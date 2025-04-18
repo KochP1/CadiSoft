@@ -154,13 +154,14 @@ input[type=number] {
 
 .nav-list{
     gap: 20px !important;
+    align-items: center;
 }
 
 .user{
-    width: 100px !important;
     display: flex;
     width: fit-content;
-    margin-left: 300px;
+    margin-left: 350px;
+
 }
 
 .user-icon__container{
@@ -182,13 +183,21 @@ input[type=number] {
     border-radius: 100%;
 }
 
-.dropdown-menu[data-bs-popper]{
+.dropdown-menu[data-bs-popper].user-dropdown{
     left: -80px !important;
+}
+
+
+
+@media (max-width: 1853px) {
+    .user{
+        margin-left: 300px !important;
+    }
 }
 
 @media (max-width: 1800px) {
     .user{
-        margin-left: 100px !important;
+        margin-left: 200px !important;
     }
 }
 
@@ -227,6 +236,10 @@ input[type=number] {
 @media (max-width: 1399px) {
     .navbar{
         width: 100% !important;
+    }
+
+    .nav-list{
+        align-items: start;
     }
 }
 
@@ -337,8 +350,11 @@ input[type=number] {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    width: 90%;
+}
+
+.edit__container form, .edit__container button, .edit__container input, .edit__container div {
     margin-left: 60px;
-    width: 100%;
 }
 
 .edit__container input{
@@ -400,6 +416,11 @@ input[type=number] {
 #updateFoto{
     display: flex;
     flex-direction: column;
+    align-items: start;
+}
+
+#updateFoto, input, #updateFoto, button{
+    margin-left: 0;
 }
 
 
