@@ -98,7 +98,7 @@ def edit_alumno(idusuarios):
     try:
         db = current_app.config['db']
         cur = db.cursor()
-        sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE a.idusuarios = %s'
+        sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email, u.imagen FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE a.idusuarios = %s'
         data = (idusuarios,)
         cur.execute(sql, data)
         registros = cur.fetchall()
@@ -106,6 +106,7 @@ def edit_alumno(idusuarios):
         columNames = [column[0] for column in cur.description]
         for record in registros:
             InsertRegistros.append(dict(zip(columNames, record)))
+        print(InsertRegistros)
         return render_template('alumnos/edit_alumno.html', alumnos = InsertRegistros)
     except Exception as e:
         print(e)

@@ -223,13 +223,13 @@ async function edit_cedula(idusuarios) {
     const cedula = document.getElementById('edit-cedula').value;
 
     if(!cedula) {
-        alert('Debe ingresar el correo electrónico')
+        alert('Debe ingresar la cédula')
         return;
     }
 
     if (cedula.length > 8) {
         alert('La cédula puede tener máximo 8 caracteres')
-        window.location.reload();
+        return;
     }
 
     try {
