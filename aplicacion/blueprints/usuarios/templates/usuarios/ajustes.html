@@ -64,6 +64,6 @@
             <div class="edit__container">
                 <input type="password" name="contraseña" id="edit-contraseña" maxlength="8" placeholder="Contraseña actual">
                 <input type="password" name="contraseña" id="contraseña-nueva" maxlength="8" placeholder="Contraseña nueva">
-                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_email(this.getAttribute('idusuarios'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_contraseña(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 {% endblock %}

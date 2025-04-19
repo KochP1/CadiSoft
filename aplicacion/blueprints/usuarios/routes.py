@@ -229,6 +229,35 @@ def edit_cedula(idusuarios):
     finally:
         cur.close()
 
+@usuario.route('/edit_contraseña/<int:idusuarios>', methods = ['PATCH'])
+def edit_contraseña(idusuarios):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    if not request.json:
+        return jsonify({'error': 'el cuerpo debe ser JSON'}), 400
+    
+    data = request.get_json()
+
+    required_fields = ['contraseñaActual', 'contraseñaNueva']
+
+    if not all(field in data for field in required_fields):
+        return jsonify({'error': 'faltan campos'}), 400
+    
+    try:
+        if bcrypt.check_password_hash(current_user.contraseña, data['contraseñaActual']):
+            contraseñaNueva = bcrypt.generate_password_hash(data['contraseñaNueva']).decode('utf-8')
+            cur.execute('UPDATE usuarios SET contraseña = %s WHERE idusuarios = %s', (contraseñaNueva, idusuarios))
+            return jsonify({'mensaje': 'contraseña actualizada', 'usuario': f'{idusuarios}'})
+        else:
+            return jsonify({'error': 'la contraseña actual es incorrecta'}), 401
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': f'{e}'}), 400
+    finally:
+        cur.close()
+
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():
     try:

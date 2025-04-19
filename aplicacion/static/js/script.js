@@ -15,7 +15,7 @@ async function log_out() {
     }
 }
 
-// Crear profesor
+// Profesores
 
 function crearProfesor() {
     const form = document.getElementById('crear-profesor-form');
@@ -94,6 +94,8 @@ async function eliminar_profesor(idusuarios) {
         }
     }
 }
+
+// Usuarios
 
 function update_foto(idusuarios) {
     const form = document.getElementById('updateFoto');
@@ -250,7 +252,37 @@ async function edit_cedula(idusuarios) {
     }
 }
 
-// Crear facultad
+async function edit_contraseña(idusuarios) {
+    const contraseñaActual = document.getElementById('edit-contraseña').value;
+    const contraseaNueva = document.getElementById('contraseña-nueva').value;
+
+    if (contraseaNueva.length > 8 || contraseñaActual.length > 8) {
+        alert('La contraseña puede tener 8 caracteres máximo')
+        return;
+    }
+
+    
+    try {
+        const response = await fetch(`/edit_contraseña/${idusuarios}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'contraseñaActual': contraseñaActual, 'contraseñaNueva': contraseaNueva})
+        });
+    
+        if (response.ok) {
+            alert('La contraseña fue actualizada satisfactoriamente');
+            log_out();
+        } else{
+            alert('La contraseña actual es incorrecta');
+        }
+    } catch(e) {
+        console.log(`Error: ${e}`);
+    }
+}
+
+// Facultad
 
 function crearFacultad() {
     const form = document.getElementById('crear-facultad-form');
