@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Alumnos{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Editar Alumnos</h1>
+        <hr class="divider">
+    </div>
+
+    {% for record in alumnos %}
+
+            <div class="edit-h2__container first-h2"><h2>Imágen</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                {% if record.imagen != None %}
+                    <div class="img-editar">
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
+                    </div>
+                {% endif %}
+                <form id="updateFoto">
+                    <input type="file" id="fotoPerfil">
+                    <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="update_foto(this.getAttribute('idusuarios'))">Actualizar</button>
+                </form>
+            </div>
+
+            <div class="edit-h2__container"><h2>Nombres del alumno</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="nombre" value="{{record.nombre}}" id="editNombre" maxlength="12">
+                <input type="text" name="segundoNombre" value="{{record.segundoNombre}}" id="editSegundoNombre" maxlength="12">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_nombres(this.getAttribute('idusuarios'))">Actualizar</button>
+            </div>
+
+            <div class="edit-h2__container"><h2>Apellidos del alumno</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="apellido" value="{{record.apellido}}" maxlength="20" id="editApellido">
+                <input type="text" name="segundoApellido" value="{{record.segundoApellido}}" maxlength="20" id="editSegundoApellido">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_apellidos(this.getAttribute('idusuarios'))">Actualizar</button>
+            </div>
+
+            <div class="edit-h2__container"><h2>Cédula del alumno</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="number" name="cedula" value="{{record.cedula}}" id="edit-cedula">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_cedula(this.getAttribute('idusuarios'))">Actualizar</button>
+            </div>
+
+            <div class="edit-h2__container"><h2>Email del alumno</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="email" name="email" value="{{record.email}}" id="edit-email" maxlength="50">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_email(this.getAttribute('idusuarios'))">Actualizar</button>
+            </div>
+
+    {% endfor %}
+
+{% endblock %}
