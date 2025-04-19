@@ -76,3 +76,19 @@ def buscar_registro_familiar():
     except Exception as e:
         print(e)
         return redirect(url_for('alumnos.registro_familiar'))
+    
+@alumnos.route('/eliminar_alumno/<int:idusuarios>', methods = ['DELETE'])
+def eliminar_alumno(idusuarios):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    try:
+        cur.execute('DELETE FROM usuarios WHERE idusuarios = %s', (idusuarios))
+        db.commit()
+        return jsonify({'mensaje': 'alumno eliminado'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': f'{e}'}), 400
+    finally:
+        cur.close()

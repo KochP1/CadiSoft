@@ -382,3 +382,27 @@ async function elim_facultad(idfacultad) {
         }
     }
 }
+
+// Alumnos
+
+// Eliminar alumno
+
+async function eliminar_usuario(idusuarios) {
+    if (confirm('Estas seguro de que quieres eliminar el alumno')) {
+        
+        try {
+            const response = await fetch(`/alumnos/eliminar_alumno/${idusuarios}`, {
+                method: 'DELETE'
+            });
+    
+            if (response.ok) {
+                alert('El alumno ha sido eliminado satisfactoriamente');
+                window.location.reload();
+            } else {
+                alert('Error al eliminar al alumno');
+            }
+        } catch(e) {
+            console.log(`Error: ${e}`);
+        }
+    }
+}
