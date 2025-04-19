@@ -86,8 +86,8 @@ def regist_user():
 def forgot_password():
     return render_template('usuarios/forgot.html')
 
-@usuario.route('/ajuestes_usuario')
-def ajuestes_usuario():
+@usuario.route('/ajustes_usuario')
+def ajustes_usuario():
     return render_template('usuarios/ajustes.html')
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
@@ -250,6 +250,7 @@ def edit_contraseña(idusuarios):
         if bcrypt.check_password_hash(current_user.contraseña, data['contraseñaActual']):
             contraseñaNueva = bcrypt.generate_password_hash(data['contraseñaNueva']).decode('utf-8')
             cur.execute('UPDATE usuarios SET contraseña = %s WHERE idusuarios = %s', (contraseñaNueva, idusuarios))
+            db.commit()
             return jsonify({'mensaje': 'contraseña actualizada', 'usuario': f'{idusuarios}'})
         else:
             return jsonify({'error': 'la contraseña actual es incorrecta'}), 401
