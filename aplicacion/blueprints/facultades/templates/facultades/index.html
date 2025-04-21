@@ -8,7 +8,7 @@
 
             <div class="alumnos-options__container">
                 <button class="btn btn-primary btn-reporte">Generar reporte</button>
-                <button class="btn btn-primary btn-excel">Migrar a excel</button>
+                <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
                 <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-facultad-modal">Crear facultad</button>
                 <form action="{{url_for('facultades.filtrar_facultad')}}" method="post" class="filtrar-alumno__form">
                     <input type="search" placeholder="Buscar facultad" class="filtrar-alumno__input" name="facultad">
@@ -73,6 +73,11 @@
               </div>
             </div>
           </div>
+
+    <script src="../../../../js/excel.js"></script>
+    <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/file-saverjs@latest/FileSaver.min.js"></script>
+    <script src="https://unpkg.com/tableexport@latest/dist/js/tableexport.min.js"></script>
 
 
 {% endblock %}
