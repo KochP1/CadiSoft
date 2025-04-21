@@ -30,3 +30,19 @@ function migrarExcel() {
 
     excel()
 }
+
+function imprimirReporte() {
+    const btnsTabla = document.querySelectorAll('.tabla-btn');
+    const menu = document.querySelectorAll('.alumnos-options__container');
+
+    btnsTabla.forEach((element) => {
+        element.remove();
+    })
+
+    menu.forEach((element) => {
+        element.remove();
+    })
+
+    window.print();
+    window.location.reload();
+}

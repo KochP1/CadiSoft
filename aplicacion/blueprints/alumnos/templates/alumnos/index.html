@@ -7,7 +7,7 @@
         <h1>Alumnos</h1>
 
         <div class="alumnos-options__container">
-            <button class="btn btn-primary btn-reporte">Generar reporte</button>
+            <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
             <form action="{{url_for('alumnos.buscar_alumno')}}" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar por cédula" class="filtrar-alumno__input" name="cedula">
