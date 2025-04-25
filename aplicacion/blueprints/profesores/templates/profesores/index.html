@@ -87,7 +87,10 @@
                 <input type="email" class="form-control mb-3" name="email" id="emailProfesor" maxlength="50">
 
                 <label>Contraseña</label>
-                <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor" maxlength="8">
+                <div class="contraseña-input-profesores__container">
+                    <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor" maxlength="8"> 
+                    <i class="fa-solid fa-eye-slash icono-contraeña__profesores" id="contraseña-icon" id-input="contraseñaProfesor" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                </div> 
 
                 <label>Imagen</label>
                 <input type="file" class="form-control mb-3" name="imagen" id="imagenProfesor">

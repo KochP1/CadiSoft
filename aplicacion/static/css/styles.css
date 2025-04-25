@@ -55,6 +55,15 @@ body{
     outline: 1px solid #e2896b;
 }
 
+.password-input-login__container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 300px;
+
+}
+
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none; /* Oculta las flechas en Chrome, Safari, Edge y Opera */
@@ -344,6 +353,21 @@ input[type=number] {
     color: #fff;
 }
 
+.contraseña-input-profesores__container{
+    display: flex;
+    align-items: center !important;
+    width: 100%;
+    gap: 20px;
+}
+
+.icono-contraeña__profesores{
+    margin-bottom: 15px;
+}
+
+#contraseñaProfesor{
+    width: 85% !important;
+}
+
 /* VISTA DE EDITAR */
 
 .edit__container{
@@ -423,6 +447,17 @@ input[type=number] {
     margin-left: 0;
 }
 
+.contraseña-input-edit__container{
+    width: max-content;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.contraseña-input-edit__container input {
+    margin-right: auto !important;
+    margin-left: 0;
+}
 
 /* transición de desvanecido */
 html {
