@@ -406,3 +406,20 @@ async function eliminar_usuario(idusuarios) {
         }
     }
 }
+
+// FRONT END 
+
+function mostrar_contraseña(contraseña) {
+    const inputContraseña = document.getElementById(contraseña);
+    const contraseñaIcono = document.getElementById('contraseña-icon');
+
+    if (inputContraseña.type === 'password') {
+        inputContraseña.type = 'text'
+        contraseñaIcono.classList.remove('fa-eye-slash')
+        contraseñaIcono.classList.add('fa-eye')
+    } else {
+        inputContraseña.type = 'password'
+        contraseñaIcono.classList.add('fa-eye-slash')
+        contraseñaIcono.classList.remove('fa-eye')
+    }
+}
