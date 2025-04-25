@@ -36,7 +36,10 @@
 
                     <div class="input__container">
                         <label for="contraseña">Contraseña</label>
-                        <input type="password" id="contraseña" name="contraseña">
+                        <div class="password-input-login__container">
+                            <input type="password" id="contraseña" name="contraseña">
+                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                        </div>
                     </div>
 
                     <div class="button__container">

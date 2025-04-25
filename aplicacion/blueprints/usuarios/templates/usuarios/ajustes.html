@@ -62,8 +62,16 @@
             <div class="edit-h2__container"><h2>Contraseña</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="password" name="contraseña" id="edit-contraseña" maxlength="8" placeholder="Contraseña actual">
-                <input type="password" name="contraseña" id="contraseña-nueva" maxlength="8" placeholder="Contraseña nueva">
+                <div class="contraseña-input-edit__container">
+                    <input type="password" name="contraseña" id="edit-contraseña" placeholder="Contraseña actual">
+                    <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="edit-contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                </div> 
+
+                <div class="contraseña-input-edit__container">
+                    <input type="password" name="contraseña" id="contraseña-nueva"placeholder="Contraseña nueva">
+                    <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña-nueva" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                </div> 
+
                 <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_contraseña(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 {% endblock %}

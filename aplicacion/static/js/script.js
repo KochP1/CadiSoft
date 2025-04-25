@@ -382,3 +382,20 @@ async function elim_facultad(idfacultad) {
         }
     }
 }
+
+// FRONT END
+
+function mostrar_contraseña(contraseña) {
+    const inputContraseña = document.getElementById(contraseña);
+    const contraseñaIcon = document.getElementById('contraseña-icon');
+
+    if (inputContraseña.type == 'password') {
+        inputContraseña.type = 'text';
+        contraseñaIcon.classList.remove('fa-eye-slash');
+        contraseñaIcon.classList.add('fa-eye');
+    } else {
+        inputContraseña.type = 'password';
+        contraseñaIcon.classList.remove('fa-eye');
+        contraseñaIcon.classList.add('fa-eye-slash');
+    }
+}
