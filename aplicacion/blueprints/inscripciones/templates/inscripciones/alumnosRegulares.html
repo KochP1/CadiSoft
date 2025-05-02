@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscripciones{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Inscripciones-Alumnos regulares</h1>
+        <hr class="divider">
+    </div>
+
+    <div class="inscripciones__wrapper">
+        <div class="cedula-input__container">
+            <input type="search" class="input-cedula-inscripciones" placeholder="Ingresar cédula">
+            <button class="btn btn-primary">Buscar alumno</button>
+        </div>
+
+        <div class="img__container">
+            <div class="img-editar">
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

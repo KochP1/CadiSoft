@@ -459,6 +459,50 @@ input[type=number] {
     margin-left: 0;
 }
 
+/* INSCRIPCIONES */
+
+.cedula-input__container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.cedula-input__container input {
+    width: 300px;
+    height: 40px;
+    border-radius: 7px;
+    border: 1px solid #333;
+    font-size: 1.3rem;
+}
+
+.img__container{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.form-crear-alumnos__container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.form-crear-alumnos__container form {
+    width: 100%;
+    border-radius: 7px;
+    border: none;
+    box-shadow: 0px 0px 3px 0px #333;
+    padding: 10px;
+}
+
+.form-crear-alumnos__container input {
+    box-shadow: 0px 0px 2px 0px #333;
+}
+
 /* transición de desvanecido */
 html {
     animation: fadeIn 0.3s;
