@@ -17,13 +17,38 @@
 
     <div class="inscripciones__wrapper">
         <div class="cedula-input__container">
-            <input type="search" class="input-cedula-inscripciones" placeholder="Ingresar cédula">
-            <button class="btn btn-primary">Buscar alumno</button>
+            <form class="buscar-alumno-inscripcion__form" id="buscar-alumno-inscripcion">
+                <input type="search" class="input-cedula-inscripciones" placeholder="Ingresar cédula" id="inscripcion-buscar-cedula" name="cedula">
+                <button class="btn btn-primary" onclick="buscar_alumno()" type="submit">Buscar alumno</button>
+            </form>
         </div>
 
-        <div class="img__container">
+        <div class="options__container" id="inscripcion-options__container">
             <div class="img-editar">
+                <img src="" id="img-alumno-inscripcion">
+            </div>
 
+            <div class="campos-inscripcion__container">
+                <form id="inscripcion-form" class="inscripcion-form form-control">
+                    <div class="form-input__container">
+                        <label>Alumno</label>
+                        <input type="text" class="form-control mb-3" name="nombre" id="alumno-nombre-inscripcion" maxlength="12" readonly>
+                        <input type="text" class="form-control mb-3" name="apellido" id="alumno-apellido-inscripcion" maxlength="20" readonly>
+                        <input type="number" class="form-control mb-3" name="cedula" id="alumno-cedula-inscripcion">
+                        <input type="hidden" id="alumno-id-inscripcion">
+                    </div>
+
+                    <div class="form-input__container">
+                        <label>Periodo</label>
+                        <input type="date" class="form-control mb-3" name="InicioPeriodo" id="InicioPeriodo">
+                        <input type="date" class="form-control mb-3" name="FinPeriodo" id="FinPeriodo">
+                    </div>
+
+                    <div class="form-input__container">
+                        <label>Curso</label>
+                        <input type="search" class="form-control mb-3" name="curso" id="curso-inscripcion" placeholder="Buscar curso">
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -407,6 +407,39 @@ async function eliminar_usuario(idusuarios) {
     }
 }
 
+// INSCRIPCIONES
+
+// Buscar alumno por cédula
+
+function buscar_alumno() {
+    const form = document.getElementById('buscar-alumno-inscripcion')
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData;
+        const cedula = document.getElementById('inscripcion-buscar-cedula').value
+        const url = '/inscripciones/buscar_alumno'
+
+        formData.append('cedula', cedula)
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+
+            if (!response.ok) {
+                throw new Error('Hubo un error buscando al alumno')
+            }
+
+            let data = await response.json()
+            mostrar_panel_inscripcion(data.alumno)
+
+        } catch(e) {
+            console.log(error)
+        }
+    })
+}
+
 // FRONT END 
 
 function mostrar_contraseña(contraseña) {
@@ -421,5 +454,27 @@ function mostrar_contraseña(contraseña) {
         inputContraseña.type = 'password'
         contraseñaIcono.classList.add('fa-eye-slash')
         contraseñaIcono.classList.remove('fa-eye')
+    }
+}
+
+function mostrar_panel_inscripcion(data) {
+    const container = document.getElementById('inscripcion-options__container');
+    let nombre = document.getElementById('alumno-nombre-inscripcion');
+    let apellido = document.getElementById('alumno-apellido-inscripcion');
+    let cedula = document.getElementById('alumno-cedula-inscripcion');
+    let id = document.getElementById('alumno-id-inscripcion');
+    let imagen = document.getElementById('img-alumno-inscripcion');
+    const idusuario = data.idusuarios;
+
+
+    try {
+        nombre.value = data.nombre;
+        apellido.value = data.apellido;
+        cedula.value = data.cedula;
+        id.value = data.idAlumno;
+        imagen.src = `/get_profile_image/${idusuario}`
+        container.style.display = 'flex';
+    } catch(e) {
+        console.log(e)
     }
 }
