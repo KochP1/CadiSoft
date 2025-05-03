@@ -410,16 +410,26 @@ async function eliminar_usuario(idusuarios) {
 // INSCRIPCIONES
 
 // Buscar alumno por cédula
-
+let isSearching = false;
 function buscar_alumno() {
     const form = document.getElementById('buscar-alumno-inscripcion')
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
+
+        if (isSearching) return;
+        isSearching = true;
+
         const formData = new FormData;
         const cedula = document.getElementById('inscripcion-buscar-cedula').value
         const url = '/inscripciones/buscar_alumno'
 
         formData.append('cedula', cedula)
+
+        if (!cedula) {
+            alert('Por favor ingrese una cédula');
+            isSearching = false;
+            return;
+        }
 
         try {
             const response = await fetch(url, {
@@ -435,7 +445,9 @@ function buscar_alumno() {
             mostrar_panel_inscripcion(data.alumno)
 
         } catch(e) {
-            console.log(error)
+            console.log(e)
+        } finally {
+            isSearching = false;
         }
     })
 }

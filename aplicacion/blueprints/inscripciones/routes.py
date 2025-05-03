@@ -15,26 +15,27 @@ def alumnos_regulares():
 
 @inscripciones.route('/buscar_alumno', methods = ['POST'])
 def buscar_alumno():
-    db = current_app.config['db']
-    cur = db.cursor()
     cedula = request.form.get('cedula')
 
     if not cedula:
         return jsonify({'error': 'La cédula es requerida'}), 400
 
     try:
-        sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
-        data = cedula
-        cur.execute(sql, data)
-        alumno = cur.fetchone()
+        db = current_app.config['db']
+        db.ping(reconnect=True)  # Revisar y reconectar si es necesario
+        
+        with db.cursor() as cur:
+            sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
+            data = (cedula,)
+            cur.execute(sql, data)
+            alumno = cur.fetchone()
 
-        if alumno:
-            columNames = [column[0] for column in cur.description]
-            alumno_dict = dict(zip(columNames, alumno))
-            print(alumno_dict)
-            return jsonify({'alumno': alumno_dict}), 200
-        else:
-            return jsonify({'success': False, 'message': 'Alumno no encontrado'}), 404
+            if alumno:
+                columNames = [column[0] for column in cur.description]
+                alumno_dict = dict(zip(columNames, alumno))
+                return jsonify({'alumno': alumno_dict}), 200
+            else:
+                return jsonify({'success': False, 'message': 'Alumno no encontrado'}), 404
     except Exception as e:
         print(e)
         return jsonify({
@@ -42,5 +43,3 @@ def buscar_alumno():
             'error': 'Error interno al buscar alumno',
             'details': str(e)
         }), 500
-    finally:
-        cur.close()
