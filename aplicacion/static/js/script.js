@@ -481,12 +481,47 @@ async function buscar_curso() {
         }
 
         const data = await response.json()
-        data.cursos.forEach(curso => {
-            console.log(curso.seccion, curso.nombre_curso);
-        });
         seleccionar_seccion(data.cursos)
     } catch (e) {
         console.log(e);
+    } finally {
+        isSearching = false
+    }
+}
+
+async function buscar_horario() {
+    if (isSearching) return;
+    isSearching = true;
+    const idSeccion = document.getElementById('select-seccion-inscripcion').value;
+    const url = '/inscripciones/mostar_horario';
+
+    if (!idSeccion || idSeccion === 'Selecciona una Sección') {
+        isSearching = false;
+        return;
+    }
+    
+    try {
+        const response = await fetch(url ,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'idSeccion': idSeccion})
+            }
+        )
+
+
+        if (!response.ok) {
+            throw new Error('Error al buscar el horario de la sección');
+        }
+
+        const data = await response.json();
+
+        data.horarioSeccion.forEach((horarios) => {
+            console.log(horarios)
+        })
+    } catch(e) {
+        console.log(e)
     } finally {
         isSearching = false
     }
@@ -542,10 +577,9 @@ function seleccionar_seccion(data) {
         select.style.display = 'block';
         data.forEach(curso => {
             let option = document.createElement('option')
-            option.value = curso.seccion;
+            option.value = curso.idSeccion;
             option.text = curso.seccion;
             select.appendChild(option);
-            console.log(curso.seccion, curso.nombre_curso);
         });
         
     } else {

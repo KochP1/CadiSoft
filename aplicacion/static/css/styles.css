@@ -513,6 +513,17 @@ input[type=number] {
     width: 500px;
 }
 
+.horario__container{
+    margin-top: 50px;
+
+}
+
+.table-horario td {
+    width: 300px !important;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
 #select-seccion-inscripcion {
     display: none;
 }

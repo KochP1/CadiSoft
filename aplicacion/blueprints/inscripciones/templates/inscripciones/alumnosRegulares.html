@@ -47,12 +47,35 @@
                     <div class="form-input__container">
                         <label>Curso</label>
                         <input type="search" class="form-control mb-3" name="curso" id="curso-inscripcion" placeholder="Buscar curso" onchange="buscar_curso()">
-                        <select name="" id="select-seccion-inscripcion" class="form-control mb-3">
-                            <option value="">Selecciona una Sección</option>
+                        <select name="" id="select-seccion-inscripcion" class="form-control mb-3" onchange="buscar_horario()">
+                            <option value="Selecciona una Sección">Selecciona una Sección</option>
                         </select>
                     </div>
                 </form>
             </div>
+        </div>
+
+        <div class="table-responsive horario__container">
+            <table class="table table-bordered border-primary table-horario">
+                <thead>
+                    <th>Hora</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sábado</th>
+                </thead>
+
+                <tr>
+                    <td>7:00am-8:00am</td>
+                    <td><p>Deporte <br> sección A-101</p></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
         </div>
     </div>
 
