@@ -46,7 +46,10 @@
 
                     <div class="form-input__container">
                         <label>Curso</label>
-                        <input type="search" class="form-control mb-3" name="curso" id="curso-inscripcion" placeholder="Buscar curso">
+                        <input type="search" class="form-control mb-3" name="curso" id="curso-inscripcion" placeholder="Buscar curso" onchange="buscar_curso()">
+                        <select name="" id="select-seccion-inscripcion" class="form-control mb-3">
+                            <option value="">Selecciona una Sección</option>
+                        </select>
                     </div>
                 </form>
             </div>

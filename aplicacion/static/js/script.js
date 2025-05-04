@@ -438,6 +438,7 @@ function buscar_alumno() {
             })
 
             if (!response.ok) {
+                alert('El alumno no existe')
                 throw new Error('Hubo un error buscando al alumno')
             }
 
@@ -452,11 +453,54 @@ function buscar_alumno() {
     })
 }
 
+async function buscar_curso() {
+    if (isSearching) return;
+    isSearching = true;
+    const curso = document.getElementById('curso-inscripcion').value;
+    const url = '/inscripciones/buscar_curso';
+
+    console.log(curso)
+
+    if (!curso) {
+        isSearching = false;
+        return;
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'curso': curso})
+        });
+
+        if (!response.ok) {
+            alert('Curso no encontrado')
+            throw new Error ('Error al buscar el curso');
+        }
+
+        const data = await response.json()
+        data.cursos.forEach(curso => {
+            console.log(curso.seccion, curso.nombre_curso);
+        });
+        seleccionar_seccion(data.cursos)
+    } catch (e) {
+        console.log(e);
+    } finally {
+        isSearching = false
+    }
+}
+
 // FRONT END 
 
 function mostrar_contraseña(contraseña) {
     const inputContraseña = document.getElementById(contraseña);
     const contraseñaIcono = document.getElementById('contraseña-icon');
+
+    if (!inputContraseña || !contraseñaIcono) {
+        return;
+    }
 
     if (inputContraseña.type === 'password') {
         inputContraseña.type = 'text'
@@ -488,5 +532,23 @@ function mostrar_panel_inscripcion(data) {
         container.style.display = 'flex';
     } catch(e) {
         console.log(e)
+    }
+}
+
+function seleccionar_seccion(data) {
+    const select = document.getElementById('select-seccion-inscripcion');
+
+    if (select && data) {
+        select.style.display = 'block';
+        data.forEach(curso => {
+            let option = document.createElement('option')
+            option.value = curso.seccion;
+            option.text = curso.seccion;
+            select.appendChild(option);
+            console.log(curso.seccion, curso.nombre_curso);
+        });
+        
+    } else {
+        alert('Error al mostrar secciones')
     }
 }
