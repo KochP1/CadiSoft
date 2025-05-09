@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block title %} Registro {% endblock %}
 
-{% block content %} 
-        <div class="login__wrapper">
-            <div class="img-background">
+{% block content %}
+
+        <div class="login__wrapper regist__wrapper">
+            <div class="img-background regist-img">
             </div>
 
-            <div class="login-form__container">
+            <div class="login-form__container regist-form__container">
                 {% if message_error %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>{{message_error}}</strong>
@@ -61,4 +62,5 @@
                 </form>
             </div>
         </div>
+
 {% endblock %}

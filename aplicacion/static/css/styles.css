@@ -13,6 +13,7 @@ body{
     display: flex;
     height: max-content;
     width: 100vw;
+    background-color: #fff;
 }
 
 .img-background{
@@ -109,6 +110,12 @@ input[type=number] {
     text-decoration: underline;
 }
 
+/* REGISTRO DE USUARIOS */
+
+.regist-form{
+    margin-top: 10%;
+}
+
 @media (max-width: 1024px) {
     .img-background{
         display: none;
@@ -121,6 +128,7 @@ input[type=number] {
     .login-form__container{
         width: 100%;
         display: flex;
+        justify-content: center;
         align-items: center;
     }
 
@@ -134,6 +142,11 @@ input[type=number] {
     .input__container:first-child{
         margin-top: 40px;
     }
+
+    .regist-form{
+        height: max-content;
+        height: 100vh;
+    }
     
 }
 
@@ -144,10 +157,15 @@ input[type=number] {
     
 }
 
-/* REGISTRO DE USUARIOS */
+@media (max-height: 846px) {
+    .regist-img{
+        height: auto !important;
+    }
 
-.regist-form{
-    margin-top: 10%;
+    .regist-form{
+        margin-top: 0;
+        height: 100% !important;
+    }
 }
 
 /* NAVBAR */
