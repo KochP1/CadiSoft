@@ -34,7 +34,7 @@
                         <label>Alumno</label>
                         <input type="text" class="form-control mb-3" name="nombre" id="alumno-nombre-inscripcion" maxlength="12" readonly>
                         <input type="text" class="form-control mb-3" name="apellido" id="alumno-apellido-inscripcion" maxlength="20" readonly>
-                        <input type="number" class="form-control mb-3" name="cedula" id="alumno-cedula-inscripcion">
+                        <input type="number" class="form-control mb-3" name="cedula" id="alumno-cedula-inscripcion" readonly>
                         <input type="hidden" id="alumno-id-inscripcion">
                     </div>
 
@@ -47,16 +47,18 @@
                     <div class="form-input__container">
                         <label>Curso</label>
                         <input type="search" class="form-control mb-3" name="curso" id="curso-inscripcion" placeholder="Buscar curso" onchange="buscar_curso()">
-                        <select name="" id="select-seccion-inscripcion" class="form-control mb-3" onchange="buscar_horario()">
+                        <select name="seccion" id="select-seccion-inscripcion" class="form-control mb-3" onchange="buscar_horario()">
                             <option value="Selecciona una Sección">Selecciona una Sección</option>
                         </select>
                     </div>
+
+                    <button class="btn btn-primary" id="btn-inscribir" type="submit" onclick="inscribir_alumno()">Inscribir</button>
                 </form>
             </div>
         </div>
 
-        <div class="table-responsive horario__container">
-            <table class="table table-bordered border-primary table-horario">
+        <div class="table-responsive horario__container" id="horario__container">
+            <table class="table table-bordered border-primary table-horario" id="tabla-horario">
                 <thead>
                     <th>Hora</th>
                     <th>Lunes</th>
@@ -67,14 +69,9 @@
                     <th>Sábado</th>
                 </thead>
 
-                <tr>
-                    <td>7:00am-8:00am</td>
-                    <td><p>Deporte <br> sección A-101</p></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <tbody id="tbody-horario">
+
+                </tbody>
             </table>
         </div>
     </div>

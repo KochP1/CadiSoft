@@ -29,7 +29,6 @@ def index():
             imagen = None
 
         try:
-
             if imagen == None:
                 sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
                 contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')

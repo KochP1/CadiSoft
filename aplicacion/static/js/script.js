@@ -517,14 +517,61 @@ async function buscar_horario() {
 
         const data = await response.json();
 
-        data.horarioSeccion.forEach((horarios) => {
-            console.log(horarios)
-        })
+        mostrar_horario(data.horarioSeccion)
     } catch(e) {
         console.log(e)
     } finally {
         isSearching = false
     }
+}
+
+function inscribir_alumno() {
+    const form = document.getElementById('inscripcion-form');
+    const idAlumno = document.getElementById('alumno-id-inscripcion').value;
+    const periodoInicio = document.getElementById('InicioPeriodo').value;
+    const periodoFinal = document.getElementById('FinPeriodo').value;
+    const idSeccion = document.getElementById('select-seccion-inscripcion').value;
+
+    if (!form) {
+        return;
+    }
+
+    
+
+    form.addEventListener('submit', async(event) => {
+        event.preventDefault();
+        if (isSearching) return;
+        isSearching = true;
+
+        const formData = new FormData();
+        const url = '/inscripciones/inscribir_alumno';
+
+        
+
+        formData.append('idAlumno' ,idAlumno);
+        formData.append('periodoInicio',periodoInicio);
+        formData.append('periodoFinal', periodoFinal);
+        formData.append('idSeccion', idSeccion);
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error('Error al inscribir el alumno');
+            }
+            alert(data.mensaje);
+            window.location.reload();
+        } catch (e) {
+            console.log(e)
+        } finally {
+            isSearching = false;
+        }
+    })
 }
 
 // FRONT END 
@@ -572,6 +619,8 @@ function mostrar_panel_inscripcion(data) {
 
 function seleccionar_seccion(data) {
     const select = document.getElementById('select-seccion-inscripcion');
+    const btn = document.getElementById('btn-inscribir');
+    btn.style.display = 'flex';
 
     if (select && data) {
         select.style.display = 'block';
@@ -584,5 +633,54 @@ function seleccionar_seccion(data) {
         
     } else {
         alert('Error al mostrar secciones')
+    }
+}
+
+function mostrar_horario(data) {
+    const tabla = document.getElementById('tbody-horario');
+    const tablaContainer = document.getElementById('horario__container');
+    
+    tabla.innerHTML = '';
+
+    if (tabla && data) {
+        // Mapeo entre días y sus IDs en la tabla
+        const diasMap = {
+            'Lunes': 'lunes',
+            'Martes': 'martes',
+            'Miércoles': 'miercoles',
+            'Jueves': 'jueves',
+            'Viernes': 'viernes',
+            'Sábado': 'sabado'
+        };
+
+        data.forEach(horario => {
+            const horaInicio = new Date(`2000-01-01T${horario.horario_hora}`);
+            const horaFin = new Date(`2000-01-01T${horario.horario_hora_final}`);
+            
+            let horaActual = horaInicio;
+            while (horaActual < horaFin) {
+                const horaSiguiente = new Date(horaActual.getTime() + 60 * 60 * 1000); // +1 hora
+                if (horaSiguiente > horaFin) horaSiguiente = horaFin;
+
+                const horaFormateada = `${horaActual.getHours()}:${horaActual.getMinutes().toString().padStart(2, '0')}`;
+                const horaSiguienteFormateada = `${horaSiguiente.getHours()}:${horaSiguiente.getMinutes().toString().padStart(2, '0')}`;
+
+                let tbody = `
+                    <tr>
+                        <td id="hora">${horaFormateada}-${horaSiguienteFormateada}</td>
+                        ${Object.entries(diasMap).map(([dia, id]) => `
+                            <td id="${id}">${horario.horario_dia === dia ? `
+                                <p>${horario.nombre_curso} <br> Aula: ${horario.horario_aula}</p>
+                            ` : ''}</td>
+                        `).join('')}
+                    </tr>
+                `;
+
+                tabla.innerHTML += tbody;
+                horaActual = horaSiguiente;
+            }
+        });
+
+        tablaContainer.style.display = 'block';
     }
 }

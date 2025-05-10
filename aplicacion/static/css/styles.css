@@ -533,6 +533,7 @@ input[type=number] {
 
 .horario__container{
     margin-top: 50px;
+    display: none;
 
 }
 
@@ -544,6 +545,11 @@ input[type=number] {
 
 #select-seccion-inscripcion {
     display: none;
+}
+
+#btn-inscribir {
+    display: none;
+    margin: auto;
 }
 
 /* transición de desvanecido */

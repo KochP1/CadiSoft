@@ -81,6 +81,16 @@ def buscar_curso():
             'error': 'Error interno al buscar curso',
             'details': str(e)
         }), 500
+    
+def time_delta_serializer(time_data):
+    # Convertir timedelta a string HH:MM:SS
+    total_seconds = time_data.total_seconds()
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = int(total_seconds % 60)
+    time_data = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+    return time_data
+
 
 @inscripciones.route('mostar_horario', methods = ['POST'])
 def mostrar_horario():
@@ -99,7 +109,7 @@ def mostrar_horario():
         db.ping(reconnect=True)
         
         with db.cursor() as cur:
-            sql = 'SELECT h.idhorario, h.horario_dia, h.horario_hora, h.horario_aula, s.idSeccion, c.nombre_curso FROM horario_x_curso hxc JOIN horario h ON hxc.idhorario = h.idhorario JOIN secciones s ON hxc.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s'
+            sql = 'SELECT h.idhorario, h.horario_dia, h.horario_hora, h.horario_hora_final, h.horario_aula, s.idSeccion, c.nombre_curso FROM horario_x_curso hxc JOIN horario h ON hxc.idhorario = h.idhorario JOIN secciones s ON hxc.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s'
             data = (data['idSeccion'],)
             cur.execute(sql, data)
             seccion = cur.fetchall()
@@ -110,12 +120,10 @@ def mostrar_horario():
                 
                 for record in seccion_dict:
                     if isinstance(record.get('horario_hora'), timedelta):
-                        # Convertir timedelta a string HH:MM:SS
-                        total_seconds = record['horario_hora'].total_seconds()
-                        hours = int(total_seconds // 3600)
-                        minutes = int((total_seconds % 3600) // 60)
-                        seconds = int(total_seconds % 60)
-                        record['horario_hora'] = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                        record['horario_hora'] = time_delta_serializer(record['horario_hora'])
+
+                    if isinstance(record.get('horario_hora_final'), timedelta):
+                        record['horario_hora_final'] = time_delta_serializer(record['horario_hora_final'])
                 
                 print(seccion_dict)
                 return jsonify({'horarioSeccion': seccion_dict}), 200
@@ -128,3 +136,41 @@ def mostrar_horario():
             'error': 'Error interno al buscar el horario',
             'details': str(e)
         }), 500
+
+@inscripciones.route('/inscribir_alumno', methods = ['POST'])
+def inscribir_alumno():
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    idAlumno = request.form.get('idAlumno')
+    periodoInicio = request.form.get('periodoInicio')
+    periodoFinal = request.form.get('periodoFinal')
+    es_activa = 0
+    idSeccion = request.form.get('idSeccion')
+
+    try:
+        sql = 'INSERT INTO inscripcion (`idAlumno`, `fecha_inscripcion`, `fecha_expiracion`, `es_activa`) VALUES (%s, %s, %s, %s)'
+        data = (
+            idAlumno,
+            periodoInicio,
+            periodoFinal,
+            es_activa
+        )
+        cur.execute(sql, data)
+        db.commit()
+
+        sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idAlumno = %s'
+        cur.execute(sql_idInscripcion, (idAlumno,))
+        idAlumnoInscripcion = cur.fetchone()
+
+        sql_inscripcionesXcursos = 'INSERT INTO insc_x_seccion (`idInscripcion`, `idSeccion`) VALUES (%s, %s)'
+        cur.execute(sql_inscripcionesXcursos, (idAlumnoInscripcion, idSeccion))
+        db.commit()
+        
+        return jsonify({'mensaje': 'Alumno inscrito satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al inscribir alumno'}), 400
+    finally:
+        cur.close()
