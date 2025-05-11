@@ -574,6 +574,63 @@ function inscribir_alumno() {
     })
 }
 
+function crearAlumno() {
+    const form = document.getElementById('crear-alumno-form');
+    const rol = 'alumno'
+    const nombre = document.getElementById('nombreAlumno').value;
+    const segundoNombre = document.getElementById('segundoNombreAlumno').value;
+    const apellido = document.getElementById('apellidoAlumno').value;
+    const segundoApellido = document.getElementById('segundoApellidoAlumno').value;
+    const cedula = document.getElementById('cedulaAlumno').value;
+    const email = document.getElementById('emailAlumno').value;
+    const contraseña = document.getElementById('contraseñaAlumno').value;
+    const imagen = document.getElementById('imagenAlumno').files[0];
+
+
+    if (nombre === '' || segundoNombre === '' || apellido === '' || segundoApellido === '' || cedula === '' || email === '' || contraseña === '') {
+        alert('Todos los campos deben ser llenados')
+        window.location.reload()
+    }
+
+    
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('segundoNombre', segundoNombre);
+        formData.append('apellido', apellido);
+        formData.append('segundoApellido', segundoApellido);
+        formData.append('cedula', cedula);
+        formData.append('email', email);
+        formData.append('contraseña', contraseña);
+        formData.append('rol', rol);
+        formData.append('imagen', imagen);
+
+        if (cedula.length > 8) {
+            alert('La cédula puede tener máximo 8 caracteres');
+            window.location.reload();
+        }
+
+        try {
+            console.log('ey')
+            const response = await fetch('/inscripciones/alumnos_regulares', {
+                method: 'POST',
+                body: formData
+            });
+    
+            if (response.ok) {
+                alert('Alumno creado satisfactoriamente')
+                window.location.reload();
+            } else {
+                alert('Error al crear el alumno')
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    })
+}
+
 // FRONT END 
 
 function mostrar_contraseña(contraseña) {
