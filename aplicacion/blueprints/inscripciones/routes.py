@@ -6,13 +6,80 @@ from flask_bcrypt import Bcrypt
 inscripciones = Blueprint('inscripciones', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
 
-@inscripciones.route('/')
-def index():
-    return render_template('inscripciones/index.html')
-
-@inscripciones.route('/alumnos_regulares')
+@inscripciones.route('/alumnos_regulares', methods = ['POST', 'GET'])
 def alumnos_regulares():
-    return render_template('inscripciones/alumnosRegulares.html')
+
+    # POST alumno
+    if request.method == 'POST':
+        db = current_app.config['db']
+        cur = db.cursor()
+
+        
+        nombre = request.form.get('nombre')
+        segundoNombre = request.form.get('segundoNombre')
+        apellido = request.form.get('apellido')
+        segundoApellido = request.form.get('segundoApellido')
+        cedula = request.form.get('cedula')
+        email = request.form.get('email')
+        contraseña = request.form.get('email')
+        rol = request.form.get('rol')
+        contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+
+        try:
+            imagen = request.files['imagen']
+        except KeyError as e:
+            imagen = None
+
+        try:
+            if imagen == None:
+                sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+                contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+                usuario = (
+                    nombre,
+                    segundoNombre,
+                    apellido,
+                    segundoApellido,
+                    cedula,
+                    email,
+                    contraseña_hash,
+                    rol
+                    )
+            
+            else:
+                sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                imagen_blob = imagen.read()
+                usuario = (
+                    nombre,
+                    segundoNombre,
+                    apellido,
+                    segundoApellido,
+                    cedula,
+                    email,
+                    contraseña_hash,
+                    rol,
+                    imagen_blob
+                    )
+            
+            cur.execute(sql_usuario, usuario)
+            db.commit()
+
+            cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
+            idusuario = cur.fetchone()
+
+            sql_alumno = 'INSERT INTO alumnos (`idusuarios`) VALUES (%s)'
+            alumno = (idusuario,)
+            cur.execute(sql_alumno, alumno)
+            db.commit()
+            return jsonify({'mensaje': 'profesor creado satisfactiramente'}), 200
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': 'Error al crear el usuario'}), 400
+        finally:
+            cur.close()
+    
+    if request.method == 'GET':
+        return render_template('inscripciones/alumnosRegulares.html')
 
 @inscripciones.route('/buscar_alumno', methods = ['POST'])
 def buscar_alumno():
