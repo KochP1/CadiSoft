@@ -51,7 +51,7 @@ async function stats() {
 
 function interval(elemento, limite) {
     let cantidad = 0;
-    const duracion = 1500;
+    const duracion = 1700;
     const incrementos = limite;
     const intervalo = duracion / incrementos;
     
