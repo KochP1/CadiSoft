@@ -272,13 +272,59 @@ input[type=number] {
 
 /* INICIO */
 
-.background-inicio__container{
-    width: 100vw;
-    height: 100vh;
-    background-image: url('../images/fondoCadi2.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: bottom;
+.logo-cadi-inicio{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    margin: auto;
+}
+
+.imagen-logo-inicio{
+    width: 300px;
+    height: 300px;
+}
+
+.inicio__wrapper{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 400px);
+    grid-template-rows: repeat(1, 300px);
+    gap: 30px;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+.info-card{
+    display: flex;
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px 0px #333;
+}
+
+.info-card:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+.icon-info__container{
+    width: 50%;
+    font-size: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #833d3d;
+    color: #fff;
+    border-radius: 8px 0px 0px 8px;
+}
+
+.info__container{
+    width: 50%;
+    font-size: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
 }
 
 .responsive-background{
