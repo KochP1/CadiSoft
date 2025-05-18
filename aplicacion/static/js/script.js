@@ -1,3 +1,5 @@
+let isSearching = false;
+
 // Cierre de sesion
 async function log_out() {
     const response = await fetch('/log_out', {
@@ -15,6 +17,72 @@ async function log_out() {
     }
 }
 
+// Inicio
+
+async function stats() {
+    console.log('me ejecuto');
+    if (isSearching) return;
+    isSearching = true;
+
+    const url = '/inicio_stats'
+
+    try{
+        const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        });
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(`Error`)
+        }
+
+        console.log(data.alumnos)
+        mostrar_stats(data)
+    } catch (error) {
+        console.log(error)
+    } finally {
+        isSearching = false
+    }
+}
+
+function interval(elemento, limite) {
+    let cantidad = 0;
+    const duracion = 1500;
+    const incrementos = limite;
+    const intervalo = duracion / incrementos;
+    
+    let tiempo = setInterval(() => {
+        elemento.textContent = cantidad;
+        cantidad += 1;
+
+        if (cantidad === limite) {
+            clearInterval(tiempo);
+        }
+    }, intervalo);
+}
+
+function mostrar_stats(data) {
+    const p_profesores = document.getElementById('num-profesores');
+    const p_alumnos = document.getElementById('num-alumnos');
+    const p_cursos = document.getElementById('num-cursos');
+    const p_facultades = document.getElementById('num-facultades');
+
+    const profesores = parseInt(data.profesores);
+    const alumnos = parseInt(data.alumnos);
+    const cursos = parseInt(data.cursos);
+    const facultades = parseInt(data.facultades);
+
+    interval(p_profesores, profesores);
+    interval(p_alumnos, alumnos);
+    interval(p_cursos, cursos);
+    interval(p_facultades, facultades);
+}
+
+stats()
 // Profesores
 
 function crearProfesor() {
@@ -410,7 +478,6 @@ async function eliminar_usuario(idusuarios) {
 // INSCRIPCIONES
 
 // Buscar alumno por cédula
-let isSearching = false;
 function buscar_alumno() {
     const form = document.getElementById('buscar-alumno-inscripcion')
     form.addEventListener('submit', async (event) => {

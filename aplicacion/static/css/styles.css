@@ -332,6 +332,10 @@ input[type=number] {
     font-weight: 600;
 }
 
+.info__container p::before {
+    transition: all 1s ease-in;
+}
+
 .responsive-background{
     display: none;
 }

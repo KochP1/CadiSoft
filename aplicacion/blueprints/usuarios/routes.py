@@ -34,6 +34,49 @@ def index():
 def inicio():
     return render_template('usuarios/inicio.html')
 
+@usuario.route('/inicio_stats')
+def inicio_stats():
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+    
+    alumnosArray = []
+    profesoresArray = []
+    cursosArray = []
+    facultadesArray = []
+
+    try:
+        with db.cursor() as cur:
+            cur.execute('SELECT * FROM alumnos')
+            alumnos = cur.fetchall()
+
+            cur.execute('SELECT * FROM profesores')
+            profesores = cur.fetchall()
+
+            cur.execute('SELECT * FROM cursos')
+            cursos = cur.fetchall()
+
+            cur.execute('SELECT * FROM facultades')
+            facultades = cur.fetchall()
+
+            for data in alumnos:
+                alumnosArray.append(data)
+            
+            for data in profesores:
+                profesoresArray.append(data)
+            
+            for data in cursos:
+                cursosArray.append(data)
+            
+            for data in facultades:
+                facultadesArray.append(data)
+
+            return jsonify({'mensaje': 'Request exitoso', 'alumnos': f'{len(alumnosArray)}', 'profesores': f'{len(profesoresArray)}', 'cursos': f'{len(cursosArray)}', 'facultades': f'{len(facultadesArray)}',}), 200
+
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Request fallido'}), 400
+
 @usuario.route('/regist_user', methods = ['GET', 'POST'])
 def regist_user():
     if request.method == 'GET':
