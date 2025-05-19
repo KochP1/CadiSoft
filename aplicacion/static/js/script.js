@@ -1,5 +1,9 @@
 let isSearching = false;
 
+function href(url) {
+    window.location.href = url;
+}
+
 // Cierre de sesion
 async function log_out() {
     const response = await fetch('/log_out', {
