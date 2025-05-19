@@ -20,7 +20,6 @@ async function log_out() {
 // Inicio
 
 async function stats() {
-    console.log('me ejecuto');
     if (isSearching) return;
     isSearching = true;
 
@@ -76,13 +75,19 @@ function mostrar_stats(data) {
     const cursos = parseInt(data.cursos);
     const facultades = parseInt(data.facultades);
 
-    interval(p_profesores, profesores);
-    interval(p_alumnos, alumnos);
-    interval(p_cursos, cursos);
-    interval(p_facultades, facultades);
+    setTimeout(() => {
+        interval(p_profesores, profesores);
+        interval(p_alumnos, alumnos);
+        interval(p_cursos, cursos);
+        interval(p_facultades, facultades);
+    }, 200)
 }
 
-stats()
+//stats()
+
+if (window.location.pathname === '/inicio') {
+    stats();
+}
 // Profesores
 
 function crearProfesor() {

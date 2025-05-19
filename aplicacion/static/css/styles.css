@@ -340,19 +340,35 @@ input[type=number] {
     display: none;
 }
 
-@media (max-width: 500px) {
-    .background-inicio__container{
-        background-image: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+@media (max-width: 1629px) {
+    .inicio__wrapper{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 400px);
+    grid-template-rows: repeat(2, 300px);
+}
+}
+
+@media (max-width: 861px) {
+    .inicio__wrapper{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(1, 400px);
+    grid-template-rows: repeat(4, 300px);
+}
+}
+
+@media (max-width: 414px) {
+    .inicio__wrapper{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(1, 300px);
+    grid-template-rows: repeat(4, 300px);
     }
 
-    .responsive-background{
-        display: block;
-        width: 380px;
-        height: 380px;
-    }
+    .info__container{
+    font-size: 1.5rem;
+}
 }
 
 /* VISTA DE ALUMNOS */
