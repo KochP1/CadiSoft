@@ -136,6 +136,7 @@ def ajustes_usuario():
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):
     db = current_app.config['db']
+    db.ping(reconnect=True)
     cur = db.cursor()
 
     cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
