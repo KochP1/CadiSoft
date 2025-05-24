@@ -794,33 +794,11 @@ function mostrar_horario(data) {
             'Sábado': 'sabado'
         };
 
-        data.forEach(horario => {
-            const horaInicio = new Date(`2000-01-01T${horario.horario_hora}`);
-            const horaFin = new Date(`2000-01-01T${horario.horario_hora_final}`);
-            
-            let horaActual = horaInicio;
-            while (horaActual < horaFin) {
-                const horaSiguiente = new Date(horaActual.getTime() + 60 * 60 * 1000); // +1 hora
-                if (horaSiguiente > horaFin) horaSiguiente = horaFin;
-
-                const horaFormateada = `${horaActual.getHours()}:${horaActual.getMinutes().toString().padStart(2, '0')}`;
-                const horaSiguienteFormateada = `${horaSiguiente.getHours()}:${horaSiguiente.getMinutes().toString().padStart(2, '0')}`;
-
-                let tbody = `
-                    <tr>
-                        <td id="hora">${horaFormateada}-${horaSiguienteFormateada}</td>
-                        ${Object.entries(diasMap).map(([dia, id]) => `
-                            <td id="${id}">${horario.horario_dia === dia ? `
-                                <p>${horario.nombre_curso} <br> Aula: ${horario.horario_aula}</p>
-                            ` : ''}</td>
-                        `).join('')}
-                    </tr>
-                `;
-
-                tabla.innerHTML += tbody;
-                horaActual = horaSiguiente;
+        data.forEach((element) => {
+            if (element.horario_hora === '8:00') {
+                console.log('a las 8')
             }
-        });
+        })
 
         tablaContainer.style.display = 'block';
     }

@@ -604,14 +604,21 @@ input[type=number] {
 
 .horario__container{
     margin-top: 50px;
-    display: none;
+    width: 100vw;
 
 }
 
+.table-horario{
+    width: 700px !important;
+    display: flex;
+    margin: auto;
+}
+
 .table-horario td {
-    width: 300px !important;
+    width: 400px !important;
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 0.7rem;
+    font-weight: bold;
 }
 
 #select-seccion-inscripcion {
