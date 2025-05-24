@@ -778,28 +778,14 @@ function seleccionar_seccion(data) {
 }
 
 function mostrar_horario(data) {
-    const tabla = document.getElementById('tbody-horario');
-    const tablaContainer = document.getElementById('horario__container');
-    
-    tabla.innerHTML = '';
 
-    if (tabla && data) {
-        // Mapeo entre días y sus IDs en la tabla
-        const diasMap = {
-            'Lunes': 'lunes',
-            'Martes': 'martes',
-            'Miércoles': 'miercoles',
-            'Jueves': 'jueves',
-            'Viernes': 'viernes',
-            'Sábado': 'sabado'
-        };
+    if (data) {
 
-        data.forEach((element) => {
-            if (element.horario_hora === '8:00') {
-                console.log('a las 8')
+        data.forEach(element => {
+            if (element.horario_hora == '08:00:00') {
+                document.getElementById('Lunes-8-9').value = element.nombre_curso
             }
         })
 
-        tablaContainer.style.display = 'block';
     }
 }
