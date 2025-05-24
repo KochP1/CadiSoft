@@ -783,7 +783,13 @@ function mostrar_horario(data) {
 
         data.forEach(element => {
             if (element.horario_hora == '08:00:00') {
-                document.getElementById('Lunes-8-9').value = element.nombre_curso
+                document.getElementById('Lunes-8-9').textContent = element.nombre_curso
+                document.getElementById('Lunes-8-9').style.backgroundColor = 'yellow'
+            }
+
+            if (element.horario_hora_final == '10:00:00') {
+                document.getElementById('Lunes-9-10').textContent = element.nombre_curso
+                document.getElementById('Lunes-9-10').style.backgroundColor = 'yellow'
             }
         })
 
