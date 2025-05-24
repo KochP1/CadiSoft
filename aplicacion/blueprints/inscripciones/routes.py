@@ -192,7 +192,6 @@ def mostrar_horario():
                     if isinstance(record.get('horario_hora_final'), timedelta):
                         record['horario_hora_final'] = time_delta_serializer(record['horario_hora_final'])
                 
-                print(seccion_dict)
                 return jsonify({'horarioSeccion': seccion_dict}), 200
             else:
                 return jsonify({'success': False, 'message': 'horario de seccion no encontrado'}), 404

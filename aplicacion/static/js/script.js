@@ -753,12 +753,20 @@ function mostrar_panel_inscripcion(data) {
 function seleccionar_seccion(data) {
     const select = document.getElementById('select-seccion-inscripcion');
     const btn = document.getElementById('btn-inscribir');
+    const createdOptions = document.querySelectorAll('.seccion-option');
     btn.style.display = 'flex';
+
+    if (createdOptions.length > 0) {
+        createdOptions.forEach(element => {
+            element.remove();
+        })
+    }
 
     if (select && data) {
         select.style.display = 'block';
         data.forEach(curso => {
             let option = document.createElement('option')
+            option.classList.add('seccion-option')
             option.value = curso.idSeccion;
             option.text = curso.seccion;
             select.appendChild(option);
