@@ -612,6 +612,11 @@ function inscribir_alumno() {
         return;
     }
 
+    if (!periodoInicio || !periodoFinal) {
+        alert('Debes ingresar el periodo de inscripción')
+        return;
+    }
+
     
 
     form.addEventListener('submit', async(event) => {
