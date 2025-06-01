@@ -617,7 +617,8 @@ input[type=number] {
 .table-horario td {
     width: 400px !important;
     text-align: center;
-    font-size: 0.7rem;
+    vertical-align: middle;
+    font-size: 1rem;
     font-weight: bold;
 }
 

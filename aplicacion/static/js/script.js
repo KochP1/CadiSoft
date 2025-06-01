@@ -689,7 +689,6 @@ function crearAlumno() {
         }
 
         try {
-            console.log('ey')
             const response = await fetch('/inscripciones/alumnos_regulares', {
                 method: 'POST',
                 body: formData
@@ -778,20 +777,83 @@ function seleccionar_seccion(data) {
 }
 
 function mostrar_horario(data) {
+    limpiar_horario();
+    
+    if (!data || !data.length) return;
 
-    if (data) {
+    const dias = {
+        'Lunes': 1,
+        'Martes': 2,
+        'Miércoles': 3,
+        'Jueves': 4,
+        'Viernes': 5,
+        'Sábado': 6
+    };
 
-        data.forEach(element => {
-            if (element.horario_hora == '08:00:00') {
-                document.getElementById('Lunes-8-9').textContent = element.nombre_curso
-                document.getElementById('Lunes-8-9').style.backgroundColor = 'yellow'
+    const horas = {
+        '08:00:00': 1,  // 8:00-9:00 am
+        '09:00:00': 2,  // 9:00-10:00 am
+        '10:00:00': 3,  // 10:00-11:00 am
+        '11:00:00': 4,  // 11:00-12:00 am
+        '12:00:00': 5,  // 12:00-01:00 pm
+        '13:00:00': 6,  // 01:00-02:00 pm
+        '14:00:00': 7,  // 02:00-03:00 pm
+        '15:00:00': 8,  // 03:00-04:00 pm
+        '16:00:00': 9   // 04:00-05:00 pm
+    };
+
+    data.forEach(element => {
+        const dia = element.horario_dia;
+        const horaInicio = element.horario_hora;
+        const horaFin = element.horario_hora_final;
+        
+        const columna = dias[dia];
+        const filaInicio = horas[horaInicio];
+        const filaFin = horas[horaFin];
+        
+        if (columna && filaInicio) {
+            const duracion = filaFin ? (filaFin - filaInicio + 1) : 1;
+            
+            const tabla = document.getElementById('tabla-horario');
+            
+            const fila = tabla.rows[filaInicio];
+            
+            if (fila && fila.cells[columna]) {
+                const celda = fila.cells[columna];
+                celda.textContent = element.nombre_curso;
+                celda.style.backgroundColor = getRandomColor();
+                
+                if (duracion > 1) {
+                    celda.rowSpan = duracion;
+                    
+                    for (let i = 1; i < duracion; i++) {
+                        const siguienteFila = tabla.rows[filaInicio + i];
+                        if (siguienteFila && siguienteFila.cells[columna]) {
+                            siguienteFila.cells[columna].style.display = 'none';
+                        }
+                    }
+                }
             }
+        }
+    });
+}
 
-            if (element.horario_hora_final == '10:00:00') {
-                document.getElementById('Lunes-9-10').textContent = element.nombre_curso
-                document.getElementById('Lunes-9-10').style.backgroundColor = 'yellow'
-            }
-        })
-
+function limpiar_horario() {
+    const tabla = document.getElementById('tabla-horario');
+    
+    for (let i = 1; i < tabla.rows.length; i++) {
+        for (let j = 1; j < tabla.rows[i].cells.length; j++) {
+            const celda = tabla.rows[i].cells[j];
+            celda.textContent = '';
+            celda.style.backgroundColor = '';
+            celda.style.display = '';
+            celda.removeAttribute('rowSpan');
+        }
     }
+}
+
+
+function getRandomColor() {
+    const colors = ['#FFD700', '#98FB98', '#ADD8E6', '#FFB6C1', '#E6E6FA', '#FFA07A', '#90EE90', '#87CEFA', '#FFC0CB'];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
