@@ -761,6 +761,7 @@ function seleccionar_seccion(data) {
     btn.style.display = 'flex';
 
     if (createdOptions.length > 0) {
+        limpiar_horario();
         createdOptions.forEach(element => {
             element.remove();
         })
@@ -782,6 +783,7 @@ function seleccionar_seccion(data) {
 }
 
 function mostrar_horario(data) {
+    document.getElementById('horario__container').style.display = 'block';
     limpiar_horario();
     
     if (!data || !data.length) return;

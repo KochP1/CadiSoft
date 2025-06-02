@@ -622,6 +622,10 @@ input[type=number] {
     font-weight: bold;
 }
 
+#horario__container {
+    display: none;
+}
+
 #select-seccion-inscripcion {
     display: none;
 }
