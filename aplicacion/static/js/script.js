@@ -711,6 +711,127 @@ function crearAlumno() {
     })
 }
 
+// CURSOS
+
+async function get_facultades() {
+    const url = '/cursos/buscar_facultades';
+
+    if (isSearching) return;
+    isSearching = true;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        select_facultades(data.facultades);
+
+    } catch (e) {
+        console.log(e);
+    } finally {
+        isSearching = false;
+    }
+}
+
+function select_facultades(data) {
+    const select = document.getElementById('facultad-curso');
+
+    if (select && data) {
+        data.forEach((element) => {
+            const option = document.createElement('option');
+            option.classList.add('form-control')
+            option.classList.add('mb-3')
+            option.value = element.idFacultad;
+            option.textContent = element.facultad;
+            
+            select.appendChild(option)
+        })
+    }
+}
+
+async function crear_curso(event) {
+    event.preventDefault();
+
+    console.log('me ejecuto')
+
+    const url = '/cursos/';
+    const facultad = document.getElementById('facultad-curso').value;
+    const nombre_curso = document.getElementById('curso').value.trim();
+
+    if (!facultad || !nombre_curso) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (nombre_curso.length > 40) {
+        alert('El nombre del curso puede tener 40 caracteres máximo');
+        return;
+    }
+
+    console.log('me ejecuto')
+    const formData = new FormData();
+
+    formData.append('idFacultad', facultad);
+    formData.append('nombre_curso', nombre_curso);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        console.log('me ejecuto')
+        const data = await response.json();
+
+        if(!response.ok) {
+            alert('ERROR')
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+async function elim_curso(idcurso) {
+    const url = `/cursos/eliminar_curso/${idcurso}`;
+
+    if (isSearching) return;
+    isSearching = true;
+
+    if (idcurso) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE'
+            });
+
+            const data = response.json();
+
+            if (!response.ok) {
+                throw new Error(`Error: ${data.error}`)
+            }
+
+            alert('Curso eliminado satisfactoriamente')
+            window.location.reload();
+        } catch (e) {
+            console.log(e)
+        } finally {
+            isSearching = false
+        }
+    }
+
+}
+
 // FRONT END 
 
 function mostrar_contraseña(contraseña) {

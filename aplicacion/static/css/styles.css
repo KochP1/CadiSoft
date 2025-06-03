@@ -635,6 +635,17 @@ input[type=number] {
     margin: auto;
 }
 
+/* CURSOS */
+
+.btn-secciones{
+    background-color: #e2896b !important;
+    border-color: #e2896b !important;
+}
+
+.btn-secciones:hover{
+    background-color: #a86650 !important;
+    border-color: #e2896b !important;
+}
 /* transición de desvanecido */
 html {
     animation: fadeIn 0.3s;

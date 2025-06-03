@@ -8,7 +8,7 @@
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
-            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-curso-modal">Crear curso</button>
+            <button class="btn btn-primary btn-crear" onclick="get_facultades()" data-bs-toggle="modal" data-bs-target="#crear-curso-modal">Crear curso</button>
             <form action="" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar curso" class="filtrar-alumno__input" name="curso">
             </form>
@@ -31,13 +31,29 @@
                     <td>{{curso.facultad}}</td>
                     <td>{{curso.nombre_curso}}</td>
                     <td class="tabla-btn">
-                        <a href="#" class="editar-link">
-                            <button class="btn btn-primary">
-                                Editar
+                        <a href="{{url_for('cursos.seccion_curso', idcurso=curso.idCurso)}}" class="editar-link">
+                            <button class="btn btn-primary btn-secciones">
+                                Crear secciones
                             </button>
                         </a>
                     </td>
-                    <td class="tabla-btn"><button class="btn btn-danger" idcursos="{{curso.idCurso}}" onclick="">Eliminar</button></td>
+                    <td class="tabla-btn">
+                        <a href="{{url_for('cursos.seccion_curso', idcurso=curso.idCurso)}}" class="editar-link">
+                            <button class="btn btn-primary btn-secciones">
+                                Gestionar secciones
+                            </button>
+                        </a>
+                    </td>
+                    <td class="tabla-btn">
+                        <button class="btn btn-primary">
+                            Editar
+                        </button>
+                    </td>
+                    <td class="tabla-btn">
+                        <button class="btn btn-danger" idcursos="{{curso.idCurso}}" onclick="elim_curso(this.getAttribute('idcursos'))">
+                            Eliminar
+                        </button>
+                    </td>
                     
                 </tr>
 
@@ -45,5 +61,35 @@
 
         </table>
     </div>
+
+        <div class="modal fade" id="crear-curso-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Curso</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-crear-curso" onsubmit="crear_curso(event)">
+
+                            <label>Nombre del curso</label>
+                            <input type="text" class="form-control mb-3" name="curso" id="curso">
+
+                            <label>Facultad</label>
+                            <select name="selectFacultad" id="facultad-curso" class="form-control mb-3">
+                                <option class="form-control mb-3" value="">Selecciona una facultad</option>
+                            </select>
+
+                            <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src="../../../../js/excel.js"></script>
+    <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/file-saverjs@latest/FileSaver.min.js"></script>
+    <script src="https://unpkg.com/tableexport@latest/dist/js/tableexport.min.js"></script>
 
 {% endblock %}
