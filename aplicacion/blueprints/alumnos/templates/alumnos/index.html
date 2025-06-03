@@ -31,7 +31,7 @@
 
             {% for alumno in alumnos %}
                 <tr>
-                    <td>{{alumno.idAlumno}}</td>
+                    <td id="td-id-alumno">{{alumno.idAlumno}}</td>
                     <td>{{alumno.nombre}}</td>
                     <td>{{alumno.segundoNombre}}</td>
                     <td>{{alumno.apellido}}</td>
@@ -39,16 +39,53 @@
                     <td>{{alumno.cedula}}</td>
                     <td>{{alumno.email}}</td>
                     <td class="tabla-btn">
+                        <button class="btn btn-primary btn-secciones"  data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-form">
+                            Crear registro familiar
+                        </button>
+                    </td>
+                    <td class="tabla-btn">
                         <a href="{{url_for('alumnos.edit_alumno', idusuarios=alumno.idusuarios)}}" class="editar-link">
-                          <button class="btn btn-primary">
+                            <button class="btn btn-primary">
                             Editar
-                          </button>
+                            </button>
                         </a>
-                      </td>
+                    </td>
                     <td class="tabla-btn"><button class="btn btn-danger" idusuarios="{{alumno.idusuarios}}" onclick="eliminar_usuario(this.getAttribute('idusuarios'))">Eliminar</button></td>
                 </tr>
             {% endfor %}
         </table>
+    </div>
+
+    <div class="modal fade" id="crear-registro-familiar-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Crear registro familiar</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="crear-registro-familiar-form">
+
+                            <label>Nombre papá</label>
+                            <input type="text" class="form-control mb-3" name="nombrepapa" id="nombrePapa" maxlength="12">
+
+                            <label>Apellido papá</label>
+                            <input type="text" class="form-control mb-3" name="apellidoPapa" id="apellidoPapa" maxlength="12">
+
+                            <label>Nombre mamá</label>
+                            <input type="text" class="form-control mb-3" name="nombreMama" id="nombreMama" maxlength="20">
+
+                            <label>Apellido mamá</label>
+                            <input type="text" class="form-control mb-3" name="apellidoMama" id="apellidoMama" maxlength="20">
+
+                            <label>Contacto</label>
+                            <input type="number" class="form-control mb-3" name="contacto" id="contactoFamilia">
+
+                            <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
     </div>
 
     <script src="../../../../js/excel.js"></script>

@@ -41,6 +41,29 @@ def buscar_alumno():
         insertRegistros.append(dict(zip(columNames, record)))
     return render_template('alumnos/index.html', alumnos = insertRegistros)
 
+@alumnos.route('/crear_registro_familiar/<int:idAlumno>', methods = ['POST'])
+def crear_registro_familiar(idAlumno):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    nombrePapa = request.form.get('nombrePapa')
+    apellidoPapa = request.form.get('apellidoPapa')
+    nombreMama = request.form.get('nombreMama')
+    apellidoMama = request.form.get('apellidoMama')
+    contacto = request.form.get('contacto')
+
+    try:
+        with db.cursor() as cur:
+            sql = 'INSERT INTO alumnos (`idAlumno`, `NombrePapa`, `ApellidoPapa`, `NombreMama`, `ApellidoMama`, `Telefono`) VALUES (%s, %s, %s, %s, %s, %s)'
+            data = (idAlumno, nombrePapa, apellidoPapa, nombreMama, apellidoMama, contacto)
+            cur.execute(sql, data)
+            db.commit()
+            return jsonify({'message': 'Registro familiar creado satisfactoriamente'}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Error al crear registro familiar'}), 400
+
 @alumnos.route('/registro_familiar', methods = ['GET'])
 def registro_familiar():
     db = current_app.config['db']

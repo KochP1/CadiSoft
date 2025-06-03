@@ -484,6 +484,57 @@ async function eliminar_usuario(idusuarios) {
     }
 }
 
+// Crear registro familiar de alumno
+
+async function crear_registro_familiar(idAlumno, event) {
+    event.preventDefault()
+    const formData = new FormData();
+    const url = `/alumnos/crear_registro_familiar/${idAlumno}`;
+    const nombrePapa = document.getElementById('nombrePapa').value.trim();
+    const apellidoPapa = document.getElementById('apellidoPapa').value.trim();
+    const nombreMama = document.getElementById('nombreMama').value.trim();
+    const apellidoMama = document.getElementById('apellidoMama').value.trim();
+    const contacto = document.getElementById('contactoFamilia').value;
+
+    if (!nombrePapa || !apellidoMama || apellidoPapa || nombreMama || contacto) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (nombrePapa.length > 12 || nombreMama.length > 12) {
+        alert('Nombres pueden tener maximo 12 caracteres');
+        return;
+    }
+
+    if (apellidoPapa.length > 20 || apellidoMama.length > 20) {
+        alert('Apellidos pueden tener maximo 20 caracteres');
+        return;
+    }
+
+    formData.append('nombrePapa', nombrePapa);
+    formData.append('apellidoPapa', apellidoPapa);
+    formData.append('nombreMama', nombreMama);
+    formData.append('apellidoMama', apellidoMama);
+    formData.append('contacto', contacto);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch(e) {
+        console.log(e)
+    }
+}
+
 // INSCRIPCIONES
 
 // Buscar alumno por cédula
@@ -833,6 +884,15 @@ async function elim_curso(idcurso) {
 }
 
 // FRONT END 
+
+function get_id_alumno() {
+    const cell = document.getElementById('td-id-alumno').textContent;
+    const form = document.getElementById('crear-registro-familiar-form');
+    const idAlumno = parseInt(cell)
+
+    form.setAttribute('idAlumno', idAlumno)
+    //form.getAttribute('idAlumno')
+}
 
 function mostrar_contraseña(contraseña) {
     const inputContraseña = document.getElementById(contraseña);
