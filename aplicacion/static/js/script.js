@@ -494,9 +494,9 @@ async function crear_registro_familiar(idAlumno, event) {
     const apellidoPapa = document.getElementById('apellidoPapa').value.trim();
     const nombreMama = document.getElementById('nombreMama').value.trim();
     const apellidoMama = document.getElementById('apellidoMama').value.trim();
-    const contacto = document.getElementById('contactoFamilia').value;
+    const contacto = document.getElementById('contactoFamilia').value.trim();
 
-    if (!nombrePapa || !apellidoMama || apellidoPapa || nombreMama || contacto) {
+    if (!nombrePapa || !apellidoMama || !apellidoPapa || !nombreMama || !contacto) {
         alert('Todos los campos son obligatorios');
         return;
     }
@@ -891,7 +891,6 @@ function get_id_alumno() {
     const idAlumno = parseInt(cell)
 
     form.setAttribute('idAlumno', idAlumno)
-    //form.getAttribute('idAlumno')
 }
 
 function mostrar_contraseña(contraseña) {

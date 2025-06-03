@@ -54,7 +54,7 @@ def crear_registro_familiar(idAlumno):
 
     try:
         with db.cursor() as cur:
-            sql = 'INSERT INTO alumnos (`idAlumno`, `NombrePapa`, `ApellidoPapa`, `NombreMama`, `ApellidoMama`, `Telefono`) VALUES (%s, %s, %s, %s, %s, %s)'
+            sql = 'INSERT INTO registro_familiar (`idAlumno`, `NombrePapa`, `ApellidoPapa`, `NombreMama`, `ApellidoMama`, `Telefono`) VALUES (%s, %s, %s, %s, %s, %s)'
             data = (idAlumno, nombrePapa, apellidoPapa, nombreMama, apellidoMama, contacto)
             cur.execute(sql, data)
             db.commit()

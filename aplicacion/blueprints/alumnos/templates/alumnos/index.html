@@ -39,7 +39,7 @@
                     <td>{{alumno.cedula}}</td>
                     <td>{{alumno.email}}</td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary btn-secciones"  data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-form">
+                        <button class="btn btn-primary btn-secciones" onclick="get_id_alumno()" data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-modal">
                             Crear registro familiar
                         </button>
                     </td>
@@ -64,7 +64,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="crear-registro-familiar-form">
+                        <form id="crear-registro-familiar-form" onsubmit="crear_registro_familiar(this.getAttribute('idalumno'), event)">
 
                             <label>Nombre papá</label>
                             <input type="text" class="form-control mb-3" name="nombrepapa" id="nombrePapa" maxlength="12">
