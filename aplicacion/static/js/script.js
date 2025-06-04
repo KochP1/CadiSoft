@@ -25,7 +25,7 @@ async function log_out() {
 async function olvidar_contraseña(event) {
     event.preventDefault()
     const url = '/forgot_password';
-    const email = document.getElementById('email-olvidar-contraseña')
+    const email = document.getElementById('email-olvidar-contraseña').value.trim();
     const formData = new FormData();
 
     if (!email) {

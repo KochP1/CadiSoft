@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_mail import Mail
 import pymysql
 from os import getenv
 
@@ -21,6 +22,15 @@ def create_app():
     password=app.config['DB_PASSWORD'],
     database=app.config['DB_NAME']
 )
+    
+    app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = getenv('MAIL_PORT')
+    app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
+    app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
+
+    mail = Mail(app)
 
     try:
         with db.cursor() as cursor:
@@ -63,6 +73,7 @@ def create_app():
     app.register_blueprint(inscripciones, url_prefix = '/inscripciones')
     # Pasar la conexión a la base de datos al Blueprint
     app.config['db'] = db
+    app.config['mail'] = mail
 
 
     return app

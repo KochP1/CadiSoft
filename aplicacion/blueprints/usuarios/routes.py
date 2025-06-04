@@ -1,5 +1,6 @@
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_mail import Message
 from flask_bcrypt import Bcrypt
 
 from . model import User
@@ -125,6 +126,15 @@ def regist_user():
         finally:
             cur.close()
 
+def send_mail(email, asunto, mensaje):
+    mail = current_app.config['mail']
+    msg = Message(
+    asunto,
+    recipients=[email],
+    body=mensaje
+    )
+    mail.send(msg)
+
 @usuario.route('/forgot_password', methods = ['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -139,12 +149,17 @@ def forgot_password():
                 cur.execute(sql, data)
                 found_email = cur.fetchone()
                 if found_email:
-                    return jsonify({'message': 'Revise su bandeja de correo electronico'}), 200
+                    try:
+                        send_mail(email, 'Recuperacion de contraseña', 'Probando servidor de correo')
+                        return jsonify({'message': 'Revise su bandeja de correo electrónico'}), 200
+                    except Exception as e:
+                        print(e)
+                        return jsonify({'error': 'Error, servidor de correo no disponible'}), 400
                 else:
-                    return jsonify({'error': 'El email no existe'}), 400
+                    return jsonify({'error':'El correo electrónico no existe'}), 400
         except Exception as e:
             print(e)
-            return jsonify({'error': 'El email no existe'}), 400
+            return jsonify({'error': 'Error al buscar correo electrónico'}), 400
     return render_template('usuarios/forgot.html')
 
 @usuario.route('/ajustes_usuario')
