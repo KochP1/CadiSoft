@@ -21,6 +21,45 @@ async function log_out() {
     }
 }
 
+// Olvidar contraseña
+async function olvidar_contraseña(event) {
+    event.preventDefault()
+    const url = '/forgot_password';
+    const email = document.getElementById('email-olvidar-contraseña')
+    const formData = new FormData();
+
+    if (!email) {
+        alert('Todos los campos son obligatorios')
+        return;
+    }
+
+    if ( email.length > 50) {
+        alert('El email puede tener 50 caracteres máximo');
+        return;
+    }
+
+    formData.append('email', email);
+
+    try {
+        const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
 // Inicio
 
 async function stats() {

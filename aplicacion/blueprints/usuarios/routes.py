@@ -127,6 +127,24 @@ def regist_user():
 
 @usuario.route('/forgot_password', methods = ['GET', 'POST'])
 def forgot_password():
+    if request.method == 'POST':
+        db = current_app.config['db']
+        db.ping(reconnect=True)
+        email = request.form.get('email')
+
+        try:
+            with db.cursor() as cur:
+                sql = 'SELECT email FROM usuarios WHERE email = %s'
+                data = (email,)
+                cur.execute(sql, data)
+                found_email = cur.fetchone()
+                if found_email:
+                    return jsonify({'message': 'Revise su bandeja de correo electronico'}), 200
+                else:
+                    return jsonify({'error': 'El email no existe'}), 400
+        except Exception as e:
+            print(e)
+            return jsonify({'error': 'El email no existe'}), 400
     return render_template('usuarios/forgot.html')
 
 @usuario.route('/ajustes_usuario')
