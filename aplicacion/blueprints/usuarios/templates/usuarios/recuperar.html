@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %} Recuperación de cuenta {% endblock %}
+
+{% block content %} 
+        <div class="login__wrapper">
+            <div class="img-background">
+            </div>
+
+            <div class="login-form__container">
+
+                {% if message_error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{message_error}}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                {% endif %}
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {%for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{message}}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <form class="user-form">
+                    <div class="input__container">
+                        <label for="contraseña">Contraseña</label>
+                        <div class="password-input-login__container">
+                            <input type="password" id="recuperar-contraseña" name="contraseña">
+                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                        </div>
+                    </div>
+
+                    <div class="input__container">
+                        <label for="contraseña">Contraseña</label>
+                        <div class="password-input-login__container">
+                            <input type="password" id="recuperar-contraseña-confirmar" name="contraseña">
+                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                        </div>
+                    </div>
+
+                    <div class="button__container">
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+{% endblock %}

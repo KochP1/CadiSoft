@@ -2,7 +2,8 @@ from flask import request, render_template, redirect, url_for, Blueprint, curren
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_mail import Message
 from flask_bcrypt import Bcrypt
-
+import random, datetime
+from datetime import timedelta
 from . model import User
 
 usuario = Blueprint('usuario', __name__, template_folder='templates', static_folder="static")
@@ -126,12 +127,48 @@ def regist_user():
         finally:
             cur.close()
 
-def send_mail(email, asunto, mensaje):
+@usuario.route('/recuperar_contraseña', methods = ['GET', 'POST'])
+def recuperar_contraseña():
+    return render_template('usuarios/recuperar.html')
+
+def generar_codigo_verificacion(usuario_id):
+    db = current_app.config['db']
+
+    # 1. Generar código aleatorio de 6 dígitos
+    codigo = str(random.randint(100000, 999999))
+    
+    # 2. Calcular fecha de expiración (15 minutos desde ahora)
+    expiracion = datetime.now() + timedelta(minutes=15)
+    
+    # 3. Guardar en la base de datos
+    try:
+        # Primero invalidar códigos previos del usuario
+        db.execute(
+            "UPDATE codigos_verificacion SET usado = TRUE WHERE idusuarios = %s",
+            (usuario_id,)
+        )
+        
+        # Insertar nuevo código
+        db.execute(
+            """ INSERT INTO codigos_verificacion 
+                (idusuarios, codigo, expiracion) 
+                VALUES (%s, %s, %s) """,
+            (usuario_id, codigo, expiracion)
+        )
+        db.commit()
+        
+        return codigo
+    except Exception as e:
+        db.rollback()
+        current_app.logger.error(f"Error al guardar código: {str(e)}")
+        raise
+
+def send_mail(email):
     mail = current_app.config['mail']
     msg = Message(
-    asunto,
+    f"Tu codigo de verifiación es: {generar_codigo_verificacion(current_user.id)}",
     recipients=[email],
-    body=mensaje
+    body=f'Recuperación de correo electrónico CadiSoft'
     )
     mail.send(msg)
 
@@ -150,7 +187,7 @@ def forgot_password():
                 found_email = cur.fetchone()
                 if found_email:
                     try:
-                        send_mail(email, 'Recuperacion de contraseña', 'Probando servidor de correo')
+                        send_mail(email)
                         return jsonify({'message': 'Revise su bandeja de correo electrónico'}), 200
                     except Exception as e:
                         print(e)
