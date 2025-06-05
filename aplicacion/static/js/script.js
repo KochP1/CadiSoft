@@ -54,8 +54,44 @@ async function olvidar_contraseña(event) {
         }
 
         alert(data.message);
-        window.location.href = '/verificacion_dos_pasos'
+        window.location.href = `/verificacion_dos_pasos/${data.idusuario}`
     } catch (e) {
+        console.log(e)
+    }
+
+}
+
+async function verificar_codigo(idusuario) {
+    const url = `/verificacion_dos_pasos/${idusuario}`
+    const codigo = document.getElementById('');
+    const formData = new FormData();
+
+    if (!codigo) {
+        alert('Debe ingresar el codigo de verificación');
+        return;
+    }
+
+    if (codigo.length > 6) {
+        alert('Un código de verificación no puede tener más de 6 digitos');
+        return;
+    }
+
+    formData.append('codigo', codigo);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch(e) {
         console.log(e)
     }
 

@@ -145,9 +145,22 @@ def generar_codigo_verificacion(usuario_id):
         with db.cursor() as cur:
             # Primero invalidar códigos previos del usuario
             cur.execute(
-                "UPDATE codigos_verificacion SET usado = TRUE WHERE idusuarios = %s",
+                """ UPDATE codigos_verificacion 
+                    SET usado = TRUE 
+                    WHERE idusuarios = %s 
+                    AND usado = FALSE 
+                    AND expiracion > NOW() """,
                 (usuario_id,)
             )
+            
+            # 2. Limpieza opcional de códigos muy antiguos
+            cur.execute(
+                """ DELETE FROM codigos_verificacion 
+                    WHERE idusuarios = %s 
+                    AND expiracion < NOW() - INTERVAL 7 DAY """,
+                (usuario_id,)
+            )
+            
             
             # Insertar nuevo código
             cur.execute(
@@ -163,6 +176,25 @@ def generar_codigo_verificacion(usuario_id):
         db.rollback()
         current_app.logger.error(f"Error al guardar código: {str(e)}")
         raise
+
+def validar_codigo(codigo, idusuario):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    try:
+        with db.cursor() as cur:
+            sql = 'SELECT * FROM codigos_verificacion WHERE codigo = %s AND idusuarios = %s AND usado = FALSE  AND expiracion > NOW()'
+            data = (codigo, idusuario)
+            cur.execute(sql, data)
+            record = cur.fetchone()
+
+            if record:
+                return jsonify({'message': 'Codigo verificado exitoasmente'}), 200
+            else: 
+                return jsonify({'error': 'Codigo invalido'}), 400
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Error al validar codigo'}), 400
 
 def send_mail(email, id):
     mail = current_app.config['mail']
@@ -196,7 +228,7 @@ def forgot_password():
                             idusuarios = item['idusuarios']
 
                         send_mail(email, idusuarios)
-                        return jsonify({'message': 'Revise su bandeja de correo electrónico'}), 200
+                        return jsonify({'message': 'Revise su bandeja de correo electrónico', 'idusuario': idusuarios}), 200
                     
                     except Exception as e:
                         print(e)
@@ -212,9 +244,13 @@ def forgot_password():
 def ajustes_usuario():
     return render_template('usuarios/ajustes.html')
 
-@usuario.route('/verificacion_dos_pasos', methods = ['GET', 'POST'])
-def verificacion_dos_pasos():
-    return render_template('usuarios/2fv.html')
+@usuario.route('/verificacion_dos_pasos/<int:idusuario>', methods = ['GET', 'POST'])
+def verificacion_dos_pasos(idusuario):
+    if request.method == 'POST':
+        codigo = request.form.get('codigo')
+        validar_codigo(codigo, idusuario)
+    
+    return render_template('usuarios/2fv.html', user = idusuario)
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):

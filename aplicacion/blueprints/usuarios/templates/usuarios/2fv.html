@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Verificación de dos pasos {% endblock %}
+{% block title %} 2FA {% endblock %}
 
 {% block content %} 
         <div class="login__wrapper">
@@ -9,12 +9,12 @@
             <div class="login-form__container">
                 <form class="user-form" onsubmit="olvidar_contraseña(event)">
                     <div class="input__container">
-                        <label for="codigo">Corre electrónico</label>
+                        <label for="codigo">Código de verificación</label>
                         <input type="number" placeholder="045671" id="codigo-olvidar-contraseña" name="codigo">
                     </div>
 
                     <div class="button__container">
-                        <button type="submit" class="btn btn-primary">Enviar</button>
+                        <button type="submit" class="btn btn-primary" idusuario="{{user}}">Enviar</button>
                         <a href="{{url_for('usuario.index')}}" class="login-link">Volver</a>
                     </div>
                 </form>
