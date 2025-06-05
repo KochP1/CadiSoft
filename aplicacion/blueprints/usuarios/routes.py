@@ -199,7 +199,7 @@ def validar_codigo(codigo, idusuario):
 def send_mail(email, id):
     mail = current_app.config['mail']
     msg = Message(
-    "Recuperación de correo electrónico cadiSoft",
+    "Recuperación de cuenta cadiSoft",
     recipients=[email],
     body=f"Tu codigo de verifiación es: {generar_codigo_verificacion(id)}"
     )
