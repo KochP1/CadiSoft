@@ -7,14 +7,14 @@
             </div>
 
             <div class="login-form__container">
-                <form class="user-form" onsubmit="olvidar_contraseña(event)">
+                <form class="user-form" idusuario="{{user}}" onsubmit="verificar_codigo(this.getAttribute('idusuario'), event)">
                     <div class="input__container">
                         <label for="codigo">Código de verificación</label>
                         <input type="number" placeholder="045671" id="codigo-olvidar-contraseña" name="codigo">
                     </div>
 
                     <div class="button__container">
-                        <button type="submit" class="btn btn-primary" idusuario="{{user}}">Enviar</button>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
                         <a href="{{url_for('usuario.index')}}" class="login-link">Volver</a>
                     </div>
                 </form>

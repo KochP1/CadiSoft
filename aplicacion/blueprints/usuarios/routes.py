@@ -126,9 +126,6 @@ def regist_user():
         finally:
             cur.close()
 
-@usuario.route('/recuperar_contraseña', methods = ['GET', 'POST'])
-def recuperar_contraseña():
-    return render_template('usuarios/recuperar.html')
 
 def generar_codigo_verificacion(usuario_id):
     db = current_app.config['db']
@@ -240,17 +237,53 @@ def forgot_password():
             return jsonify({'error': 'Error al buscar correo electrónico'}), 400
     return render_template('usuarios/forgot.html')
 
+
+
 @usuario.route('/ajustes_usuario')
 def ajustes_usuario():
     return render_template('usuarios/ajustes.html')
+
+
 
 @usuario.route('/verificacion_dos_pasos/<int:idusuario>', methods = ['GET', 'POST'])
 def verificacion_dos_pasos(idusuario):
     if request.method == 'POST':
         codigo = request.form.get('codigo')
-        validar_codigo(codigo, idusuario)
+        db = current_app.config['db']
+        db.ping(reconnect=True)
+
+        try:
+            with db.cursor() as cur:
+                sql = 'SELECT * FROM codigos_verificacion WHERE codigo = %s AND idusuarios = %s AND usado IS NULL OR usado = FALSE'
+                data = (codigo, idusuario)
+                print(data)
+                cur.execute(sql, data)
+                record = cur.fetchone()
+                print(record)
+
+                if record:
+                    cur.execute(
+                        """ UPDATE codigos_verificacion 
+                            SET usado = TRUE 
+                            WHERE idusuarios = %s 
+                            AND usado = FALSE 
+                            AND expiracion > NOW() """,
+                        (idusuario,)
+                    )
+                    return jsonify({'message': 'Codigo verificado exitoasmente', 'user': idusuario}), 200
+                else: 
+                    return jsonify({'error': 'Codigo invalido'}), 400
+        except Exception as e:
+            print(e)
+            return jsonify({'error': 'Error al validar codigo'}), 400
     
     return render_template('usuarios/2fv.html', user = idusuario)
+
+
+
+@usuario.route('/recuperar_contraseña/<int:idusuario>', methods = ['GET', 'POST'])
+def recuperar_contraseña(idusuario):
+    return render_template('usuarios/recuperar.html', user = idusuario)
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):

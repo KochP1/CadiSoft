@@ -61,9 +61,10 @@ async function olvidar_contraseña(event) {
 
 }
 
-async function verificar_codigo(idusuario) {
+async function verificar_codigo(idusuario, event) {
+    event.preventDefault();
     const url = `/verificacion_dos_pasos/${idusuario}`
-    const codigo = document.getElementById('');
+    const codigo = document.getElementById('codigo-olvidar-contraseña').value.trim();
     const formData = new FormData();
 
     if (!codigo) {
@@ -71,6 +72,7 @@ async function verificar_codigo(idusuario) {
         return;
     }
 
+    
     if (codigo.length > 6) {
         alert('Un código de verificación no puede tener más de 6 digitos');
         return;
@@ -92,6 +94,7 @@ async function verificar_codigo(idusuario) {
         }
 
         alert(data.message);
+        window.location.href = `/recuperar_contraseña/${data.user}`
     } catch(e) {
         console.log(e)
     }
