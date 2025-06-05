@@ -189,7 +189,7 @@ def validar_codigo(codigo, idusuario):
             record = cur.fetchone()
 
             if record:
-                return jsonify({'message': 'Codigo verificado exitoasmente'}), 200
+                return jsonify({'message': 'Codigo verificado exitoasmente', 'user': idusuario}), 200
             else: 
                 return jsonify({'error': 'Codigo invalido'}), 400
     except Exception as e:

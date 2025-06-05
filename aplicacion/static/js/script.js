@@ -87,6 +87,7 @@ async function verificar_codigo(idusuario) {
         const data = await response.json();
 
         if (!response.ok) {
+            alert('Código de recuperación inválido')
             throw new Error(data.error);
         }
 
