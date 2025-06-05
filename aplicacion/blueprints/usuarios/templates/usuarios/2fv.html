@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} Verificación de dos pasos {% endblock %}
+
+{% block content %} 
+        <div class="login__wrapper">
+            <div class="img-background">
+            </div>
+
+            <div class="login-form__container">
+                <form class="user-form" onsubmit="olvidar_contraseña(event)">
+                    <div class="input__container">
+                        <label for="codigo">Corre electrónico</label>
+                        <input type="number" placeholder="045671" id="codigo-olvidar-contraseña" name="codigo">
+                    </div>
+
+                    <div class="button__container">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                        <a href="{{url_for('usuario.index')}}" class="login-link">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+{% endblock %}

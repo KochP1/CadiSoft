@@ -2,8 +2,7 @@ from flask import request, render_template, redirect, url_for, Blueprint, curren
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_mail import Message
 from flask_bcrypt import Bcrypt
-import random, datetime
-from datetime import timedelta
+import random, datetime as dt
 from . model import User
 
 usuario = Blueprint('usuario', __name__, template_folder='templates', static_folder="static")
@@ -133,42 +132,44 @@ def recuperar_contraseña():
 
 def generar_codigo_verificacion(usuario_id):
     db = current_app.config['db']
+    db.ping(reconnect=True)
 
     # 1. Generar código aleatorio de 6 dígitos
     codigo = str(random.randint(100000, 999999))
     
     # 2. Calcular fecha de expiración (15 minutos desde ahora)
-    expiracion = datetime.now() + timedelta(minutes=15)
+    expiracion = dt.datetime.now() + dt.timedelta(minutes=15)
     
     # 3. Guardar en la base de datos
     try:
-        # Primero invalidar códigos previos del usuario
-        db.execute(
-            "UPDATE codigos_verificacion SET usado = TRUE WHERE idusuarios = %s",
-            (usuario_id,)
-        )
-        
-        # Insertar nuevo código
-        db.execute(
-            """ INSERT INTO codigos_verificacion 
-                (idusuarios, codigo, expiracion) 
-                VALUES (%s, %s, %s) """,
-            (usuario_id, codigo, expiracion)
-        )
-        db.commit()
-        
-        return codigo
+        with db.cursor() as cur:
+            # Primero invalidar códigos previos del usuario
+            cur.execute(
+                "UPDATE codigos_verificacion SET usado = TRUE WHERE idusuarios = %s",
+                (usuario_id,)
+            )
+            
+            # Insertar nuevo código
+            cur.execute(
+                """ INSERT INTO codigos_verificacion 
+                    (idusuarios, codigo, expiracion) 
+                    VALUES (%s, %s, %s) """,
+                (usuario_id, codigo, expiracion)
+            )
+            db.commit()
+            
+            return codigo
     except Exception as e:
         db.rollback()
         current_app.logger.error(f"Error al guardar código: {str(e)}")
         raise
 
-def send_mail(email):
+def send_mail(email, id):
     mail = current_app.config['mail']
     msg = Message(
-    f"Tu codigo de verifiación es: {generar_codigo_verificacion(current_user.id)}",
+    "Recuperación de correo electrónico cadiSoft",
     recipients=[email],
-    body=f'Recuperación de correo electrónico CadiSoft'
+    body=f"Tu codigo de verifiación es: {generar_codigo_verificacion(id)}"
     )
     mail.send(msg)
 
@@ -181,14 +182,22 @@ def forgot_password():
 
         try:
             with db.cursor() as cur:
-                sql = 'SELECT email FROM usuarios WHERE email = %s'
+                sql = 'SELECT idusuarios, email FROM usuarios WHERE email = %s'
                 data = (email,)
                 cur.execute(sql, data)
-                found_email = cur.fetchone()
+                found_email = cur.fetchall()
+
                 if found_email:
                     try:
-                        send_mail(email)
+                        columNames = [column[0] for column in cur.description]
+                        record = [dict(zip(columNames, row)) for row in found_email]
+
+                        for item in record:
+                            idusuarios = item['idusuarios']
+
+                        send_mail(email, idusuarios)
                         return jsonify({'message': 'Revise su bandeja de correo electrónico'}), 200
+                    
                     except Exception as e:
                         print(e)
                         return jsonify({'error': 'Error, servidor de correo no disponible'}), 400
@@ -202,6 +211,10 @@ def forgot_password():
 @usuario.route('/ajustes_usuario')
 def ajustes_usuario():
     return render_template('usuarios/ajustes.html')
+
+@usuario.route('/verificacion_dos_pasos', methods = ['GET', 'POST'])
+def verificacion_dos_pasos():
+    return render_template('usuarios/2fv.html')
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):

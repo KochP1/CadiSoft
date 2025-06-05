@@ -54,7 +54,7 @@ async function olvidar_contraseña(event) {
         }
 
         alert(data.message);
-        window.location.href = '/recuperar_contraseña'
+        window.location.href = '/verificacion_dos_pasos'
     } catch (e) {
         console.log(e)
     }
