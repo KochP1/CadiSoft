@@ -280,13 +280,16 @@ def verificacion_dos_pasos(idusuario):
 
 
 
-@usuario.route('/recuperar_contraseña/<int:idusuario>', methods = ['GET', 'POST'])
+@usuario.route('/recuperar_contraseña/<int:idusuario>', methods = ['GET', 'PATCH'])
 def recuperar_contraseña(idusuario):
-    if request.method == 'POST':
+    if request.method == 'PATCH':
         db = current_app.config['db']
         db.ping(reconnect=True)
 
         contraseñaNueva = request.form.get('contraseñaNueva')
+        
+        if not contraseñaNueva:
+            return jsonify({'error': 'Se deben llenar todos los campos'}), 400
         contraseña_hash = bcrypt.generate_password_hash(contraseñaNueva).decode('utf-8')
 
         try:
@@ -299,10 +302,10 @@ def recuperar_contraseña(idusuario):
         except Exception as e:
             db.rollback()
             print(e)
-            return jsonify({'error': 'Error al actualizar contraseña'}), 400
-
-
-    return render_template('usuarios/recuperar.html', user = idusuario)
+            return jsonify({'error': f'{e}'}), 500
+    
+    if request.method == 'GET':
+        return render_template('usuarios/recuperar.html', user = idusuario)
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):

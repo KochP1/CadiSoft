@@ -128,7 +128,7 @@ async function recuperar_contraseña(idusuario, event) {
 
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'PATCH',
             body: formData
         });
 
@@ -144,6 +144,8 @@ async function recuperar_contraseña(idusuario, event) {
     } catch(e) {
         console.log(e)
     }
+
+    return false;
 }
 
 // Inicio
