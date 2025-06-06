@@ -39,7 +39,7 @@
                     <td>{{alumno.cedula}}</td>
                     <td>{{alumno.email}}</td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary btn-secciones" onclick="get_id_alumno()" data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-modal">
+                        <button class="btn btn-primary btn-secciones" idAlumno="{{alumno.idAlumno}}" onclick="get_id_alumno(this.getAttribute('idAlumno'))" data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-modal">
                             Crear registro familiar
                         </button>
                     </td>

@@ -1012,10 +1012,8 @@ async function elim_curso(idcurso) {
 
 // FRONT END 
 
-function get_id_alumno() {
-    const cell = document.getElementById('td-id-alumno').textContent;
+function get_id_alumno(idAlumno) {
     const form = document.getElementById('crear-registro-familiar-form');
-    const idAlumno = parseInt(cell)
 
     form.setAttribute('idAlumno', idAlumno)
 }
