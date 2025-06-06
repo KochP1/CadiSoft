@@ -101,7 +101,8 @@ async function verificar_codigo(idusuario, event) {
 
 }
 
-async function recuperar_contraseña(idusuario) {
+async function recuperar_contraseña(idusuario, event) {
+    event.preventDefault();
     const url = `/recuperar_contraseña/${idusuario}`;
     const contraseñaNueva = document.getElementById('recuperar-contraseña').value.trim();
     const contraseaNuevaConfirmar = document.getElementById('recuperar-contraseña-confirmar').value.trim();

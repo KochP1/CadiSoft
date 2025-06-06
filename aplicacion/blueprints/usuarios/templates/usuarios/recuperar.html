@@ -8,7 +8,7 @@
 
             <div class="login-form__container">
 
-                <form class="user-form" idusuario="{{user}}" onsubmit="recuperar_contraseña(this.getAttribute('idusuario'))">
+                <form class="user-form" idusuario="{{user}}" onsubmit="recuperar_contraseña(this.getAttribute('idusuario', event))">
                     <div class="input__container">
                         <label for="contraseña">Contraseña</label>
                         <div class="password-input-login__container">
