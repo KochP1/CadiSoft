@@ -79,6 +79,23 @@ def registro_familiar():
         cur.close()
         return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
 
+@alumnos.route('/edit_registro_familiar/<int:idFamilia>')
+def edit_registro_familiar(idFamilia):
+    db = current_app.config['db']
+    try:
+        with db.cursor() as cur:
+            sql = 'SELECT f.idFamilia, u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE f.idFamilia = %s'
+            cur.execute(sql, (idFamilia,))
+            registros = cur.fetchall()
+            insertRegistros = []
+            columNames = [column[0] for column in cur.description]
+            for record in registros:
+                insertRegistros.append(dict(zip(columNames, record)))
+            print(insertRegistros)
+            return render_template('alumnos/edit_registro_familiar.html', familia = insertRegistros)
+    except Exception as e:
+        print(e)
+
 @alumnos.route('/eliminar_registro_familiar/<int:idRegistro>', methods = ['DELETE'])
 def eliminar_registro_familiar(idRegistro):
     db = current_app.config['db']

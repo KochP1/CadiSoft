@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Alumnos{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Editar registro familiar</h1>
+        <hr class="divider">
+    </div>
+
+    {% for record in familia %}
+
+            <div class="edit-h2__container first-h2"><h2>{{record.nombre}} {{record.apellido}}</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                {% if record.imagen != None %}
+                    <div class="img-editar">
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="edit-h2__container"><h2>Datos del papá</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="nombre" value="{{record.NombrePapa}}" id="editNombre" maxlength="12">
+                <input type="text" name="segundoNombre" value="{{record.ApellidoPapa}}" id="editSegundoNombre" maxlength="12">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idFamilia}}" onclick="edit_nombres(this.getAttribute('idFamilia'))">Actualizar</button>
+            </div>
+
+            <div class="edit-h2__container"><h2>Datos de la mamá</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="apellido" value="{{record.NombreMama}}" maxlength="20" id="editApellido">
+                <input type="text" name="segundoApellido" value="{{record.ApellidoMama}}" maxlength="20" id="editSegundoApellido">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idFamilia}}" onclick="edit_apellidos(this.getAttribute('idFamilia'))">Actualizar</button>
+            </div>
+
+            <div class="edit-h2__container"><h2>Contacto</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="number" name="cedula" value="{{record.Telefono}}" id="edit-cedula">
+                <button type="submit" class="btn btn-primary" idusuarios="{{record.idFamilia}}" onclick="edit_cedula(this.getAttribute('idFamilia'))">Actualizar</button>
+            </div>
+
+    {% endfor %}
+
+{% endblock %}
