@@ -1022,7 +1022,7 @@ function get_id_alumno() {
 
 function mostrar_contraseña(contraseña) {
     const inputContraseña = document.getElementById(contraseña);
-    const contraseñaIcono = document.getElementById('contraseña-icon');
+    const contraseñaIcono = document.querySelector(`[id-input="${contraseña}"]`);
 
     if (!inputContraseña || !contraseñaIcono) {
         return;
