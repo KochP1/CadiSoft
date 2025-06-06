@@ -67,15 +67,31 @@ def crear_registro_familiar(idAlumno):
 @alumnos.route('/registro_familiar', methods = ['GET'])
 def registro_familiar():
     db = current_app.config['db']
-    cur = db.cursor()
-    sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios'
-    cur.execute(sql)
-    registros = cur.fetchall()
-    insertRegistros = []
-    columNames = [column[0] for column in cur.description]
-    for record in registros:
-        insertRegistros.append(dict(zip(columNames, record)))
-    return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
+    if request.method == 'GET':
+        cur = db.cursor()
+        sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios'
+        cur.execute(sql)
+        registros = cur.fetchall()
+        insertRegistros = []
+        columNames = [column[0] for column in cur.description]
+        for record in registros:
+            insertRegistros.append(dict(zip(columNames, record)))
+        cur.close()
+        return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
+
+@alumnos.route('/eliminar_registro_familiar/<int:idRegistro>', methods = ['DELETE'])
+def eliminar_registro_familiar(idRegistro):
+    db = current_app.config['db']
+    try:
+        with db.cursor() as cur:
+            sql = 'DELETE FROM registro_familiar WHERE idFamilia = %s'
+            cur.execute(sql, (idRegistro,))
+            db.commit()
+            return jsonify({'message': 'Registro familiar eliminado satisfactoriamente'})
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': f'Error al eliminar registro familiar: {e}'}), 500
 
 @alumnos.route('/buscar_registro_familiar', methods = ['POST'])
 def buscar_registro_familiar():

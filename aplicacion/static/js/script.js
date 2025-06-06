@@ -662,6 +662,29 @@ async function crear_registro_familiar(idAlumno, event) {
     }
 }
 
+async function eliminar_registro_familiar(idRegistro) {
+    const url = `/alumnos/eliminar_registro_familiar/${idRegistro}`;
+
+    if(confirm('Estas seguro de que quieres eliminar el registro familiar?')) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+
+            alert(data.message);
+            window.location.reload();
+        } catch (e) {
+            console.log(e)
+        }
+    }
+}
+
 // INSCRIPCIONES
 
 // Buscar alumno por cédula

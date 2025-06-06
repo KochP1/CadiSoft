@@ -57,7 +57,7 @@
                 <td>{{familia.ApellidoMama}}</td>
                 <td>{{familia.Telefono}}</td>
                 <td class="tabla-btn"><button class="btn btn-primary">Editar</button></td>
-                <td class="tabla-btn"><button class="btn btn-danger">Eliminar</button></td>
+                <td class="tabla-btn"><button class="btn btn-danger" idRegistro="{{familia.idFamilia}}" onclick="eliminar_registro_familiar(this.getAttribute('idRegistro'))">Eliminar</button></td>
             </tr>
             {% endfor %}
         </table>
