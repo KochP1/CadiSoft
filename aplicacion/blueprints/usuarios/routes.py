@@ -174,31 +174,63 @@ def generar_codigo_verificacion(usuario_id):
         current_app.logger.error(f"Error al guardar código: {str(e)}")
         raise
 
-def validar_codigo(codigo, idusuario):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
-
-    try:
-        with db.cursor() as cur:
-            sql = 'SELECT * FROM codigos_verificacion WHERE codigo = %s AND idusuarios = %s AND usado = FALSE  AND expiracion > NOW()'
-            data = (codigo, idusuario)
-            cur.execute(sql, data)
-            record = cur.fetchone()
-
-            if record:
-                return jsonify({'message': 'Codigo verificado exitoasmente', 'user': idusuario}), 200
-            else: 
-                return jsonify({'error': 'Codigo invalido'}), 400
-    except Exception as e:
-        print(e)
-        return jsonify({'error': 'Error al validar codigo'}), 400
-
 def send_mail(email, id):
     mail = current_app.config['mail']
+    codigo = generar_codigo_verificacion(id)
+
+    html_body = f"""
+        <html>
+        <head>
+            <style>
+            body {{ font-family: Arial, sans-serif; }}
+            .header {{ 
+                background-color: #833d3d;
+                color: white;
+                padding: 20px;
+                text-align: center;
+            }}
+            .code {{
+                font-size: 24px;
+                font-weight: bold;
+                color: #833d3d;
+                margin: 20px 0;
+                text-align: center;
+            }}
+            .footer {{
+                margin-top: 20px;
+                font-size: 12px;
+                color: #777;
+                text-align: center;
+            }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+            <h1>Recuperación de cuenta cadiSoft</h1>
+            </div>
+            
+            <p>Hola,</p>
+            <p>Has solicitado un código de verificación para recuperar tu cuenta.</p>
+            
+            <div class="code">
+            Tu código es: {codigo}
+            </div>
+            
+            <p>Este código expirará en 15 minutos.</p>
+            
+            <div class="footer">
+            <p>© {dt.datetime.now().year} CadiSoft - Todos los derechos reservados</p>
+            <img src="http://127.0.0.1:5000/images/Cadi_logo-removeBG.png" alt="Logo cadiSoft" width="150">
+            </div>
+        </body>
+        </html>
+        """
+    
     msg = Message(
     "Recuperación de cuenta cadiSoft",
     recipients=[email],
-    body=f"Tu codigo de verifiación es: {generar_codigo_verificacion(id)}"
+    html = html_body,
+    body=f"Tu codigo de verifiación es: {codigo}"
     )
     mail.send(msg)
 
@@ -254,7 +286,7 @@ def verificacion_dos_pasos(idusuario):
 
         try:
             with db.cursor() as cur:
-                sql = 'SELECT * FROM codigos_verificacion WHERE codigo = %s AND idusuarios = %s AND usado IS NULL OR usado = FALSE'
+                sql = 'SELECT * FROM codigos_verificacion WHERE codigo = %s AND idusuarios = %s AND (usado IS NULL OR usado = FALSE)'
                 data = (codigo, idusuario)
                 print(data)
                 cur.execute(sql, data)
@@ -265,11 +297,11 @@ def verificacion_dos_pasos(idusuario):
                     cur.execute(
                         """ UPDATE codigos_verificacion 
                             SET usado = TRUE 
-                            WHERE idusuarios = %s 
-                            AND usado = FALSE """,
+                            WHERE idusuarios = %s """,
                         (idusuario,)
                     )
-                    return jsonify({'message': 'Codigo verificado exitoasmente', 'user': idusuario}), 200
+                    db.commit()
+                    return jsonify({'message': 'Codigo verificado exitosamente', 'user': idusuario}), 200
                 else: 
                     return jsonify({'error': 'Codigo invalido'}), 400
         except Exception as e:
