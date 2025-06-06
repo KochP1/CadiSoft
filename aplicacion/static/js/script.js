@@ -662,6 +662,131 @@ async function crear_registro_familiar(idAlumno, event) {
     }
 }
 
+async function edit_datos_papa(idFamilia, event) {
+    event.preventDefault();
+    const url = `/alumnos/edit_registro_fam_papa/${idFamilia}`;
+    const NombrePapa = document.getElementById('editNombrePapa').value.trim();
+    const ApellidoPapa = document.getElementById('editApellidoPapa').value.trim();
+    const formData = new FormData();
+
+    if (!NombrePapa || !ApellidoPapa) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (NombrePapa.length > 12) {
+        alert('Los nombres pueden tener máximo 12 caracteres');
+        return;
+    }
+
+    if (ApellidoPapa.length > 20) {
+        alert('Los apellidos pueden tener máximo 20 caracteres');
+        return;
+    }
+
+    formData.append('NombrePapa' ,NombrePapa);
+    formData.append('ApellidoPapa' ,ApellidoPapa);
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function edit_datos_mama(idFamilia, event) {
+    event.preventDefault();
+    const url = `/alumnos/edit_registro_fam_mama/${idFamilia}`;
+    const NombreMama = document.getElementById('editNombreMama').value.trim();
+    const ApellidoMama = document.getElementById('editApellidoMama').value.trim();
+    const formData = new FormData();
+
+    if (!NombreMama || !ApellidoMama) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (NombreMama.length > 12) {
+        alert('Los nombres pueden tener máximo 12 caracteres');
+        return;
+    }
+
+    if (ApellidoMama.length > 20) {
+        alert('Los apellidos pueden tener máximo 20 caracteres');
+        return;
+    }
+
+    formData.append('NombreMama' ,NombreMama);
+    formData.append('ApellidoMama' ,ApellidoMama);
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function edit_datos_contacto(idFamilia, event) {
+    event.preventDefault();
+    const url = `/alumnos/edit_registro_fam_contacto/${idFamilia}`;
+    const contacto = document.getElementById('edit-contacto').value.trim();
+    const formData = new FormData();
+
+    if (!contacto) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (contacto.length > 11) {
+        alert('El teléfono puede tener máximo 11 digitos');
+        return;
+    }
+
+    formData.append('contacto', contacto)
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch(e) {
+        console.log(e)
+    }
+}
+
 async function eliminar_registro_familiar(idRegistro) {
     const url = `/alumnos/eliminar_registro_familiar/${idRegistro}`;
 

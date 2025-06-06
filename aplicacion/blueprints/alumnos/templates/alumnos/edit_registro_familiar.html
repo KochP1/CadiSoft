@@ -29,26 +29,26 @@
 
             <div class="edit-h2__container"><h2>Datos del papá</h2></div>
             <hr class="divider">
-            <div class="edit__container">
-                <input type="text" name="nombre" value="{{record.NombrePapa}}" id="editNombre" maxlength="12">
-                <input type="text" name="segundoNombre" value="{{record.ApellidoPapa}}" id="editSegundoNombre" maxlength="12">
-                <button type="submit" class="btn btn-primary" idusuarios="{{record.idFamilia}}" onclick="edit_nombres(this.getAttribute('idFamilia'))">Actualizar</button>
-            </div>
+            <form class="edit__container" id="form-edit-papa" idFamilia="{{record.idFamilia}}" onsubmit="edit_datos_papa(this.getAttribute('idFamilia'), event)">
+                <input type="text" value="{{record.NombrePapa}}" id="editNombrePapa" maxlength="12">
+                <input type="text" value="{{record.ApellidoPapa}}" id="editApellidoPapa" maxlength="12">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
 
             <div class="edit-h2__container"><h2>Datos de la mamá</h2></div>
             <hr class="divider">
-            <div class="edit__container">
-                <input type="text" name="apellido" value="{{record.NombreMama}}" maxlength="20" id="editApellido">
-                <input type="text" name="segundoApellido" value="{{record.ApellidoMama}}" maxlength="20" id="editSegundoApellido">
-                <button type="submit" class="btn btn-primary" idusuarios="{{record.idFamilia}}" onclick="edit_apellidos(this.getAttribute('idFamilia'))">Actualizar</button>
-            </div>
+            <form class="edit__container" id="form-edit-mama" idFamilia="{{record.idFamilia}}" onsubmit="edit_datos_mama(this.getAttribute('idFamilia'), event)">
+                <input type="text" value="{{record.NombreMama}}" maxlength="20" id="editNombreMama">
+                <input type="text" value="{{record.ApellidoMama}}" maxlength="20" id="editApellidoMama">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
 
             <div class="edit-h2__container"><h2>Contacto</h2></div>
             <hr class="divider">
-            <div class="edit__container">
-                <input type="number" name="cedula" value="{{record.Telefono}}" id="edit-cedula">
-                <button type="submit" class="btn btn-primary" idusuarios="{{record.idFamilia}}" onclick="edit_cedula(this.getAttribute('idFamilia'))">Actualizar</button>
-            </div>
+            <form class="edit__container" id="form-edit-contacto" idFamilia="{{record.idFamilia}}" onsubmit="edit_datos_contacto(this.getAttribute('idFamilia'), event)">
+                <input type="number" value="{{record.Telefono}}" id="edit-contacto">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
 
     {% endfor %}
 

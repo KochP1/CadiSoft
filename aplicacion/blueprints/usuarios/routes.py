@@ -31,9 +31,13 @@ def index():
 
     return render_template('usuarios/index.html')
 
+
+
 @usuario.route('/inicio')
 def inicio():
     return render_template('usuarios/inicio.html')
+
+
 
 @usuario.route('/inicio_stats')
 def inicio_stats():
@@ -77,6 +81,8 @@ def inicio_stats():
         db.rollback()
         print(e)
         return jsonify({'error': 'Request fallido'}), 400
+    
+
 
 @usuario.route('/regist_user', methods = ['GET', 'POST'])
 def regist_user():
@@ -127,6 +133,7 @@ def regist_user():
             cur.close()
 
 
+
 def generar_codigo_verificacion(usuario_id):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -173,6 +180,8 @@ def generar_codigo_verificacion(usuario_id):
         db.rollback()
         current_app.logger.error(f"Error al guardar código: {str(e)}")
         raise
+
+
 
 def send_mail(email, id):
     mail = current_app.config['mail']
@@ -339,6 +348,8 @@ def recuperar_contraseña(idusuario):
     if request.method == 'GET':
         return render_template('usuarios/recuperar.html', user = idusuario)
 
+
+
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):
     db = current_app.config['db']
@@ -356,6 +367,8 @@ def get_profile_image(idusuarios):
         mime_type = 'image/jpeg'
     
     return Response(image_data, mimetype=mime_type)
+
+
 
 @usuario.route('/update_foto/<int:idusuarios>', methods = ['PATCH'])
 def update_foto(idusuarios):
@@ -376,6 +389,8 @@ def update_foto(idusuarios):
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
+
+
 
 @usuario.route('/update_email/<int:idusuarios>', methods = ['PATCH'])
 def update_email(idusuarios):
@@ -403,6 +418,8 @@ def update_email(idusuarios):
     finally:
         cur.close()
 
+
+
 @usuario.route('/edit_nombres/<int:idusuarios>', methods = ['PATCH'])
 def edit_nombres(idusuarios):
     db = current_app.config['db']
@@ -428,6 +445,8 @@ def edit_nombres(idusuarios):
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
+
+
 
 @usuario.route('/edit_apellidos/<int:idusuarios>', methods = ['PATCH'])
 def edit_apellidos(idusuarios):
@@ -455,6 +474,8 @@ def edit_apellidos(idusuarios):
     finally:
         cur.close()
 
+
+
 @usuario.route('/edit_cedula/<int:idusuarios>', methods = ['PATCH'])
 def edit_cedula(idusuarios):
     db = current_app.config['db']
@@ -480,6 +501,8 @@ def edit_cedula(idusuarios):
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
+
+
 
 @usuario.route('/edit_contraseña/<int:idusuarios>', methods = ['PATCH'])
 def edit_contraseña(idusuarios):
@@ -510,6 +533,8 @@ def edit_contraseña(idusuarios):
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
+
+
 
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():
