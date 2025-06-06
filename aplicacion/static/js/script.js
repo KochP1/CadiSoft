@@ -101,6 +101,50 @@ async function verificar_codigo(idusuario, event) {
 
 }
 
+async function recuperar_contraseña(idusuario) {
+    const url = `/recuperar_contraseña/${idusuario}`;
+    const contraseñaNueva = document.getElementById('recuperar-contraseña').value.trim();
+    const contraseaNuevaConfirmar = document.getElementById('recuperar-contraseña-confirmar').value.trim();
+    const formData = new FormData();
+
+    if (!contraseaNuevaConfirmar || !contraseñaNueva) {
+        alert('Todos los campos son obligatorios');
+        return null;
+    }
+
+    if(contraseñaNueva !== contraseaNuevaConfirmar) {
+        alert('La confirmación de la contraseña no es igual a la nueva contraseña');
+        return null;
+    }
+
+    if (contraseñaNueva.length > 8 || contraseaNuevaConfirmar.length > 8) {
+        alert('La contraseña puede tener máximo 8 caracteres');
+        return null;
+    }
+
+    formData.append('contraseñaNueva', contraseñaNueva);
+    formData.append('contraseaNuevaConfirmar', contraseaNuevaConfirmar);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.href = '/';
+
+    } catch(e) {
+        console.log(e)
+    }
+}
+
 // Inicio
 
 async function stats() {

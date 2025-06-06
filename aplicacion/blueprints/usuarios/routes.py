@@ -266,8 +266,7 @@ def verificacion_dos_pasos(idusuario):
                         """ UPDATE codigos_verificacion 
                             SET usado = TRUE 
                             WHERE idusuarios = %s 
-                            AND usado = FALSE 
-                            AND expiracion > NOW() """,
+                            AND usado = FALSE """,
                         (idusuario,)
                     )
                     return jsonify({'message': 'Codigo verificado exitoasmente', 'user': idusuario}), 200
@@ -283,6 +282,26 @@ def verificacion_dos_pasos(idusuario):
 
 @usuario.route('/recuperar_contraseña/<int:idusuario>', methods = ['GET', 'POST'])
 def recuperar_contraseña(idusuario):
+    if request.method == 'POST':
+        db = current_app.config['db']
+        db.ping(reconnect=True)
+
+        contraseñaNueva = request.form.get('contraseñaNueva')
+        contraseña_hash = bcrypt.generate_password_hash(contraseñaNueva).decode('utf-8')
+
+        try:
+            with db.cursor() as cur:
+                sql = 'UPDATE usuarios SET contraseña = %s WHERE idusuarios = %s'
+                data = (contraseña_hash, idusuario)
+                cur.execute(sql, data)
+                db.commit()
+                return jsonify({'message': 'contraseña actualizada satisfactoriamente', 'user': idusuario}), 200
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': 'Error al actualizar contraseña'}), 400
+
+
     return render_template('usuarios/recuperar.html', user = idusuario)
 
 @usuario.route('/get_profile_image/<int:idusuarios>')

@@ -8,12 +8,12 @@
 
             <div class="login-form__container">
 
-                <form class="user-form" idusuario="{{user}}">
+                <form class="user-form" idusuario="{{user}}" onsubmit="recuperar_contraseña(this.getAttribute('idusuario'))">
                     <div class="input__container">
                         <label for="contraseña">Contraseña</label>
                         <div class="password-input-login__container">
                             <input type="password" id="recuperar-contraseña" name="contraseña">
-                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="recuperar-contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
                         </div>
                     </div>
 
@@ -21,7 +21,7 @@
                         <label for="contraseña">Contraseña</label>
                         <div class="password-input-login__container">
                             <input type="password" id="recuperar-contraseña-confirmar" name="contraseña">
-                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                            <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="recuperar-contraseña-confirmar" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
                         </div>
                     </div>
 
