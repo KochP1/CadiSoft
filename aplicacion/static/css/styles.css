@@ -738,6 +738,18 @@ input[type=number] {
     background-color: transparent;
     color: #fff;
 }
+
+.modal-content.dark-mode .modal-body form select {
+    background-color: transparent;
+    color: #fff;
+}
+
+.modal-content.dark-mode .modal-body form option {
+    background-color: #333;
+    color: #fff;
+}
+
+
 /* transición de desvanecido */
 html {
     animation: fadeIn 0.3s;
