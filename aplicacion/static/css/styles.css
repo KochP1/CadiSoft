@@ -8,6 +8,13 @@ body{
     box-sizing: border-box;
 }
 
+/* MODO OSCURO BODY */
+
+body.dark-mode {
+    background-color: #121212;
+    color: #fff;
+}
+
 /* INICIO DE SESION */
 .login__wrapper{
     display: flex;
@@ -110,6 +117,12 @@ input[type=number] {
     text-decoration: underline;
 }
 
+/* MODO OSCURO */
+
+
+
+/* FIN INICIO DE SESIÓN*/
+
 /* REGISTRO DE USUARIOS */
 
 .regist-form{
@@ -171,6 +184,7 @@ input[type=number] {
 /* NAVBAR */
 
 .navbar{
+    background-color: #ffffff;
     box-shadow: 0px 4px 6px #333 !important;
     width: 100vw !important;
 }
@@ -214,7 +228,51 @@ input[type=number] {
     left: -80px !important;
 }
 
+.theme-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 10px;
+}
 
+.theme-icon i, .theme-icon span {
+    width: max-content;
+    margin: 0;
+}
+
+/* MODO OSCURO NAVBAR */
+
+.navbar.dark-mode {
+    background-color: transparent !important;
+    color: #fff !important;
+    box-shadow: 0px 4px 6px #fff !important;;
+}
+
+
+.nav-list.dark-mode li a {
+    color: #fff !important;
+}
+
+.nav-list.dark-mode li .dropdown-menu {
+    background-color: #333;
+    border: 1px solid #fff;
+}
+
+.nav-list.dark-mode li .dropdown-menu li i{
+    color: #fff;
+}
+
+.nav-list.dark-mode li .dropdown-menu li hr {
+    border: 1px solid #fff;
+}
+
+.nav-list.dark-mode li .dropdown-menu li a:hover, .nav-list.dark-mode li .dropdown-menu li i:hover {
+    background-color: #121212;
+}
+
+.nav-list.dark-mode li .dropdown-menu li a:active, .nav-list.dark-mode li .dropdown-menu li i:active {
+    background-color: #121212;
+}
 
 @media (max-width: 1853px) {
     .user{
@@ -269,6 +327,8 @@ input[type=number] {
         align-items: start;
     }
 }
+
+/* FIN NAVBAR */
 
 /* INICIO */
 
@@ -340,6 +400,16 @@ input[type=number] {
     display: none;
 }
 
+/* INICIO MODO OSCURO */
+
+.info-card.dark-mode{
+    box-shadow: 0px 0px 5px 0px #fff;
+}
+
+.info-card.dark-mode .info__container {
+    background-color: #333;
+}
+
 @media (max-width: 1629px) {
     .inicio__wrapper{
     width: 100%;
@@ -370,6 +440,8 @@ input[type=number] {
     font-size: 1.5rem;
 }
 }
+
+/* FIN INICIO */
 
 /* VISTA DE ALUMNOS */
 
@@ -620,6 +692,14 @@ input[type=number] {
     vertical-align: middle;
     font-size: 1rem;
     font-weight: bold;
+}
+
+.table-horario.dark-mode td {
+    color: black;
+}
+
+.table-horario.dark-mode .hora-td {
+    color: #fff;
 }
 
 #horario__container {

@@ -28,7 +28,7 @@
 <body>
     {% if current_user.is_authenticated %}
 
-    <nav class="navbar navbar-expand-xxl bg-body-tertiary px-0" style="background-color: #ffffff !important;">
+    <nav class="navbar navbar-expand-xxl bg-body-tertiary px-0">
         <div class="container-fluid">
           <a class="navbar-brand" href="{{url_for('usuario.inicio')}}">
             <img src="{{ url_for('static', filename='images/Cadi_logo-removeBG.png') }}" alt="Cadi" width="70px" height="70px">
@@ -123,6 +123,9 @@
                 </a>
                 <ul class="dropdown-menu user-dropdown">
                   <li><a class="dropdown-item" href="{{url_for('usuario.ajustes_usuario')}}">Ajustes</a></li>
+                  <li class="theme-icon">
+                    <i class="fa fa-moon dropdown-item"></i>
+                  </li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
                 </ul>
@@ -138,6 +141,10 @@
     {% block content %} 
     
     {% endblock %}
+
+    {% if current_user.is_authenticated %}
+        <script src="{{ url_for('static', filename='js/darkMode.js') }}"></script>
+    {% endif %}
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
