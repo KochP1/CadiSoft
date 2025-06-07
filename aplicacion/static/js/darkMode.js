@@ -61,6 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
         tableHorario.forEach((table) => {
             table.classList.add('dark-mode');
         })
+
+        const modal = document.querySelectorAll('.modal-content');
+        modal.forEach(modal => modal.classList.add('dark-mode'));
     }
 
     function disableDarkMode() {
@@ -104,6 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const tableHorario = document.querySelectorAll('.table-horario');
         tableHorario.forEach((table) => {
             table.classList.remove('dark-mode');
-        })
+        });
+
+        const modal = document.querySelectorAll('.modal-content');
+        modal.forEach(modal => modal.classList.remove('dark-mode'));
     }
 });

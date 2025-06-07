@@ -726,6 +726,18 @@ input[type=number] {
     background-color: #a86650 !important;
     border-color: #e2896b !important;
 }
+
+/* MODO OSCURO MODALES */
+
+.modal-content.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.modal-content.dark-mode .modal-body form input {
+    background-color: transparent;
+    color: #fff;
+}
 /* transición de desvanecido */
 html {
     animation: fadeIn 0.3s;
