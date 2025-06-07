@@ -538,11 +538,17 @@ input[type=number] {
     width: 90%;
 }
 
-.edit__container form, .edit__container button, .edit__container input, .edit__container div {
+.edit__container form, .edit__container button, .edit__container input, .edit__container div, .edit__container select {
     margin-left: 60px;
 }
 
 .edit__container input{
+    width: 300px;
+    height: 45px;
+    font-size: 1.3rem;
+}
+
+.edit__container select{
     width: 300px;
     height: 45px;
     font-size: 1.3rem;

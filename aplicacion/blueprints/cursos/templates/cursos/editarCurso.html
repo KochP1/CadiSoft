@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Editar curso {{cursos[0].nombre_curso.lower()}}</h1>
+        <hr class="divider">
+    </div>
+
+    {% for record in cursos %}
+
+            <div class="edit-h2__container first-h2"><h2>Imágen</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                {% if record.imagen != None %}
+                    <div class="img-editar">
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre_curso}}">
+                    </div>
+                {% endif %}
+                <form id="updateFoto">
+                    <input type="file" id="fotoCurso">
+                    <button type="submit" class="btn btn-primary" idcurso="{{record.idCurso}}" onclick="update_foto(this.getAttribute('idcurso'))">Actualizar</button>
+                </form>
+            </div>
+
+            <div class="edit-h2__container"><h2>Nombre del curso</h2></div>
+            <hr class="divider">
+            <form class="edit__container">
+                <input type="text" name="nombre" value="{{record.nombre_curso}}" id="editNombreCurso">
+                <button type="submit" class="btn btn-primary" idcurso="{{record.idCurso}}" onclick="edit_nombres(this.getAttribute('idcurso'))">Actualizar</button>
+            </form>
+
+            <div class="edit-h2__container"><h2>Facultad</h2></div>
+            <hr class="divider">
+            <form class="edit__container">
+                <select name="facultades" id="selectFacultadesEdit">
+                    <option value="{{record.idFacultad}}">{{record.facultad}}</option>
+                    {% for record in facultades %}
+                        {% if record.idFacultad %}
+                            <option value="{{record.idFacultad}}">{{record.facultad}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary" idcurso="{{record.idCurso}}" onclick="edit_apellidos(this.getAttribute('idcurso'))">Actualizar</button>
+            </form>
+
+    {% endfor %}
+
+{% endblock %}

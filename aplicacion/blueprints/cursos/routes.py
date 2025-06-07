@@ -2,6 +2,8 @@ from flask import jsonify, request, render_template, redirect, url_for, Blueprin
 
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
 
+# ENDPOINTS DE CURSOS
+
 @cursos.route('/', methods = ['GET', 'POST'])
 def index():
     db = current_app.config['db']
@@ -35,6 +37,8 @@ def index():
     except Exception as e:
         print(e)
 
+
+
 @cursos.route('/buscar_facultades')
 def buscar_facultades():
     try:
@@ -54,6 +58,67 @@ def buscar_facultades():
     except Exception as e:
         print(e)
         return jsonify({'error': 'Error al buscar facultades'}), 400
+    
+
+
+@cursos.route('/edit_cursos/<int:idCurso>', methods = ['GET'])
+def edit_cursos(idCurso):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    try:
+        with db.cursor() as cur:
+            sql = 'SELECT c.idCurso, c.idFacultad, c.nombre_curso, c.imagen, f.facultad FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.idCurso = %s'
+            cur.execute(sql, (idCurso,))
+            registros = cur.fetchall()
+
+            insertRegistros = []
+            columNames = [column[0] for column in cur.description]
+
+            for record in registros:
+                insertRegistros.append(dict(zip(columNames, record)))
+
+            cur.execute('SELECT * FROM facultades')
+            registrosFacultades = cur.fetchall()
+
+            insertRegistrosFacultades = []
+            columNamesFacultades = [column[0] for column in cur.description]
+
+            for record in registrosFacultades:
+                insertRegistrosFacultades.append(dict(zip(columNamesFacultades, record)))
+
+            for record in insertRegistros:
+                idFacultad = record['idFacultad']
+                print(idFacultad)
+            
+            for record in insertRegistrosFacultades:
+                if idFacultad == record['idFacultad']:
+                    record.clear()
+
+            return render_template('cursos/editarCurso.html', cursos = insertRegistros, facultades = insertRegistrosFacultades)
+    except Exception as e:
+        print(e)
+
+
+
+@cursos.route('/eliminar_curso/<int:idcurso>', methods = ['DELETE'])
+def eliminar_curso(idcurso):
+    db = current_app.config['db']
+    cur = db.cursor()
+
+    try:
+        cur.execute('DELETE FROM cursos WHERE idCurso = %s', (idcurso,))
+        db.commit()
+        return jsonify({'mensaje': 'curso eliminado'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'el curso no pudo ser eliminado'}), 400
+    finally:
+        cur.close()
+
+# FINALIZA ENDPOINTS DE CURSOS
+
 
 @cursos.route('/seccion_curso/<int:idcurso>')
 def seccion_curso(idcurso):
@@ -75,19 +140,3 @@ def seccion_curso(idcurso):
         except Exception as e:
             print(f'\nError!!!: {e}\n')
             return redirect(url_for('cursos.index'))
-
-@cursos.route('/eliminar_curso/<int:idcurso>', methods = ['DELETE'])
-def eliminar_curso(idcurso):
-    db = current_app.config['db']
-    cur = db.cursor()
-
-    try:
-        cur.execute('DELETE FROM cursos WHERE idCurso = %s', (idcurso,))
-        db.commit()
-        return jsonify({'mensaje': 'curso eliminado'}), 200
-    except Exception as e:
-        db.rollback()
-        print(e)
-        return jsonify({'error': 'el curso no pudo ser eliminado'}), 400
-    finally:
-        cur.close()

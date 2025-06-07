@@ -45,9 +45,11 @@
                         </a>
                     </td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary">
-                            Editar
-                        </button>
+                        <a href="{{url_for('cursos.edit_cursos', idCurso=curso.idCurso)}}" class="editar-link">
+                            <button class="btn btn-primary">
+                                Editar
+                            </button>
+                        </a>
                     </td>
                     <td class="tabla-btn">
                         <button class="btn btn-danger" idcursos="{{curso.idCurso}}" onclick="elim_curso(this.getAttribute('idcursos'))">

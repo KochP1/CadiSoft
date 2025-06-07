@@ -1087,8 +1087,6 @@ function select_facultades(data) {
 async function crear_curso(event) {
     event.preventDefault();
 
-    console.log('me ejecuto')
-
     const url = '/cursos/';
     const facultad = document.getElementById('facultad-curso').value;
     const nombre_curso = document.getElementById('curso').value.trim();
@@ -1124,6 +1122,7 @@ async function crear_curso(event) {
         }
 
         alert(data.message);
+        window.location.reload();
     } catch (e) {
         console.log(e)
     }
@@ -1135,7 +1134,7 @@ async function elim_curso(idcurso) {
     if (isSearching) return;
     isSearching = true;
 
-    if (idcurso) {
+    if (confirm('Quieres eliminar este curso?')) {
         try {
             const response = await fetch(url, {
                 method: 'DELETE'
