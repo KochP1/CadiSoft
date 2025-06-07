@@ -1131,9 +1131,6 @@ async function crear_curso(event) {
 async function elim_curso(idcurso) {
     const url = `/cursos/eliminar_curso/${idcurso}`;
 
-    if (isSearching) return;
-    isSearching = true;
-
     if (confirm('Quieres eliminar este curso?')) {
         try {
             const response = await fetch(url, {
@@ -1150,8 +1147,6 @@ async function elim_curso(idcurso) {
             window.location.reload();
         } catch (e) {
             console.log(e)
-        } finally {
-            isSearching = false
         }
     }
 
