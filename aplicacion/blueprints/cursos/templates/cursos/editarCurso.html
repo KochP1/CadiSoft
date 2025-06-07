@@ -33,14 +33,14 @@
 
             <div class="edit-h2__container"><h2>Nombre del curso</h2></div>
             <hr class="divider">
-            <form class="edit__container">
+            <form class="edit__container" idcurso="{{record.idCurso}}" onsubmit="edit_nombre_curso(this.getAttribute('idcurso'), event)">
                 <input type="text" name="nombre" value="{{record.nombre_curso}}" id="editNombreCurso">
-                <button type="submit" class="btn btn-primary" idcurso="{{record.idCurso}}" onclick="edit_nombres(this.getAttribute('idcurso'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
             </form>
 
             <div class="edit-h2__container"><h2>Facultad</h2></div>
             <hr class="divider">
-            <form class="edit__container">
+            <form class="edit__container" idcurso="{{record.idCurso}}" onsubmit="edit_facultad_curso(this.getAttribute('idcurso'), event)">
                 <select name="facultades" id="selectFacultadesEdit">
                     <option value="{{record.idFacultad}}">{{record.facultad}}</option>
                     {% for record in facultades %}
@@ -49,7 +49,7 @@
                         {% endif %}
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-primary" idcurso="{{record.idCurso}}" onclick="edit_apellidos(this.getAttribute('idcurso'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
             </form>
 
     {% endfor %}

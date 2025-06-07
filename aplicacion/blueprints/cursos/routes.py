@@ -99,6 +99,45 @@ def edit_cursos(idCurso):
     except Exception as e:
         print(e)
 
+@cursos.route('/edit_nombre_curso/<int:idCurso>', methods = ['PATCH'])
+def edit_nombre_curso(idCurso):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+    curso = request.form.get('curso')
+
+    if not curso:
+        return jsonify({'error': 'Faltan campos'}), 400
+    
+    try:
+        with db.cursor() as cur:
+            sql = 'UPDATE cursos SET nombre_curso = %s WHERE idCurso = %s'
+            data = (curso, idCurso)
+            cur.execute(sql, data)
+            db.commit()
+            return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Error al modificar curso'}), 500
+
+@cursos.route('/edit_facultad_curso/<int:idCurso>', methods = ['PATCH'])
+def edit_facultad_curso(idCurso):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+    facultad = request.form.get('facultad')
+
+    if not facultad:
+        return jsonify({'error': 'Faltan campos'}), 400
+    
+    try:
+        with db.cursor() as cur:
+            sql = 'UPDATE cursos SET idFacultad = %s WHERE idCurso = %s'
+            data = (facultad, idCurso)
+            cur.execute(sql, data)
+            db.commit()
+            return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Error al modificar curso'}), 500
 
 
 @cursos.route('/eliminar_curso/<int:idcurso>', methods = ['DELETE'])

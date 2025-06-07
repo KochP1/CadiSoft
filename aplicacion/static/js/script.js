@@ -1157,6 +1157,75 @@ async function elim_curso(idcurso) {
 
 }
 
+async function edit_nombre_curso(idCurso, event) {
+    event.preventDefault();
+    const url = `/cursos/edit_nombre_curso/${idCurso}`;
+    const curso = document.getElementById('editNombreCurso').value.trim();
+    const formData = new FormData();
+
+    if (!curso) {
+        alert('Debe ingresar un nombre para el curso');
+        return;
+    }
+
+    if (curso.length > 40) {
+        alert('El curso puede tener 40 caracteres máximo');
+        return;
+    }
+
+    formData.append('curso', curso)
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+async function edit_facultad_curso(idCurso, event) {
+    event.preventDefault();
+    const url = `/cursos/edit_facultad_curso/${idCurso}`;
+    const facultad = document.getElementById('selectFacultadesEdit').value;
+    const formData = new FormData();
+
+    if (!facultad) {
+        alert('Debe seleccionar una facultad');
+        return;
+    }
+
+    formData.append('facultad', facultad);
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch(e) {
+        console.log(e)
+    }
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {
