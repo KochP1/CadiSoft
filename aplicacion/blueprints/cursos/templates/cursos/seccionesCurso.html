@@ -8,7 +8,7 @@
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
-            <a href="{{url_for('cursos.crear_curso')}}">
+            <a href="{{url_for('cursos.crear_seccion', idCurso=secciones[0].idCurso)}}">
                 <button class="btn btn-primary btn-crear">Crear sección</button>
             </a>
             <form action="" method="post" class="filtrar-alumno__form">

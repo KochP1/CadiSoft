@@ -185,8 +185,8 @@ def seccion_curso(idcurso):
 
 
 
-@cursos.route('/crear_curso', methods = ['GET', 'POST'])
-def crear_curso():
+@cursos.route('/craer_seccion/<int:idCurso>', methods = ['GET', 'POST'])
+def crear_seccion(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
 
