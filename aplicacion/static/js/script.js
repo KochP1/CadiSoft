@@ -1221,6 +1221,31 @@ async function edit_facultad_curso(idCurso, event) {
     }
 }
 
+// SECCIONES 
+
+async function eliminar_seccion(idSeccion) {
+    const url = `/cursos/elim_seccion/${idSeccion}`;
+
+    if (confirm('Estas seguro de quieres eliminar la sección')) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+
+            if(!response.ok) {
+                throw new Error(data.error);
+            }
+
+            alert(data.message);
+            window.location.reload();
+        } catch(e) {
+            console.log(e)
+        }
+    }
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {

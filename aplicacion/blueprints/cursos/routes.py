@@ -99,6 +99,8 @@ def edit_cursos(idCurso):
     except Exception as e:
         print(e)
 
+
+
 @cursos.route('/edit_nombre_curso/<int:idCurso>', methods = ['PATCH'])
 def edit_nombre_curso(idCurso):
     db = current_app.config['db']
@@ -118,6 +120,8 @@ def edit_nombre_curso(idCurso):
     except Exception as e:
         print(e)
         return jsonify({'error': 'Error al modificar curso'}), 500
+    
+
 
 @cursos.route('/edit_facultad_curso/<int:idCurso>', methods = ['PATCH'])
 def edit_facultad_curso(idCurso):
@@ -158,7 +162,7 @@ def eliminar_curso(idcurso):
 
 # FINALIZA ENDPOINTS DE CURSOS
 
-
+# ENDPOINTS DE SECCIONES POR CURSO
 @cursos.route('/seccion_curso/<int:idcurso>')
 def seccion_curso(idcurso):
     db = current_app.config['db']
@@ -174,8 +178,28 @@ def seccion_curso(idcurso):
             columNames = [column[0] for column in cur.description]
             for record in registros:
                 insertSecciones.append(dict(zip(columNames, record)))
-            print(insertSecciones)
             return render_template('cursos/seccionesCurso.html', secciones = insertSecciones)
         except Exception as e:
             print(f'\nError!!!: {e}\n')
             return redirect(url_for('cursos.index'))
+        
+
+
+@cursos.route('/elim_seccion/<int:idSeccion>', methods = ['DELETE'])
+def elim_seccion(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    if not idSeccion:
+        return jsonify({'error': 'Faltan campos'})
+
+    try:
+        with db.cursor() as cur:
+            sql = 'DELETE FROM secciones WHERE idSeccion = %s'
+            cur.execute(sql, (idSeccion,))
+            db.commit()
+            return jsonify({'message': 'Sección eliminada satisfactoriamente'})
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al eliminar seccion'}), 500

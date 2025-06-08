@@ -3,7 +3,7 @@
 
 {% block content %} 
     <div class="alumnos-options__wrapper">
-        <h1>Secciones de {{secciones[0].nombre_curso}}</h1>
+        <h1>Secciones de {{secciones[0].nombre_curso.lower()}}</h1>
 
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
@@ -36,12 +36,14 @@
                         </button>
                     </td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary">
-                            Editar
-                        </button>
+                        <a href="#" class="editar-link">
+                            <button class="btn btn-primary">
+                                Editar
+                            </button>
+                        </a>
                     </td>
                     <td class="tabla-btn">
-                        <button class="btn btn-danger" idseccion="{{record.idSeccion}}" onclick="">
+                        <button class="btn btn-danger" idseccion="{{record.idSeccion}}" onclick="eliminar_seccion(this.getAttribute('idseccion'))">
                             Eliminar
                         </button>
                     </td>
