@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Crear sección</h1>
+        <hr class="divider">
+    </div>
+
+    <div class="crear-seccion__wrapper">
+        <div class="crear-seccion__main-container">
+            <div class="edit-h2__container crear-seccion__container"><h2>Sección</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <input type="text" name="nombre" value="" id="editNombre">
+            </div>
+        </div>
+
+        <div class="crear-seccion__main-container">
+            <div class="edit-h2__container crear-seccion__container"><h2>Profesor de la sección</h2></div>
+            <hr class="divider">
+            <div class="edit__container">
+                <select name="" id="">
+                    {% for record in profesores %}
+                        <option value="Seleccione un profesor">Seleccione un profesor</option>
+                        <option value="{{record.idProfesor}}">{{record.nombre}} {{record.apellido}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="crear-seccion__main-container">
+            <div class="edit-h2__container crear-seccion__container"><h2>Creación de horario para la sección</h2></div>
+            <hr class="divider">
+                <div class="table-responsive horario__container crear-horario" id="horario__container">
+                <table class="table table-bordered border-dark table-horario" id="tabla-horario">
+                    <tr>
+                        <th>Hora</th>
+                        <th>Lunes</th>
+                        <th>Martes</th>
+                        <th>Miércoles</th>
+                        <th>Jueves</th>
+                        <th>Viernes</th>
+                        <th>Sábado</th>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">8:00-9:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">9:00-10:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">10:00-11:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">11:00-12:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">12:00-01:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">01:00-02:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">02:00-03:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">03:00-04:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">04:00-05:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

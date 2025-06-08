@@ -182,7 +182,31 @@ def seccion_curso(idcurso):
         except Exception as e:
             print(f'\nError!!!: {e}\n')
             return redirect(url_for('cursos.index'))
-        
+
+
+
+@cursos.route('/crear_curso', methods = ['GET', 'POST'])
+def crear_curso():
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    if request.method == 'GET':
+        try:
+            with db.cursor() as cur:
+                sql = 'SELECT u.idusuarios, u.nombre, u.apellido, u.cedula, p.idProfesor, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios'
+                cur.execute(sql)
+                registros = cur.fetchall()
+                insertRegistros = []
+                columNames = [column[0] for column in cur.description]
+                for record in registros:
+                    insertRegistros.append(dict(zip(columNames, record)))
+            
+            return render_template('cursos/crearSeccion.html', profesores = insertRegistros)
+        except Exception as e:
+            print(e)
+            return redirect(url_for('cursos.index'))
+
+
 
 
 @cursos.route('/elim_seccion/<int:idSeccion>', methods = ['DELETE'])

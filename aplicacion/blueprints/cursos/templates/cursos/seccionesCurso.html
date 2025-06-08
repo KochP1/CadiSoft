@@ -8,7 +8,9 @@
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
-            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-seccion-modal">Crear sección</button>
+            <a href="{{url_for('cursos.crear_curso')}}">
+                <button class="btn btn-primary btn-crear">Crear sección</button>
+            </a>
             <form action="" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar curso" class="filtrar-alumno__input" name="curso">
             </form>
