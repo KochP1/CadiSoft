@@ -64,6 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const modal = document.querySelectorAll('.modal-content');
         modal.forEach(modal => modal.classList.add('dark-mode'));
+
+        const graficosContainer = document.querySelectorAll('.grafico__container');
+        graficosContainer.forEach(container => container.classList.add('dark-mode'));
     }
 
     function disableDarkMode() {
@@ -111,5 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const modal = document.querySelectorAll('.modal-content');
         modal.forEach(modal => modal.classList.remove('dark-mode'));
+
+        const graficosContainer = document.querySelectorAll('.grafico__container');
+        graficosContainer.forEach(container => container.classList.remove('dark-mode'));
     }
 });

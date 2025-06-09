@@ -117,8 +117,6 @@ input[type=number] {
     text-decoration: underline;
 }
 
-/* MODO OSCURO */
-
 
 
 /* FIN INICIO DE SESIÓN*/
@@ -400,6 +398,24 @@ input[type=number] {
     display: none;
 }
 
+.graficos__wrapper {
+    width: 100vw;
+    margin-top: 70px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.grafico__container {
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px 0px #333;
+}
 /* INICIO MODO OSCURO */
 
 .info-card.dark-mode{
@@ -408,6 +424,10 @@ input[type=number] {
 
 .info-card.dark-mode .info__container {
     background-color: #333;
+}
+
+.grafico__container {
+    box-shadow: 0px 0px 5px 0px #fff;
 }
 
 @media (max-width: 1629px) {
