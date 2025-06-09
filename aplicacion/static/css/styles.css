@@ -708,6 +708,19 @@ input[type=number] {
     color: #fff;
 }
 
+.table.dark-mode {
+    background-color: #212529 !important;
+    color: #fff !important;
+    /* Resetear estilos heredados de Bootstrap */
+    --bs-table-bg: transparent !important;
+    --bs-table-color: inherit !important;
+    --bs-table-striped-bg: transparent !important;
+    --bs-table-striped-color: inherit !important;
+    --bs-table-hover-bg: transparent !important;
+    --bs-table-hover-color: inherit !important;
+}
+
+
 #horario__container {
     display: none;
 }
@@ -756,6 +769,10 @@ input[type=number] {
     display: block !important;
 }
 
+.crear-horario table {
+    cursor: crosshair;
+}
+
 /* MODO OSCURO MODALES */
 
 .modal-content.dark-mode {
@@ -777,7 +794,6 @@ input[type=number] {
     background-color: #333;
     color: #fff;
 }
-
 
 /* transición de desvanecido */
 html {

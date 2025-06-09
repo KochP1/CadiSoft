@@ -1405,3 +1405,19 @@ function getRandomColor() {
     const colors = ['#FFD700', '#98FB98', '#ADD8E6', '#FFB6C1', '#E6E6FA', '#FFA07A', '#90EE90', '#87CEFA', '#FFC0CB'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
+
+function select_horario(idElement, curso) {
+    const diaSelect = document.getElementById(idElement);
+    const seccion = document.getElementById('crearSeccion');
+    const tabla = document.getElementById('tabla-horario');
+    
+    if (diaSelect) {
+        if (diaSelect.textContent === '') {
+            diaSelect.style.backgroundColor = getRandomColor();
+            diaSelect.innerHTML = `${curso}<br>${seccion.value}`;
+        } else {
+            diaSelect.textContent = '';
+            diaSelect.style.backgroundColor = tabla.style.backgroundColor;
+        }
+    }
+}

@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const table = document.querySelectorAll('.table');
         table.forEach((table) => {
-            table.classList.add('table-dark');
+            table.classList.add('dark-mode');
             table.style.transition = 'all 0.5s ease-in';
 
             if (table.classList.contains('border-dark')) {
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const table = document.querySelectorAll('.table');
         table.forEach((table) => {
-            table.classList.remove('table-dark');
+            table.classList.remove('dark-mode');
             table.style.transition = 'all 0.5s ease-out';
 
             if (table.classList.contains('border-white')) {
