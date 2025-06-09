@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 03-06-2025 a las 22:33:18
+-- Tiempo de generación: 09-06-2025 a las 19:08:34
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,6 +46,21 @@ CREATE TABLE `calificaciones` (
   `idCurso` int(11) NOT NULL,
   `idInscripcion` int(11) NOT NULL,
   `calificacion` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigos_verificacion`
+--
+
+CREATE TABLE `codigos_verificacion` (
+  `idCodigos` int(11) NOT NULL,
+  `idusuarios` int(11) NOT NULL,
+  `codigo` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `expiracion` datetime NOT NULL,
+  `usado` tinyint(1) DEFAULT NULL,
+  `creado_en` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -246,6 +261,13 @@ ALTER TABLE `calificaciones`
   ADD KEY `inscripcion_calificacion_fk` (`idInscripcion`);
 
 --
+-- Indices de la tabla `codigos_verificacion`
+--
+ALTER TABLE `codigos_verificacion`
+  ADD PRIMARY KEY (`idCodigos`),
+  ADD KEY `idusuarios_v2p` (`idusuarios`);
+
+--
 -- Indices de la tabla `cursos`
 --
 ALTER TABLE `cursos`
@@ -353,6 +375,12 @@ ALTER TABLE `calificaciones`
   MODIFY `idCalificacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `codigos_verificacion`
+--
+ALTER TABLE `codigos_verificacion`
+  MODIFY `idCodigos` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `cursos`
 --
 ALTER TABLE `cursos`
@@ -447,6 +475,12 @@ ALTER TABLE `calificaciones`
   ADD CONSTRAINT `alumno_fk` FOREIGN KEY (`idAlumno`) REFERENCES `alumnos` (`idAlumno`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `curso_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `inscripcion_calificacion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `codigos_verificacion`
+--
+ALTER TABLE `codigos_verificacion`
+  ADD CONSTRAINT `idusuarios_v2p` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `cursos`
