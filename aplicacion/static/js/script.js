@@ -1410,23 +1410,20 @@ const horariosSeleccionados = [];
 function select_horario(celda, nombreCurso) {
     const seccion = document.getElementById('crearSeccion').value.trim();
     const color = getRandomColor();
-    
-    // Extraer datos de la celda
+
     const dia = celda.getAttribute('data-dia');
     const horaInicio = celda.getAttribute('data-hora-inicio');
     const horaFin = celda.getAttribute('data-hora-fin');
     
-    // Verificar si la celda ya está seleccionada
     const existe = horariosSeleccionados.some(item => 
         item.celdaId === celda.id
     );
     
     if (!existe) {
-        // Marcar visualmente la celda
+
         celda.style.backgroundColor = color;
         celda.innerHTML = `${nombreCurso}<br>${seccion}`;
-        
-        // Almacenar los datos estructurados
+
         horariosSeleccionados.push({
             celdaId: celda.id,
             dia: dia,
@@ -1437,11 +1434,9 @@ function select_horario(celda, nombreCurso) {
             color: color
         });
     } else {
-        // Deseleccionar
         celda.style.backgroundColor = '';
         celda.innerHTML = '';
         
-        // Eliminar de la lista
         const index = horariosSeleccionados.findIndex(item => 
             item.celdaId === celda.id
         );
