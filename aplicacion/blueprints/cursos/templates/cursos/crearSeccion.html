@@ -29,8 +29,8 @@
             <hr class="divider">
             <div class="edit__container">
                 <select name="" id="">
+                    <option value="Seleccione un profesor">Seleccione un profesor</option>
                     {% for record in profesores %}
-                        <option value="Seleccione un profesor">Seleccione un profesor</option>
                         <option value="{{record.idProfesor}}">{{record.nombre}} {{record.apellido}}</option>
                     {% endfor %}
                 </select>
