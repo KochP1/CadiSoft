@@ -178,7 +178,15 @@ def seccion_curso(idcurso):
             columNames = [column[0] for column in cur.description]
             for record in registros:
                 insertSecciones.append(dict(zip(columNames, record)))
-            return render_template('cursos/seccionesCurso.html', secciones = insertSecciones)
+            
+            cur.execute('SELECT * FROM cursos WHERE idCurso = %s', (idcurso,))
+            registro_curso = cur.fetchall()
+            insertCurso = []
+            columNamesCursos = [column[0] for column in cur.description]
+            for record in registro_curso:
+                insertCurso.append(dict(zip(columNamesCursos, record)))
+
+            return render_template('cursos/seccionesCurso.html', secciones = insertSecciones, cursos = insertCurso)
         except Exception as e:
             print(f'\nError!!!: {e}\n')
             return redirect(url_for('cursos.index'))
