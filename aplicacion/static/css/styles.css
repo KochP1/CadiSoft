@@ -828,6 +828,37 @@ input[type=number] {
     width: 300px;
 }
 
+.horario-modal, .horario-modal-body {
+    width: 800px !important;
+}
+
+.horario-modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.horario-modal-dialog {
+    --bs-modal-width: 720px 
+}
+
+@media (max-width: 1430px) {
+    .horario-modal, .horario-modal-body {
+        width: 500px !important;
+    }
+
+    .horario-modal-dialog {
+        --bs-modal-width: 500px; 
+    }
+
+}
+
+@media (max-width: 576px) {
+    .horario-modal, .horario-modal-body {
+        width: 100% !important;
+    }
+}
+
 /* MODO OSCURO MODALES */
 
 .modal-content.dark-mode {

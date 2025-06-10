@@ -894,7 +894,7 @@ async function buscar_curso() {
 async function buscar_horario() {
     if (isSearching) return;
     isSearching = true;
-    const idSeccion = document.getElementById('select-seccion-inscripcion').value;
+    const idSeccion = document.getElementById('select-seccion-inscripcion').value.trim();
     const url = '/inscripciones/mostar_horario';
 
     if (!idSeccion || idSeccion === 'Selecciona una Sección') {
@@ -1246,6 +1246,66 @@ async function eliminar_seccion(idSeccion) {
     }
 }
 
+async function crear_Seccion(idCurso, event) {
+    event.preventDefault();
+    const url = `/cursos/craer_seccion/${idCurso}`;
+    const seccion = document.getElementById('crearSeccion').value.trim();
+    const profesor = document.getElementById('profesorCrearSeccion').value.trim();
+    const aula = 'D-11'
+
+    if (!seccion || !profesor || horariosSeleccionados.length <= 0) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    console.log(`Sección: ${seccion}`);
+    console.log(`Profesor: ${profesor}`);
+    console.log('Horario:');
+    horariosSeleccionados.forEach(element => {
+        console.log(element.dia)
+        console.log(element.horaInicio);
+        console.log(element.horaFin);
+    })
+
+    // Preparar datos estructurados
+    const requestData = {
+        seccion: seccion,
+        profesor: profesor,
+        aula: aula,
+        horarios: horariosSeleccionados.map(item => ({
+            dia: item.dia,
+            hora_inicio: item.horaInicio,
+            hora_fin: item.horaFin
+        }))
+    };
+    
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error()
+        }
+
+        alert(data.message);
+        window.location.href = `/cursos/seccion_curso/${idCurso}`;
+    } catch(e) {
+        console.log(e)
+    } finally {
+        while(horariosSeleccionados.length) {
+            horariosSeleccionados.pop();
+        }
+    }
+    
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {
@@ -1449,65 +1509,4 @@ function select_horario(idCelda, nombreCurso) {
             horariosSeleccionados.splice(index, 1);
         }
     }
-}
-
-async function crear_Seccion(idCurso, event) {
-    event.preventDefault();
-    let counter = 0;
-    const url = `/cursos/craer_seccion/${idCurso}`;
-    const seccion = document.getElementById('crearSeccion').value.trim();
-    const profesor = document.getElementById('profesorCrearSeccion').value.trim();
-    const aula = 'D-11'
-
-    if (!seccion || !profesor || horariosSeleccionados.length <= 0) {
-        alert('Todos los campos son obligatorios');
-        return;
-    }
-
-    console.log(`Sección: ${seccion}`);
-    console.log(`Profesor: ${profesor}`);
-    console.log('Horario:');
-    horariosSeleccionados.forEach(element => {
-        console.log(element.dia)
-        console.log(element.horaInicio);
-        console.log(element.horaFin);
-    })
-
-        // Preparar datos estructurados
-        const requestData = {
-            seccion: seccion,
-            profesor: profesor,
-            aula: aula,
-            horarios: horariosSeleccionados.map(item => ({
-                dia: item.dia,
-                hora_inicio: item.horaInicio,
-                hora_fin: item.horaFin
-            }))
-        };
-    
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error()
-        }
-
-        alert(data.message);
-        //window.location.href = `/cursos/seccion_curso/${idCurso}`;
-    } catch(e) {
-        console.log(e)
-    } finally {
-        while(horariosSeleccionados.length) {
-            horariosSeleccionados.pop();
-        }
-    }
-    
 }
