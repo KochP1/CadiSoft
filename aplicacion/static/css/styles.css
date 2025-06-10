@@ -720,11 +720,28 @@ input[type=number] {
     font-weight: bold;
 }
 
+/* HORARIO MODO OSCURO */
+
 .table-horario.dark-mode td {
     color: black;
 }
 
 .table-horario.dark-mode .hora-td {
+    color: #fff;
+}
+
+.campos-inscripcion__container.dark-mode form {
+    background-color: #333;
+    box-shadow: 0px 0px 5px 0px #fff;
+    color: #fff;
+}
+
+.campos-inscripcion__container.dark-mode input {
+    background-color: transparent;
+    color: #fff;
+}
+
+.campos-inscripcion__container.dark-mode input::placeholder {
     color: #fff;
 }
 

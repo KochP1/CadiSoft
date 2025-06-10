@@ -1453,8 +1453,11 @@ function select_horario(idCelda, nombreCurso) {
 
 async function crear_Seccion(idCurso, event) {
     event.preventDefault();
+    let counter = 0;
+    const url = `/cursos/craer_seccion/${idCurso}`;
     const seccion = document.getElementById('crearSeccion').value.trim();
     const profesor = document.getElementById('profesorCrearSeccion').value.trim();
+    const aula = 'D-11'
 
     if (!seccion || !profesor || horariosSeleccionados.length <= 0) {
         alert('Todos los campos son obligatorios');
@@ -1465,6 +1468,46 @@ async function crear_Seccion(idCurso, event) {
     console.log(`Profesor: ${profesor}`);
     console.log('Horario:');
     horariosSeleccionados.forEach(element => {
-        console.log(element)
+        console.log(element.dia)
+        console.log(element.horaInicio);
+        console.log(element.horaFin);
     })
+
+        // Preparar datos estructurados
+        const requestData = {
+            seccion: seccion,
+            profesor: profesor,
+            aula: aula,
+            horarios: horariosSeleccionados.map(item => ({
+                dia: item.dia,
+                hora_inicio: item.horaInicio,
+                hora_fin: item.horaFin
+            }))
+        };
+    
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error()
+        }
+
+        alert(data.message);
+        //window.location.href = `/cursos/seccion_curso/${idCurso}`;
+    } catch(e) {
+        console.log(e)
+    } finally {
+        while(horariosSeleccionados.length) {
+            horariosSeleccionados.pop();
+        }
+    }
+    
 }

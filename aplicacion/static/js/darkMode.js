@@ -67,6 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const graficosContainer = document.querySelectorAll('.grafico__container');
         graficosContainer.forEach(container => container.classList.add('dark-mode'));
+
+        const panelInscripcion = document.querySelectorAll('.campos-inscripcion__container');
+        panelInscripcion.forEach((element) => {
+            element.classList.add('dark-mode');
+            element.style.transition = 'all 0.5s ease-in';
+        });
     }
 
     function disableDarkMode() {
@@ -117,5 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const graficosContainer = document.querySelectorAll('.grafico__container');
         graficosContainer.forEach(container => container.classList.remove('dark-mode'));
+
+        const panelInscripcion = document.querySelectorAll('.campos-inscripcion__container');
+        panelInscripcion.forEach((element) => {
+            element.classList.remove('dark-mode');
+            element.style.transition = 'all 0.5s ease-out';
+        });
     }
 });

@@ -198,6 +198,49 @@ def crear_seccion(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
 
+    if request.method == 'POST':
+        data = request.get_json()
+        
+        if not data or 'seccion' not in data or 'profesor' not in data or 'horarios' not in data or 'aula' not in data:
+            return jsonify({'error': 'Datos incompletos'}), 400
+        
+        seccion = data['seccion']
+        profesor = data['profesor']
+        aula = data['aula']
+        horarios = data['horarios']
+        
+        if not isinstance(horarios, list) or len(horarios) == 0:
+            return jsonify({'error': 'El horario no es válido'}), 400
+
+
+
+        if not seccion or not profesor:
+            return jsonify({'error': 'Faltan campos'}), 400
+        try:
+            
+            with db.cursor() as cur:
+                cur.execute('INSERT INTO secciones (`idCurso`, `idProfesor`, `seccion`) VALUES (%s, %s, %s)', (idCurso, profesor, seccion))
+                db.commit()
+
+                cur.execute('SELECT idSeccion FROM secciones WHERE seccion = %s', (seccion,))
+                idSeccion = cur.fetchone()
+
+                for record in horarios:
+                    cur.execute('INSERT INTO horario (`horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES (%s, %s, %s, %s)', (record['dia'], record['hora_inicio'], record['hora_fin'], aula))
+                    db.commit()
+
+                    cur.execute('SELECT idhorario FROM horario ORDER BY idhorario DESC LIMIT 1')
+                    idhorario = cur.fetchone()
+
+                    cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, idSeccion))
+                    db.commit()
+
+                return jsonify({'message': 'Sección creada stasfactoriamente'}), 200
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': 'Error al crear sección'}), 500
+
     if request.method == 'GET':
         try:
             with db.cursor() as cur:
