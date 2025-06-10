@@ -1406,18 +1406,65 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-function select_horario(idElement, curso) {
-    const diaSelect = document.getElementById(idElement);
-    const seccion = document.getElementById('crearSeccion');
-    const tabla = document.getElementById('tabla-horario');
+const horariosSeleccionados = [];
+function select_horario(celda, nombreCurso) {
+    const seccion = document.getElementById('crearSeccion').value.trim();
+    const color = getRandomColor();
     
-    if (diaSelect) {
-        if (diaSelect.textContent === '') {
-            diaSelect.style.backgroundColor = getRandomColor();
-            diaSelect.innerHTML = `${curso}<br>${seccion.value}`;
-        } else {
-            diaSelect.textContent = '';
-            diaSelect.style.backgroundColor = tabla.style.backgroundColor;
+    // Extraer datos de la celda
+    const dia = celda.getAttribute('data-dia');
+    const horaInicio = celda.getAttribute('data-hora-inicio');
+    const horaFin = celda.getAttribute('data-hora-fin');
+    
+    // Verificar si la celda ya está seleccionada
+    const existe = horariosSeleccionados.some(item => 
+        item.celdaId === celda.id
+    );
+    
+    if (!existe) {
+        // Marcar visualmente la celda
+        celda.style.backgroundColor = color;
+        celda.innerHTML = `${nombreCurso}<br>${seccion}`;
+        
+        // Almacenar los datos estructurados
+        horariosSeleccionados.push({
+            celdaId: celda.id,
+            dia: dia,
+            horaInicio: horaInicio,
+            horaFin: horaFin,
+            curso: nombreCurso,
+            seccion: seccion,
+            color: color
+        });
+    } else {
+        // Deseleccionar
+        celda.style.backgroundColor = '';
+        celda.innerHTML = '';
+        
+        // Eliminar de la lista
+        const index = horariosSeleccionados.findIndex(item => 
+            item.celdaId === celda.id
+        );
+        if (index !== -1) {
+            horariosSeleccionados.splice(index, 1);
         }
     }
+}
+
+async function crear_Seccion(idCurso, event) {
+    event.preventDefault();
+    const seccion = document.getElementById('crearSeccion').value.trim();
+    const profesor = document.getElementById('profesorCrearSeccion').value.trim();
+
+    if (!seccion || !profesor || horariosSeleccionados.length <= 0) {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    console.log(`Sección: ${seccion}`);
+    console.log(`Profesor: ${profesor}`);
+    console.log('Horario:');
+    horariosSeleccionados.forEach(element => {
+        console.log(element)
+    })
 }
