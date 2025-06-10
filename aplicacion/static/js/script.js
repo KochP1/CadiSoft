@@ -1407,10 +1407,15 @@ function getRandomColor() {
 }
 
 const horariosSeleccionados = [];
-function select_horario(celda, nombreCurso) {
+function select_horario(idCelda, nombreCurso) {
+    const celda = document.getElementById(idCelda);
+
+    if (!celda) {
+        return;
+    }
+
     const seccion = document.getElementById('crearSeccion').value.trim();
     const color = getRandomColor();
-
     const dia = celda.getAttribute('data-dia');
     const horaInicio = celda.getAttribute('data-hora-inicio');
     const horaFin = celda.getAttribute('data-hora-fin');
