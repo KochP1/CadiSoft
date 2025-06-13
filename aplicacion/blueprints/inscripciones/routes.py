@@ -232,6 +232,9 @@ def inscribir_alumno():
         sql_inscripcionesXcursos = 'INSERT INTO insc_x_seccion (`idInscripcion`, `idSeccion`) VALUES (%s, %s)'
         cur.execute(sql_inscripcionesXcursos, (idAlumnoInscripcion, idSeccion))
         db.commit()
+
+        cur.execute('INSERT INTO calificaciones (`idAlumno`, `idSeccion`, `idInscripcion`) VALUES (%s, %s, %s)', (idAlumno, idSeccion, idAlumnoInscripcion))
+        db.commit()
         
         return jsonify({'mensaje': 'Alumno inscrito satisfactoriamente'}), 200
     except Exception as e:
