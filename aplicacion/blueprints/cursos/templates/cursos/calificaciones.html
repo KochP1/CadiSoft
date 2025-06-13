@@ -16,6 +16,61 @@
         <hr class="divider">
     </div>
 
+    <div class="table-responsive">
+        <table class="table table-striped-columns table-alumnos" id="tablaAlumnos">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Segundo nombre</th>
+                <th>Apellido</th>
+                <th>Segundo apellido</th>
+                <th>Cédula</th>
+                <th>Logro 1</th>
+                <th>Logro 2</th>
+                <th>Logro 3</th>
+                <th>Logro 4</th>
+                <th>Logro 5</th>
+                <th>Definitiva</th>
+            </tr>
+
+            {% for record in calificaciones %}
+                <tr>
+                    <td>{{record.idCalificacion}}</td>
+                    <td>{{record.nombre}}</td>
+                    <td>{{record.segundoNombre}}</td> 
+                    <td>{{record.apellido}}</td>
+                    <td>{{record.segundoApellido}}</td>  
+                    <td>{{record.cedula}}</td>
+
+                    <td>
+                        <input class="calificacion-input" type="text" value="{% if record.logro_1 != None %} {{record.logro_1}} {% else %} {% endif %}" readonly>
+                    </td>
+
+                    <td>
+                        <input class="calificacion-input" type="text" value="{% if record.logro_2 != None %} {{record.logro_2}} {% else %} {% endif %}" readonly>
+                    </td>  
+                    <td>
+                        <input class="calificacion-input" type="text" value="{% if record.logro_3 != None %} {{record.logro_3}} {% else %} {% endif %}" readonly>
+                    </td>  
+
+                    <td>
+                        <input class="calificacion-input" type="text" value="{% if record.logro_4 != None %} {{record.logro_4}} {% else %} {% endif %}" readonly>
+                    </td>
+                    
+                    <td>
+                        <input class="calificacion-input" type="text" value="{% if record.logro_5 != None %}{{record.logro_5}} {% else %} {% endif %}" readonly>
+                    </td>
+
+                    <td>
+                        <input class="calificacion-input" type="text" value="{% if record.definitiva != None %} {{record.definitiva}} {% else %} {% endif %}" readonly>
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
     <script src="../../../../js/excel.js"></script>
     <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/file-saverjs@latest/FileSaver.min.js"></script>

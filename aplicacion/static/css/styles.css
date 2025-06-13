@@ -860,6 +860,28 @@ input[type=number] {
     }
 }
 
+/* VISTA DE CALIFICACIONES POR SECCIÓN */
+
+.calificacion-input {
+    width: 50px;
+    border: 0;
+    background-color: transparent;
+}
+
+.calificacion-input:active {
+    border: none;
+    outline: none;
+}
+
+.calificacion-input:focus {
+    border: none;
+    outline: none;
+}
+
+.table.dark-mode td input {
+    color: #fff;
+}
+
 /* MODO OSCURO MODALES */
 
 .modal-content.dark-mode {

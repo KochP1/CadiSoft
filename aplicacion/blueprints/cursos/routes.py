@@ -288,21 +288,33 @@ def elim_seccion(idSeccion):
 
 # FINALIZA ENDPOINTS DE SECCIONES
 
+# ENDPOINTS DE CALIFICACIONES
+
 @cursos.route('/calificaciones/<idSeccion>', methods = ['GET', 'POST'])
 def calificaciones(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
+
     if request.method == 'GET':
         with db.cursor() as cur:
             cur.execute('SELECT s.idSeccion, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s', (idSeccion,))
             registro = cur.fetchall()
+
             insertRegistro = []
             columNames = [column[0] for column in cur.description]
             for record in registro:
                 insertRegistro.append(dict(zip(columNames, record)))
-            print(insertRegistro)
-            return render_template('cursos/calificaciones.html', data = insertRegistro)
+            
+            cur.execute('SELECT c.idCalificacion, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios')
+            registro_calificaciones = cur.fetchall()
 
-# ENDPOINTS DE CALIFICACIONES
+            insertCalificaciones = []
+            columNamesCalificaciones = [column[0] for column in cur.description]
+            for record in registro_calificaciones:
+                insertCalificaciones.append(dict(zip(columNamesCalificaciones, record)))
+            
+
+            return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
+
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES
