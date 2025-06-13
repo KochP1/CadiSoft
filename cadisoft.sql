@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 09-06-2025 a las 19:08:34
+-- Tiempo de generación: 14-06-2025 a las 00:28:52
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -43,9 +43,14 @@ CREATE TABLE `alumnos` (
 CREATE TABLE `calificaciones` (
   `idCalificacion` int(11) NOT NULL,
   `idAlumno` int(11) NOT NULL,
-  `idCurso` int(11) NOT NULL,
+  `idSeccion` int(11) NOT NULL,
   `idInscripcion` int(11) NOT NULL,
-  `calificacion` double NOT NULL
+  `logro_1` double DEFAULT NULL,
+  `logro_2` double DEFAULT NULL,
+  `logro_3` double DEFAULT NULL,
+  `logro_4` double DEFAULT NULL,
+  `logro_5` double DEFAULT NULL,
+  `definitiva` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -256,7 +261,7 @@ ALTER TABLE `alumnos`
 --
 ALTER TABLE `calificaciones`
   ADD PRIMARY KEY (`idCalificacion`),
-  ADD KEY `curso_fk_idx` (`idCurso`),
+  ADD KEY `curso_fk_idx` (`idSeccion`),
   ADD KEY `alumno_fk_idx` (`idAlumno`),
   ADD KEY `inscripcion_calificacion_fk` (`idInscripcion`);
 
@@ -473,8 +478,8 @@ ALTER TABLE `alumnos`
 --
 ALTER TABLE `calificaciones`
   ADD CONSTRAINT `alumno_fk` FOREIGN KEY (`idAlumno`) REFERENCES `alumnos` (`idAlumno`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `curso_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `inscripcion_calificacion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `inscripcion_calificacion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `seccion_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `codigos_verificacion`
@@ -538,7 +543,7 @@ ALTER TABLE `registro_familiar`
 --
 ALTER TABLE `secciones`
   ADD CONSTRAINT `curso_seccion_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `profesor_seccion_fk` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `profesor_seccion_fk` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
