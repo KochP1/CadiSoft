@@ -285,3 +285,24 @@ def elim_seccion(idSeccion):
         db.rollback()
         print(e)
         return jsonify({'error': 'Error al eliminar seccion'}), 500
+
+# FINALIZA ENDPOINTS DE SECCIONES
+
+@cursos.route('/calificaciones/<idSeccion>', methods = ['GET', 'POST'])
+def calificaciones(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+    if request.method == 'GET':
+        with db.cursor() as cur:
+            cur.execute('SELECT s.idSeccion, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s', (idSeccion,))
+            registro = cur.fetchall()
+            insertRegistro = []
+            columNames = [column[0] for column in cur.description]
+            for record in registro:
+                insertRegistro.append(dict(zip(columNames, record)))
+            print(insertRegistro)
+            return render_template('cursos/calificaciones.html', data = insertRegistro)
+
+# ENDPOINTS DE CALIFICACIONES
+
+# FINALIZA ENDPOINTS DE CALIFICACIONES
