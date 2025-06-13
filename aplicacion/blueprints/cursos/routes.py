@@ -1,4 +1,5 @@
 from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app
+from datetime import date
 
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
 
@@ -290,6 +291,9 @@ def elim_seccion(idSeccion):
 
 # ENDPOINTS DE CALIFICACIONES
 
+def dateToString(fecha: date) -> str:
+    return f"{fecha.day:02d}/{fecha.month:02d}/{fecha.year}"
+
 @cursos.route('/calificaciones/<idSeccion>', methods = ['GET', 'POST'])
 def calificaciones(idSeccion):
     db = current_app.config['db']
@@ -305,15 +309,18 @@ def calificaciones(idSeccion):
             for record in registro:
                 insertRegistro.append(dict(zip(columNames, record)))
             
-            cur.execute('SELECT c.idCalificacion, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios')
+            cur.execute('SELECT c.idCalificacion, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios')
             registro_calificaciones = cur.fetchall()
 
             insertCalificaciones = []
             columNamesCalificaciones = [column[0] for column in cur.description]
             for record in registro_calificaciones:
                 insertCalificaciones.append(dict(zip(columNamesCalificaciones, record)))
-            
 
+            for record in insertCalificaciones:
+                record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+            
             return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
 
 

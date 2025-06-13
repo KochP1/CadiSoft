@@ -1510,3 +1510,26 @@ function select_horario(idCelda, nombreCurso) {
         }
     }
 }
+
+let flagNotas = false
+
+function toggleInputNotas() {
+    const input = document.querySelectorAll('.calificacion-input')
+    const estado = !flagNotas;
+    
+    if (flagNotas === false) {
+        alert('Podra modificar las calificaciones de cada alumno');
+    } else {
+        alert('Se desactiva la modificación de calificaciones');
+    }
+    
+    input.forEach((element) => {
+        if (flagNotas === false) {
+            element.removeAttribute('readonly');
+        } else if (flagNotas === true) {
+            element.setAttribute('readonly', true);
+        }
+    })
+
+    flagNotas = estado;
+}

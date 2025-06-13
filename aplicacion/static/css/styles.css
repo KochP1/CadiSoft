@@ -528,6 +528,10 @@ input[type=number] {
     height: 40px;
 }
 
+/* FINALIZA FILTRAR ALUMNO */
+
+/* FINALIZA VISTA DE ALUMNOS */
+
 /* VISTA DE PROFESORES */
 
 .editar-link{
@@ -549,6 +553,8 @@ input[type=number] {
 #contraseñaProfesor{
     width: 85% !important;
 }
+
+/* FINALIZA VISTA DE PROFESORES */
 
 /* VISTA DE EDITAR */
 
@@ -646,6 +652,8 @@ input[type=number] {
     margin-right: auto !important;
     margin-left: 0;
 }
+
+/* FINALIZA VISTA DE EDITAR */
 
 /* INSCRIPCIONES */
 
@@ -772,6 +780,8 @@ input[type=number] {
     margin: auto;
 }
 
+/* FINALIZA INSCRIPCIONES */
+
 /* CURSOS */
 
 .btn-secciones{
@@ -881,6 +891,15 @@ input[type=number] {
 .table.dark-mode td input {
     color: #fff;
 }
+
+.alumnos-options__wrapper h2{
+    font-size: 1.5rem !important;
+    margin-left: 20px;
+}
+
+/* FINALIZA SECCIONES */
+
+/* FINALIZA CURSOS */
 
 /* MODO OSCURO MODALES */
 
