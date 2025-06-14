@@ -236,7 +236,7 @@ def crear_seccion(idCurso):
                     cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, idSeccion))
                     db.commit()
 
-                return jsonify({'message': 'Sección creada stasfactoriamente'}), 200
+                return jsonify({'message': 'Sección creada satisfactoriamente'}), 200
         except Exception as e:
             db.rollback()
             print(e)
@@ -294,7 +294,7 @@ def elim_seccion(idSeccion):
 def dateToString(fecha: date) -> str:
     return f"{fecha.day:02d}/{fecha.month:02d}/{fecha.year}"
 
-@cursos.route('/calificaciones/<idSeccion>', methods = ['GET', 'POST'])
+@cursos.route('/calificaciones/<idSeccion>', methods = ['GET'])
 def calificaciones(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -310,7 +310,7 @@ def calificaciones(idSeccion):
                 for record in registro:
                     insertRegistro.append(dict(zip(columNames, record)))
                 
-                cur.execute('SELECT c.idCalificacion, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios WHERE c.idSeccion = %s', (idSeccion,))
+                cur.execute('SELECT c.idCalificacion, c.idAlumno, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios WHERE c.idSeccion = %s', (idSeccion,))
                 registro_calificaciones = cur.fetchall()
 
                 insertCalificaciones = []
@@ -326,6 +326,130 @@ def calificaciones(idSeccion):
         except Exception as e:
             print(e)
             return redirect(url_for('cursos.index'))
+        
+
+
+@cursos.route('/subir_logro_uno/<int:idSeccion>', methods = ['PATCH'])
+def subir_logro_uno(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    data = request.get_json()
+
+    if not data or 'logro' not in data or 'idAlumno' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    logro = data['logro']
+    idAlumno = data['idAlumno']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE calificaciones SET logro_1 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            db.commit()
+            return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al poner calificación'}), 500
+    
+
+
+@cursos.route('/subir_logro_dos/<int:idSeccion>', methods = ['PATCH'])
+def subir_logro_dos(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    data = request.get_json()
+
+    if not data or 'logro' not in data or 'idAlumno' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    logro = data['logro']
+    idAlumno = data['idAlumno']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE calificaciones SET logro_2 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            db.commit()
+            return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al poner calificación'}), 500
+
+@cursos.route('/subir_logro_tres/<int:idSeccion>', methods = ['PATCH'])
+def subir_logro_tres(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    data = request.get_json()
+
+    if not data or 'logro' not in data or 'idAlumno' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    logro = data['logro']
+    idAlumno = data['idAlumno']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE calificaciones SET logro_3 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            db.commit()
+            return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al poner calificación'}), 500
+    
+
+
+@cursos.route('/subir_logro_cuatro/<int:idSeccion>', methods = ['PATCH'])
+def subir_logro_cuatro(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    data = request.get_json()
+
+    if not data or 'logro' not in data or 'idAlumno' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    logro = data['logro']
+    idAlumno = data['idAlumno']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE calificaciones SET logro_4 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            db.commit()
+            return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al poner calificación'}), 500
+
+
+
+@cursos.route('/subir_logro_cinco/<int:idSeccion>', methods = ['PATCH'])
+def subir_logro_cinco(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    data = request.get_json()
+
+    if not data or 'logro' not in data or 'idAlumno' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    logro = data['logro']
+    idAlumno = data['idAlumno']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE calificaciones SET logro_5 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            db.commit()
+            return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al poner calificación'}), 500
+
 
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES

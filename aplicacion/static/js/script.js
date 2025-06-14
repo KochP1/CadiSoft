@@ -1306,6 +1306,182 @@ async function crear_Seccion(idCurso, event) {
     
 }
 
+// CALIFICACIONES 
+
+async function colocar_logro_uno(idSeccion, idAlumno) {
+    const url = ``;
+    const inputNota = document.getElementById(``).value.trim();
+
+    if (!inputNota) {
+        alert('Debe ingresar una calificacion');
+        return;
+    }
+
+    const requestData = {
+        logro: inputNota
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function colocar_logro_dos(idSeccion, idAlumno) {
+    const url = `/cursos/subir_logro_dos/${idSeccion}`;
+    const inputNota = document.getElementById(`input-logro2-${idAlumno}`).value.trim();
+
+    if (!inputNota) {
+        alert('Debe ingresar una calificacion');
+        return;
+    }
+
+    const requestData = {
+        logro: inputNota,
+        idAlumno: idAlumno
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function colocar_logro_tres(idSeccion, idAlumno) {
+    const url = `/cursos/subir_logro_tres/${idSeccion}`;
+    const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
+
+    if (!inputNota) {
+        alert('Debe ingresar una calificacion');
+        return;
+    }
+
+    const requestData = {
+        logro: inputNota,
+        idAlumno: idAlumno
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function colocar_logro_cuatro(idSeccion, idAlumno) {
+    const url = `/cursos/subir_logro_cuatro/${idSeccion}`;
+    const inputNota = document.getElementById(`input-logro4-${idAlumno}`).value.trim();
+
+    if (!inputNota) {
+        alert('Debe ingresar una calificacion');
+        return;
+    }
+
+    const requestData = {
+        logro: inputNota,
+        idAlumno: idAlumno
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function colocar_logro_cinco(idSeccion, idAlumno) {
+    const url = `/cursos/subir_logro_cinco/${idSeccion}`;
+    const inputNota = document.getElementById(`input-logro5-${idAlumno}`).value.trim();
+
+    if (!inputNota) {
+        alert('Debe ingresar una calificacion');
+        return;
+    }
+
+    const requestData = {
+        logro: inputNota,
+        idAlumno: idAlumno
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+    } catch(e) {
+        console.log(e)
+    }
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {
