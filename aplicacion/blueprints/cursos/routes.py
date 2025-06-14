@@ -310,7 +310,20 @@ def calificaciones(idSeccion):
                 for record in registro:
                     insertRegistro.append(dict(zip(columNames, record)))
                 
-                cur.execute('SELECT c.idCalificacion, c.idAlumno, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios WHERE c.idSeccion = %s', (idSeccion,))
+                cur.execute('SELECT fecha_inscripcion, fecha_expiracion FROM inscripcion WHERE fecha_inscripcion <= CURDATE() ORDER BY fecha_inscripcion DESC LIMIT 1')
+                registro_periodo = cur.fetchall()
+                print(registro_periodo)
+
+
+                periodoArray = []
+                columPeriodo = [column[0] for column in cur.description]
+                for record in registro_periodo:
+                    periodoArray.append(dict(zip(columPeriodo, record)))
+                
+                for record in periodoArray:
+                    inicioPeriodo = record['fecha_inscripcion']
+                
+                cur.execute('SELECT c.idCalificacion, c.idAlumno, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios WHERE c.idSeccion = %s AND i.fecha_inscripcion = %s', (idSeccion, inicioPeriodo))
                 registro_calificaciones = cur.fetchall()
 
                 insertCalificaciones = []
