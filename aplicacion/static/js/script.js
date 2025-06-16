@@ -1309,8 +1309,8 @@ async function crear_Seccion(idCurso, event) {
 // CALIFICACIONES 
 
 async function colocar_logro_uno(idSeccion, idAlumno) {
-    const url = ``;
-    const inputNota = document.getElementById(``).value.trim();
+    const url = `/cursos/subir_logro_uno/${idSeccion}`;
+    const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
 
     if (!inputNota) {
         alert('Debe ingresar una calificacion');
@@ -1318,7 +1318,8 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
     }
 
     const requestData = {
-        logro: inputNota
+        logro: inputNota,
+        idAlumno: idAlumno
     }
 
     try {

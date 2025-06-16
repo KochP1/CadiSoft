@@ -310,7 +310,15 @@ def calificaciones(idSeccion):
                 for record in registro:
                     insertRegistro.append(dict(zip(columNames, record)))
                 
-                cur.execute('SELECT fecha_inscripcion, fecha_expiracion FROM inscripcion WHERE fecha_inscripcion <= CURDATE() ORDER BY fecha_inscripcion DESC LIMIT 1')
+                cur.execute('''
+                        SELECT i.fecha_inscripcion, i.fecha_expiracion 
+                        FROM insc_x_seccion 
+                        JOIN inscripcion i ON insc_x_seccion.idInscripcion = i.idInscripcion 
+                        WHERE insc_x_seccion.idSeccion = %s 
+                        AND i.fecha_inscripcion <= CURDATE() 
+                        ORDER BY i.fecha_inscripcion DESC 
+                        LIMIT 1
+                    ''', (idSeccion,))
                 registro_periodo = cur.fetchall()
                 print(registro_periodo)
 
