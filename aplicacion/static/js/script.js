@@ -180,14 +180,18 @@ async function stats() {
 }
 
 function interval(elemento, limite) {
+    if (limite === 0) {
+        return;
+    }
+
     let cantidad = 0;
     const duracion = 1700;
     const incrementos = limite;
     const intervalo = duracion / incrementos;
     
     let tiempo = setInterval(() => {
-        elemento.textContent = cantidad;
         cantidad += 1;
+        elemento.textContent = cantidad;
 
         if (cantidad === limite) {
             clearInterval(tiempo);
