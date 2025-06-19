@@ -331,21 +331,35 @@ input[type=number] {
 /* INICIO */
 
 .logo-cadi-inicio{
+    width: 50vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: max-content;
+    perspective: 500px;
     margin: auto;
+    margin-top: 40px;
 }
 
-.logo-cadi-inicio:hover{
-    transform: scale(1.1);
-    transition: 0.5s;
-}
-
-.imagen-logo-inicio{
-    width: 300px;
+.logo-cadi-mov {
+    width: 400px;
     height: 300px;
+    background: url('/images/Cadi_logo-removeBG.png');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    top: 10px;
+    filter: drop-shadow(0px 7px 21px #333);
+    animation: rotar 5s linear infinite;
+}
+
+@keyframes rotar {
+    from {
+        transform: rotateY(180deg);
+    }
+
+    to {
+        transform: rotateY(-180deg);
+    }
 }
 
 .inicio__wrapper{
