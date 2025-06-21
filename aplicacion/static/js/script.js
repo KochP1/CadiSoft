@@ -1310,6 +1310,42 @@ async function crear_Seccion(idCurso, event) {
     
 }
 
+async function buscar_horario_seccion(idSeccion) {
+    if (isSearching) return;
+    isSearching = true;
+    const url = '/inscripciones/mostar_horario';
+
+    if (!idSeccion || idSeccion === 'Selecciona una Sección') {
+        isSearching = false;
+        return;
+    }
+    
+    try {
+        const response = await fetch(url ,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'idSeccion': idSeccion})
+            }
+        )
+
+
+        if (!response.ok) {
+            throw new Error('Error al buscar el horario de la sección');
+        }
+
+        const data = await response.json();
+
+        mostrar_horario(data.horarioSeccion)
+    } catch(e) {
+        console.log(e)
+    } finally {
+        isSearching = false
+    }
+}
+
+
 // CALIFICACIONES 
 
 async function colocar_logro_uno(idSeccion, idAlumno) {
@@ -1591,36 +1627,34 @@ function mostrar_horario(data) {
         '16:00:00': 9   // 04:00-05:00 pm
     };
 
+    // Obtener referencia a la tabla
+    const tabla = document.getElementById('tabla-horario');
+    
     data.forEach(element => {
         const dia = element.horario_dia;
         const horaInicio = element.horario_hora;
         const horaFin = element.horario_hora_final;
+        const nombreCurso = element.nombre_curso || 'Curso';
+
+        console.log(dia)
+        console.log(horaInicio)
+        console.log(horaFin)
         
-        const columna = dias[dia];
+        // Obtener índices de fila
         const filaInicio = horas[horaInicio];
         const filaFin = horas[horaFin];
         
-        if (columna && filaInicio) {
-            const duracion = filaFin ? (filaFin - filaInicio + 1) : 1;
-            
-            const tabla = document.getElementById('tabla-horario');
-            
-            const fila = tabla.rows[filaInicio];
-            
-            if (fila && fila.cells[columna]) {
-                const celda = fila.cells[columna];
-                celda.textContent = element.nombre_curso;
-                celda.style.backgroundColor = getRandomColor();
-                
-                if (duracion > 1) {
-                    celda.rowSpan = duracion;
-                    
-                    for (let i = 1; i < duracion; i++) {
-                        const siguienteFila = tabla.rows[filaInicio + i];
-                        if (siguienteFila && siguienteFila.cells[columna]) {
-                            siguienteFila.cells[columna].style.display = 'none';
-                        }
-                    }
+        // Obtener índice de columna
+        const columnaDia = dias[dia];
+        
+        if (columnaDia && filaInicio && filaFin) {
+            // Llenar todas las celdas desde horaInicio hasta horaFin
+            for (let i = filaInicio; i < filaFin; i++) {
+                const fila = tabla.rows[i];
+                if (fila && fila.cells[columnaDia]) {
+                    fila.cells[columnaDia].textContent = nombreCurso;
+                    fila.cells[columnaDia].classList.add('horario-curso');
+                    fila.cells[columnaDia].style.backgroundColor = getRandomColor();
                 }
             }
         }
@@ -1630,13 +1664,13 @@ function mostrar_horario(data) {
 function limpiar_horario() {
     const tabla = document.getElementById('tabla-horario');
     
+    // Reiniciar todas las celdas del horario
     for (let i = 1; i < tabla.rows.length; i++) {
-        for (let j = 1; j < tabla.rows[i].cells.length; j++) {
-            const celda = tabla.rows[i].cells[j];
+        const fila = tabla.rows[i];
+        for (let j = 1; j < fila.cells.length; j++) {
+            const celda = fila.cells[j];
             celda.textContent = '';
-            celda.style.backgroundColor = '';
-            celda.style.display = '';
-            celda.removeAttribute('rowSpan');
+            celda.classList.remove('horario-curso');
         }
     }
 }

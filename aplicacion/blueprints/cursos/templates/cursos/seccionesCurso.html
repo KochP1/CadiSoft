@@ -33,7 +33,7 @@
                     <td>{{record.nombre}} {{record.apellido}}</td>
                     <td>{{record.seccion}}</td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary btn-secciones" data-bs-toggle="modal" data-bs-target="#horario-modal" idseccion="{{record.idSeccion}}" onclick="buscar_horario()">
+                        <button class="btn btn-primary btn-secciones" data-bs-toggle="modal" data-bs-target="#horario-modal" idseccion="{{record.idSeccion}}" onclick="buscar_horario_seccion(this.getAttribute('idseccion'))">
                             Horario
                         </button>
                         <input type="hidde" value="{{record.idSeccion}}" id="select-seccion-inscripcion">
