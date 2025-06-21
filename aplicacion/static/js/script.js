@@ -1670,6 +1670,7 @@ function limpiar_horario() {
         for (let j = 1; j < fila.cells.length; j++) {
             const celda = fila.cells[j];
             celda.textContent = '';
+            celda.style.backgroundColor = 'transparent';
             celda.classList.remove('horario-curso');
         }
     }
@@ -1713,6 +1714,7 @@ function select_horario(idCelda, nombreCurso) {
             seccion: seccion,
             color: color
         });
+        
     } else {
         celda.style.backgroundColor = '';
         celda.innerHTML = '';
