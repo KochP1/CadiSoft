@@ -940,6 +940,53 @@ input[type=number] {
     color: #fff;
 }
 
+/* ACERCA DE */
+
+.acerca__wrapper {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    gap: 400px;
+}
+
+.acerca-info__wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    gap: 30px;
+}
+
+.acerca-info__container {
+    width: 600px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px 0px #333;
+}
+
+.acerca-info {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    height: max-content;
+}
+
+.acerca-info__container:last-child{
+    margin-bottom: 10px;
+}
+
+.acerca-info h3 {
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.acerca-info p {
+    margin: 0;
+    margin-left: auto;
+}
+
+
+
+
 /* transición de desvanecido */
 html {
     animation: fadeIn 0.3s;

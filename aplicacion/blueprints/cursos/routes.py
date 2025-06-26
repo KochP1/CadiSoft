@@ -37,6 +37,7 @@ def index():
             return render_template('cursos/index.html', cursos = insertCursos)
     except Exception as e:
         print(e)
+        return redirect(url_for('usuario.inicio'))
 
 
 

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %} Acerca de {% endblock %}
+
+{% block content %} 
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+    </style>
+    <div class="acerca__wrapper">
+        <div class="logo-cadi-inicio">
+            <div class="logo-cadi-mov"></div>
+        </div>
+
+        <div class="acerca-info__wrapper">
+            <div class="acerca-titulo"><h2>Sistema</h2></div>
+
+            <div class="acerca-info__container">
+                <div class="acerca-info">
+                    <h3>Nombre del sistema</h3>
+                    <p>Cadisoft</p>
+                </div>
+                <hr>
+                <div class="acerca-info">
+                    <h3>Versión</h3>
+                    <p>Beta</p>
+                </div>
+                <hr>
+                <div class="acerca-info">
+                    <h3>Copyright</h3>
+                    <p>&copy; 2025 CADI</p>
+                </div>
+            </div>
+
+            <div class="acerca-titulo"><h2>Requerimentos</h2></div>
+            <div class="acerca-info__container">
+                <div class="acerca-info">
+                    <h3>Sistema operativo</h3>
+                    <p>Win10+</p>
+                </div>
+                <hr>
+                <div class="acerca-info">
+                    <h3>Memoria RAM</h3>
+                    <p>8 gb+</p>
+                </div>
+                <hr>
+                <div class="acerca-info">
+                    <h3>Procesador</h3>
+                    <p>Intel i3 (6th gen+)</p>
+                </div>
+                <hr>
+                <div class="acerca-info">
+                    <h3>Almacenamiento</h3>
+                    <p>300 mb+</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
