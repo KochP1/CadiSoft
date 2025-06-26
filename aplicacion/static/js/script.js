@@ -570,7 +570,7 @@ function editar_facultad(idfacultad) {
 
 async function elim_facultad(idfacultad) {
 
-    if(confirm('¿Estas seguro de quieres eliminar esta facultad?')) {
+    if(confirm('¿Estas seguro de quieres eliminar esta facultad?, esto afectara a los cursos que estan dentro de esta')) {
         try {
             const response = await fetch(`/facultades/edit_facultad/${idfacultad}`, {
                 method: 'DELETE',
