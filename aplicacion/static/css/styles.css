@@ -984,7 +984,22 @@ input[type=number] {
     margin-left: auto;
 }
 
+@media (max-width: 600px) {
+    .acerca-info__wrapper {
+        width: 100vw;
+    }
+    .acerca-info__container {
+        width: 100%;
+        border-radius: 0px;
+        font-size: 1rem;
+    }
 
+    .acerca-info h3 {
+        font-size: 1.2rem;
+        margin: 0;
+        margin-left: 10px;
+    }
+}
 
 
 /* transición de desvanecido */
