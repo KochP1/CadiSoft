@@ -1,4 +1,4 @@
-from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app
+from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app, flash
 from datetime import date
 
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
@@ -300,6 +300,7 @@ def calificaciones(idSeccion):
     db.ping(reconnect=True)
 
     if request.method == 'GET':
+
         try:
             with db.cursor() as cur:
                 cur.execute('SELECT s.idSeccion, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s', (idSeccion,))
@@ -346,7 +347,12 @@ def calificaciones(idSeccion):
                 return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
         except Exception as e:
             print(e)
-            return redirect(url_for('cursos.index'))
+            flash('No hay alumnos inscritos en esta sección')
+            cursor = db.cursor()
+            cursor.execute('SELECT idCurso FROM secciones WHERE idSeccion = %s', (idSeccion))
+            curso = cursor.fetchone()
+            cursor.close()
+            return redirect(url_for('cursos.seccion_curso', idcurso = curso[0]))
         
 
 
