@@ -1732,19 +1732,34 @@ let flagNotas = false
 
 function toggleInputNotas() {
     const input = document.querySelectorAll('.calificacion-input')
+    const btn = document.getElementById('toggle-calificacion');
     const estado = !flagNotas;
+    let border = '';
+
+    input.forEach((element) => {
+        if (element.classList.contains('dark-mode')) {
+            border = '1px solid #fff';
+        } else {
+            border = '1px solid #333'
+        }
+    })
     
     if (flagNotas === false) {
         alert('Podra modificar las calificaciones de cada alumno');
+        btn.textContent = 'Desactivar modificación';
     } else {
         alert('Se desactiva la modificación de calificaciones');
+        btn.textContent = 'Activar modificación';
     }
     
     input.forEach((element) => {
         if (flagNotas === false) {
             element.removeAttribute('readonly');
+            element.style.border = border;
+
         } else if (flagNotas === true) {
             element.setAttribute('readonly', true);
+            element.style.border = 'none';
         }
     })
 

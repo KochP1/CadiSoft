@@ -73,6 +73,11 @@ document.addEventListener("DOMContentLoaded", () => {
             element.classList.add('dark-mode');
             element.style.transition = 'all 0.5s ease-in';
         });
+
+        const calificacionesInput = document.querySelectorAll('.calificacion-input');
+        calificacionesInput.forEach((element) => {
+            element.classList.add('dark-mode');
+        })
     }
 
     function disableDarkMode() {
