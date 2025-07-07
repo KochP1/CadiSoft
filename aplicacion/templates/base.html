@@ -38,7 +38,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-list">
-            
+            {% if current_user.rol == 'administrador' %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-person"></i>
@@ -99,6 +99,20 @@
                 </ul>
               </li>
 
+              {% endif %}
+
+              {% if current_user.rol == 'profesor' %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-chalkboard"></i>
+                    <span>Mis secciones</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{{url_for('profesores.mis_secciones')}}">Secciones</a></li>
+                </ul>
+              </li>
+              {% endif %}
+
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-circle-exclamation"></i>
@@ -106,13 +120,16 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Manual de usuario</a></li>
+                  {% if current_user.rol == 'administrador '%}
                   <li><a class="dropdown-item" href="#">Respaldo</a></li>
                   <li><a class="dropdown-item" href="#">Restaurar</a></li>
+                  {% endif %}
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{{url_for('acerca.index')}}">Acerca del sistema</a></li>
                 </ul>
               </li>
 
+              {% if current_user.rol == 'administrador' %}
               <li class="nav-item dropdown user">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="user-icon__container">
@@ -130,6 +147,27 @@
                   <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
                 </ul>
               </li>
+              {% endif %}
+
+              {% if current_user.rol == 'profesor' %}
+              <li class="nav-item dropdown  profesores-user">
+                <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="user-icon__container">
+                      {% if current_user.imagen == None %}
+                        <i class="fa-solid fa-user"></i>
+                      {% endif %}
+                    </div>
+                </a>
+                <ul class="dropdown-menu user-dropdown">
+                  <li><a class="dropdown-item" href="{{url_for('usuario.ajustes_usuario')}}">Ajustes</a></li>
+                  <li class="theme-icon">
+                    <i class="fa fa-moon dropdown-item"></i>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
+                </ul>
+              </li>
+              {% endif %}
             </ul>
 
           </div>

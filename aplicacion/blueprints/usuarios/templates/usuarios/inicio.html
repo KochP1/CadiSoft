@@ -14,7 +14,7 @@
     </div>
 
     <div class="inicio__wrapper">
-        <div class="info-card" onclick="href('/profesores/')">
+        <div class="info-card" {% if current_user.rol == 'administrador' %} onclick="href('/profesores/')" {% endif %}>
             <div class="icon-info__container">
                 <i class="fa-solid fa-person-chalkboard"></i>
             </div>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="info-card" onclick="href('/alumnos/')">
+        <div class="info-card" {% if current_user.rol == 'administrador' %} onclick="href('/alumnos/')" {% endif %}>
             <div class="icon-info__container">
                 <i class="fa-solid fa-person"></i>
             </div>
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="info-card">
+        <div class="info-card" {% if current_user.rol == 'administrador' %} onclick="href('/cursos/')" {% endif %}>
             <div class="icon-info__container">
                 <i class="fa-solid fa-chalkboard"></i>
             </div>
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div class="info-card" onclick="href('/facultades/')">
+        <div class="info-card" {% if current_user.rol == 'administrador' %} onclick="href('/facultades/')" {% endif %}>
             <div class="icon-info__container">
                 <i class="fa-solid fa-building"></i>
             </div>
@@ -54,7 +54,8 @@
             </div>
         </div>
     </div>
-
+    
+    {% if current_user.rol == 'administrador' %}
     <div class="graficos__wrapper">
         <div class="grafico__container">
             <canvas id="myChart"></canvas>
@@ -64,6 +65,7 @@
             <canvas id="myChart2"></canvas>
         </div>
     </div>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

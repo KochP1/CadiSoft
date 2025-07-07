@@ -149,3 +149,12 @@ def filtrar_profesor():
         return url_for('profesores.index')
     finally:
         cur.close()
+
+@profesores.route('/mis_secciones')
+def mis_secciones():
+    if request.method == 'GET':
+        try:
+            return render_template('profesores/secciones.html')
+        except Exception as e:
+            print(e)
+            return 'Error'

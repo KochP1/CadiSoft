@@ -18,14 +18,24 @@ def index():
         contraseña = request.form['contraseña']
 
         user = User.get_by_cedula(db, cedula)
+        print(user.rol)
+        print(user.nombre)
+        print(bcrypt.check_password_hash(user.contraseña, contraseña))
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             if user.rol == 'administrador':
                 login_user(user)
                 return redirect(url_for('usuario.inicio'))
-            else:
-                return render_template('usuarios/index.html', message_error = 'Permisos insuficientes')
+            
+            if user.rol == 'profesor':
+                print('Cumpliendo ', user.rol)
+                login_user(user)
+                return redirect(url_for('profesores.mis_secciones'))
+            
+
+            return render_template('usuarios/index.html', message_error = 'Permisos insuficientes')
         else:
+            print('Se esta cumpliendo esto')
             return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
 
 
@@ -35,7 +45,11 @@ def index():
 
 @usuario.route('/inicio')
 def inicio():
-    return render_template('usuarios/inicio.html')
+    try:
+        return render_template('usuarios/inicio.html')
+    except Exception as e:
+        print(e)
+        return 'Error'
 
 
 

@@ -194,6 +194,7 @@ input[type=number] {
 .nav-list{
     gap: 20px !important;
     align-items: center;
+    width: 100%;
 }
 
 .user{
@@ -224,6 +225,13 @@ input[type=number] {
 
 .dropdown-menu[data-bs-popper].user-dropdown{
     left: -80px !important;
+}
+
+.profesores-user {
+    display: flex;
+    width: fit-content;
+    margin-left: auto !important;
+    margin-right: 50px;
 }
 
 .theme-icon {
