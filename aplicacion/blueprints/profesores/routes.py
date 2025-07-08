@@ -152,6 +152,7 @@ def filtrar_profesor():
 
 @profesores.route('/mis_secciones')
 def mis_secciones():
+    db = current_app.config['db']
     if request.method == 'GET':
         try:
             return render_template('profesores/secciones.html')
