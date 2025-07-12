@@ -150,12 +150,24 @@ def filtrar_profesor():
     finally:
         cur.close()
 
+# MIS SECCIONES ROUTES
+
 @profesores.route('/mis_secciones')
 def mis_secciones():
     db = current_app.config['db']
     if request.method == 'GET':
         try:
-            return render_template('profesores/secciones.html')
+            with db.cursor() as cur:
+                sql = 'SELECT s.idSeccion, s.idProfesor, s.idCurso, c.nombre_curso, s.seccion FROM secciones s JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios JOIN cursos c ON s.idCurso = c.idCurso WHERE u.idusuarios = %s'
+                cur.execute(sql, current_user.id)
+                registros = cur.fetchall()
+                insertSecciones = []
+                columNames = [columns[0] for columns in cur.description]
+
+                for record in registros:
+                    insertSecciones.append(dict(zip(columNames, record)))
+                print(insertSecciones)
+                return render_template('profesores/secciones.html', secciones = insertSecciones)
         except Exception as e:
             print(e)
             return 'Error'

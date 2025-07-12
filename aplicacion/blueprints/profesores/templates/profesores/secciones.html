@@ -3,5 +3,30 @@
 {% block title %}Mis secciones{% endblock %}
 
 {% block content %}
-    <h1>Hola {{current_user.nombre}} {{current_user.apellido}}</h1>
+    <div class="alumnos-options__wrapper">
+        <h1>Secciones de {{current_user.nombre}} {{current_user.apellido}}</h1>
+        <hr class="divider">
+    </div>
+
+    <div class="mis-secciones__wraper">
+
+        {% for record in secciones %}
+            <div class="mis-secciones__card">
+                <div class="seccion-card__img">
+                    Imágen
+                </div>
+                <div class="secciones-card__container">
+                    <h2>{{ record.nombre_curso }}</h2>
+                    <h3>Lun-Mie-Vie 8:00-9:30</h5>
+                    <div class="seccion-participante__container">
+                        <i class="fa-solid fa-user-group"></i>
+                        <p>28</p>
+                        <button class="btn btn-primary">Corte de notas</button>
+                    </div>
+                </div>
+            </div>
+            
+        {% endfor %}
+
+    </div>
 {% endblock %}
