@@ -166,6 +166,12 @@ def mis_secciones():
 
                 for record in registros:
                     insertSecciones.append(dict(zip(columNames, record)))
+
+                for seccion in insertSecciones:
+                    cur.execute('SELECT a.idAlumno FROM insc_x_seccion isc JOIN inscripcion i ON isc.idInscripcion = i.idInscripcion JOIN secciones s ON isc.idSeccion = s.idSeccion JOIN alumnos a ON i.idAlumno = a.idAlumno WHERE s.idSeccion = %s', (seccion['idSeccion'],))
+                    registrosParticipantes = cur.fetchall()
+                    seccion['participantes'] = len(registrosParticipantes)
+
                 print(insertSecciones)
                 return render_template('profesores/secciones.html', secciones = insertSecciones)
         except Exception as e:
