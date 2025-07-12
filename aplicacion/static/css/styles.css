@@ -623,7 +623,7 @@ input[type=number] {
     margin: 0;
 }
 
-.seccion-participante__container button {
+.seccion-participante__container a {
     margin-left: auto;
 }
 

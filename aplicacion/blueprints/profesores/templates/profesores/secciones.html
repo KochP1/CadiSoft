@@ -21,7 +21,9 @@
                     <div class="seccion-participante__container">
                         <i class="fa-solid fa-user-group"></i>
                         <p>{{ record.participantes }}</p>
-                        <button class="btn btn-primary">Corte de notas</button>
+                        <a {% if record.participantes > 0 %} href="{{url_for('cursos.calificaciones', idSeccion=record.idSeccion)}}" class="editar-link" {% endif %}>
+                            <button class="btn btn-primary">Corte de notas</button>
+                        </a>
                     </div>
                 </div>
             </div>
