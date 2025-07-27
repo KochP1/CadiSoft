@@ -2,5 +2,78 @@
 {% block title %} Facturación {% endblock %}
 
 {% block content %} 
-    
+    <div class="alumnos-options__wrapper">
+        <h1>Facturacion</h1>
+
+        <hr class="divider">
+    </div>
+
+    <div class="container">
+
+        <section class="cliente-info">
+            <h2>Datos del Cliente</h2>
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" placeholder="Ingrese nombre completo">
+            </div>
+            <div class="form-group">
+                <label for="ruc">Cédula:</label>
+                <input type="text" id="ruc" placeholder="Número de documento">
+            </div>
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" placeholder="Dirección completa">
+            </div>
+        </section>
+
+        <section class="productos">
+            <h2>Detalle de Productos/Servicios</h2>
+            <table id="tabla-productos">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>P. Unitario</th>
+                        <th>Subtotal</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="codigo"></td>
+                        <td><input type="text" class="descripcion"></td>
+                        <td><input type="number" class="cantidad" min="1" value="1"></td>
+                        <td><input type="number" class="precio" step="0.01" min="0"></td>
+                        <td class="subtotal">0.00</td>
+                        <td><button class="eliminar">✕</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="agregar-fila" class="btn">+ Agregar Producto</button>
+        </section>
+
+        <section class="totales">
+            <div class="totales-container">
+                <div class="total-item">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">0.00</span>
+                </div>
+                <div class="total-item">
+                    <label for="igv">IGV (18%):</label>
+                    <span id="igv">0.00</span>
+                </div>
+                <div class="total-item total">
+                    <span>Total a Pagar:</span>
+                    <span id="total">0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="acciones">
+            <button id="guardar" class="btn btn-guardar">Guardar Factura</button>
+            <button id="imprimir" class="btn btn-imprimir">Imprimir Factura</button>
+            <button id="nueva" class="btn btn-nueva">Nueva Factura</button>
+        </section>
+    </div>
 {% endblock %}
