@@ -10,8 +10,8 @@ def index():
     try:
         db = current_app.config['db']
         cur = db.cursor()
-        sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios'
-        cur.execute(sql)
+        sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM usuarios u WHERE u.rol = %s'
+        cur.execute(sql, ('alumno',))
         registros = cur.fetchall()
         InsertRegistros = []
         columNames = [column[0] for column in cur.description]
@@ -28,9 +28,10 @@ def index():
 def buscar_alumno():
     db = current_app.config['db']
     cedula = request.form['cedula']
+    rol = 'alumno'
     cur = db.cursor()
-    sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
-    data = (cedula,)
+    sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM usuarios u WHERE u.rol = %s AND u.cedula = %s'
+    data = (rol, cedula)
     cur.execute(sql, data)
     registros = cur.fetchall()
     if len(registros) == 0:
@@ -67,7 +68,7 @@ def edit_alumno(idusuarios):
     try:
         db = current_app.config['db']
         cur = db.cursor()
-        sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email, u.imagen FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE a.idusuarios = %s'
+        sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email, u.imagen FROM usuarios u WHERE u.idusuarios = %s'
         data = (idusuarios,)
         cur.execute(sql, data)
         registros = cur.fetchall()
@@ -87,8 +88,8 @@ def edit_alumno(idusuarios):
 
 # REGISTRO FAMILIAR
 
-@alumnos.route('/crear_registro_familiar/<int:idAlumno>', methods = ['POST'])
-def crear_registro_familiar(idAlumno):
+@alumnos.route('/crear_registro_familiar/<int:idusuarios>', methods = ['POST'])
+def crear_registro_familiar(idusuarios):
     db = current_app.config['db']
     db.ping(reconnect=True)
 
@@ -100,8 +101,8 @@ def crear_registro_familiar(idAlumno):
 
     try:
         with db.cursor() as cur:
-            sql = 'INSERT INTO registro_familiar (`idAlumno`, `NombrePapa`, `ApellidoPapa`, `NombreMama`, `ApellidoMama`, `Telefono`) VALUES (%s, %s, %s, %s, %s, %s)'
-            data = (idAlumno, nombrePapa, apellidoPapa, nombreMama, apellidoMama, contacto)
+            sql = 'INSERT INTO registro_familiar (`idusuarios`, `NombrePapa`, `ApellidoPapa`, `NombreMama`, `ApellidoMama`, `Telefono`) VALUES (%s, %s, %s, %s, %s, %s)'
+            data = (idusuarios, nombrePapa, apellidoPapa, nombreMama, apellidoMama, contacto)
             cur.execute(sql, data)
             db.commit()
             return jsonify({'message': 'Registro familiar creado satisfactoriamente'}), 200
@@ -118,7 +119,7 @@ def registro_familiar():
     db = current_app.config['db']
     if request.method == 'GET':
         cur = db.cursor()
-        sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios'
+        sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN usuarios u ON f.idusuarios = u.idusuarios'
         cur.execute(sql)
         registros = cur.fetchall()
         insertRegistros = []
@@ -136,7 +137,7 @@ def edit_registro_familiar(idFamilia):
     db = current_app.config['db']
     try:
         with db.cursor() as cur:
-            sql = 'SELECT f.idFamilia, u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE f.idFamilia = %s'
+            sql = 'SELECT f.idFamilia, u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN usuarios u ON f.idusuarios = u.idusuarios WHERE f.idFamilia = %s'
             cur.execute(sql, (idFamilia,))
             registros = cur.fetchall()
             insertRegistros = []
@@ -233,7 +234,7 @@ def buscar_registro_familiar():
         db = current_app.config['db']
         cedula = request.form['cedula']
         cur = db.cursor()
-        sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN alumnos a ON f.idAlumno = a.idAlumno JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
+        sql = 'SELECT f.idFamilia, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, f.NombrePapa, f.ApellidoPapa, f.NombreMama, f.ApellidoMama, f.Telefono FROM registro_familiar f JOIN usuarios u ON f.idusuarios = u.idusuarios WHERE u.cedula = %s'
         data = (cedula,)
         cur.execute(sql, data)
         registros = cur.fetchall()

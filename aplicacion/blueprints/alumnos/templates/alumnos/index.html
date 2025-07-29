@@ -31,7 +31,7 @@
 
             {% for alumno in alumnos %}
                 <tr>
-                    <td id="td-id-alumno">{{alumno.idAlumno}}</td>
+                    <td id="td-id-alumno">{{alumno.idusuarios}}</td>
                     <td>{{alumno.nombre}}</td>
                     <td>{{alumno.segundoNombre}}</td>
                     <td>{{alumno.apellido}}</td>
@@ -39,7 +39,7 @@
                     <td>{{alumno.cedula}}</td>
                     <td>{{alumno.email}}</td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary btn-secciones" idAlumno="{{alumno.idAlumno}}" onclick="get_id_alumno(this.getAttribute('idAlumno'))" data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-modal">
+                        <button class="btn btn-primary btn-secciones" idAlumno="{{alumno.idusuarios}}" onclick="get_id_alumno(this.getAttribute('idAlumno'))" data-bs-toggle="modal" data-bs-target="#crear-registro-familiar-modal">
                             Crear registro familiar
                         </button>
                     </td>
