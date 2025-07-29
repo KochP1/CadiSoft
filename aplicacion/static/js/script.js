@@ -1564,7 +1564,7 @@ function mostrar_panel_inscripcion(data) {
         nombre.value = data.nombre;
         apellido.value = data.apellido;
         cedula.value = data.cedula;
-        id.value = data.idAlumno;
+        id.value = data.idusuarios;
         imagen.src = `/get_profile_image/${idusuario}`
         container.style.display = 'flex';
     } catch(e) {

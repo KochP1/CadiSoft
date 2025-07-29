@@ -333,7 +333,7 @@ def calificaciones(idSeccion):
                 for record in periodoArray:
                     inicioPeriodo = record['fecha_inscripcion']
                 
-                cur.execute('SELECT c.idCalificacion, c.idAlumno, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN alumnos a ON c.idAlumno = a.idAlumno JOIN usuarios u ON u.idusuarios = a.idusuarios WHERE c.idSeccion = %s AND i.fecha_inscripcion = %s', (idSeccion, inicioPeriodo))
+                cur.execute('SELECT c.idCalificacion, c.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN usuarios u ON c.idusuarios = u.idusuarios WHERE c.idSeccion = %s AND i.fecha_inscripcion = %s', (idSeccion, inicioPeriodo))
                 registro_calificaciones = cur.fetchall()
 
                 insertCalificaciones = []
@@ -372,7 +372,7 @@ def subir_logro_uno(idSeccion):
     
     try:
         with db.cursor() as cur:
-            cur.execute('UPDATE calificaciones SET logro_1 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            cur.execute('UPDATE calificaciones SET logro_1 = %s WHERE idSeccion = %s AND idusuarios = %s', (logro, idSeccion, idAlumno))
             db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
@@ -397,7 +397,7 @@ def subir_logro_dos(idSeccion):
     
     try:
         with db.cursor() as cur:
-            cur.execute('UPDATE calificaciones SET logro_2 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            cur.execute('UPDATE calificaciones SET logro_2 = %s WHERE idSeccion = %s AND idusuarios = %s', (logro, idSeccion, idAlumno))
             db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
@@ -420,7 +420,7 @@ def subir_logro_tres(idSeccion):
     
     try:
         with db.cursor() as cur:
-            cur.execute('UPDATE calificaciones SET logro_3 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            cur.execute('UPDATE calificaciones SET logro_3 = %s WHERE idSeccion = %s AND idusuarios = %s', (logro, idSeccion, idAlumno))
             db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
@@ -445,7 +445,7 @@ def subir_logro_cuatro(idSeccion):
     
     try:
         with db.cursor() as cur:
-            cur.execute('UPDATE calificaciones SET logro_4 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            cur.execute('UPDATE calificaciones SET logro_4 = %s WHERE idSeccion = %s AND idusuarios = %s', (logro, idSeccion, idAlumno))
             db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
@@ -470,7 +470,7 @@ def subir_logro_cinco(idSeccion):
     
     try:
         with db.cursor() as cur:
-            cur.execute('UPDATE calificaciones SET logro_5 = %s WHERE idSeccion = %s AND idAlumno = %s', (logro, idSeccion, idAlumno))
+            cur.execute('UPDATE calificaciones SET logro_5 = %s WHERE idSeccion = %s AND idusuarios = %s', (logro, idSeccion, idAlumno))
             db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:

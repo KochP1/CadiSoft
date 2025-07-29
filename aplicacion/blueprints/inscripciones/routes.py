@@ -62,15 +62,7 @@ def alumnos_regulares():
             
             cur.execute(sql_usuario, usuario)
             db.commit()
-
-            cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
-            idusuario = cur.fetchone()
-
-            sql_alumno = 'INSERT INTO alumnos (`idusuarios`) VALUES (%s)'
-            alumno = (idusuario,)
-            cur.execute(sql_alumno, alumno)
-            db.commit()
-            return jsonify({'mensaje': 'profesor creado satisfactiramente'}), 200
+            return jsonify({'mensaje': 'Alumno creado satisfactiramente'}), 200
         except Exception as e:
             db.rollback()
             print(e)
@@ -84,6 +76,7 @@ def alumnos_regulares():
 @inscripciones.route('/buscar_alumno', methods = ['POST'])
 def buscar_alumno():
     cedula = request.form.get('cedula')
+    rol = 'alumno'
 
     if not cedula:
         return jsonify({'error': 'La cédula es requerida'}), 400
@@ -93,8 +86,8 @@ def buscar_alumno():
         db.ping(reconnect=True)
         
         with db.cursor() as cur:
-            sql = 'SELECT a.idAlumno, a.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM alumnos a JOIN usuarios u ON a.idusuarios = u.idusuarios WHERE u.cedula = %s'
-            data = (cedula,)
+            sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM usuarios u WHERE u.rol = %s AND u.cedula = %s'
+            data = (rol, cedula)
             cur.execute(sql, data)
             alumno = cur.fetchone()
 
@@ -215,7 +208,7 @@ def inscribir_alumno():
     idSeccion = request.form.get('idSeccion')
 
     try:
-        sql = 'INSERT INTO inscripcion (`idAlumno`, `fecha_inscripcion`, `fecha_expiracion`, `es_activa`) VALUES (%s, %s, %s, %s)'
+        sql = 'INSERT INTO inscripcion (`idusuarios`, `fecha_inscripcion`, `fecha_expiracion`, `es_activa`) VALUES (%s, %s, %s, %s)'
         data = (
             idAlumno,
             periodoInicio,
@@ -225,7 +218,7 @@ def inscribir_alumno():
         cur.execute(sql, data)
         db.commit()
 
-        sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idAlumno = %s'
+        sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idusuarios = %s'
         cur.execute(sql_idInscripcion, (idAlumno,))
         idAlumnoInscripcion = cur.fetchone()
 
@@ -233,7 +226,7 @@ def inscribir_alumno():
         cur.execute(sql_inscripcionesXcursos, (idAlumnoInscripcion, idSeccion))
         db.commit()
 
-        cur.execute('INSERT INTO calificaciones (`idAlumno`, `idSeccion`, `idInscripcion`) VALUES (%s, %s, %s)', (idAlumno, idSeccion, idAlumnoInscripcion))
+        cur.execute('INSERT INTO calificaciones (`idusuarios`, `idSeccion`, `idInscripcion`) VALUES (%s, %s, %s)', (idAlumno, idSeccion, idAlumnoInscripcion))
         db.commit()
         
         return jsonify({'mensaje': 'Alumno inscrito satisfactoriamente'}), 200
