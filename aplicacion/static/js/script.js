@@ -931,6 +931,35 @@ async function buscar_horario() {
     }
 }
 
+async function elim_preinscripcion(event, id) {
+    event.preventDefault();
+    const url = `/inscripciones/elim_preinscripcion/${id}`;
+
+    if (confirm('¿Estás seguro de que queires eliminar la preinscripción?')) {
+        
+            try {
+                const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = response.json()
+
+            if (!response.ok) {
+                alert(data.error);
+                throw new Error(data.error);
+            }
+
+            alert('La preinscripción fue eliminada');
+            window.location.reload();
+        } catch(e) {
+            console.error(e);
+        }
+    }
+}
+
 function inscribir_alumno() {
     const form = document.getElementById('inscripcion-form');
     const idAlumno = document.getElementById('alumno-id-inscripcion').value;

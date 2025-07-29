@@ -6,6 +6,35 @@ from flask_bcrypt import Bcrypt
 inscripciones = Blueprint('inscripciones', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
 
+@inscripciones.route('/', methods = ['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        db = current_app.config['db']
+
+        with db.cursor() as cur:
+            cur.execute('SELECT * FROM preinscripcion')
+            registros = cur.fetchall()
+            insertRegistros = []
+            columNames = [columns[0] for columns in cur.description]
+
+            for record in registros:
+                insertRegistros.append(dict(zip(columNames, record)))
+            print(insertRegistros)
+            return render_template('inscripciones/index.html', preinscripciones = insertRegistros)
+
+@inscripciones.route('/elim_preinscripcion/<int:id>', methods = ['DELETE'])
+def elim_preinscripcion(id):
+    db = current_app.config['db']
+    
+    with db.cursor() as cur:
+        try:
+            cur.execute('DELETE FROM preinscripcion WHERE idPreinscipcion = %s', (id,))
+            db.commit()
+            return jsonify({'mensaje': 'preinscripcion eliminada'}), 200
+        except Exception as e:
+            print(e)
+            return jsonify({'error': 'Error al eliminar preinscripcion'}), 500
+
 @inscripciones.route('/alumnos_regulares', methods = ['POST', 'GET'])
 def alumnos_regulares():
 

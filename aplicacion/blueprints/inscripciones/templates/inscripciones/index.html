@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Pre inscripciones{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Pre inscripciones</h1>
+        <hr class="divider">
+    </div>
+
+    <div class="preInscripciones__wrapper">
+
+        {% for record in preinscripciones %}
+            <form class="preInscripciones__form" action="" method="post">
+
+                <div class="preinscripcion-img__container">
+                    <img src="../../../../images/Cadi_logo-removeBG.png" alt="CADI">
+                </div>
+                <div class="preInscripciones__form-control">
+                    <label>Nombres</label>
+                    <input type="text" value="{{record.nombre}}" readonly name="nombre">
+                    <input type="text" value="{{record.segundoNombre}}" readonly name="">
+                </div>
+
+                <div class="preInscripciones__form-control">
+                    <label>Apellidos</label>
+                    <input type="text" value="{{record.apellido}}" readonly name="apellido">
+                    <input type="text" value="{{record.segundoApellido}}" readonly>
+                </div>
+
+                <div class="preInscripciones__form-control">
+                    <label>Datos personales</label>
+                    <input type="number" value="{{record.cedula}}" readonly name="cedula">
+                    <input type="text" value="{{record.email}}" readonly name="email">
+                </div>
+
+                <div class="preInscripciones__form-control">
+                    <label>Curso de preferencia</label>
+                    <input type="text" value="{{record.curso}}" readonly name="curso">
+                </div>
+
+                <div class="preInscripciones__form-btns">
+                    <button class="btn btn-primary" type="submit">Procesar</button>
+                    <button type="button" class="btn btn-danger" readonly idPreinscripcion="{{record.idPreinscipcion}}" onclick="elim_preinscripcion(event, this.getAttribute('idPreinscripcion'))">Eliminar</button>
+                </div>
+            </form>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
