@@ -65,7 +65,7 @@ def inicio_stats():
 
     try:
         with db.cursor() as cur:
-            cur.execute('SELECT * FROM alumnos')
+            cur.execute('SELECT * FROM usuarios WHERE rol = %s', ('alumno',))
             alumnos = cur.fetchall()
 
             cur.execute('SELECT * FROM profesores')
