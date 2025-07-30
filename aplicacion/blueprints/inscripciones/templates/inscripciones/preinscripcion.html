@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscripciones{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Procesar pre-inscripción</h1>
+        <hr class="divider">
+    </div>
+
+    <div class="inscripciones__wrapper">
+        
+        {% for record in preinscripcion  %}
+            <div class="options__container preinscripcion-options__container" id="inscripcion-options__container">
+                <div class="campos-inscripcion__container">
+                    <form id="inscripcion-form" class="inscripcion-form form-control">
+                        <div class="form-input__container">
+                            <label>Alumno</label>
+                            <input type="text" class="form-control mb-3" name="nombre" id="alumno-nombre-inscripcion" value="{{record.nombre}}" readonly>
+                            <input type="text" class="form-control mb-3" name="apellido" id="alumno-apellido-inscripcion" value="{{record.apellido}}" readonly>
+                            <input type="number" class="form-control mb-3" name="cedula" id="alumno-cedula-inscripcion" value="{{record.cedula}}" readonly>
+                            <input type="hidden" id="alumno-id-inscripcion" value="{{record.idusuarios}}">
+                        </div>
+
+                        <div class="form-input__container">
+                            <label>Periodo</label>
+                            <input type="date" class="form-control mb-3" name="InicioPeriodo" id="InicioPeriodo">
+                            <input type="date" class="form-control mb-3" name="FinPeriodo" id="FinPeriodo">
+                        </div>
+
+                        <div class="form-input__container">
+                            <label>Curso</label>
+                            <input type="search" class="form-control mb-3" name="curso" id="curso-inscripcion" value="{{curso}}" placeholder="Buscar curso" onchange="buscar_curso()">
+                            <select name="seccion" id="select-seccion-inscripcion" class="form-control mb-3" onchange="buscar_horario()">
+                                <option value="Selecciona una Sección">Selecciona una Sección</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" id="btn-inscribir" type="submit" onclick="inscribir_alumno()">Inscribir</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive horario__container" id="horario__container">
+                <table class="table table-bordered border-dark table-horario" id="tabla-horario">
+                    <tr>
+                        <th>Hora</th>
+                        <th>Lunes</th>
+                        <th>Martes</th>
+                        <th>Miércoles</th>
+                        <th>Jueves</th>
+                        <th>Viernes</th>
+                        <th>Sábado</th>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">8:00-9:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">9:00-10:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">10:00-11:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">11:00-12:00 am</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">12:00-01:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">01:00-02:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">02:00-03:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">03:00-04:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="hora-td">04:00-05:00 pm</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        let = searching = false;
+        async function buscar_curso() {
+            if (searching) return null;
+            searching = true;
+            const curso = document.getElementById('curso-inscripcion').value;
+            const url = '/inscripciones/buscar_curso';
+
+            console.log(curso)
+
+            if (!curso) {
+                searching = false;
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({'curso': curso})
+                });
+
+                if (!response.ok) {
+                    alert('Curso no encontrado')
+                    throw new Error ('Error al buscar el curso');
+                }
+
+                const data = await response.json()
+                seleccionar_seccion(data.cursos)
+            } catch (e) {
+                console.log(e);
+            } finally {
+                searching = false
+            }
+        }
+
+        buscar_curso();
+    </script>
+
+{% endblock %}

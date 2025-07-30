@@ -6,6 +6,7 @@ from flask_bcrypt import Bcrypt
 inscripciones = Blueprint('inscripciones', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
 
+# PRE INSCRIPCIONES
 @inscripciones.route('/', methods = ['GET', 'POST'])
 def index():
     if request.method == 'GET':
@@ -19,8 +20,21 @@ def index():
 
             for record in registros:
                 insertRegistros.append(dict(zip(columNames, record)))
-            print(insertRegistros)
             return render_template('inscripciones/index.html', preinscripciones = insertRegistros)
+
+@inscripciones.route('/procesar_preinscripcion/<int:id>/<curso>', methods = ['GET'])
+def procesar_preinscripcion(id, curso):
+    db = current_app.config['db']
+    with db.cursor() as cur:
+        cur.execute('SELECT * FROM usuarios WHERE idusuarios = %s', (id,))
+        registros = cur.fetchall()
+        insertRegistros = []
+        columNames = [columns[0] for columns in cur.description]
+
+        for record in registros:
+            insertRegistros.append(dict(zip(columNames, record)))
+        
+        return render_template('inscripciones/preinscripcion.html', preinscripcion = insertRegistros, idusuario = id, curso = curso)
 
 @inscripciones.route('/elim_preinscripcion/<int:id>', methods = ['DELETE'])
 def elim_preinscripcion(id):
@@ -35,6 +49,7 @@ def elim_preinscripcion(id):
             print(e)
             return jsonify({'error': 'Error al eliminar preinscripcion'}), 500
 
+# INSCRIPCIONES
 @inscripciones.route('/alumnos_regulares', methods = ['POST', 'GET'])
 def alumnos_regulares():
 
@@ -51,7 +66,7 @@ def alumnos_regulares():
         cedula = request.form.get('cedula')
         email = request.form.get('email')
         contraseña = request.form.get('email')
-        rol = request.form.get('rol')
+        rol = 'alumno'
         contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
 
         try:
@@ -73,6 +88,19 @@ def alumnos_regulares():
                     contraseña_hash,
                     rol
                     )
+                
+                if request.form.get('curso') != '':
+                    cur.execute(sql_usuario, usuario)
+                    db.commit()
+                    cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
+                    registro = cur.fetchone()
+                    registroStr = ''.join(map(str, registro))
+                    idusuario = int(registroStr)
+
+                    cur.execute('DELETE FROM preinscripcion WHERE cedula = %s', (cedula,))
+                    db.commit()
+                    
+                    return redirect(url_for('inscripciones.procesar_preinscripcion', id = idusuario, curso=request.form.get('curso')))
             
             else:
                 sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'

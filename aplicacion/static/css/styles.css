@@ -915,6 +915,10 @@ input[type=number] {
     margin-top: 20px;
 }
 
+.preinscripcion-options__container {
+    display: flex;
+}
+
 /* FINALIZA INSCRIPCIONES */
 
 /* CURSOS */

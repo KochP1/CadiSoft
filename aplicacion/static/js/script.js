@@ -972,8 +972,8 @@ function inscribir_alumno() {
     }
 
     if (!periodoInicio || !periodoFinal) {
-        alert('Debes ingresar el periodo de inscripción')
-        return;
+        alert('Debes ingresar el periodo de inscripción');
+        return null;
     }
 
     

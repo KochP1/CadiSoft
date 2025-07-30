@@ -11,14 +11,14 @@
     </style>
     
     <div class="alumnos-options__wrapper">
-        <h1>Pre inscripciones</h1>
+        <h1>Pre-inscripciones</h1>
         <hr class="divider">
     </div>
 
     <div class="preInscripciones__wrapper">
 
         {% for record in preinscripciones %}
-            <form class="preInscripciones__form" action="" method="post">
+            <form class="preInscripciones__form" action="{{url_for('inscripciones.alumnos_regulares')}}" method="post">
 
                 <div class="preinscripcion-img__container">
                     <img src="../../../../images/Cadi_logo-removeBG.png" alt="CADI">
@@ -26,13 +26,13 @@
                 <div class="preInscripciones__form-control">
                     <label>Nombres</label>
                     <input type="text" value="{{record.nombre}}" readonly name="nombre">
-                    <input type="text" value="{{record.segundoNombre}}" readonly name="">
+                    <input type="text" value="{{record.segundoNombre}}" readonly name="segundoNombre">
                 </div>
 
                 <div class="preInscripciones__form-control">
                     <label>Apellidos</label>
                     <input type="text" value="{{record.apellido}}" readonly name="apellido">
-                    <input type="text" value="{{record.segundoApellido}}" readonly>
+                    <input type="text" value="{{record.segundoApellido}}" readonly name="segundoApellido">
                 </div>
 
                 <div class="preInscripciones__form-control">
