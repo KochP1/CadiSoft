@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 29-07-2025 a las 21:20:12
+-- Tiempo de generación: 30-07-2025 a las 02:16:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -163,6 +163,23 @@ CREATE TABLE `insc_x_seccion` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `preinscripcion`
+--
+
+CREATE TABLE `preinscripcion` (
+  `idPreinscipcion` int(11) NOT NULL,
+  `nombre` varchar(12) NOT NULL,
+  `segundoNombre` varchar(12) DEFAULT NULL,
+  `apellido` varchar(20) NOT NULL,
+  `segundoApellido` varchar(20) NOT NULL,
+  `cedula` varchar(8) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `curso` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `productos`
 --
 
@@ -312,6 +329,14 @@ ALTER TABLE `insc_x_seccion`
   ADD KEY `seccion_inscripcion_fk` (`idSeccion`);
 
 --
+-- Indices de la tabla `preinscripcion`
+--
+ALTER TABLE `preinscripcion`
+  ADD PRIMARY KEY (`idPreinscipcion`),
+  ADD UNIQUE KEY `cedula` (`cedula`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
@@ -411,6 +436,12 @@ ALTER TABLE `inscripcion`
 --
 ALTER TABLE `insc_x_seccion`
   MODIFY `idinsc_x_seccion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `preinscripcion`
+--
+ALTER TABLE `preinscripcion`
+  MODIFY `idPreinscipcion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
