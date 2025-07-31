@@ -960,7 +960,8 @@ async function elim_preinscripcion(event, id) {
     }
 }
 
-function inscribir_alumno() {
+async function inscribir_alumno(event) {
+    event.preventDefault();
     const form = document.getElementById('inscripcion-form');
     const idAlumno = document.getElementById('alumno-id-inscripcion').value;
     const periodoInicio = document.getElementById('InicioPeriodo').value;
@@ -968,106 +969,138 @@ function inscribir_alumno() {
     const idSeccion = document.getElementById('select-seccion-inscripcion').value;
 
     if (!form) {
+        isSearching = false;
         return;
     }
 
     if (!periodoInicio || !periodoFinal) {
+        isSearching = false;
         alert('Debes ingresar el periodo de inscripción');
-        return null;
+        return;
     }
 
-    
+    if (!idSeccion) {
+        isSearching = false;
+        alert('Debes ingresar la sección deseada');
+        return;
+    }
 
-    form.addEventListener('submit', async(event) => {
-        event.preventDefault();
-        if (isSearching) return;
-        isSearching = true;
+    if (isSearching) return;
+    isSearching = true;
 
-        const formData = new FormData();
-        const url = '/inscripciones/inscribir_alumno';
+    const formData = new FormData();
+    formData.append('idAlumno', idAlumno);
+    formData.append('periodoInicio', periodoInicio);
+    formData.append('periodoFinal', periodoFinal);
+    formData.append('idSeccion', idSeccion);
 
-        
+    try {
+        const response = await fetch('/inscripciones/inscribir_alumno', {
+            method: 'POST',
+            body: formData
+        });
 
-        formData.append('idAlumno' ,idAlumno);
-        formData.append('periodoInicio',periodoInicio);
-        formData.append('periodoFinal', periodoFinal);
-        formData.append('idSeccion', idSeccion);
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error('Error al inscribir el alumno');
-            }
-            alert(data.mensaje);
-            window.location.reload();
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.mensaje || 'Error al inscribir');
+                
+        alert(data.mensaje);
+        window.location.reload();
         } catch (e) {
-            console.log(e)
+            alert(e.message);
+            console.error(e);
         } finally {
             isSearching = false;
         }
-    })
 }
 
-function crearAlumno() {
+async function crearAlumno(event) {
+    event.preventDefault();
     const form = document.getElementById('crear-alumno-form');
     const rol = 'alumno'
-    const nombre = document.getElementById('nombreAlumno').value;
-    const segundoNombre = document.getElementById('segundoNombreAlumno').value;
-    const apellido = document.getElementById('apellidoAlumno').value;
-    const segundoApellido = document.getElementById('segundoApellidoAlumno').value;
-    const cedula = document.getElementById('cedulaAlumno').value;
-    const email = document.getElementById('emailAlumno').value;
-    const contraseña = document.getElementById('contraseñaAlumno').value;
+    const nombre = document.getElementById('nombreAlumno').value.trim();
+    const segundoNombre = document.getElementById('segundoNombreAlumno').value.trim();
+    const apellido = document.getElementById('apellidoAlumno').value.trim();
+    const segundoApellido = document.getElementById('segundoApellidoAlumno').value.trim();
+    const cedula = document.getElementById('cedulaAlumno').value.trim();
+    const email = document.getElementById('emailAlumno').value.trim();
+    const contraseña = document.getElementById('contraseñaAlumno').value.trim();
     const imagen = document.getElementById('imagenAlumno').files[0];
 
 
-    if (nombre === '' || segundoNombre === '' || apellido === '' || segundoApellido === '' || cedula === '' || email === '' || contraseña === '') {
-        alert('Todos los campos deben ser llenados')
-        window.location.reload()
+    if (nombre === '') {
+        isSearching = false;
+        alert('El nombre esta vacio');
+        return;
     }
 
+    if (apellido === '' || segundoApellido === '') {
+        isSearching = false;
+        alert('los campos de apellidos deben ser llenados')
+        return;
+    }
+
+    if (cedula === '') {
+        isSearching = false;
+        alert('la cedula esta vacio')
+        return;
+    }
+
+    if (email === '') {
+        isSearching = false;
+        alert('El email esta vacio')
+        return;
+    }
+
+    if (contraseña === '') {
+        isSearching = false;
+        alert('La contraseña esta vacio')
+        return;
+    }
+
+    if (cedula.length > 8) {
+        isSearching = false;
+        alert('La cédula puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (contraseña.length > 8) {
+        isSearching = false;
+        alert('La contraseña puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (isSearching) return;
+    isSearching = true;
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('segundoNombre', segundoNombre);
+    formData.append('apellido', apellido);
+    formData.append('segundoApellido', segundoApellido);
+    formData.append('cedula', cedula);
+    formData.append('email', email);
+    formData.append('contraseña', contraseña);
+    formData.append('rol', rol);
+    formData.append('imagen', imagen);
+    try {
+        const response = await fetch('/inscripciones/alumnos_regulares', {
+            method: 'POST',
+            body: formData
+        });
     
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData();
-        formData.append('nombre', nombre);
-        formData.append('segundoNombre', segundoNombre);
-        formData.append('apellido', apellido);
-        formData.append('segundoApellido', segundoApellido);
-        formData.append('cedula', cedula);
-        formData.append('email', email);
-        formData.append('contraseña', contraseña);
-        formData.append('rol', rol);
-        formData.append('imagen', imagen);
-
-        if (cedula.length > 8) {
-            alert('La cédula puede tener máximo 8 caracteres');
-            window.location.reload();
+        if (response.ok) {
+            alert('Alumno creado satisfactoriamente');
+            document.getElementById('inscripcion-buscar-cedula').value = cedula;
+            buscar_alumno();
+            //window.location.reload();
+        } else {
+            alert('Error al crear el alumno')
         }
-
-        try {
-            const response = await fetch('/inscripciones/alumnos_regulares', {
-                method: 'POST',
-                body: formData
-            });
-    
-            if (response.ok) {
-                alert('Alumno creado satisfactoriamente')
-                window.location.reload();
-            } else {
-                alert('Error al crear el alumno')
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    })
+    } catch (error) {
+        console.log(error)
+    } finally {
+        isSearching = false;
+    }
 }
 
 // CURSOS

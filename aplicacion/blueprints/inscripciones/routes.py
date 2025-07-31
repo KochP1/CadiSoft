@@ -67,6 +67,7 @@ def alumnos_regulares():
         email = request.form.get('email')
         contraseña = request.form.get('email')
         rol = 'alumno'
+        curso = request.form.get('curso')
         contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
 
         try:
@@ -89,7 +90,7 @@ def alumnos_regulares():
                     rol
                     )
                 
-                if request.form.get('curso') != '':
+                if curso:
                     cur.execute(sql_usuario, usuario)
                     db.commit()
                     cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
@@ -123,7 +124,7 @@ def alumnos_regulares():
         except Exception as e:
             db.rollback()
             print(e)
-            return jsonify({'error': 'Error al crear el usuario'}), 400
+            return jsonify({'error': 'Error al crear el usuario'}), 500
         finally:
             cur.close()
     

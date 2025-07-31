@@ -35,7 +35,7 @@
             </div>
 
             <div class="campos-inscripcion__container">
-                <form id="inscripcion-form" class="inscripcion-form form-control">
+                <form id="inscripcion-form" class="inscripcion-form form-control" onsubmit="inscribir_alumno(event)">
                     <div class="form-input__container">
                         <label>Alumno</label>
                         <input type="text" class="form-control mb-3" name="nombre" id="alumno-nombre-inscripcion" maxlength="12" readonly>
@@ -58,7 +58,7 @@
                         </select>
                     </div>
 
-                    <button class="btn btn-primary" id="btn-inscribir" type="submit" onclick="inscribir_alumno()">Inscribir</button>
+                    <button class="btn btn-primary" id="btn-inscribir" type="submit">Inscribir</button>
                 </form>
             </div>
         </div>
@@ -177,7 +177,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form id="crear-alumno-form">
+              <form id="crear-alumno-form" onsubmit="crearAlumno(event)">
 
                 <label>Nombre</label>
                 <input type="text" class="form-control mb-3" name="nombre" id="nombreAlumno" maxlength="12">
@@ -206,7 +206,7 @@
                 <label>Imagen</label>
                 <input type="file" class="form-control mb-3" name="imagen" id="imagenAlumno">
 
-                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearAlumno()">Guardar</button>
+                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
               </form>
             </div>
           </div>
