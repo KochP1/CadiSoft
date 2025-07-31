@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %} Alumnos {% endblock %}
+
+{% block content %}
+    
+    <div class="constancia-options__wrapper">
+        <div class="constancia-img__container">
+            {% if alumno[0].imagen != None %}
+                    <div class="img-constancia">
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=alumno[0].idusuarios)}}" alt="">
+                    </div>
+            {% endif %}
+        </div>
+        <h2>{{alumno[0].nombre}} {{alumno[0].segundoNombre}} {{alumno[0].apellido}} {{alumno[0].segundoApellido}}</h1>
+        <h2>{{alumno[0].cedula}}</h2>
+        <hr class="divider">
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped-columns table-alumnos" id="tablaAlumnos">
+            <tr>
+                <th>Curso</th>
+                <th>Calificación</th>
+            </tr>
+
+            {% for record in constancia %}
+                <tr>
+                    <td>{{record.nombre_curso}}</td>
+                    <td>{{record.definitiva}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="alumnos-options__container">
+            <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar constancia</button>
+    </div>
+
+    <script src="../../../../js/excel.js"></script>
+    <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/file-saverjs@latest/FileSaver.min.js"></script>
+    <script src="https://unpkg.com/tableexport@latest/dist/js/tableexport.min.js"></script>
+
+{% endblock %}

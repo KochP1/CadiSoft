@@ -84,6 +84,34 @@ def edit_alumno(idusuarios):
     finally:
         cur.close()
 
+@alumnos.route('/constancia_estudio/<int:idAlumno>', methods = ['GET'])
+def constancia_estudio(idAlumno):
+    db = current_app.config['db']
+
+    with db.cursor() as cur:
+        try:
+            cur.execute('SELECT * FROM usuarios WHERE idusuarios = %s', (idAlumno,))
+            registroAlumno = cur.fetchall()
+            insertAlumno = []
+            columNamesAlumno = [column[0] for column in cur.description]
+
+            for record in registroAlumno:
+                insertAlumno.append(dict(zip(columNamesAlumno, record)))
+            print(insertAlumno)
+
+            cur.execute('SELECT c.nombre_curso, s.seccion, ca.definitiva FROM calificaciones ca JOIN secciones s ON ca.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso JOIN usuarios u ON ca.idusuarios = u.idusuarios WHERE ca.idusuarios = %s AND ca.definitiva > 9.6', (idAlumno,))
+            registros = cur.fetchall()
+            insertRegistros = []
+            columNames = [column[0] for column in cur.description]
+
+            for record in registros:
+                insertRegistros.append(dict(zip(columNames, record)))
+
+            return render_template('alumnos/constancia.html', constancia = insertRegistros, alumno = insertAlumno)
+        except Exception as e:
+            print(e)
+            return f'Error: {e}'
+
 # FINALIZAN ENDPOINTS DE ALUMNOS
 
 # REGISTRO FAMILIAR

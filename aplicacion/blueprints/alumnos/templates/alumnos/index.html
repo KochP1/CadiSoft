@@ -44,6 +44,13 @@
                         </button>
                     </td>
                     <td class="tabla-btn">
+                        <a href="{{url_for('alumnos.constancia_estudio', idAlumno=alumno.idusuarios)}}" class="editar-link">
+                            <button class="btn btn-primary">
+                            Constancia de estudio
+                            </button>
+                        </a>
+                    </td>
+                    <td class="tabla-btn">
                         <a href="{{url_for('alumnos.edit_alumno', idusuarios=alumno.idusuarios)}}" class="editar-link">
                             <button class="btn btn-primary">
                             Editar
