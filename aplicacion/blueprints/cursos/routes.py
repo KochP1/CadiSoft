@@ -478,6 +478,27 @@ def subir_logro_cinco(idSeccion):
         print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
 
+@cursos.route('/subir_definitiva/<int:idSeccion>', methods = ['PATCH'])
+def subir_definitiva(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
 
+    data = request.get_json()
+
+    if not data or 'definitiva' not in data or 'idAlumno' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    definitiva = data['definitiva']
+    idAlumno = data['idAlumno']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE calificaciones SET definitiva = %s WHERE idSeccion = %s AND idusuarios = %s', (definitiva, idSeccion, idAlumno))
+            db.commit()
+            return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return jsonify({'error': 'Error al poner calificación'}), 500
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES

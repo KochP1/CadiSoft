@@ -1447,6 +1447,7 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
         }
 
         alert(data.message);
+        calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
     }
@@ -1482,6 +1483,7 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
         }
 
         alert(data.message);
+        calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
     }
@@ -1517,6 +1519,7 @@ async function colocar_logro_tres(idSeccion, idAlumno) {
         }
 
         alert(data.message);
+        calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
     }
@@ -1552,6 +1555,7 @@ async function colocar_logro_cuatro(idSeccion, idAlumno) {
         }
 
         alert(data.message);
+        calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
     }
@@ -1587,6 +1591,48 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
         }
 
         alert(data.message);
+        calcular_definitiva(idSeccion, idAlumno);
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+async function calcular_definitiva(idSeccion, idAlumno) {
+    const url = `/cursos/subir_definitiva/${idSeccion}`;
+    const parsearNota = (id) => {
+        const valor = document.getElementById(id).value.trim();
+        return valor === "" ? 0 : parseFloat(valor);
+    };
+
+    let nota1 = parsearNota(`input-logro1-${idAlumno}`) * 0.20;
+    let nota2 = parsearNota(`input-logro2-${idAlumno}`) * 0.20;
+    let nota3 = parsearNota(`input-logro3-${idAlumno}`) * 0.20;
+    let nota4 = parsearNota(`input-logro4-${idAlumno}`) * 0.20;
+    let nota5 = parsearNota(`input-logro5-${idAlumno}`) * 0.20;
+
+    const definitiva = (nota1 + nota2 + nota3 + nota4 + nota5).toFixed(1);
+
+    const requestData = {
+        definitiva: definitiva,
+        idAlumno: idAlumno
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+        document.getElementById(`input-def-${idAlumno}`).value = definitiva;
     } catch(e) {
         console.log(e)
     }
@@ -1800,7 +1846,7 @@ function select_horario(idCelda, nombreCurso) {
 let flagNotas = false
 
 function toggleInputNotas() {
-    const input = document.querySelectorAll('.calificacion-input')
+    const input = document.querySelectorAll('.mod-calificacion')
     const btn = document.getElementById('toggle-calificacion');
     const estado = !flagNotas;
     let border = '';
