@@ -818,6 +818,7 @@ async function eliminar_registro_familiar(idRegistro) {
 
 // Buscar alumno por cédula
 function buscar_alumno() {
+    console.log('Me ejecuto')
     const form = document.getElementById('buscar-alumno-inscripcion')
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -1090,8 +1091,8 @@ async function crearAlumno(event) {
     
         if (response.ok) {
             alert('Alumno creado satisfactoriamente');
+            clearInputs(['nombreAlumno', 'segundoNombreAlumno', 'apellidoAlumno', 'segundoApellidoAlumno', 'cedulaAlumno', 'emailAlumno', 'contraseñaAlumno', 'imagenAlumno'])
             document.getElementById('inscripcion-buscar-cedula').value = cedula;
-            buscar_alumno();
             //window.location.reload();
         } else {
             alert('Error al crear el alumno')
@@ -1101,6 +1102,12 @@ async function crearAlumno(event) {
     } finally {
         isSearching = false;
     }
+}
+
+function clearInputs(array) {
+    array.forEach((element) => {
+        document.getElementById(element).value = '';
+    })
 }
 
 // CURSOS
