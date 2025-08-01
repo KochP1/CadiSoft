@@ -262,15 +262,17 @@ def inscribir_alumno():
     idAlumno = request.form.get('idAlumno')
     periodoInicio = request.form.get('periodoInicio')
     periodoFinal = request.form.get('periodoFinal')
+    tipo = request.form.get('tipo')
     es_activa = 0
     idSeccion = request.form.get('idSeccion')
 
     try:
-        sql = 'INSERT INTO inscripcion (`idusuarios`, `fecha_inscripcion`, `fecha_expiracion`, `es_activa`) VALUES (%s, %s, %s, %s)'
+        sql = 'INSERT INTO inscripcion (`idusuarios`, `fecha_inscripcion`, `fecha_expiracion`, `tipo`, `es_activa`) VALUES (%s, %s, %s, %s, %s)'
         data = (
             idAlumno,
             periodoInicio,
             periodoFinal,
+            tipo,
             es_activa
         )
         cur.execute(sql, data)

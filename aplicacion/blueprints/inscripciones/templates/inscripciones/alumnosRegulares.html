@@ -11,7 +11,7 @@
     </style>
     
     <div class="alumnos-options__wrapper">
-        <h1>Inscripciones-Alumnos regulares</h1>
+        <h1>Inscripciones</h1>
 
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-alumno-modal">Crear Alumno</button>
@@ -48,6 +48,11 @@
                         <label>Periodo</label>
                         <input type="date" class="form-control mb-3" name="InicioPeriodo" id="InicioPeriodo">
                         <input type="date" class="form-control mb-3" name="FinPeriodo" id="FinPeriodo">
+                        <select name="seccion" id="select-tipo-inscripcion" class="form-control mb-3">
+                            <option value="Selecciona una Sección">Selecciona el tipo de inscripción</option>
+                            <option value="Privada">Privada</option>
+                            <option value="Inces">Inces</option>
+                        </select>
                     </div>
 
                     <div class="form-input__container">

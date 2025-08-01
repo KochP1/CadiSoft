@@ -967,6 +967,7 @@ async function inscribir_alumno(event) {
     const idAlumno = document.getElementById('alumno-id-inscripcion').value;
     const periodoInicio = document.getElementById('InicioPeriodo').value;
     const periodoFinal = document.getElementById('FinPeriodo').value;
+    const tipoInscripcion = document.getElementById('select-tipo-inscripcion').value;
     const idSeccion = document.getElementById('select-seccion-inscripcion').value;
 
     if (!form) {
@@ -986,6 +987,12 @@ async function inscribir_alumno(event) {
         return;
     }
 
+    if (!tipoInscripcion) {
+        isSearching = false;
+        alert('Es necesario especificar el tipo de inscripción');
+        return;
+    }
+
     if (isSearching) return;
     isSearching = true;
 
@@ -994,6 +1001,7 @@ async function inscribir_alumno(event) {
     formData.append('periodoInicio', periodoInicio);
     formData.append('periodoFinal', periodoFinal);
     formData.append('idSeccion', idSeccion);
+    formData.append('tipo', tipoInscripcion);
 
     try {
         const response = await fetch('/inscripciones/inscribir_alumno', {

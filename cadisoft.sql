@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 30-07-2025 a las 02:16:57
+-- Tiempo de generación: 01-08-2025 a las 16:36:24
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -145,6 +145,7 @@ CREATE TABLE `inscripcion` (
   `idusuarios` int(11) NOT NULL,
   `fecha_inscripcion` date NOT NULL,
   `fecha_expiracion` date NOT NULL,
+  `tipo` enum('Privada','Inces') NOT NULL,
   `es_activa` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
