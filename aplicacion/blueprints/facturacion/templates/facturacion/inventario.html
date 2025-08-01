@@ -10,9 +10,9 @@
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
-            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-producto-modal">Crear Invenario</button>
-            <form action="" method="post" class="filtrar-alumno__form">
-                <input type="search" placeholder="Buscar por nombre" class="filtrar-alumno__input" name="producto">
+            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-producto-modal">Crear producto</button>
+            <form action="{{url_for('facturacion.buscar_producto')}}" method="post" class="filtrar-alumno__form">
+                <input type="search" placeholder="Buscar por nombre" class="filtrar-alumno__input" name="nombre">
             </form>
         </div>
 
@@ -28,6 +28,23 @@
                 <th>Stock</th>
             </tr>
 
+            {% for record in productos %}
+                <tr>
+                    <td id="td-id-alumno">{{record.idProducto}}</td>
+                    <td>{{record.nombre}}</td>
+                    <td>{{record.precio}}</td>
+                    <td>{{record.stock}}</td>
+                    <td class="tabla-btn">
+                        <a href="{{url_for('facturacion.edit_producto', idProducto=record.idProducto)}}" class="editar-link">
+                            <button class="btn btn-primary">
+                            Editar
+                            </button>
+                        </a>
+                    </td>
+                    <td class="tabla-btn"><button class="btn btn-danger" idProducto="{{record.idProducto}}" onclick="elim_producto(this.getAttribute('idProducto'))">Eliminar</button></td>
+                </tr>
+            {% endfor %}
+
         </table>
     </div>
 
@@ -35,22 +52,22 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Profesor</h1>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo producto</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form id="crear-profesor-form">
+              <form id="crear-profesor-form" onsubmit="crearProducto(event)">
 
                 <label>Nombre</label>
-                <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor" maxlength="12">
+                <input type="text" class="form-control mb-3" id="nombreProducto">
 
                 <label>Precio</label>
-                <input type="number" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor" maxlength="12">
+                <input type="number" class="form-control mb-3" id="precioProducto">
 
                 <label>Stock</label>
-                <input type="number" class="form-control mb-3" name="apellido" id="apellidoProfesor" maxlength="20">
+                <input type="number" class="form-control mb-3" id="stockProducto">
 
-                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="">Guardar</button>
+                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
               </form>
             </div>
           </div>

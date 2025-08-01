@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Editar producto</h1>
+        <hr class="divider">
+    </div>
+
+    {% for record in producto %}
+            <div class="edit-h2__container"><h2>Nombre del producto</h2></div>
+            <hr class="divider">
+            <form idProducto="{{record.idProducto}}" onsubmit="editar_producto(event, this.getAttribute('idProducto'), this.getAttribute('idInput'))" idInput="editNombreProducto">
+                <div class="edit__container">
+                    <input type="text" value="{{record.nombre}}" id="editNombreProducto">
+                    <button type="submit" class="btn btn-primary" idProducto="{{record.idProducto}}">Actualizar</button>
+                </div>
+            </form>
+
+            <div class="edit-h2__container"><h2>Precio</h2></div>
+            <hr class="divider">
+            <form idProducto="{{record.idProducto}}" onsubmit="editar_producto(event, this.getAttribute('idProducto'), this.getAttribute('idInput'))"  idInput="editPrecioProducto">
+                <div class="edit__container">
+                    <input type="number" value="{{record.precio}}" id="editPrecioProducto">
+                    <button type="submit" class="btn btn-primary" idProducto="{{record.idProducto}}">Actualizar</button>
+                </div>
+            </form>
+
+            <div class="edit-h2__container"><h2>Stock</h2></div>
+            <hr class="divider">
+            <form idProducto="{{record.idProducto}}" onsubmit="editar_producto(event, this.getAttribute('idProducto'), this.getAttribute('idInput'))"  idInput="editStockProducto">
+                <div class="edit__container">
+                    <input type="number" value="{{record.stock}}" id="editStockProducto">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+
+    {% endfor %}
+
+{% endblock %}

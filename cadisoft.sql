@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 01-08-2025 a las 16:36:24
+-- Tiempo de generación: 01-08-2025 a las 21:05:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -186,7 +186,6 @@ CREATE TABLE `preinscripcion` (
 
 CREATE TABLE `productos` (
   `idProducto` int(11) NOT NULL,
-  `categoria` varchar(12) NOT NULL,
   `nombre` varchar(20) NOT NULL,
   `precio` decimal(6,2) NOT NULL,
   `stock` int(11) NOT NULL
@@ -496,7 +495,7 @@ ALTER TABLE `codigos_verificacion`
 -- Filtros para la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  ADD CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `facturas`

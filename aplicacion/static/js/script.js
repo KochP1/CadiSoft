@@ -1675,6 +1675,135 @@ async function restaurar() {
     }
 }
 
+// FACTURACIÓN
+
+async function crearProducto(event) {
+    event.preventDefault();
+    const producto = document.getElementById('nombreProducto').value.trim();
+    const precio = document.getElementById('precioProducto').value.trim();
+    const stock = document.getElementById('stockProducto').value.trim();
+
+    if (!producto || !precio || !stock) {
+        isSearching = false;
+        alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (producto.length > 20) {
+        isSearching = false;
+        alert('El producto puede tener un máximo de 20 caractéres');
+        return;
+    }
+
+    if (isSearching) return;
+    isSearching = true;
+
+    const url = '/facturacion/inventario';
+    const formData = new FormData();
+    formData.append('nombre', producto);
+    formData.append('precio', precio);
+    formData.append('stock', stock);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error);
+
+        alert(data.mensaje);
+        window.location.reload();
+    } catch(e) {
+        alert(e)
+        console.error(e)
+        isSearching = false;
+    } finally {
+        isSearching = false
+    }
+}
+
+async function elim_producto(idProducto) {
+    const url = `/facturacion/elim_producto/${idProducto}`;
+
+    if (confirm('¿Estás seguro de que quieres eliminar el producto?')) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.error)
+                throw new Error(data.error);
+            }
+
+            alert('Producto eliminado');
+            window.location.reload();
+        } catch(e) {
+            console.error(e)
+        }
+    }
+}
+
+async function editar_producto(event, idProducto, campo) {
+    event.preventDefault();
+    const url = `/facturacion/edit_producto/${idProducto}`;
+    const formData = new FormData();
+    const edit = document.getElementById(campo).value.trim();
+
+    if (!edit) {
+        isSearching = false;
+        alert('El campo a actualizar de estar lleno');
+        return;
+    }
+
+    if (campo === 'editNombreProducto') {
+        
+        if (edit.length > 20) {
+            isSearching = false;
+            alert('El nombre del producto puede tener máximo 20 caracteres')
+            return;
+        }
+
+        formData.append('nombre', edit);
+    }
+
+    if (campo === 'editPrecioProducto') {
+        formData.append('precio', edit);
+    }
+
+    if (campo === 'editStockProducto') {
+        formData.append('stock', edit);
+    }
+
+    try {
+        if (isSearching) return;
+        isSearching = true;
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+
+        alert(data.mensaje);
+        window.location.reload();
+    } catch(e) {
+        console.error(e);
+    } finally {
+        isSearching = false
+    }
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {
