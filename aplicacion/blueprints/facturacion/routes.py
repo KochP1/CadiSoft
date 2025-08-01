@@ -156,3 +156,17 @@ def historial():
                 db.rollback()
                 print(e)
                 return f'Error: {e}'
+
+@facturacion.route('/elim_factura/<int:id>', methods = ['DELETE'])
+def elim_factura(id):
+    db = current_app.config['db']
+
+    with db.cursor() as cur:
+        try:
+            cur.execute('DELETE FROM facturas WHERE idFactura = %s', (id,))
+            db.commit()
+            return jsonify({'mensaje': 'Factura eliminada'}), 200
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': f'Error: {e}'}), 500

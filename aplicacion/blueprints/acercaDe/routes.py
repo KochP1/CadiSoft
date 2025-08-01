@@ -6,7 +6,7 @@ acerca = Blueprint('acerca', __name__, template_folder='templates', static_folde
 
 # ACERCA DE 
 
-tables = ['usuarios', 'profesores', 'secciones', 'registro_familiar', 'productos', 'preinscripcion', 'insc_x_seccion', 'inscripcion', 'horario_x_curso', 'horario', 'facultades', 'factura_productos', 'facturas', 'cursos', 'codigos_verificacion', 'calificaciones']
+tables = ['usuarios', 'profesores', 'secciones', 'registro_familiar', 'productos', 'preinscripcion', 'insc_x_seccion', 'inscripcion', 'horario_x_curso', 'horario', 'facultades', 'factura_x_producto', 'facturas', 'cursos', 'codigos_verificacion', 'calificaciones']
 @acerca.route('/')
 def index():
     return render_template('acercaDe/index.html')

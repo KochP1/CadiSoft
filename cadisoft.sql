@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 01-08-2025 a las 22:25:18
+-- Tiempo de generación: 01-08-2025 a las 23:02:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -290,8 +290,8 @@ ALTER TABLE `facturas`
 --
 ALTER TABLE `factura_x_producto`
   ADD PRIMARY KEY (`idFactura_x_producto`),
-  ADD KEY `factura_fk` (`idFactura`),
-  ADD KEY `producto_fk` (`idProducto`);
+  ADD KEY `producto_fk` (`idProducto`),
+  ADD KEY `factura_fk` (`idFactura`);
 
 --
 -- Indices de la tabla `facultades`
@@ -501,7 +501,7 @@ ALTER TABLE `cursos`
 -- Filtros para la tabla `factura_x_producto`
 --
 ALTER TABLE `factura_x_producto`
-  ADD CONSTRAINT `factura_fk` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `factura_fk` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `producto_fk` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --

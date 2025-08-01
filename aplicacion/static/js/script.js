@@ -1804,6 +1804,30 @@ async function editar_producto(event, idProducto, campo) {
     }
 }
 
+async function elim_factura(idFactura) {
+    const url = `/facturacion/elim_factura/${idFactura}`;
+
+    if (confirm('¿Estás seguro de que quieres eliminar la factura?')) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.error)
+                throw new Error(data.error);
+            }
+
+            alert(data.mensaje);
+            window.location.reload();
+        } catch(e) {
+            console.error(e)
+        }
+    }
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {
