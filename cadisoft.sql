@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 01-08-2025 a las 21:05:11
+-- Tiempo de generación: 01-08-2025 a las 22:25:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -78,23 +78,24 @@ CREATE TABLE `cursos` (
 
 CREATE TABLE `facturas` (
   `idFactura` int(11) NOT NULL,
-  `idusuarios` int(11) NOT NULL,
-  `total` double NOT NULL,
-  `fecha` date NOT NULL
+  `cliente` varchar(50) NOT NULL,
+  `cedula` varchar(8) NOT NULL,
+  `direccion` varchar(30) NOT NULL,
+  `fecha` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `factura_productos`
+-- Estructura de tabla para la tabla `factura_x_producto`
 --
 
-CREATE TABLE `factura_productos` (
-  `idFactura_producto` int(11) NOT NULL,
+CREATE TABLE `factura_x_producto` (
+  `idFactura_x_producto` int(11) NOT NULL,
   `idFactura` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `precio_unitario` double NOT NULL
+  `total` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -282,16 +283,15 @@ ALTER TABLE `cursos`
 -- Indices de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  ADD PRIMARY KEY (`idFactura`),
-  ADD KEY `usuarios_facturas_idx` (`idusuarios`);
+  ADD PRIMARY KEY (`idFactura`);
 
 --
--- Indices de la tabla `factura_productos`
+-- Indices de la tabla `factura_x_producto`
 --
-ALTER TABLE `factura_productos`
-  ADD PRIMARY KEY (`idFactura_producto`),
-  ADD KEY `factura_idx` (`idFactura`),
-  ADD KEY `idProduco_idx` (`idProducto`);
+ALTER TABLE `factura_x_producto`
+  ADD PRIMARY KEY (`idFactura_x_producto`),
+  ADD KEY `factura_fk` (`idFactura`),
+  ADD KEY `producto_fk` (`idProducto`);
 
 --
 -- Indices de la tabla `facultades`
@@ -402,10 +402,10 @@ ALTER TABLE `facturas`
   MODIFY `idFactura` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `factura_productos`
+-- AUTO_INCREMENT de la tabla `factura_x_producto`
 --
-ALTER TABLE `factura_productos`
-  MODIFY `idFactura_producto` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `factura_x_producto`
+  MODIFY `idFactura_x_producto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `facultades`
@@ -498,17 +498,11 @@ ALTER TABLE `cursos`
   ADD CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `facturas`
+-- Filtros para la tabla `factura_x_producto`
 --
-ALTER TABLE `facturas`
-  ADD CONSTRAINT `usuarios_facturas` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`);
-
---
--- Filtros para la tabla `factura_productos`
---
-ALTER TABLE `factura_productos`
-  ADD CONSTRAINT `factura` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`),
-  ADD CONSTRAINT `idProduco` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`);
+ALTER TABLE `factura_x_producto`
+  ADD CONSTRAINT `factura_fk` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `producto_fk` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `horario_x_curso`

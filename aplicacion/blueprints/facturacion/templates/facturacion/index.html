@@ -14,15 +14,15 @@
             <h2>Datos del Cliente</h2>
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" placeholder="Ingrese nombre completo">
+                <input type="text" id="nombreFactura" placeholder="Ingrese nombre completo">
             </div>
             <div class="form-group">
                 <label for="ruc">Cédula:</label>
-                <input type="text" id="ruc" placeholder="Número de documento">
+                <input type="number" id="cedulaFactura" placeholder="Número de documento">
             </div>
             <div class="form-group">
                 <label for="direccion">Dirección:</label>
-                <input type="text" id="direccion" placeholder="Dirección completa">
+                <input type="text" id="direccionFactura" placeholder="Dirección completa">
             </div>
         </section>
 
@@ -55,14 +55,6 @@
 
         <section class="totales">
             <div class="totales-container">
-                <div class="total-item">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">0.00</span>
-                </div>
-                <div class="total-item">
-                    <label for="igv">IGV (18%):</label>
-                    <span id="igv">0.00</span>
-                </div>
                 <div class="total-item total">
                     <span>Total a Pagar:</span>
                     <span id="total">0.00</span>
@@ -73,7 +65,7 @@
         <section class="acciones">
             <button id="guardar" class="btn btn-guardar">Guardar Factura</button>
             <button id="imprimir" class="btn btn-imprimir">Imprimir Factura</button>
-            <button id="nueva" class="btn btn-nueva">Nueva Factura</button>
+            <button id="nueva" class="btn btn-nueva" onclick="window.location.reload();">Nueva Factura</button>
         </section>
     </div>
 {% endblock %}

@@ -119,3 +119,40 @@ def edit_producto(idProducto):
                 db.rollback()
                 print(e)
                 return jsonify({'error': f'Error: {e}'}), 500
+
+@facturacion.route('/historial_facturas', methods = ['GET', 'POST'])
+def historial():
+    db = current_app.config['db']
+
+    if request.method == 'GET':
+        with db.cursor() as cur:
+            cur.execute('SELECT f.idFactura, f.cliente, f.cedula, f.direccion, p.nombre, fp.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto')
+            registros = cur.fetchall()
+            insertRegistros = []
+            columNames = [column[0] for column in cur.description]
+
+            for record in registros:
+                insertRegistros.append(dict(zip(columNames, record)))
+            
+            print(insertRegistros)
+            return render_template('facturacion/historial.html', facturas = insertRegistros)
+    
+    if request.method == 'POST':
+        with db.cursor() as cur:
+            try:
+                cedula = request.form.get('cedula')
+
+                cur.execute('SELECT f.idFactura, f.cliente, f.cedula, f.direccion, p.nombre, fp.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto WHERE f.cedula = %s', (cedula,))
+                registros = cur.fetchall()
+                insertRegistros = []
+                columNames = [column[0] for column in cur.description]
+
+                for record in registros:
+                    insertRegistros.append(dict(zip(columNames, record)))
+                
+                print(insertRegistros)
+                return render_template('facturacion/historial.html', facturas = insertRegistros)
+            except Exception as e:
+                db.rollback()
+                print(e)
+                return f'Error: {e}'
