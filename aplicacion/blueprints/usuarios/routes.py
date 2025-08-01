@@ -18,9 +18,6 @@ def index():
         contraseña = request.form['contraseña']
 
         user = User.get_by_cedula(db, cedula)
-        print(user.rol)
-        print(user.nombre)
-        print(bcrypt.check_password_hash(user.contraseña, contraseña))
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             if user.rol == 'administrador':
@@ -35,7 +32,6 @@ def index():
 
             return render_template('usuarios/index.html', message_error = 'Permisos insuficientes')
         else:
-            print('Se esta cumpliendo esto')
             return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
 
 
@@ -553,9 +549,8 @@ def edit_contraseña(idusuarios):
 @usuario.route('/log_out', methods = ['POST'])
 def log_out():
     try:
-        usuarioid = current_user.id
         logout_user()
-        return jsonify({'mensaje': 'sesión cerrada', 'usuario': usuarioid}), 200
+        return jsonify({'mensaje': 'sesión cerrada'}), 200
     except Exception as e:
         print(e)
         return jsonify({'mensaje': 'Error al cerrar sesión'}), 400

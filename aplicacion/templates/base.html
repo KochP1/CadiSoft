@@ -121,9 +121,9 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Manual de usuario</a></li>
-                  {% if current_user.rol == 'administrador '%}
+                  {% if current_user.rol == 'administrador' %}
                   <li><a class="dropdown-item" href="#">Respaldo</a></li>
-                  <li><a class="dropdown-item" href="#">Restaurar</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="restaurar()">Restaurar</a></li>
                   {% endif %}
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{{url_for('acerca.index')}}">Acerca del sistema</a></li>

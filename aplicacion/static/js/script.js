@@ -1646,6 +1646,35 @@ async function calcular_definitiva(idSeccion, idAlumno) {
     }
 }
 
+// ACERCA DE
+
+async function restaurar() {
+    if (confirm('¿Estás seguro de que quieres restaurar el sistema?, todos los registros serán eliminados y no se podrán recuperae')) {
+        
+        try {
+            if (isSearching) return;
+            isSearching = true;
+            const url = '/acerca/restaurar';
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.error);
+
+            alert(data.mensaje);
+            log_out();
+        } catch(e) {
+            console.error(e);
+        }
+    }
+}
+
 // FRONT END 
 
 function get_id_alumno(idAlumno) {
