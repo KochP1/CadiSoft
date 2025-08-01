@@ -511,8 +511,9 @@ input[type=number] {
     margin-top: 20px;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    gap: 5px;
+    align-items: start;
+    padding-left: 20px;
+    gap: 10px;
 }
 
 .constancia-options__wrapper h2 {
