@@ -1865,7 +1865,9 @@ async function buscar_producto() {
     }
 }
 
+let productosArray = [];
 async function guardar_factura() {
+    const url = '';
     const cliente = document.getElementById('nombreFactura').value.trim();
     const cedula = document.getElementById('cedulaFactura').value.trim();
     const direccion = document.getElementById('direccionFactura').value.trim();
@@ -1901,9 +1903,44 @@ async function guardar_factura() {
         return;
     }
 
-    
+    const requestData = {
+        cliente: cliente,
+        cedula: cedula,
+        direccion: direccion,
+        productos: productosArray
+    }
+
+    try {
+        if (isSearching) return;
+        isSearching = true;
+        console.log('Datos a enviar: ', requestData);
+    } catch(e) {
+        console.error(e);
+    } finally {
+        isSearching = false;
+        while(productosArray.length) {
+            productosArray.pop();
+        }
+    }
+
+
 }
 // FRONT END 
+
+function actualizarProductosArray(idProducto, nuevaCantidad) {
+    const index = productosArray.findIndex(p => p.idProducto === idProducto);
+    
+    if (index !== -1) {
+        productosArray[index].cantidadProducto = nuevaCantidad;
+    } else {
+        productosArray.push({
+            idProducto: idProducto,
+            cantidadProducto: nuevaCantidad
+        });
+    }
+
+    console.log(productosArray)
+}
 
 function render_producto(data) {
     const tbody = document.getElementById('facturacion-tbody');
@@ -1930,6 +1967,7 @@ function render_producto(data) {
             </tr>`;
         
         tbody.insertAdjacentHTML('beforeend', productoHTML);
+        actualizarProductosArray(data.idProducto, 1);
     } else {
         const cantidadInput = productoExistente.querySelector(`#cantidad-factura-${idProducto}`);
         let cantidad = parseInt(cantidadInput.value) + 1;
@@ -1937,6 +1975,8 @@ function render_producto(data) {
         
         const subtotal = precio * cantidad;
         productoExistente.querySelector(`#subTotal-${idProducto}`).textContent = subtotal.toFixed(2);
+
+        actualizarProductosArray(data.idProducto, cantidad);
     }
 }
 
