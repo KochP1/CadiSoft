@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 01-08-2025 a las 23:02:00
+-- Tiempo de generación: 02-08-2025 a las 20:14:32
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -81,7 +81,8 @@ CREATE TABLE `facturas` (
   `cliente` varchar(50) NOT NULL,
   `cedula` varchar(8) NOT NULL,
   `direccion` varchar(30) NOT NULL,
-  `fecha` date NOT NULL DEFAULT current_timestamp()
+  `fecha` date NOT NULL DEFAULT current_timestamp(),
+  `total` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -94,8 +95,7 @@ CREATE TABLE `factura_x_producto` (
   `idFactura_x_producto` int(11) NOT NULL,
   `idFactura` int(11) NOT NULL,
   `idProducto` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `total` double NOT NULL
+  `cantidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -340,7 +340,8 @@ ALTER TABLE `preinscripcion`
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD PRIMARY KEY (`idProducto`);
+  ADD PRIMARY KEY (`idProducto`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
 -- Indices de la tabla `profesores`
