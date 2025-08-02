@@ -39,31 +39,28 @@
                         <th>Acción</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="text" class="codigo"></td>
-                        <td><input type="text" class="descripcion"></td>
-                        <td><input type="number" class="cantidad" min="1" value="1"></td>
-                        <td><input type="number" class="precio" step="0.01" min="0"></td>
-                        <td class="subtotal">0.00</td>
-                        <td><button class="eliminar">✕</button></td>
-                    </tr>
+                <tbody id="facturacion-tbody">
+
                 </tbody>
             </table>
-            <button id="agregar-fila" class="btn">+ Agregar Producto</button>
+
+            <div class="btn-agregar__container">
+                <input type="search" class="input-search-producto" id="buscar-producto">
+                <button id="agregar-fila" class="btn" onclick="buscar_producto()">+ Agregar Producto</button>
+            </div>
         </section>
 
         <section class="totales">
             <div class="totales-container">
                 <div class="total-item total">
                     <span>Total a Pagar:</span>
-                    <span id="total">0.00</span>
+                    <span id="total-factura">0.00</span>
                 </div>
             </div>
         </section>
 
         <section class="acciones">
-            <button id="guardar" class="btn btn-guardar">Guardar Factura</button>
+            <button id="guardar" class="btn btn-guardar" onclick="guardar_factura()">Guardar Factura</button>
             <button id="imprimir" class="btn btn-imprimir">Imprimir Factura</button>
             <button id="nueva" class="btn btn-nueva" onclick="window.location.reload();">Nueva Factura</button>
         </section>

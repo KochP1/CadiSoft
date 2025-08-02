@@ -1828,7 +1828,122 @@ async function elim_factura(idFactura) {
     }
 }
 
+async function buscar_producto() {
+    const producto = document.getElementById('buscar-producto').value.trim();
+    const formData = new FormData();
+    const url = '/facturacion/buscar_producto_factura';
+
+    if (!producto) {
+        isSearching = false;
+        alert('Ingresa un producto para agregar');
+        return;
+    }
+
+    try {
+        if (isSearching) return;
+        isSearching = true;
+
+        formData.append('nombre', producto)
+
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+
+        render_producto(data.producto)
+    } catch(e) {
+        console.error(e);
+    } finally {
+        isSearching = false;
+    }
+}
+
+async function guardar_factura() {
+    const cliente = document.getElementById('nombreFactura').value.trim();
+    const cedula = document.getElementById('cedulaFactura').value.trim();
+    const direccion = document.getElementById('direccionFactura').value.trim();
+    const total = parseFloat(document.getElementById('total-factura').innerHTML);
+
+    if (!cliente || !cedula || !direccion) {
+        isSearching = false;
+        alert('Todos los campos deben ser llenados');
+        return;
+    }
+
+    if (!cliente.length > 50) {
+        isSearching = false;
+        alert('El cliente puede tener un máximo de 50 caracteres');
+        return;
+    }
+
+    if (!cedula.length > 8) {
+        isSearching = false;
+        alert('La cédula puede tener un máximo de 8 caracteres');
+        return;
+    }
+
+    if (!direccion.length > 50) {
+        isSearching = false;
+        alert('La dirección puede tener un máximo de 30 caracteres');
+        return;
+    }
+
+    if (!total || total <= 0) {
+        isSearching = false;
+        alert('El monto no puede ser 0');
+        return;
+    }
+
+    
+}
 // FRONT END 
+
+function render_producto(data) {
+    const tbody = document.getElementById('facturacion-tbody');
+    const productos = document.querySelectorAll('.producto-tr');
+    const precio = parseFloat(data.precio);
+    const idProducto = data.idProducto.toString();
+    let productoExistente = null;
+
+    productos.forEach(element => {
+        if (element.getAttribute('idProducto') === idProducto) {
+            productoExistente = element;
+        }
+    });
+
+    if (!productoExistente) {
+        const productoHTML = `
+            <tr id="producto-${idProducto}" class="producto-tr" idProducto="${idProducto}">
+                <td><input type="text" class="codigo" value="${data.idProducto}" readonly></td>
+                <td><input type="text" class="descripcion" value="${data.nombre}" readonly></td>
+                <td><input type="number" id="cantidad-factura-${idProducto}" class="cantidad" min="1" value="1"></td>
+                <td><input type="number" class="precio" step="0.01" min="0" value="${precio.toFixed(2)}" readonly></td>
+                <td class="subtotal" id="subTotal-${idProducto}">${precio.toFixed(2)}</td>
+                <td><button class="eliminar" onclick="eliminar_producto_factura('${idProducto}')">✕</button></td>
+            </tr>`;
+        
+        tbody.insertAdjacentHTML('beforeend', productoHTML);
+    } else {
+        const cantidadInput = productoExistente.querySelector(`#cantidad-factura-${idProducto}`);
+        let cantidad = parseInt(cantidadInput.value) + 1;
+        cantidadInput.value = cantidad;
+        
+        const subtotal = precio * cantidad;
+        productoExistente.querySelector(`#subTotal-${idProducto}`).textContent = subtotal.toFixed(2);
+    }
+}
+
+function eliminar_producto_factura(id) {
+    const producto = document.getElementById(`producto-${id}`);
+    producto.remove();
+}
 
 function get_id_alumno(idAlumno) {
     const form = document.getElementById('crear-registro-familiar-form');

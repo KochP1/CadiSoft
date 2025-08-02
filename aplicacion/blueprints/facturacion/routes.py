@@ -7,6 +7,7 @@ bcrypt = Bcrypt()
 
 @facturacion.route('/',methods = ['GET', 'POST'])
 def index():
+    db = current_app.config['db']
     if request.method == 'GET':
         return render_template('facturacion/index.html')
 
@@ -126,7 +127,7 @@ def historial():
 
     if request.method == 'GET':
         with db.cursor() as cur:
-            cur.execute('SELECT f.idFactura, f.cliente, f.cedula, f.direccion, p.nombre, fp.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto')
+            cur.execute('SELECT f.idFactura, f.cliente, f.cedula, f.direccion, p.nombre, f.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto')
             registros = cur.fetchall()
             insertRegistros = []
             columNames = [column[0] for column in cur.description]
@@ -166,6 +167,28 @@ def elim_factura(id):
             cur.execute('DELETE FROM facturas WHERE idFactura = %s', (id,))
             db.commit()
             return jsonify({'mensaje': 'Factura eliminada'}), 200
+        except Exception as e:
+            db.rollback()
+            print(e)
+            return jsonify({'error': f'Error: {e}'}), 500
+
+@facturacion.route('/buscar_producto_factura', methods = ['POST'])
+def buscar_producto_factura():
+    db = current_app.config['db']
+
+    with db.cursor() as cur:
+        try:
+            nombre = request.form.get('nombre')
+            cur.execute('SELECT * FROM productos WHERE nombre = %s', (nombre))
+            registro = cur.fetchone()
+
+            if not registro:
+                return jsonify({'error': 'El producto no existe'}), 404
+            
+            columNames = [column[0] for column in cur.description]
+            producto = dict(zip(columNames, registro))
+            return jsonify({'producto': producto}), 200
+
         except Exception as e:
             db.rollback()
             print(e)
