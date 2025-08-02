@@ -1867,7 +1867,7 @@ async function buscar_producto() {
 
 let productosArray = [];
 async function guardar_factura() {
-    const url = '';
+    const url = '/facturacion/';
     const cliente = document.getElementById('nombreFactura').value.trim();
     const cedula = document.getElementById('cedulaFactura').value.trim();
     const direccion = document.getElementById('direccionFactura').value.trim();
@@ -1907,13 +1907,30 @@ async function guardar_factura() {
         cliente: cliente,
         cedula: cedula,
         direccion: direccion,
+        total: total,
         productos: productosArray
     }
 
     try {
         if (isSearching) return;
         isSearching = true;
-        console.log('Datos a enviar: ', requestData);
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+
+        alert(data.mensaje);
     } catch(e) {
         console.error(e);
     } finally {
@@ -1926,6 +1943,10 @@ async function guardar_factura() {
 
 }
 // FRONT END 
+
+function generar_factura() {
+    return;
+}
 
 function actualizarProductosArray(idProducto, nuevaCantidad) {
     const index = productosArray.findIndex(p => p.idProducto === idProducto);
@@ -1960,8 +1981,8 @@ function render_producto(data) {
             <tr id="producto-${idProducto}" class="producto-tr" idProducto="${idProducto}">
                 <td><input type="text" class="codigo" value="${data.idProducto}" readonly></td>
                 <td><input type="text" class="descripcion" value="${data.nombre}" readonly></td>
-                <td><input type="number" id="cantidad-factura-${idProducto}" class="cantidad" min="1" value="1"></td>
-                <td><input type="number" class="precio" step="0.01" min="0" value="${precio.toFixed(2)}" readonly></td>
+                <td><input type="number" id="cantidad-factura-${idProducto}" class="cantidad" min="1" value="1" onchange="calc_subtotal(${data.idProducto})"></td>
+                <td><input type="number" class="precio" id="precio-factura-${data.idProducto}" step="0.01" min="0" value="${precio.toFixed(2)}" readonly></td>
                 <td class="subtotal" id="subTotal-${idProducto}">${precio.toFixed(2)}</td>
                 <td><button class="eliminar" onclick="eliminar_producto_factura('${idProducto}')">✕</button></td>
             </tr>`;
@@ -1978,11 +1999,37 @@ function render_producto(data) {
 
         actualizarProductosArray(data.idProducto, cantidad);
     }
+
+        calc_total();
 }
 
 function eliminar_producto_factura(id) {
     const producto = document.getElementById(`producto-${id}`);
+    const total = parseFloat(document.getElementById('total-factura').textContent);
+    const subTotal = parseFloat(document.getElementById(`subTotal-${id}`).textContent);
+    const newSubTotal = total - subTotal;
     producto.remove();
+    document.getElementById('total-factura').textContent = newSubTotal.toFixed(2);
+}
+
+function calc_total() {
+    let total = 0
+    const tdSubTotal = document.querySelectorAll('.subtotal');
+
+    tdSubTotal.forEach((element) => {
+        total += parseFloat(element.textContent)
+    })
+    document.getElementById('total-factura').textContent = total.toFixed(2);
+}
+
+function calc_subtotal(id) {
+    const subTotal = document.getElementById(`subTotal-${id}`);
+    const cantidad = parseInt(document.getElementById(`cantidad-factura-${id}`).value.trim());
+    const precio = parseFloat(document.getElementById(`precio-factura-${id}`).value.trim());
+    const newSubtotal = cantidad * precio;
+
+    subTotal.textContent = newSubtotal.toFixed(2);
+    calc_total();
 }
 
 function get_id_alumno(idAlumno) {

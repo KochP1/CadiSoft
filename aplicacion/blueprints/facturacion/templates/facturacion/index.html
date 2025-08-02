@@ -8,13 +8,17 @@
         <hr class="divider">
     </div>
 
-    <div class="container">
+    <div class="container" id="factura">
 
         <section class="cliente-info">
             <h2>Datos del Cliente</h2>
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombreFactura" placeholder="Ingrese nombre completo">
+            </div>
+            <div class="form-group">
+                <label for="ruc">Teléfono:</label>
+                <input type="number" id="telefonoFactura" placeholder="Teléfono">
             </div>
             <div class="form-group">
                 <label for="ruc">Cédula:</label>
@@ -61,8 +65,91 @@
 
         <section class="acciones">
             <button id="guardar" class="btn btn-guardar" onclick="guardar_factura()">Guardar Factura</button>
-            <button id="imprimir" class="btn btn-imprimir">Imprimir Factura</button>
+            <button id="imprimir" class="btn btn-imprimir" data-bs-toggle="modal" data-bs-target="#factura-modal" onclick="generar_factura()">Generar Factura</button>
             <button id="nueva" class="btn btn-nueva" onclick="window.location.reload();">Nueva Factura</button>
         </section>
     </div>
+
+        <div class="modal fade" id="factura-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog horario-modal-dialog">
+                <div class="modal-content horario-modal">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Factura</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body horario-modal-body">
+
+                        <div class="factura__wraper">
+                            <div class="factura__container">
+
+                                <div class="factura-presentacion__container">
+                                    <div class="logo-factura__container">
+                                        <img src="../../../../images/Cadi_logo-removeBG.png" alt="CADI">
+                                    </div>
+                                    <h2>CADI</h2>
+                                    <h3>Circunvalación 2, Av. 20, calle 80</h3>
+                                    <h3>04142683668</h3>
+                                </div>
+                                <hr class="separador-factura">
+
+                                <div class="factura-info__container">
+                                    <div class="factura-info">
+                                        <h3>Fecha:</h3>
+                                        <span>2025/07/07</span>
+                                    </div>
+                                    <div class="factura-info">
+                                        <h3>Cliente:</h3>
+                                        <span>Juan Koch</span>
+                                    </div>
+                                    <div class="factura-info">
+                                        <h3>Dirección:</h3>
+                                        <span>Sector Paraiso</span>
+                                    </div>
+                                    <div class="factura-info">
+                                        <h3>Teléfono:</h3>
+                                        <span>04246778096</span>
+                                    </div>
+                                    <div class="factura-info">
+                                        <h3>Cédula:</h3>
+                                        <span>30139712</span>
+                                    </div>
+                                </div>
+
+                                <hr class="separador-factura">
+
+                                <div class="tabla-productos__container">
+                                    <table>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Hoja de exámen</td>
+                                            <td>3</td>
+                                            <td>1.00</td>
+                                            <td>3.00</td>
+                                        </tr>
+                                    </table>
+
+                                    <div class="factura-total__container">
+                                        <h3>Total:</h3>
+                                        <span>3.00</span>
+                                    </div>
+
+                                </div>
+
+                                <hr class="separador-factura">
+
+                                <h2 class="agadecimiento-compra">¡Gracias por su compra!</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src="../../../../js/excel.js"></script>
 {% endblock %}

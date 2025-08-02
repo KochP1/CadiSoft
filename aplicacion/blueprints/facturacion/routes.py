@@ -1,15 +1,46 @@
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify
-from flask_login import login_user, logout_user, current_user
-from flask_bcrypt import Bcrypt, generate_password_hash
 
 facturacion = Blueprint('facturacion', __name__, template_folder='templates', static_folder="static")
-bcrypt = Bcrypt()
 
 @facturacion.route('/',methods = ['GET', 'POST'])
 def index():
     db = current_app.config['db']
     if request.method == 'GET':
         return render_template('facturacion/index.html')
+    
+    if request.method == 'POST':
+        with db.cursor() as cur:
+            try:
+                data = request.get_json()
+
+                if not data or 'cliente' not in data or 'cedula' not in data or 'direccion' not in data or 'total' not in data or 'productos' not in data:
+                    return jsonify({'error': 'Datos incompletos'}), 400
+                
+                cliente = data['cliente']
+                cedula = data['cedula']
+                direccion = data['direccion']
+                total = data['total']
+                productos = data['productos']
+                
+                cur.execute('INSERT INTO facturas (`cliente`, `cedula`, `direccion`, `total`) VALUES (%s, %s, %s, %s)', (cliente, cedula, direccion, total))
+                db.commit()
+
+                cur.execute('SELECT idFactura FROM facturas WHERE cedula = %s', (cedula,))
+                idFactura = cur.fetchone()
+
+                for record in productos:
+                    print(record['idProducto'])
+                    print(record['cantidadProducto'])
+                
+                for record in productos:
+                    cur.execute('INSERT INTO factura_x_producto (`idFactura`, `idProducto`, `cantidad`) VALUES (%s, %s, %s)', (idFactura, record['idProducto'], record['cantidadProducto']))
+                    db.commit()
+                return jsonify({'mensaje': 'Factura guardada'}), 200
+            except Exception as e:
+                db.rollback()
+                print(e)
+                return jsonify({'error': f'Error: {e}'}), 500
+
 
 @facturacion.route('/inventario',methods = ['GET', 'POST'])
 def inventario():

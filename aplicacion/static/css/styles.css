@@ -1379,6 +1379,112 @@ td input {
     background-color: #d35400 !important;
 }
 
+/* Factura */
+
+.factura__wraper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.factura__container {
+    width: 400px;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px 0px #333;
+    padding: 20px;
+}
+
+.factura-presentacion__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-factura__container {
+    width: 50px;
+    height: 50px;
+}
+
+.logo-factura__container img {
+    width: 100%;
+    height: 100%;
+}
+
+.factura-presentacion__container h2, .factura-presentacion__container h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.factura-presentacion__container h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.factura-info__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.factura-info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding-left: 10px;
+    gap: 5px;
+}
+
+.factura-info h3, .factura-info span {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.factura-info h3 {
+    font-weight: bold;
+}
+
+.factura-total__container {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 10px;
+    gap: 5px;
+}
+
+.factura-total__container h3, .factura-total__container span {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.factura-total__container h3 {
+    font-weight: bold;
+}
+
+.separador-factura {
+    border: 1px solid black;
+}
+
+.agadecimiento-compra {
+    font-size: 1.3rem;
+    font-weight: bold;
+    display: flex;
+    margin: auto;
+}
+
 /* TERMINA FACTURACION */
 
 
