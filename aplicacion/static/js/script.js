@@ -226,6 +226,8 @@ if (window.location.pathname === '/inicio') {
 // Profesores
 
 function crearProfesor() {
+    if (isSearching) return;
+    isSearching = true;
     const form = document.getElementById('crear-profesor-form');
     const rol = 'profesor'
     const nombre = document.getElementById('nombreProfesor').value;
@@ -313,8 +315,6 @@ function crearProfesor() {
     
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (isSearching) return;
-        isSearching = true;
 
         const formData = new FormData();
         formData.append('nombre', nombre);
