@@ -19,7 +19,6 @@ def index():
             InsertRegistros.append(dict(zip(columNames, record)))
         return render_template('alumnos/index.html', alumnos = InsertRegistros)
     except Exception as e:
-        print(e)
         return render_template('alumnos/index.html')
     finally:
         cur.close()
@@ -56,7 +55,6 @@ def eliminar_alumno(idusuarios):
         return jsonify({'mensaje': 'alumno eliminado'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
@@ -76,10 +74,8 @@ def edit_alumno(idusuarios):
         columNames = [column[0] for column in cur.description]
         for record in registros:
             InsertRegistros.append(dict(zip(columNames, record)))
-        print(InsertRegistros)
         return render_template('alumnos/edit_alumno.html', alumnos = InsertRegistros)
     except Exception as e:
-        print(e)
         return url_for('alumnos.index')
     finally:
         cur.close()
@@ -97,7 +93,6 @@ def constancia_estudio(idAlumno):
 
             for record in registroAlumno:
                 insertAlumno.append(dict(zip(columNamesAlumno, record)))
-            print(insertAlumno)
 
             cur.execute('SELECT c.nombre_curso, s.seccion, ca.definitiva FROM calificaciones ca JOIN secciones s ON ca.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso JOIN usuarios u ON ca.idusuarios = u.idusuarios WHERE ca.idusuarios = %s AND ca.definitiva > 9.6', (idAlumno,))
             registros = cur.fetchall()
@@ -109,7 +104,6 @@ def constancia_estudio(idAlumno):
 
             return render_template('alumnos/constancia.html', constancia = insertRegistros, alumno = insertAlumno)
         except Exception as e:
-            print(e)
             return f'Error: {e}'
 
 # FINALIZAN ENDPOINTS DE ALUMNOS
@@ -136,7 +130,6 @@ def crear_registro_familiar(idusuarios):
             return jsonify({'message': 'Registro familiar creado satisfactoriamente'}), 200
 
     except Exception as e:
-        print(e)
         return jsonify({'error': 'Error al crear registro familiar'}), 400
 
 
@@ -172,10 +165,9 @@ def edit_registro_familiar(idFamilia):
             columNames = [column[0] for column in cur.description]
             for record in registros:
                 insertRegistros.append(dict(zip(columNames, record)))
-            print(insertRegistros)
             return render_template('alumnos/edit_registro_familiar.html', familia = insertRegistros)
     except Exception as e:
-        print(e)
+        return f'Error: {e}'
 
 
 
@@ -196,7 +188,6 @@ def edit_registro_fam_papa(idFamilia):
             db.commit()
             return jsonify({'message': 'Registro familiar actualizado satisfactoriamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': f'Error al actualizar datos del papa: {e}'}), 500
 
 
@@ -215,7 +206,6 @@ def edit_registro_fam_mama(idFamilia):
             db.commit()
             return jsonify({'message': 'Registro familiar actualizado satisfactoriamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': f'Error al actualizar datos de la mama: {e}'}), 500
 
 
@@ -233,7 +223,6 @@ def edit_registro_fam_contacto(idFamilia):
             db.commit()
             return jsonify({'message': 'Registro familiar actualizado satisfactoriamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': f'Error al actualizar contacto de la familia: {e}'}), 500
 
 
@@ -250,7 +239,6 @@ def eliminar_registro_familiar(idRegistro):
             return jsonify({'message': 'Registro familiar eliminado satisfactoriamente'})
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'Error al eliminar registro familiar: {e}'}), 500
 
 
@@ -276,7 +264,6 @@ def buscar_registro_familiar():
             insertRegistros.append(dict(zip(columNames, record)))
         return render_template('alumnos/registFamiliar.html', familias = insertRegistros)
     except Exception as e:
-        print(e)
         return redirect(url_for('alumnos.registro_familiar'))
 
 # FINALIZA REGISTRO FAMILIAR

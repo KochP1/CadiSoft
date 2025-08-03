@@ -28,10 +28,6 @@ def index():
 
                 cur.execute('SELECT idFactura FROM facturas WHERE cedula = %s', (cedula,))
                 idFactura = cur.fetchone()
-
-                for record in productos:
-                    print(record['idProducto'])
-                    print(record['cantidadProducto'])
                 
                 for record in productos:
                     cur.execute('INSERT INTO factura_x_producto (`idFactura`, `idProducto`, `cantidad`) VALUES (%s, %s, %s)', (idFactura, record['idProducto'], record['cantidadProducto']))
@@ -39,7 +35,6 @@ def index():
                 return jsonify({'mensaje': 'Factura guardada'}), 200
             except Exception as e:
                 db.rollback()
-                print(e)
                 return jsonify({'error': f'Error: {e}'}), 500
 
 
@@ -58,7 +53,6 @@ def inventario():
                     insertRegistros.append(dict(zip(columNames, record)))
                 return render_template('facturacion/inventario.html', productos = insertRegistros)
             except Exception as e:
-                print(e)
                 return f'Error: {e}'
     
     if request.method == 'POST':
@@ -73,7 +67,6 @@ def inventario():
                 return jsonify({'mensaje': 'Producto creado satisfactoriamente'}), 200
             except Exception as e:
                 db.rollback()
-                print(e)
                 return jsonify({'error': f'Error al crear producto: {e}'}), 500
 
 @facturacion.route('/elim_producto/<int:idProducto>', methods = ['DELETE'])
@@ -86,7 +79,6 @@ def elim_producto(idProducto):
             db.commit()
             return jsonify({'mensaje': 'Producto eliminado'}), 200
         except Exception as e:
-            print(e)
             return jsonify({'error': f'Error al eliminar producto: {e}'}), 500
 
 @facturacion.route('/buscar_producto', methods = ['GET', 'POST'])
@@ -108,7 +100,6 @@ def buscar_producto():
                 insertRegistros.append(dict(zip(columNames, record)))
             return render_template('facturacion/inventario.html', productos = insertRegistros)
         except Exception as e:
-            print(e)
             return f'Error: {e}'
 
 @facturacion.route('/edit_producto/<int:idProducto>', methods = ['GET', 'PATCH'])
@@ -150,7 +141,6 @@ def edit_producto(idProducto):
                 return jsonify({'mensaje': 'Producto actualizado'}), 200
             except Exception as e:
                 db.rollback()
-                print(e)
                 return jsonify({'error': f'Error: {e}'}), 500
 
 @facturacion.route('/historial_facturas', methods = ['GET', 'POST'])
@@ -167,7 +157,6 @@ def historial():
             for record in registros:
                 insertRegistros.append(dict(zip(columNames, record)))
             
-            print(insertRegistros)
             return render_template('facturacion/historial.html', facturas = insertRegistros)
     
     if request.method == 'POST':
@@ -183,11 +172,9 @@ def historial():
                 for record in registros:
                     insertRegistros.append(dict(zip(columNames, record)))
                 
-                print(insertRegistros)
                 return render_template('facturacion/historial.html', facturas = insertRegistros)
             except Exception as e:
                 db.rollback()
-                print(e)
                 return f'Error: {e}'
 
 @facturacion.route('/elim_factura/<int:id>', methods = ['DELETE'])
@@ -201,7 +188,6 @@ def elim_factura(id):
             return jsonify({'mensaje': 'Factura eliminada'}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': f'Error: {e}'}), 500
 
 @facturacion.route('/buscar_producto_factura', methods = ['POST'])
@@ -223,5 +209,4 @@ def buscar_producto_factura():
 
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': f'Error: {e}'}), 500

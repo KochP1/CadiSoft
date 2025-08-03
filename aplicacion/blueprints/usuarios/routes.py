@@ -89,7 +89,6 @@ def inicio_stats():
 
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Request fallido'}), 400
     
 
@@ -137,7 +136,6 @@ def regist_user():
             flash('Usuario creado satisfactoriamente')
             return redirect(url_for('usuario.index'))
         except Exception as e:
-            print(f'Error: {e}')
             return redirect(url_for('usuario.regist_user'))
         finally:
             cur.close()
@@ -148,16 +146,12 @@ def generar_codigo_verificacion(usuario_id):
     db = current_app.config['db']
     db.ping(reconnect=True)
 
-    # 1. Generar código aleatorio de 6 dígitos
     codigo = str(random.randint(100000, 999999))
     
-    # 2. Calcular fecha de expiración (15 minutos desde ahora)
     expiracion = dt.datetime.now() + dt.timedelta(minutes=15)
     
-    # 3. Guardar en la base de datos
     try:
         with db.cursor() as cur:
-            # Primero invalidar códigos previos del usuario
             cur.execute(
                 """ UPDATE codigos_verificacion 
                     SET usado = TRUE 
@@ -167,7 +161,6 @@ def generar_codigo_verificacion(usuario_id):
                 (usuario_id,)
             )
             
-            # 2. Limpieza opcional de códigos muy antiguos
             cur.execute(
                 """ DELETE FROM codigos_verificacion 
                     WHERE idusuarios = %s 
@@ -176,7 +169,6 @@ def generar_codigo_verificacion(usuario_id):
             )
             
             
-            # Insertar nuevo código
             cur.execute(
                 """ INSERT INTO codigos_verificacion 
                     (idusuarios, codigo, expiracion) 
@@ -279,12 +271,10 @@ def forgot_password():
                         return jsonify({'message': 'Revise su bandeja de correo electrónico', 'idusuario': idusuarios}), 200
                     
                     except Exception as e:
-                        print(e)
                         return jsonify({'error': 'Error, servidor de correo no disponible'}), 400
                 else:
                     return jsonify({'error':'El correo electrónico no existe'}), 400
         except Exception as e:
-            print(e)
             return jsonify({'error': 'Error al buscar correo electrónico'}), 400
     return render_template('usuarios/forgot.html')
 
@@ -307,10 +297,8 @@ def verificacion_dos_pasos(idusuario):
             with db.cursor() as cur:
                 sql = 'SELECT * FROM codigos_verificacion WHERE codigo = %s AND idusuarios = %s AND (usado IS NULL OR usado = FALSE)'
                 data = (codigo, idusuario)
-                print(data)
                 cur.execute(sql, data)
                 record = cur.fetchone()
-                print(record)
 
                 if record:
                     cur.execute(
@@ -324,7 +312,6 @@ def verificacion_dos_pasos(idusuario):
                 else: 
                     return jsonify({'error': 'Codigo invalido'}), 400
         except Exception as e:
-            print(e)
             return jsonify({'error': 'Error al validar codigo'}), 400
     
     return render_template('usuarios/2fv.html', user = idusuario)
@@ -352,7 +339,6 @@ def recuperar_contraseña(idusuario):
                 return jsonify({'message': 'contraseña actualizada satisfactoriamente', 'user': idusuario}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': f'{e}'}), 500
     
     if request.method == 'GET':
@@ -369,7 +355,6 @@ def get_profile_image(idusuarios):
     cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
     image_data = cur.fetchone()[0]
 
-    # Determinar el tipo MIME basado en los primeros bytes
     mime_type = 'image/jpeg'
     if image_data.startswith(b'\x89PNG'):
         mime_type = 'image/png'
@@ -382,10 +367,9 @@ def get_profile_image(idusuarios):
 
 @usuario.route('/update_foto/<int:idusuarios>', methods = ['PATCH'])
 def update_foto(idusuarios):
-    imagen = request.files['imagen']  # Archivo binario
+    imagen = request.files['imagen']
         
-    # Convertir imagen a Base64 o guardarla como BLOB
-    imagen_blob = imagen.read()  # Binario puro (para MySQL LONGBLOB)
+    imagen_blob = imagen.read()
 
     db = current_app.config['db']
     cur = db.cursor()
@@ -423,7 +407,6 @@ def update_email(idusuarios):
         return jsonify({'mensaje': 'email actualizado', 'usuario': f'{idusuarios}'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
@@ -451,7 +434,6 @@ def edit_nombres(idusuarios):
         return jsonify({'mensaje': 'nombres actualizados', 'usuario': f'{idusuarios}'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
@@ -479,7 +461,6 @@ def edit_apellidos(idusuarios):
         return jsonify({'mensaje': 'apellidos actualizados', 'usuario': f'{idusuarios}'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
@@ -507,7 +488,6 @@ def edit_cedula(idusuarios):
         return jsonify({'mensaje': 'cedula actualizada', 'usuario': f'{idusuarios}'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()
@@ -539,7 +519,6 @@ def edit_contraseña(idusuarios):
             return jsonify({'error': 'la contraseña actual es incorrecta'}), 401
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': f'{e}'}), 400
     finally:
         cur.close()

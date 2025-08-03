@@ -46,7 +46,6 @@ def elim_preinscripcion(id):
             db.commit()
             return jsonify({'mensaje': 'preinscripcion eliminada'}), 200
         except Exception as e:
-            print(e)
             return jsonify({'error': 'Error al eliminar preinscripcion'}), 500
 
 # INSCRIPCIONES
@@ -123,7 +122,6 @@ def alumnos_regulares():
             return jsonify({'mensaje': 'Alumno creado satisfactiramente'}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': 'Error al crear el usuario'}), 500
         finally:
             cur.close()
@@ -156,7 +154,6 @@ def buscar_alumno():
             else:
                 return jsonify({'success': False, 'message': 'Alumno no encontrado'}), 404
     except Exception as e:
-        print(e)
         return jsonify({
             'success': False,
             'error': 'Error interno al buscar alumno',
@@ -193,7 +190,6 @@ def buscar_curso():
             else:
                 return jsonify({'success': False, 'message': 'Curso no encontrado'}), 404
     except Exception as e:
-        print(e)
         return jsonify({
             'success': False,
             'error': 'Error interno al buscar curso',
@@ -247,7 +243,6 @@ def mostrar_horario():
             else:
                 return jsonify({'success': False, 'message': 'horario de seccion no encontrado'}), 404
     except Exception as e:
-        print(e)
         return jsonify({
             'success': False,
             'error': 'Error interno al buscar el horario',
@@ -292,7 +287,6 @@ def inscribir_alumno():
         return jsonify({'mensaje': 'Alumno inscrito satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al inscribir alumno'}), 400
     finally:
         cur.close()

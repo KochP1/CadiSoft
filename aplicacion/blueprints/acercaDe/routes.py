@@ -25,5 +25,4 @@ def restaurar():
             return jsonify({'mensaje': 'Restauración completada'}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': f'Error al restaurar sistema: {e}'}), 500

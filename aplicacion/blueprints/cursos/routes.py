@@ -21,7 +21,6 @@ def index():
                 cur.execute(sql, data)
                 return jsonify({'message': 'Curso creado satisfactoriamente'}), 200
         except Exception as e:
-            print(e)
             return jsonify({'error': 'Error al crear curso'}), 400
 
     try:
@@ -33,10 +32,9 @@ def index():
             columNames = [column[0] for column in cur.description]
             for record in registros:
                 insertCursos.append(dict(zip(columNames, record)))
-            print(insertCursos)
+
             return render_template('cursos/index.html', cursos = insertCursos)
     except Exception as e:
-        print(e)
         return redirect(url_for('usuario.inicio'))
 
 
@@ -58,7 +56,6 @@ def buscar_facultades():
 
                 return jsonify({'facultades': facultades_dict}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'Error al buscar facultades'}), 400
     
 
@@ -91,7 +88,6 @@ def edit_cursos(idCurso):
 
             for record in insertRegistros:
                 idFacultad = record['idFacultad']
-                print(idFacultad)
             
             for record in insertRegistrosFacultades:
                 if idFacultad == record['idFacultad']:
@@ -99,7 +95,7 @@ def edit_cursos(idCurso):
 
             return render_template('cursos/editarCurso.html', cursos = insertRegistros, facultades = insertRegistrosFacultades)
     except Exception as e:
-        print(e)
+        return f'Error: {e}'
 
 
 
@@ -120,7 +116,6 @@ def edit_nombre_curso(idCurso):
             db.commit()
             return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'Error al modificar curso'}), 500
     
 
@@ -142,7 +137,6 @@ def edit_facultad_curso(idCurso):
             db.commit()
             return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
     except Exception as e:
-        print(e)
         return jsonify({'error': 'Error al modificar curso'}), 500
 
 
@@ -157,7 +151,6 @@ def eliminar_curso(idcurso):
         return jsonify({'mensaje': 'curso eliminado'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'el curso no pudo ser eliminado'}), 400
     finally:
         cur.close()
@@ -190,7 +183,6 @@ def seccion_curso(idcurso):
 
             return render_template('cursos/seccionesCurso.html', secciones = insertSecciones, cursos = insertCurso)
         except Exception as e:
-            print(f'\nError!!!: {e}\n')
             return redirect(url_for('cursos.index'))
 
 
@@ -240,7 +232,6 @@ def crear_seccion(idCurso):
                 return jsonify({'message': 'Sección creada satisfactoriamente'}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': 'Error al crear sección'}), 500
 
     if request.method == 'GET':
@@ -263,7 +254,6 @@ def crear_seccion(idCurso):
             
             return render_template('cursos/crearSeccion.html', profesores = insertRegistros, cursos = insertCurso)
         except Exception as e:
-            print(e)
             return redirect(url_for('cursos.index'))
 
 
@@ -285,7 +275,6 @@ def elim_seccion(idSeccion):
             return jsonify({'message': 'Sección eliminada satisfactoriamente'})
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al eliminar seccion'}), 500
 
 # FINALIZA ENDPOINTS DE SECCIONES
@@ -322,7 +311,6 @@ def calificaciones(idSeccion):
                         LIMIT 1
                     ''', (idSeccion,))
                 registro_periodo = cur.fetchall()
-                print(registro_periodo)
 
 
                 periodoArray = []
@@ -347,7 +335,6 @@ def calificaciones(idSeccion):
                 
                 return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
         except Exception as e:
-            print(e)
             flash('No hay alumnos inscritos en esta sección')
             cursor = db.cursor()
             cursor.execute('SELECT idCurso FROM secciones WHERE idSeccion = %s', (idSeccion))
@@ -377,7 +364,6 @@ def subir_logro_uno(idSeccion):
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
     
 
@@ -402,7 +388,6 @@ def subir_logro_dos(idSeccion):
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 @cursos.route('/subir_logro_tres/<int:idSeccion>', methods = ['PATCH'])
@@ -425,7 +410,6 @@ def subir_logro_tres(idSeccion):
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
     
 
@@ -450,7 +434,6 @@ def subir_logro_cuatro(idSeccion):
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 
@@ -475,7 +458,6 @@ def subir_logro_cinco(idSeccion):
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 @cursos.route('/subir_definitiva/<int:idSeccion>', methods = ['PATCH'])
@@ -498,7 +480,6 @@ def subir_definitiva(idSeccion):
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES

@@ -16,7 +16,6 @@ def index():
             return jsonify({'mensaje': 'facultad creada'}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': f'Error al crear facultad: {e}'}), 400
         finally:
             cur.close()
@@ -43,7 +42,6 @@ def edit_facultad(idfacultad):
             return jsonify({'mensaje': 'facultad actualizada', 'facultad': f'{idfacultad}'}), 200
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': f'error al actualizar la facultad: {e}'}), 400
         finally:
             cur.close()
@@ -55,7 +53,6 @@ def edit_facultad(idfacultad):
             return jsonify({'mensaje': 'facultad eliminada', 'facultad': f'{idfacultad}'})
         except Exception as e:
             db.rollback()
-            print(e)
             return jsonify({'error': 'error al eliminar la facultad'}), 400
         finally:
             cur.close()
@@ -75,7 +72,6 @@ def filtrar_facultad():
             insertRegistros.append(dict(zip(columNames, record)))
         return render_template('facultades/index.html', facultades = insertRegistros)
     except Exception as e:
-        print(e)
         return jsonify({'error' f'error buscando facultad: {e}'}), 400
     finally:
         cur.close()

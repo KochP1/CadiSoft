@@ -70,7 +70,6 @@ def index():
             db.commit()
             return jsonify({'mensaje': 'profesor creado satisfactiramente'}), 200
         except Exception as e:
-            print(e)
             return jsonify({'error': 'Error al crear el usuario'}), 400
         finally:
             cur.close()
@@ -87,7 +86,6 @@ def index():
 
         return render_template('profesores/index.html', profesores = InsertRegistros)
     except Exception as e:
-        print(e)
         return render_template('profesores/index.html')
     finally:
         cur.close()
@@ -103,7 +101,6 @@ def eliminar_profesor(idusuarios):
         return jsonify({'mensaje': 'profesor eliminado'}), 200
     except Exception as e:
         db.rollback()
-        print(e)
         return jsonify({'error': 'el profesor no pudo ser eliminado'}), 400
     finally:
         cur.close()
@@ -124,7 +121,6 @@ def edit_profesores(idusuarios):
         
         return render_template('profesores/editProfesor.html', profesor = InsertRegistros)
     except Exception as e:
-        print(e)
         return redirect(url_for('profesores.index'))
     finally:
         cur.close()
@@ -145,7 +141,6 @@ def filtrar_profesor():
             InsertRegistros.append(dict(zip(columNames, record)))
         return render_template('profesores/index.html', profesores = InsertRegistros)
     except Exception as e:
-        print(e)
         return url_for('profesores.index')
     finally:
         cur.close()
@@ -175,5 +170,4 @@ def mis_secciones():
                 print(insertSecciones)
                 return render_template('profesores/secciones.html', secciones = insertSecciones)
         except Exception as e:
-            print(e)
             return 'Error'
