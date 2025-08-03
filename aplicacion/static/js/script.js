@@ -1869,11 +1869,12 @@ let productosArray = [];
 async function guardar_factura() {
     const url = '/facturacion/';
     const cliente = document.getElementById('nombreFactura').value.trim();
+    const telefono = document.getElementById('telefonoFactura').value.trim();
     const cedula = document.getElementById('cedulaFactura').value.trim();
     const direccion = document.getElementById('direccionFactura').value.trim();
     const total = parseFloat(document.getElementById('total-factura').innerHTML);
 
-    if (!cliente || !cedula || !direccion) {
+    if (!cliente || !cedula || !direccion || !telefono) {
         isSearching = false;
         alert('Todos los campos deben ser llenados');
         return;
@@ -1882,6 +1883,12 @@ async function guardar_factura() {
     if (!cliente.length > 50) {
         isSearching = false;
         alert('El cliente puede tener un máximo de 50 caracteres');
+        return;
+    }
+
+    if (!telefono.length > 11) {
+        isSearching = false;
+        alert('EL teléfono puede tener un máximo de 10 caracteres');
         return;
     }
 
@@ -1905,6 +1912,7 @@ async function guardar_factura() {
 
     const requestData = {
         cliente: cliente,
+        telefono: telefono,
         cedula: cedula,
         direccion: direccion,
         total: total,
@@ -1935,9 +1943,6 @@ async function guardar_factura() {
         console.error(e);
     } finally {
         isSearching = false;
-        while(productosArray.length) {
-            productosArray.pop();
-        }
     }
 
 
@@ -1945,12 +1950,21 @@ async function guardar_factura() {
 // FRONT END 
 
 function generar_factura() {
-    return;
+    const cliente = document.getElementById('nombreFactura').value.trim();
+    const cedula = document.getElementById('cedulaFactura').value.trim();
+    const direccion = document.getElementById('direccionFactura').value.trim();
+    const telefono = document.getElementById('telefonoFactura').value.trim();
+    const total = document.getElementById('total-factura').textContent;
+
+    document.getElementById('cliente-factura').textContent = cliente;
+    document.getElementById('direccion-factura').textContent = direccion;
+    document.getElementById('telefono-factura').textContent = telefono;
+    document.getElementById('cedula-factura').textContent = cedula;
+    document.getElementById('totalFactura').textContent = total;
 }
 
 function actualizarProductosArray(idProducto, nuevaCantidad) {
     const index = productosArray.findIndex(p => p.idProducto === idProducto);
-    
     if (index !== -1) {
         productosArray[index].cantidadProducto = nuevaCantidad;
     } else {
@@ -1963,8 +1977,23 @@ function actualizarProductosArray(idProducto, nuevaCantidad) {
     console.log(productosArray)
 }
 
+function eliminarProductoArray(idProducto) {
+    const index = productosArray.findIndex(p => p.idProducto.toString() === idProducto.toString());
+    console.log(index)
+    if (index !== -1) {
+        productosArray.splice(index, 1);
+        console.log(`Producto con ID ${idProducto} eliminado.`);
+    } else {
+        console.log(`Producto con ID ${idProducto} no encontrado.`);
+    }
+    
+    console.log("Array actualizado:", productosArray);
+}
+
+
 function render_producto(data) {
     const tbody = document.getElementById('facturacion-tbody');
+    const factura = document.getElementById('facturacion-body');
     const productos = document.querySelectorAll('.producto-tr');
     const precio = parseFloat(data.precio);
     const idProducto = data.idProducto.toString();
@@ -1986,8 +2015,16 @@ function render_producto(data) {
                 <td class="subtotal" id="subTotal-${idProducto}">${precio.toFixed(2)}</td>
                 <td><button class="eliminar" onclick="eliminar_producto_factura('${idProducto}')">✕</button></td>
             </tr>`;
+
+        const facturaHtml = `<tr id="facturación-item-${idProducto}" idProducto="${idProducto} class="producto-tr">
+                                <td>${data.nombre}</td>
+                                <td id="cantidad-facturacion-${idProducto}">1</td>
+                                <td id="precio-facturacion-${data.idProducto}">${precio.toFixed(2)}</td>
+                                <td id="subtotal-facturacion-${data.idProducto}">${precio.toFixed(2)}</td>
+                            </tr>`
         
         tbody.insertAdjacentHTML('beforeend', productoHTML);
+        factura.insertAdjacentHTML('beforeend', facturaHtml);
         actualizarProductosArray(data.idProducto, 1);
     } else {
         const cantidadInput = productoExistente.querySelector(`#cantidad-factura-${idProducto}`);
@@ -2004,12 +2041,16 @@ function render_producto(data) {
 }
 
 function eliminar_producto_factura(id) {
-    const producto = document.getElementById(`producto-${id}`);
+    const producto = document.getElementById(`facturación-item-${id}`);
+    const productoFactura = document.getElementById(`producto-${id}`);
     const total = parseFloat(document.getElementById('total-factura').textContent);
     const subTotal = parseFloat(document.getElementById(`subTotal-${id}`).textContent);
     const newSubTotal = total - subTotal;
     producto.remove();
+    productoFactura.remove();
     document.getElementById('total-factura').textContent = newSubTotal.toFixed(2);
+
+    eliminarProductoArray(id);
 }
 
 function calc_total() {
@@ -2024,11 +2065,16 @@ function calc_total() {
 
 function calc_subtotal(id) {
     const subTotal = document.getElementById(`subTotal-${id}`);
+    const subtTotalFactura = document.getElementById(`subtotal-facturacion-${id}`);
     const cantidad = parseInt(document.getElementById(`cantidad-factura-${id}`).value.trim());
     const precio = parseFloat(document.getElementById(`precio-factura-${id}`).value.trim());
     const newSubtotal = cantidad * precio;
 
+    document.getElementById(`cantidad-facturacion-${id}`).textContent = cantidad;
+
     subTotal.textContent = newSubtotal.toFixed(2);
+    subtTotalFactura.textContent = newSubtotal.toFixed(2);
+    actualizarProductosArray(id, cantidad)
     calc_total();
 }
 

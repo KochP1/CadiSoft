@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 02-08-2025 a las 20:14:32
+-- Tiempo de generación: 03-08-2025 a las 02:16:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -79,9 +79,10 @@ CREATE TABLE `cursos` (
 CREATE TABLE `facturas` (
   `idFactura` int(11) NOT NULL,
   `cliente` varchar(50) NOT NULL,
+  `telefono` varchar(11) NOT NULL,
   `cedula` varchar(8) NOT NULL,
   `direccion` varchar(30) NOT NULL,
-  `fecha` date NOT NULL DEFAULT current_timestamp(),
+  `fecha` datetime NOT NULL DEFAULT current_timestamp(),
   `total` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -290,8 +291,8 @@ ALTER TABLE `facturas`
 --
 ALTER TABLE `factura_x_producto`
   ADD PRIMARY KEY (`idFactura_x_producto`),
-  ADD KEY `producto_fk` (`idProducto`),
-  ADD KEY `factura_fk` (`idFactura`);
+  ADD KEY `factura_fk` (`idFactura`),
+  ADD KEY `producto_fk` (`idProducto`);
 
 --
 -- Indices de la tabla `facultades`
@@ -503,7 +504,7 @@ ALTER TABLE `cursos`
 --
 ALTER TABLE `factura_x_producto`
   ADD CONSTRAINT `factura_fk` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `producto_fk` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `producto_fk` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `horario_x_curso`

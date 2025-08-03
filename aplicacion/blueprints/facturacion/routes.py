@@ -13,16 +13,17 @@ def index():
             try:
                 data = request.get_json()
 
-                if not data or 'cliente' not in data or 'cedula' not in data or 'direccion' not in data or 'total' not in data or 'productos' not in data:
+                if not data or 'cliente' not in data or 'telefono' not in data or 'cedula' not in data or 'direccion' not in data or 'total' not in data or 'productos' not in data:
                     return jsonify({'error': 'Datos incompletos'}), 400
                 
                 cliente = data['cliente']
                 cedula = data['cedula']
+                telefono = data['telefono']
                 direccion = data['direccion']
                 total = data['total']
                 productos = data['productos']
                 
-                cur.execute('INSERT INTO facturas (`cliente`, `cedula`, `direccion`, `total`) VALUES (%s, %s, %s, %s)', (cliente, cedula, direccion, total))
+                cur.execute('INSERT INTO facturas (`cliente`, `telefono`, `cedula`, `direccion`, `total`) VALUES (%s, %s, %s, %s, %s)', (cliente, telefono, cedula, direccion, total))
                 db.commit()
 
                 cur.execute('SELECT idFactura FROM facturas WHERE cedula = %s', (cedula,))
@@ -158,7 +159,7 @@ def historial():
 
     if request.method == 'GET':
         with db.cursor() as cur:
-            cur.execute('SELECT f.idFactura, f.cliente, f.cedula, f.direccion, p.nombre, f.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto')
+            cur.execute('SELECT f.idFactura, f.cliente, f.telefono, f.cedula, f.direccion, p.nombre, f.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto')
             registros = cur.fetchall()
             insertRegistros = []
             columNames = [column[0] for column in cur.description]

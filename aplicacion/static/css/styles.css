@@ -1246,24 +1246,24 @@ header h1 {
     font-size: 1.2em;
 }
 
-table {
+.tabla-productos-factura {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 15px;
 }
 
-th, td {
+.tabla-productos-factura th, .tabla-productos-factura td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-th {
+.tabla-productos-factura th {
     background-color: #2c3e50;
     color: white;
 }
 
-td input {
+.tabla-productos-factura td input {
     width: 100%;
     padding: 6px;
     border: 1px solid #ddd;
@@ -1456,6 +1456,26 @@ td input {
     font-weight: bold;
 }
 
+.tabla-factura {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+    
+.tabla-factura th {
+    padding-bottom: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+    
+.tabla-factura td {
+    padding: 6px 0;
+}
+    
+.tabla-factura tr:not(:first-child) td {
+    padding-top: 8px; /* Espacio adicional después de los encabezados */
+}
+
 .factura-total__container {
     width: 100%;
     display: flex;
@@ -1475,7 +1495,10 @@ td input {
 }
 
 .separador-factura {
-    border: 1px solid black;
+    border: none;
+    border-top: 3px dashed #000;
+    height: 1px;
+    margin: 10px 0;   
 }
 
 .agadecimiento-compra {

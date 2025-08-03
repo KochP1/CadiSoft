@@ -32,7 +32,7 @@
 
         <section class="productos">
             <h2>Detalle de Productos/Servicios</h2>
-            <table id="tabla-productos">
+            <table id="tabla-productos" class="tabla-productos-factura">
                 <thead>
                     <tr>
                         <th>id</th>
@@ -95,30 +95,30 @@
                                 <div class="factura-info__container">
                                     <div class="factura-info">
                                         <h3>Fecha:</h3>
-                                        <span>2025/07/07</span>
+                                        <span id="fecha-factura">2025/07/07</span>
                                     </div>
                                     <div class="factura-info">
                                         <h3>Cliente:</h3>
-                                        <span>Juan Koch</span>
+                                        <span id="cliente-factura"></span>
                                     </div>
                                     <div class="factura-info">
                                         <h3>Dirección:</h3>
-                                        <span>Sector Paraiso</span>
+                                        <span id="direccion-factura"></span>
                                     </div>
                                     <div class="factura-info">
                                         <h3>Teléfono:</h3>
-                                        <span>04246778096</span>
+                                        <span id="telefono-factura"></span>
                                     </div>
                                     <div class="factura-info">
                                         <h3>Cédula:</h3>
-                                        <span>30139712</span>
+                                        <span id="cedula-factura"></span>
                                     </div>
                                 </div>
 
                                 <hr class="separador-factura">
 
                                 <div class="tabla-productos__container">
-                                    <table>
+                                    <table class="tabla-factura">
                                         <tr>
                                             <th>Producto</th>
                                             <th>Cantidad</th>
@@ -126,17 +126,14 @@
                                             <th>Subtotal</th>
                                         </tr>
 
-                                        <tr>
-                                            <td>Hoja de exámen</td>
-                                            <td>3</td>
-                                            <td>1.00</td>
-                                            <td>3.00</td>
-                                        </tr>
+                                        <tbody id="facturacion-body">
+
+                                        </tbody>
                                     </table>
 
                                     <div class="factura-total__container">
                                         <h3>Total:</h3>
-                                        <span>3.00</span>
+                                        <span id="totalFactura"></span>
                                     </div>
 
                                 </div>
@@ -146,6 +143,9 @@
                                 <h2 class="agadecimiento-compra">¡Gracias por su compra!</h2>
                             </div>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="imprimir-factura" onclick="imprimirFactura()">Imprimir</button>
                     </div>
                 </div>
             </div>
