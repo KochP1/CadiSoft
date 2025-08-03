@@ -12,12 +12,13 @@ def create_app():
     app.config['DB_USER'] = getenv('DB_USER')
     app.config['DB_PASSWORD'] = getenv('DB_PASSWORD')
     app.config['DB_NAME'] = getenv('DB_NAME')
+    app.config['DB_PORT'] = getenv('DB_PORT')
 
     app.secret_key = app.config['SECRET_KEY']
 
     db = pymysql.connect(
     host=app.config['DB_HOST'],
-    port=3306,
+    port=app.config['DB_PORT'],
     user=app.config['DB_USER'],
     password=app.config['DB_PASSWORD'],
     database=app.config['DB_NAME']
