@@ -69,26 +69,26 @@
               <form id="crear-profesor-form">
 
                 <label>Nombre</label>
-                <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor" maxlength="12">
+                <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor">
 
                 <label>Segundo nombre</label>
-                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor" maxlength="12">
+                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor">
 
                 <label>Apellido</label>
-                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor" maxlength="20">
+                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor">
 
                 <label>Segundo apellido</label>
-                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor" maxlength="20">
+                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor">
 
                 <label>Cedula</label>
                 <input type="number" class="form-control mb-3" name="cedula" id="cedulaProfesor">
 
                 <label>Email</label>
-                <input type="email" class="form-control mb-3" name="email" id="emailProfesor" maxlength="50">
+                <input type="email" class="form-control mb-3" name="email" id="emailProfesor">
 
                 <label>Contraseña</label>
                 <div class="contraseña-input-profesores__container">
-                    <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor" maxlength="8"> 
+                    <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaProfesor"> 
                     <i class="fa-solid fa-eye-slash icono-contraeña__profesores" id="contraseña-icon" id-input="contraseñaProfesor" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
                 </div> 
 
@@ -96,7 +96,7 @@
                 <input type="file" class="form-control mb-3" name="imagen" id="imagenProfesor">
 
                 <label class="label-tipo">Especialidad</label>
-                <input type="text" class="form-control mb-3" name="especialidad" id="especialidadProfesor" maxlength="20">
+                <input type="text" class="form-control mb-3" name="especialidad" id="especialidadProfesor">
 
                 <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearProfesor()">Guardar</button>
               </form>

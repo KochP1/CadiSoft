@@ -34,16 +34,16 @@
             <div class="edit-h2__container"><h2>Nombres del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="nombre" value="{{record.nombre}}" id="editNombre" maxlength="12">
-                <input type="text" name="segundoNombre" value="{{record.segundoNombre}}" id="editSegundoNombre" maxlength="12">
+                <input type="text" name="nombre" value="{{record.nombre}}" id="editNombre">
+                <input type="text" name="segundoNombre" value="{{record.segundoNombre}}" id="editSegundoNombre">
                 <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_nombres(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Apellidos del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="apellido" value="{{record.apellido}}" maxlength="20" id="editApellido">
-                <input type="text" name="segundoApellido" value="{{record.segundoApellido}}" maxlength="20" id="editSegundoApellido">
+                <input type="text" name="apellido" value="{{record.apellido}}" id="editApellido">
+                <input type="text" name="segundoApellido" value="{{record.segundoApellido}}" id="editSegundoApellido">
                 <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_apellidos(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
@@ -57,14 +57,14 @@
             <div class="edit-h2__container"><h2>Email del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="email" name="email" value="{{record.email}}" id="edit-email" maxlength="50">
+                <input type="email" name="email" value="{{record.email}}" id="edit-email">
                 <button type="submit" class="btn btn-primary" idusuarios="{{record.idusuarios}}" onclick="edit_email(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Especialidad del profesor</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="especialidad" value="{{record.especialidad}}" maxlength="20">
+                <input type="text" name="especialidad" value="{{record.especialidad}}">
                 <button type="submit" class="btn btn-primary">Actualizar</button>
             </div>
 

@@ -239,14 +239,82 @@ function crearProfesor() {
     const imagen = document.getElementById('imagenProfesor').files[0];
 
 
-    if (nombre === '' || segundoNombre === '' || apellido === '' || segundoApellido === '' || cedula === '' || email === '' || contraseña === '' || especialidad === '') {
-        alert('Todos los campos deben ser llenados')
-        window.location.reload()
+    if (especialidad === '') {
+        isSearching = false
+        alert('El campo de especialidad esta vacio')
+        return;
     }
 
+    if (nombre === '') {
+        isSearching = false;
+        alert('El nombre esta vacio');
+        return;
+    }
+
+    if (apellido === '' || segundoApellido === '') {
+        isSearching = false;
+        alert('los campos de apellidos deben ser llenados')
+        return;
+    }
+
+    if (cedula === '') {
+        isSearching = false;
+        alert('la cedula esta vacio')
+        return;
+    }
+
+    if (email === '') {
+        isSearching = false;
+        alert('El email esta vacio')
+        return;
+    }
+
+    if (contraseña === '') {
+        isSearching = false;
+        alert('La contraseña esta vacia')
+        return;
+    }
+
+    if (cedula.length > 8) {
+        isSearching = false;
+        alert('La cédula puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (contraseña.length > 8) {
+        isSearching = false;
+        alert('La contraseña puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (nombre.length > 12 || segundoNombre.length > 12) {
+        isSearching = false
+        alert('Los nobres pueden tener máximo 12 caracteres');
+        return;
+    }
+
+    if (apellido.length > 20 || segundoApellido.length > 12) {
+        isSearching = false
+        alert('Los apellidos pueden tener máximo 20 caracteres');
+        return;
+    }
+
+    if (especialidad.length > 20) {
+        isSearching = false
+        alert('La especialidad puede tener un máximo de 20 caracteres');
+        return;
+    }
+
+    if (email.length > 50) {
+        isSearching = false;
+        alert('El email puede tener un máximo de 50 caracteres');
+        return;
+    }
     
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (isSearching) return;
+        isSearching = true;
 
         const formData = new FormData();
         formData.append('nombre', nombre);
@@ -260,13 +328,7 @@ function crearProfesor() {
         formData.append('especialidad', especialidad);
         formData.append('imagen', imagen);
 
-        if (cedula.length > 8) {
-            alert('La cédula puede tener máximo 8 caracteres');
-            window.location.reload();
-        }
-
         try {
-            console.log('ey')
             const response = await fetch('/profesores/', {
                 method: 'POST',
                 body: formData
@@ -280,6 +342,8 @@ function crearProfesor() {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            isSearching = false;
         }
     })
 }
@@ -349,6 +413,11 @@ async function edit_email(idusuarios) {
         return;
     }
 
+    if (email.length > 50) {
+        alert('El email puede tener un máximo de 50 caracteres');
+        return;
+    }
+
     try {
         const response = await fetch(`/update_email/${idusuarios}`, {
             method: 'PATCH',
@@ -373,8 +442,13 @@ async function edit_nombres(idusuarios) {
     const nombre = document.getElementById('editNombre').value;
     const segundoNombre = document.getElementById('editSegundoNombre').value;
 
-    if (!nombre || !segundoNombre) {
-        alert('Debe llenar todos los campos');
+    if (!nombre) {
+        alert('Debe llenar al menos un campo para actualizar');
+        return;
+    }
+
+    if (nombre.length > 12 || segundoNombre.length > 12) {
+        alert('los nombres pueden tener un máximo de 12 caracteres');
         return;
     }
 
@@ -404,6 +478,11 @@ async function edit_apellidos(idusuarios) {
 
     if (!apellido || !segundoApellido) {
         alert('Debe llenar todos los campos');
+        return;
+    }
+
+    if (apellido.length > 20 || segundoApellido.length > 20) {
+        alert('los apellidos pueden tener un máximo de 20 caracteres');
         return;
     }
 
@@ -469,6 +548,11 @@ async function edit_contraseña(idusuarios) {
         return;
     }
 
+    if (!contraseaNueva || !contraseñaActual) {
+        alert('Debe llenar los dos campos para actualizar la contraseña')
+        return;
+    }
+
     
     try {
         const response = await fetch(`/edit_contraseña/${idusuarios}`, {
@@ -497,12 +581,21 @@ function crearFacultad() {
     const nombreFacultad = document.getElementById('nombreFacultad').value;
 
     if (nombreFacultad === '') {
-        alert('Debe introducir el nombre de la facultad')
+        isSearching = false;
+        alert('Debe introducir el nombre de la facultad');
+        return;
+    }
+
+    if (nombreFacultad.length > 40) {
+        isSearching = false;
+        alert('La facultad puede tener un máximo de 40 caracteres');
+        return;
     }
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
+        if (isSearching) return;
+        isSearching = true;
         const formData = new FormData;
 
         formData.append('nombreFacultad', nombreFacultad)
@@ -521,6 +614,8 @@ function crearFacultad() {
             }
         } catch(e) {
             console.log(e)
+        } finally {
+            isSearching = false;
         }
     })
 }
@@ -540,11 +635,21 @@ function editar_facultad(idfacultad) {
     const nombreFacultad = document.getElementById('edit-nombreFacultad').value;
 
     if (nombreFacultad === '') {
-        alert('Debe introducir el nombre de la facultad')
+        isSearching = false;
+        alert('Debe introducir el nombre de la facultad');
+        return;
+    }
+
+    if (nombreFacultad.length > 40) {
+        isSearching = false;
+        alert('La facultad puede tener un máximo de 40 caracteres');
+        return;
     }
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (isSearching) return;
+        isSearching = true;
 
         const formData = new FormData;
 
@@ -564,6 +669,8 @@ function editar_facultad(idfacultad) {
             }
         } catch(e) {
             console.log(e)
+        } finally {
+            isSearching = false;
         }
     })
 }
@@ -1024,7 +1131,6 @@ async function inscribir_alumno(event) {
 
 async function crearAlumno(event) {
     event.preventDefault();
-    const form = document.getElementById('crear-alumno-form');
     const rol = 'alumno'
     const nombre = document.getElementById('nombreAlumno').value.trim();
     const segundoNombre = document.getElementById('segundoNombreAlumno').value.trim();
@@ -1062,7 +1168,7 @@ async function crearAlumno(event) {
 
     if (contraseña === '') {
         isSearching = false;
-        alert('La contraseña esta vacio')
+        alert('La contraseña esta vacia')
         return;
     }
 
@@ -1075,6 +1181,18 @@ async function crearAlumno(event) {
     if (contraseña.length > 8) {
         isSearching = false;
         alert('La contraseña puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (nombre.length > 12 || segundoNombre.length > 12) {
+        isSearching = false
+        alert('Los nobres pueden tener máximo 12 caracteres');
+        return;
+    }
+
+    if (apellido.length > 20 || segundoApellido.length > 12) {
+        isSearching = false
+        alert('Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
 
@@ -1101,7 +1219,6 @@ async function crearAlumno(event) {
             alert('Alumno creado satisfactoriamente');
             clearInputs(['nombreAlumno', 'segundoNombreAlumno', 'apellidoAlumno', 'segundoApellidoAlumno', 'cedulaAlumno', 'emailAlumno', 'contraseñaAlumno', 'imagenAlumno'])
             document.getElementById('inscripcion-buscar-cedula').value = cedula;
-            //window.location.reload();
         } else {
             alert('Error al crear el alumno')
         }
@@ -1339,9 +1456,6 @@ async function crear_Seccion(idCurso, event) {
         return;
     }
 
-    console.log(`Sección: ${seccion}`);
-    console.log(`Profesor: ${profesor}`);
-    console.log('Horario:');
     horariosSeleccionados.forEach(element => {
         console.log(element.dia)
         console.log(element.horaInicio);
