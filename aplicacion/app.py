@@ -3,6 +3,9 @@ from flask_login import LoginManager
 from flask_mail import Mail
 import pymysql
 from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
