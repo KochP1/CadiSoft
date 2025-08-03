@@ -1,3 +1,2 @@
 [start]
-
-cmd = "gunicorn app:create_app()"
+cmd = "gunicorn run:flask_app"
