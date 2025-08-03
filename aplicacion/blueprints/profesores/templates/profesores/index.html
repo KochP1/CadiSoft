@@ -66,7 +66,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form id="crear-profesor-form">
+              <form id="crear-profesor-form" onsubmit="crearProfesor(event)">
 
                 <label>Nombre</label>
                 <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor">
@@ -98,7 +98,7 @@
                 <label class="label-tipo">Especialidad</label>
                 <input type="text" class="form-control mb-3" name="especialidad" id="especialidadProfesor">
 
-                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearProfesor()">Guardar</button>
+                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
               </form>
             </div>
           </div>

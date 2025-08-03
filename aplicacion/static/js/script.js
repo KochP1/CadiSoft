@@ -225,25 +225,23 @@ if (window.location.pathname === '/inicio') {
 }
 // Profesores
 
-function crearProfesor() {
-    if (isSearching) return;
-    isSearching = true;
-    const form = document.getElementById('crear-profesor-form');
+async function crearProfesor(event) {
+    event.preventDefault();
     const rol = 'profesor'
-    const nombre = document.getElementById('nombreProfesor').value;
-    const segundoNombre = document.getElementById('segundoNombreProfesor').value;
-    const apellido = document.getElementById('apellidoProfesor').value;
-    const segundoApellido = document.getElementById('segundoApellidoProfesor').value;
-    const cedula = document.getElementById('cedulaProfesor').value;
-    const email = document.getElementById('emailProfesor').value;
-    const contraseña = document.getElementById('contraseñaProfesor').value;
-    const especialidad = document.getElementById('especialidadProfesor').value;
+    const nombre = document.getElementById('nombreProfesor').value.trim();
+    const segundoNombre = document.getElementById('segundoNombreProfesor').value.trim();
+    const apellido = document.getElementById('apellidoProfesor').value.trim();
+    const segundoApellido = document.getElementById('segundoApellidoProfesor').value.trim();
+    const cedula = document.getElementById('cedulaProfesor').value.trim();
+    const email = document.getElementById('emailProfesor').value.trim();
+    const contraseña = document.getElementById('contraseñaProfesor').value.trim();
+    const especialidad = document.getElementById('especialidadProfesor').value.trim();
     const imagen = document.getElementById('imagenProfesor').files[0];
 
 
     if (especialidad === '') {
         isSearching = false
-        alert('El campo de especialidad esta vacio')
+        alert('El campo de especialidad esta vacio');
         return;
     }
 
@@ -313,39 +311,39 @@ function crearProfesor() {
         return;
     }
     
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
 
-        const formData = new FormData();
-        formData.append('nombre', nombre);
-        formData.append('segundoNombre', segundoNombre);
-        formData.append('apellido', apellido);
-        formData.append('segundoApellido', segundoApellido);
-        formData.append('cedula', cedula);
-        formData.append('email', email);
-        formData.append('contraseña', contraseña);
-        formData.append('rol', rol);
-        formData.append('especialidad', especialidad);
-        formData.append('imagen', imagen);
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('segundoNombre', segundoNombre);
+    formData.append('apellido', apellido);
+    formData.append('segundoApellido', segundoApellido);
+    formData.append('cedula', cedula);
+    formData.append('email', email);
+    formData.append('contraseña', contraseña);
+    formData.append('rol', rol);
+    formData.append('especialidad', especialidad);
+    formData.append('imagen', imagen);
 
-        try {
-            const response = await fetch('/profesores/', {
-                method: 'POST',
-                body: formData
-            });
+    if (isSearching) return;
+    isSearching = true;
+
+    try {
+        const response = await fetch('/profesores/', {
+            method: 'POST',
+            body: formData
+        });
     
-            if (response.ok) {
-                alert('Profesor creado satisfactoriamente')
-                window.location.href = '/profesores/'
-            } else {
-                alert('Error al crear el usuario')
-            }
-        } catch (error) {
-            console.log(error)
-        } finally {
-            isSearching = false;
+        if (response.ok) {
+            alert('Profesor creado satisfactoriamente')
+            window.location.href = '/profesores/'
+        } else {
+            alert('Error al crear el usuario')
         }
-    })
+    } catch (error) {
+        console.log(error)
+    } finally {
+        isSearching = false;
+    }
 }
 
 // Eliminar profesor
@@ -576,8 +574,8 @@ async function edit_contraseña(idusuarios) {
 
 // Facultad
 
-function crearFacultad() {
-    const form = document.getElementById('crear-facultad-form');
+async function crearFacultad(event) {
+    event.preventDefault();
     const nombreFacultad = document.getElementById('nombreFacultad').value;
 
     if (nombreFacultad === '') {
@@ -592,32 +590,29 @@ function crearFacultad() {
         return;
     }
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        if (isSearching) return;
-        isSearching = true;
-        const formData = new FormData;
 
-        formData.append('nombreFacultad', nombreFacultad)
+    if (isSearching) return;
+    isSearching = true;
+    const formData = new FormData;
+    formData.append('nombreFacultad', nombreFacultad)
 
-        try {
-            const response = await fetch('/facultades/', {
-                method: 'POST',
-                body: formData
-            })
+    try {
+        const response = await fetch('/facultades/', {
+            method: 'POST',
+            body: formData
+        })
     
-            if (response.ok) {
-                alert('Facultad creada satisfactoriamente');
-                window.location.reload();
-            } else{
-                alert('Error al crear la facultad')
-            }
-        } catch(e) {
-            console.log(e)
-        } finally {
-            isSearching = false;
+        if (response.ok) {
+            alert('Facultad creada satisfactoriamente');
+            window.location.reload();
+        } else{
+            alert('Error al crear la facultad')
         }
-    })
+    } catch(e) {
+        console.log(e)
+    } finally {
+        isSearching = false;
+    }
 }
 
 function obtener_campos_facultad(idfacultad) {
@@ -630,7 +625,8 @@ function obtener_campos_facultad(idfacultad) {
     editNombreFacultad.value = nombreFacultad
 }
 
-function editar_facultad(idfacultad) {
+async function editar_facultad(idfacultad, event) {
+    event.preventDefault();
     const form = document.getElementById('edit-facultad-form');
     const nombreFacultad = document.getElementById('edit-nombreFacultad').value;
 
@@ -646,33 +642,30 @@ function editar_facultad(idfacultad) {
         return;
     }
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        if (isSearching) return;
-        isSearching = true;
+    if (isSearching) return;
+    isSearching = true;
 
-        const formData = new FormData;
+    const formData = new FormData;
 
-        formData.append('nombreFacultad', nombreFacultad)
+    formData.append('nombreFacultad', nombreFacultad)
 
-        try {
-            const response = await fetch(`/facultades/edit_facultad/${idfacultad}`, {
-                method: 'PATCH',
-                body: formData
-            })
+    try {
+        const response = await fetch(`/facultades/edit_facultad/${idfacultad}`, {
+            method: 'PATCH',
+            body: formData
+        })
     
-            if (response.ok) {
-                alert('Facultad actualizada satisfactoriamente');
-                window.location.href = '/facultades/';
-            } else{
-                alert('Error al actualizar la facultad')
-            }
-        } catch(e) {
-            console.log(e)
-        } finally {
-            isSearching = false;
+        if (response.ok) {
+            alert('Facultad actualizada satisfactoriamente');
+            window.location.href = '/facultades/';
+        } else{
+            alert('Error al actualizar la facultad')
         }
-    })
+    } catch(e) {
+        console.log(e)
+    } finally {
+        isSearching = false;
+    }
 }
 
 async function elim_facultad(idfacultad) {
