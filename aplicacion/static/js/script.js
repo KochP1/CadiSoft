@@ -1504,6 +1504,73 @@ async function crear_Seccion(idCurso, event) {
     
 }
 
+async function edit_seccion(event, id, idSeccion) {
+    event.preventDefault();
+    if (isSearching) return;
+    isSearching = true;
+    const url = `/cursos/edit_seccion_campos/${idSeccion}`
+    const edit = document.getElementById(id)
+    const formData = new FormData();
+
+    if (id == 'editSeccion') {
+        if (edit.value.trim().length > 10) {
+            isSearching = false;
+            alert('La sección puede tener un máximo de 10 caracteres');
+            return;
+        }
+
+        if (!edit.value.trim()) {
+            isSearching = false;
+            alert('El campo de estar llenado para ser actualizado');
+            return;
+        }
+
+        formData.append('seccion', edit.value.trim())
+    }
+
+    if (id == 'editAulaSeccion') {
+        
+        if (edit.value.trim().length > 10) {
+            isSearching = false;
+            alert('El aula puede tener un máximo de 10 caracteres');
+            return;
+        }
+
+        if (!edit.value.trim()) {
+            isSearching = false;
+            alert('El campo de estar llenado para ser actualizado');
+            return;
+        }
+
+        formData.append('aula', edit.value.trim())
+    }
+
+    if (id == 'profesorEditSeccion') {
+        formData.append('profesor', edit.value.trim())
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+
+        alert(data.mensaje);
+        window.location.reload();
+    } catch(e) {
+        console.error(e)
+    } finally {
+        isSearching = false;
+    }
+}
+
 async function buscar_horario_seccion(idSeccion) {
     if (isSearching) return;
     isSearching = true;

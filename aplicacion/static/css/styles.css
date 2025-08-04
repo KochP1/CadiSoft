@@ -1008,6 +1008,15 @@ input[type=number] {
     width: 300px;
 }
 
+.btn-editSeccion__container {
+    width: 100%;
+    padding-left: 60px;
+}
+
+.btn-editSeccion__container button {
+    width: 300px;
+}
+
 .horario-modal, .horario-modal-body {
     width: 800px !important;
 }

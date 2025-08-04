@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos{% endblock %}
+
+{% block content %}
+
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+    </style>
+    
+    <div class="alumnos-options__wrapper">
+        <h1>Editar sección</h1>
+        <hr class="divider">
+    </div>
+
+    {% for record in secciones %}
+    <div class="crear-seccion__wrapper">
+        <form idInput="editSeccion" idSeccion="{{record.idSeccion}}" onsubmit="edit_seccion(event, this.getAttribute('idInput'), this.getAttribute('idSeccion'))">
+            <div class="crear-seccion__main-container">
+                <div class="edit-h2__container crear-seccion__container"><h2>Sección</h2></div>
+                <hr class="divider">
+                <div class="edit__container crear-seccion-input__container">
+                    <input type="text" id="editSeccion" value="{{record.seccion}}">
+                </div>
+                <div class="btn-editSeccion__container">
+                    <button type="submit" idInput="editSeccion" class="btn btn-primary">Actualizar</button>
+                </div>
+            </div>
+        </form>
+
+        <form idInput="profesorEditSeccion" idSeccion="{{record.idSeccion}}" onsubmit="edit_seccion(event, this.getAttribute('idInput'), this.getAttribute('idSeccion'))">
+            <div class="crear-seccion__main-container">
+                <div class="edit-h2__container crear-seccion__container"><h2>Profesor de la sección</h2></div>
+                <hr class="divider">
+                <div class="edit__container crear-seccion-input__container">
+                    <select name="" id="profesorEditSeccion">
+                        <option value="{{record.idProfesor}}">{{record.nombre}} {{record.apellido}}</option>
+                        {% for record in profesores %}
+                            <option value="{{record.idProfesor}}">{{record.nombre}} {{record.apellido}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="btn-editSeccion__container">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </div>
+            </div>
+        </form>
+
+        <form idInput="editAulaSeccion" idSeccion="{{record.idSeccion}}" onsubmit="edit_seccion(event, this.getAttribute('idInput'), this.getAttribute('idSeccion'))">
+            <div class="crear-seccion__main-container">
+                <div class="edit-h2__container crear-seccion__container"><h2>Aula</h2></div>
+                <hr class="divider">
+                <div class="edit__container crear-seccion-input__container">
+                    <input type="text" id="editAulaSeccion" value="{{record.aula}}">
+                </div>
+                <div class="btn-editSeccion__container">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </div>
+            </div>
+        </form>
+
+            <div class="crear-seccion__main-container">
+                <div class="edit-h2__container crear-seccion__container"><h2>Creación de horario para la sección</h2></div>
+                <hr class="divider">
+                <div class="table-responsive horario__container crear-horario" id="horario__container">
+                    <table class="table table-bordered border-dark table-horario" id="tabla-horario">
+                        <tr>
+                            <th>Hora</th>
+                            <th>Lunes</th>
+                            <th>Martes</th>
+                            <th>Miércoles</th>
+                            <th>Jueves</th>
+                            <th>Viernes</th>
+                            <th>Sábado</th>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">8:00-9:00 am</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="08:00:00" data-hora-fin="09:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-8-9', this.getAttribute('curso'))" id="columna-lunes-8-9"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="08:00:00" data-hora-fin="09:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-8-9', this.getAttribute('curso'))" id="columna-martes-8-9"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="08:00:00" data-hora-fin="09:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miércoles-8-9', this.getAttribute('curso'))" id="columna-miércoles-8-9"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="08:00:00" data-hora-fin="09:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-8-9', this.getAttribute('curso'))" id="columna-jueves-8-9"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="08:00:00" data-hora-fin="09:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-8-9', this.getAttribute('curso'))" id="columna-viernes-8-9"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="08:00:00" data-hora-fin="09:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-8-9', this.getAttribute('curso'))" id="columna-sabado-8-9"></td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">9:00-10:00 am</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="09:00:00" data-hora-fin="10:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-9-10', this.getAttribute('curso'))" id="columna-lunes-9-10"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="09:00:00" data-hora-fin="10:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-9-10', this.getAttribute('curso'))" id="columna-martes-9-10"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="09:00:00" data-hora-fin="10:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-9-10', this.getAttribute('curso'))" id="columna-miercoles-9-10"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="09:00:00" data-hora-fin="10:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-9-10', this.getAttribute('curso'))" id="columna-jueves-9-10"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="09:00:00" data-hora-fin="10:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-9-10', this.getAttribute('curso'))" id="columna-viernes-9-10"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="09:00:00" data-hora-fin="10:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-9-10', this.getAttribute('curso'))" id="columna-sabado-9-10"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">10:00-11:00 am</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="10:00:00" data-hora-fin="11:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-10-11', this.getAttribute('curso'))" id="columna-lunes-10-11"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="10:00:00" data-hora-fin="11:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-10-11', this.getAttribute('curso'))" id="columna-martes-10-11"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="10:00:00" data-hora-fin="11:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-10-11', this.getAttribute('curso'))" id="columna-miercoles-10-11"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="10:00:00" data-hora-fin="11:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-10-11', this.getAttribute('curso'))" id="columna-jueves-10-11"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="10:00:00" data-hora-fin="11:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-10-11', this.getAttribute('curso'))" id="columna-viernes-10-11"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="10:00:00" data-hora-fin="11:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-10-11', this.getAttribute('curso'))" id="columna-sabado-10-11"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">11:00-12:00 am</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="11:00:00" data-hora-fin="12:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-11-12', this.getAttribute('curso'))" id="columna-lunes-11-12"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="11:00:00" data-hora-fin="12:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-11-12', this.getAttribute('curso'))" id="columna-martes-11-12"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="11:00:00" data-hora-fin="12:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-11-12', this.getAttribute('curso'))" id="columna-miercoles-11-12"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="11:00:00" data-hora-fin="12:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-11-12', this.getAttribute('curso'))" id="columna-jueves-11-12"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="11:00:00" data-hora-fin="12:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-11-12', this.getAttribute('curso'))" id="columna-viernes-11-12"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="11:00:00" data-hora-fin="12:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-11-12', this.getAttribute('curso'))" id="columna-sabado-11-12"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">12:00-01:00 pm</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="12:00:00" data-hora-fin="13:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-12-1', this.getAttribute('curso'))" id="columna-lunes-12-1"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="12:00:00" data-hora-fin="13:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-12-1', this.getAttribute('curso'))" id="columna-martes-12-1"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="12:00:00" data-hora-fin="13:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-12-1', this.getAttribute('curso'))" id="columna-miercoles-12-1"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="12:00:00" data-hora-fin="13:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-12-1', this.getAttribute('curso'))" id="columna-jueves-12-1"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="12:00:00" data-hora-fin="13:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-12-1', this.getAttribute('curso'))" id="columna-viernes-12-1"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="12:00:00" data-hora-fin="13:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-12-1', this.getAttribute('curso'))" id="columna-sabado-12-1"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">01:00-02:00 pm</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="13:00:00" data-hora-fin="14:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-1-2', this.getAttribute('curso'))" id="columna-lunes-1-2"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="13:00:00" data-hora-fin="14:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-1-2', this.getAttribute('curso'))" id="columna-martes-1-2"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="13:00:00" data-hora-fin="14:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-1-2', this.getAttribute('curso'))" id="columna-miercoles-1-2"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="13:00:00" data-hora-fin="14:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-1-2', this.getAttribute('curso'))" id="columna-jueves-1-2"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="13:00:00" data-hora-fin="14:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-1-2', this.getAttribute('curso'))" id="columna-viernes-1-2"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="13:00:00" data-hora-fin="14:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-1-2', this.getAttribute('curso'))" id="columna-sabado-1-2"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">02:00-03:00 pm</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="14:00:00" data-hora-fin="15:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-2-3', this.getAttribute('curso'))" id="columna-lunes-2-3"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="14:00:00" data-hora-fin="15:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-2-3', this.getAttribute('curso'))" id="columna-martes-2-3"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="14:00:00" data-hora-fin="15:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-2-3', this.getAttribute('curso'))" id="columna-miercoles-2-3"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="14:00:00" data-hora-fin="15:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-2-3', this.getAttribute('curso'))" id="columna-jueves-2-3"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="14:00:00" data-hora-fin="15:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-2-3', this.getAttribute('curso'))" id="columna-viernes-2-3"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="14:00:00" data-hora-fin="15:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-2-3', this.getAttribute('curso'))" id="columna-sabado-2-3"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">03:00-04:00 pm</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="15:00:00" data-hora-fin="16:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-3-4', this.getAttribute('curso'))" id="columna-lunes-3-4"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="15:00:00" data-hora-fin="16:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-3-4', this.getAttribute('curso'))" id="columna-martes-3-4"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="15:00:00" data-hora-fin="16:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-3-4', this.getAttribute('curso'))" id="columna-miercoles-3-4"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="15:00:00" data-hora-fin="16:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-3-4', this.getAttribute('curso'))" id="columna-jueves-3-4"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="15:00:00" data-hora-fin="16:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-3-4', this.getAttribute('curso'))" id="columna-viernes-3-4"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="15:00:00" data-hora-fin="16:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-3-4', this.getAttribute('curso'))" id="columna-sabado-3-4"></td>
+                        </tr>
+
+                        <tr>
+                            <td class="hora-td">04:00-05:00 pm</td>
+
+                            <td data-dia="Lunes" data-hora-inicio="16:00:00" data-hora-fin="17:00:00" curso="{{cursos[0].nombre_curso}}" 
+                            onclick="select_horario('columna-lunes-4-5', this.getAttribute('curso'))" id="columna-lunes-4-5"></td>
+
+                            <td data-dia="Martes" data-hora-inicio="16:00:00" data-hora-fin="17:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-martes-4-5', this.getAttribute('curso'))" id="columna-martes-4-5"></td>
+
+                            <td data-dia="Miércoles" data-hora-inicio="16:00:00" data-hora-fin="17:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-miercoles-4-5', this.getAttribute('curso'))" id="columna-miercoles-4-5"></td>
+
+                            <td data-dia="Jueves" data-hora-inicio="16:00:00" data-hora-fin="17:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-jueves-4-5', this.getAttribute('curso'))" id="columna-jueves-4-5"></td>
+
+                            <td data-dia="Viernes" data-hora-inicio="16:00:00" data-hora-fin="17:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-viernes-4-5', this.getAttribute('curso'))" id="columna-viernes-4-5"></td>
+
+                            <td data-dia="Sábado" data-hora-inicio="16:00:00" data-hora-fin="17:00:00" curso="{{cursos[0].nombre_curso}}"
+                            onclick="select_horario('columna-sabado-4-5', this.getAttribute('curso'))" id="columna-sabado-4-5"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="btn-crearSeccion__container">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}

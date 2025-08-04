@@ -231,6 +231,68 @@ def buscar_seccion(id):
     except Exception as e:
         return redirect(url_for('cursos.seccion_curso', idcurso = id))
 
+@cursos.route('/edit_seccion/<int:id>/<int:idCurso>',methods = ['GET'])
+def edit_seccion(id, idCurso):
+    db = current_app.config['db']
+    if request.method == 'GET':
+        try:
+            with db.cursor() as cur:
+                cur.execute('SELECT s.idSeccion, s.seccion, s.aula, p.idProfesor, u.nombre, u.apellido FROM secciones s JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE s.idSeccion = %s', (id))
+                registros = cur.fetchall()
+                insertSecciones = []
+                columNames = [column[0] for column in cur.description]
+                for record in registros:
+                    insertSecciones.append(dict(zip(columNames, record)))
+                
+                idProfesor = insertSecciones[0]['idProfesor']
+                
+                sql = 'SELECT u.idusuarios, u.nombre, u.apellido, u.cedula, p.idProfesor, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE p.idProfesor != %s'
+                cur.execute(sql, (idProfesor,))
+                registros = cur.fetchall()
+                insertRegistros = []
+                columNames = [column[0] for column in cur.description]
+                for record in registros:
+                    insertRegistros.append(dict(zip(columNames, record)))
+                
+                cur.execute('SELECT * FROM cursos WHERE idCurso = %s', (idCurso,))
+                registro_curso = cur.fetchall()
+                insertCurso = []
+                columNamesCursos = [column[0] for column in cur.description]
+                for record in registro_curso:
+                    insertCurso.append(dict(zip(columNamesCursos, record)))
+                
+                return render_template('cursos/editSeccion.html', secciones = insertSecciones, profesores = insertRegistros, cursos = insertCurso)
+        except Exception as e:
+            return f'Error: {e}'
+
+
+@cursos.route('/edit_seccion_campos/<int:id>', methods = ['PATCH'])
+def edit_seccion_campos(id):
+    db = current_app.config['db']
+    if request.method == 'PATCH':
+        try:
+            with db.cursor() as cur:
+                seccion = request.form.get('seccion')
+                profesor = request.form.get('profesor')
+                aula = request.form.get('aula')
+
+                if not seccion and not profesor and not aula:
+                    return jsonify({'error': 'No hay campos para actualizar'}), 400
+
+                if seccion:
+                    cur.execute('UPDATE secciones SET seccion = %s WHERE idSeccion = %s', (seccion, id))
+                
+                if profesor:
+                    cur.execute('UPDATE secciones SET idProfesor = %s WHERE idSeccion = %s', (profesor, id))
+                
+                if aula:
+                    cur.execute('UPDATE secciones SET aula = %s WHERE idSeccion = %s', (aula, id))
+                
+                db.commit()
+                return jsonify({'mensaje': 'Seccion actualizada'}), 200
+        except Exception as e:
+            db.rollback()
+            return jsonify({'error': f'Error: {e}'}), 500
 
 
 @cursos.route('/craer_seccion/<int:idCurso>', methods = ['GET', 'POST'])
