@@ -186,7 +186,7 @@ def seccion_curso(idcurso):
     with db.cursor() as cur:
         db.ping(reconnect=True)
         try:
-            sql = 'SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion, s.aula FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s'
+            sql = 'SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s'
             data = (idcurso,)
             cur.execute(sql, data)
             registros = cur.fetchall()
@@ -213,7 +213,7 @@ def buscar_seccion(id):
     try:
         with db.cursor() as cur:
             seccion = request.form.get('seccion')
-            cur.execute('SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion, s.aula FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s AND s.seccion = %s', (id, seccion))
+            cur.execute('SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s AND s.seccion = %s', (id, seccion))
             registros = cur.fetchall()
             insertSecciones = []
             columNames = [column[0] for column in cur.description]
@@ -274,9 +274,8 @@ def edit_seccion_campos(id):
             with db.cursor() as cur:
                 seccion = request.form.get('seccion')
                 profesor = request.form.get('profesor')
-                aula = request.form.get('aula')
 
-                if not seccion and not profesor and not aula:
+                if not seccion and not profesor:
                     return jsonify({'error': 'No hay campos para actualizar'}), 400
 
                 if seccion:
@@ -285,14 +284,49 @@ def edit_seccion_campos(id):
                 if profesor:
                     cur.execute('UPDATE secciones SET idProfesor = %s WHERE idSeccion = %s', (profesor, id))
                 
-                if aula:
-                    cur.execute('UPDATE secciones SET aula = %s WHERE idSeccion = %s', (aula, id))
-                
                 db.commit()
                 return jsonify({'mensaje': 'Seccion actualizada'}), 200
         except Exception as e:
             db.rollback()
             return jsonify({'error': f'Error: {e}'}), 500
+
+@cursos.route('/edit_horario_seccion/<int:id>', methods = ['PATCH'])
+def edit_horario_seccion(id):
+    db = current_app.config['db']
+    data = request.get_json()
+        
+    if 'horarios' not in data:
+            return jsonify({'error': 'Datos incompletos'}), 400
+        
+    horarios = data['horarios']
+    if not isinstance(horarios, list) or len(horarios) == 0:
+        return jsonify({'error': 'El horario no es válido'}), 400
+    
+    try:
+            
+        with db.cursor() as cur:
+
+            for record in horarios:
+                if 'horario' in record:
+                    cur.execute('DELETE FROM horario WHERE idhorario = %s', (record['horario'],))
+                    db.commit()
+            
+            for record in horarios:
+                if 'horario' not in record:
+                    cur.execute('INSERT INTO horario (`horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES (%s, %s, %s, %s)', (record['dia'], record['horaInicio'], record['horaFin'], record['horario_aula']))
+                    db.commit()
+
+                    cur.execute('SELECT idhorario FROM horario ORDER BY idhorario DESC LIMIT 1')
+                    idhorario = cur.fetchone()
+
+                    cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, id))
+                    db.commit()
+
+            return jsonify({'mensaje': 'Horario actualizado'}), 200
+    except Exception as e:
+        print(e)
+        db.rollback()
+        return jsonify({'error': 'Error al crear sección'}), 500
 
 
 @cursos.route('/craer_seccion/<int:idCurso>', methods = ['GET', 'POST'])

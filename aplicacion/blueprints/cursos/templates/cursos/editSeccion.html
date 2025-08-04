@@ -48,7 +48,7 @@
             </div>
         </form>
 
-        <form idInput="editAulaSeccion" idSeccion="{{record.idSeccion}}" onsubmit="edit_seccion(event, this.getAttribute('idInput'), this.getAttribute('idSeccion'))">
+        <form>
             <div class="crear-seccion__main-container">
                 <div class="edit-h2__container crear-seccion__container"><h2>Aula</h2></div>
                 <hr class="divider">
@@ -278,15 +278,16 @@
                 </div>
             </div>
             <div class="btn-crearSeccion__container">
-                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <button type="button" class="btn btn-primary" idSeccion="{{record.idSeccion}}" onclick="edit_horario(this.getAttribute('idSeccion'))">Actualizar</button>
             </div>
     </div>
 
     <input type="hidden" value="{{record.idSeccion}}" id="id-seccion-edit">
 
     <script>
+        const idSeccion = document.getElementById('id-seccion-edit').value.trim();
         document.addEventListener('DOMContentLoaded', function() {
-            buscar_horario_seccion(1);
+            buscar_horario_seccion(idSeccion);
         });
     </script>
     {% endfor %}

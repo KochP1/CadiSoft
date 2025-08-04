@@ -1528,23 +1528,6 @@ async function edit_seccion(event, id, idSeccion) {
         formData.append('seccion', edit.value.trim())
     }
 
-    if (id == 'editAulaSeccion') {
-        
-        if (edit.value.trim().length > 10) {
-            isSearching = false;
-            alert('El aula puede tener un máximo de 10 caracteres');
-            return;
-        }
-
-        if (!edit.value.trim()) {
-            isSearching = false;
-            alert('El campo de estar llenado para ser actualizado');
-            return;
-        }
-
-        formData.append('aula', edit.value.trim())
-    }
-
     if (id == 'profesorEditSeccion') {
         formData.append('profesor', edit.value.trim())
     }
@@ -1567,6 +1550,44 @@ async function edit_seccion(event, id, idSeccion) {
     } catch(e) {
         console.error(e)
     } finally {
+        isSearching = false;
+    }
+}
+
+async function edit_horario(idSeccion) {
+    const url = `/cursos/edit_horario_seccion/${idSeccion}`;
+    if (isSearching) return;
+    isSearching = true;
+
+        const requestData = {
+        horarios: horariosSeleccionados
+    };
+    
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error();
+        }
+
+        alert(data.mensaje);
+        window.location.reload();
+    } catch(e) {
+        console.log(e);
+    } finally {
+        while(horariosSeleccionados.length) {
+            horariosSeleccionados.pop();
+        }
+
         isSearching = false;
     }
 }
@@ -2372,6 +2393,8 @@ function mostrar_horario(data) {
         const horaInicio = element.horario_hora;
         const horaFin = element.horario_hora_final;
         const nombreCurso = element.nombre_curso || 'Curso';
+        const idHorario = element.idhorario
+        const aula = element.horario_aula;
         const color = getRandomColor();
 
         const inicioNumeros = horaInicio.replace(/:00:00$/, '').replace(/^0/, '');
@@ -2389,7 +2412,7 @@ function mostrar_horario(data) {
             for (let i = filaInicio; i < filaFin; i++) {
                 const fila = tabla.rows[i];
                 if (fila && fila.cells[columnaDia]) {
-                    fila.cells[columnaDia].textContent = nombreCurso;
+                    fila.cells[columnaDia].innerHTML = `${nombreCurso}<br>${aula}`;
                     fila.cells[columnaDia].classList.add('horario-curso');
                     fila.cells[columnaDia].style.backgroundColor = color;
                 }
@@ -2399,13 +2422,18 @@ function mostrar_horario(data) {
         
         if (document.getElementById('editSeccion')) {
             horariosSeleccionados.push({
+                horario: idHorario
+            });
+
+            horariosSeleccionados.push({
                 celdaId: (`columna-${dia.toLowerCase()}-${inicioNumeros}-${finNumeros}`),
                 dia: dia,
                 horaInicio: horaInicio,
                 horaFin: horaFin,
                 curso: nombreCurso,
                 seccion: document.getElementById('editSeccion').value.trim(),
-                color: color
+                color: color,
+                horario_aula: aula
             });
 
             console.log(horariosSeleccionados);
@@ -2444,6 +2472,8 @@ function select_horario(idCelda, nombreCurso) {
 
     const seccion = (document.getElementById('crearSeccion')?.value.trim() || 
                 document.getElementById('editSeccion')?.value.trim());
+    
+    const aula = (document.getElementById('aulaSeccion')?.value.trim() || document.getElementById('editAulaSeccion')?.value.trim());
 
     const color = getRandomColor();
     const dia = celda.getAttribute('data-dia');
@@ -2466,7 +2496,8 @@ function select_horario(idCelda, nombreCurso) {
             horaFin: horaFin,
             curso: nombreCurso,
             seccion: seccion,
-            color: color
+            color: color,
+            horario_aula: aula
         });
         
     } else {
