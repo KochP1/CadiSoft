@@ -1442,10 +1442,20 @@ async function crear_Seccion(idCurso, event) {
     const url = `/cursos/craer_seccion/${idCurso}`;
     const seccion = document.getElementById('crearSeccion').value.trim();
     const profesor = document.getElementById('profesorCrearSeccion').value.trim();
-    const aula = 'D-11'
+    const aula = document.getElementById('aulaSeccion').value.trim();
 
-    if (!seccion || !profesor || horariosSeleccionados.length <= 0) {
+    if (!seccion || !profesor || horariosSeleccionados.length <= 0 || !aula) {
         alert('Todos los campos son obligatorios');
+        return;
+    }
+
+    if (seccion.length > 10) {
+        alert('La sección puede tener un máximo de 10 caracteres');
+        return;
+    }
+
+    if (aula.length > 10) {
+        alert('El aula puede tener un máximo de 10 caracteres');
         return;
     }
 

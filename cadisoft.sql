@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 03-08-2025 a las 02:16:36
+-- Tiempo de generación: 04-08-2025 a las 19:02:27
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -231,7 +231,8 @@ CREATE TABLE `secciones` (
   `idSeccion` int(11) NOT NULL,
   `idCurso` int(11) NOT NULL,
   `idProfesor` int(11) NOT NULL,
-  `seccion` varchar(10) NOT NULL
+  `seccion` varchar(10) NOT NULL,
+  `aula` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------

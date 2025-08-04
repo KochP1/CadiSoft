@@ -213,7 +213,7 @@ def crear_seccion(idCurso):
         try:
             
             with db.cursor() as cur:
-                cur.execute('INSERT INTO secciones (`idCurso`, `idProfesor`, `seccion`) VALUES (%s, %s, %s)', (idCurso, profesor, seccion))
+                cur.execute('INSERT INTO secciones (`idCurso`, `idProfesor`, `seccion`, `aula`) VALUES (%s, %s, %s, %s)', (idCurso, profesor, seccion, aula))
                 db.commit()
 
                 cur.execute('SELECT idSeccion FROM secciones WHERE seccion = %s', (seccion,))
