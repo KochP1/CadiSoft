@@ -19,9 +19,11 @@ def index():
                 sql = 'INSERT INTO cursos (`idFacultad`, `nombre_curso`) VALUES (%s, %s)'
                 data = (facultad, curso)
                 cur.execute(sql, data)
+                db.commit()
                 return jsonify({'message': 'Curso creado satisfactoriamente'}), 200
         except Exception as e:
-            return jsonify({'error': 'Error al crear curso'}), 400
+            db.rollback()
+            return jsonify({'error': f'Error al crear curso: {e}'}), 400
 
     try:
         with db.cursor() as cur:
@@ -37,6 +39,25 @@ def index():
     except Exception as e:
         return redirect(url_for('usuario.inicio'))
 
+
+@cursos.route('/buscar_curso', methods = ['GET', 'POST'])
+def buscar_curso():
+    db = current_app.config['db']
+
+    try:
+        curso = request.form.get('curso')
+
+        with db.cursor() as cur:
+            cur.execute('SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.nombre_curso = %s', (curso,))
+            registros = cur.fetchall()
+            insertCursos = []
+            columNames = [column[0] for column in cur.description]
+            for record in registros:
+                insertCursos.append(dict(zip(columNames, record)))
+
+            return render_template('cursos/index.html', cursos = insertCursos)
+    except Exception as e:
+        return redirect(url_for('cursos.index'))
 
 
 @cursos.route('/buscar_facultades')
@@ -165,7 +186,7 @@ def seccion_curso(idcurso):
     with db.cursor() as cur:
         db.ping(reconnect=True)
         try:
-            sql = 'SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s'
+            sql = 'SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion, s.aula FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s'
             data = (idcurso,)
             cur.execute(sql, data)
             registros = cur.fetchall()
@@ -184,6 +205,31 @@ def seccion_curso(idcurso):
             return render_template('cursos/seccionesCurso.html', secciones = insertSecciones, cursos = insertCurso)
         except Exception as e:
             return redirect(url_for('cursos.index'))
+
+
+@cursos.route('/buscar_seccion/<int:id>', methods = ['GET', 'POST'])
+def buscar_seccion(id):
+    db = current_app.config['db']
+    try:
+        with db.cursor() as cur:
+            seccion = request.form.get('seccion')
+            cur.execute('SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion, s.aula FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s AND s.seccion = %s', (id, seccion))
+            registros = cur.fetchall()
+            insertSecciones = []
+            columNames = [column[0] for column in cur.description]
+            for record in registros:
+                insertSecciones.append(dict(zip(columNames, record)))
+            
+            cur.execute('SELECT * FROM cursos WHERE idCurso = %s', (id,))
+            registro_curso = cur.fetchall()
+            insertCurso = []
+            columNamesCursos = [column[0] for column in cur.description]
+            for record in registro_curso:
+                insertCurso.append(dict(zip(columNamesCursos, record)))
+
+            return render_template('cursos/seccionesCurso.html', secciones = insertSecciones, cursos = insertCurso)
+    except Exception as e:
+        return redirect(url_for('cursos.seccion_curso', idcurso = id))
 
 
 
@@ -255,8 +301,6 @@ def crear_seccion(idCurso):
             return render_template('cursos/crearSeccion.html', profesores = insertRegistros, cursos = insertCurso)
         except Exception as e:
             return redirect(url_for('cursos.index'))
-
-
 
 
 @cursos.route('/elim_seccion/<int:idSeccion>', methods = ['DELETE'])

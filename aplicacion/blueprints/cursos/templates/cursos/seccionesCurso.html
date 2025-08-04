@@ -23,8 +23,8 @@
             <a href="{{url_for('cursos.crear_seccion', idCurso=cursos[0].idCurso)}}">
                 <button class="btn btn-primary btn-crear">Crear sección</button>
             </a>
-            <form action="" method="post" class="filtrar-alumno__form">
-                <input type="search" placeholder="Buscar curso" class="filtrar-alumno__input" name="curso">
+            <form action="{{url_for('cursos.buscar_seccion', id=cursos[0].idCurso)}}" method="post" class="filtrar-alumno__form">
+                <input type="search" placeholder="Buscar sección" class="filtrar-alumno__input" name="seccion">
             </form>
         </div>
 
@@ -37,6 +37,7 @@
                 <th>ID</th>
                 <th>Profesor</th>
                 <th>Sección</th>
+                <th>Aula</th>
             </tr>
 
             {% for record in secciones %}
@@ -44,6 +45,7 @@
                     <td>{{record.idSeccion}}</td>
                     <td>{{record.nombre}} {{record.apellido}}</td>
                     <td>{{record.seccion}}</td>
+                    <td>{{record.aula}}</td>
                     <td class="tabla-btn">
                         <button class="btn btn-primary btn-secciones" data-bs-toggle="modal" data-bs-target="#horario-modal" idseccion="{{record.idSeccion}}" onclick="buscar_horario_seccion(this.getAttribute('idseccion'))">
                             Horario
