@@ -2372,10 +2372,10 @@ function mostrar_horario(data) {
         const horaInicio = element.horario_hora;
         const horaFin = element.horario_hora_final;
         const nombreCurso = element.nombre_curso || 'Curso';
+        const color = getRandomColor();
 
-        console.log(dia)
-        console.log(horaInicio)
-        console.log(horaFin)
+        const inicioNumeros = horaInicio.replace(/:00:00$/, '').replace(/^0/, '');
+        const finNumeros = horaFin.replace(/:00:00$/, '').replace(/^0/, '');
         
         // Obtener índices de fila
         const filaInicio = horas[horaInicio];
@@ -2391,9 +2391,24 @@ function mostrar_horario(data) {
                 if (fila && fila.cells[columnaDia]) {
                     fila.cells[columnaDia].textContent = nombreCurso;
                     fila.cells[columnaDia].classList.add('horario-curso');
-                    fila.cells[columnaDia].style.backgroundColor = getRandomColor();
+                    fila.cells[columnaDia].style.backgroundColor = color;
                 }
             }
+        }
+
+        
+        if (document.getElementById('editSeccion')) {
+            horariosSeleccionados.push({
+                celdaId: (`columna-${dia.toLowerCase()}-${inicioNumeros}-${finNumeros}`),
+                dia: dia,
+                horaInicio: horaInicio,
+                horaFin: horaFin,
+                curso: nombreCurso,
+                seccion: document.getElementById('editSeccion').value.trim(),
+                color: color
+            });
+
+            console.log(horariosSeleccionados);
         }
     });
 }
@@ -2427,7 +2442,9 @@ function select_horario(idCelda, nombreCurso) {
         return;
     }
 
-    const seccion = document.getElementById('crearSeccion').value.trim();
+    const seccion = (document.getElementById('crearSeccion')?.value.trim() || 
+                document.getElementById('editSeccion')?.value.trim());
+
     const color = getRandomColor();
     const dia = celda.getAttribute('data-dia');
     const horaInicio = celda.getAttribute('data-hora-inicio');

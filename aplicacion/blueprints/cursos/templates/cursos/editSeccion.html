@@ -22,7 +22,7 @@
                 <div class="edit-h2__container crear-seccion__container"><h2>Sección</h2></div>
                 <hr class="divider">
                 <div class="edit__container crear-seccion-input__container">
-                    <input type="text" id="editSeccion" value="{{record.seccion}}">
+                    <input type="text" id="editSeccion" value="{{record.seccion}}" >
                 </div>
                 <div class="btn-editSeccion__container">
                     <button type="submit" idInput="editSeccion" class="btn btn-primary">Actualizar</button>
@@ -281,6 +281,14 @@
                 <button type="submit" class="btn btn-primary">Actualizar</button>
             </div>
     </div>
+
+    <input type="hidden" value="{{record.idSeccion}}" id="id-seccion-edit">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            buscar_horario_seccion(1);
+        });
+    </script>
     {% endfor %}
 
 {% endblock %}
