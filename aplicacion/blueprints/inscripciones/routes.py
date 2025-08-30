@@ -258,7 +258,7 @@ def inscribir_alumno():
     periodoInicio = request.form.get('periodoInicio')
     periodoFinal = request.form.get('periodoFinal')
     tipo = request.form.get('tipo')
-    es_activa = 0
+    es_activa = 1
     idSeccion = request.form.get('idSeccion')
 
     try:

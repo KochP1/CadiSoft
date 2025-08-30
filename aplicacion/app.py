@@ -4,6 +4,8 @@ from flask_mail import Mail
 import pymysql
 from os import getenv
 from dotenv import load_dotenv
+from .config import Config
+from flask_apscheduler import APScheduler
 
 load_dotenv()
 
@@ -78,9 +80,14 @@ def create_app():
     app.register_blueprint(inscripciones, url_prefix = '/inscripciones')
     app.register_blueprint(acerca, url_prefix = '/acerca')
 
-    # Pasar la conexión a la base de datos al Blueprint
     app.config['db'] = db
     app.config['mail'] = mail
 
+    Config.set_db(db)
+    app.config.from_object(Config)
+
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
 
     return app
