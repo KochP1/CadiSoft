@@ -55,57 +55,58 @@ def inicio():
 def inicio_stats():
     db = current_app.config['db']
     db.ping(reconnect=True)
-    
 
     try:
         with db.cursor() as cur:
-            cur.execute('SELECT COUNT(*) as total FROM usuarios WHERE rol = %s', ('alumno',))
-            alumnos = cur.fetchall()
+            cur.execute('SELECT COUNT(*) AS total FROM usuarios WHERE rol = %s', ('alumno',))
+            alumnos = cur.fetchone()
 
-            print(alumnos)
+            cur.execute('SELECT COUNT(*) AS total FROM profesores')
+            profesores = cur.fetchone()
+
+            cur.execute('SELECT COUNT(*) AS total FROM cursos')
+            cursos = cur.fetchone()
+
+            cur.execute('SELECT COUNT(*) AS total FROM facultades')
+            facultades = cur.fetchone()
+
+            return jsonify({'mensaje': 'Request exitoso', 'alumnos': f'{alumnos[0]}', 'profesores': f'{profesores[0]}', 'cursos': f'{cursos[0]}', 'facultades': f'{facultades[0]}',}), 200
 
     except Exception as e:
         db.rollback()
         return jsonify({'error': 'Request fallido'}), 400
+    
 
+"""""""""""""""
 @usuario.route('/inscripciones_stats', methods = ['GET'])
 def inscripciones_stats():
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    db_config = current_app.config['db']
+    with pymysql.connect(**db_config) as db:
+        with db.cursor(pymysql.cursors.DictCursor) as cur:
+            try:
+                sql = "SELECT MONTH(fecha_inscripcion) as mes, COUNT(*) as total FROM inscripcion WHERE YEAR(fecha_inscripcion) = YEAR(CURDATE()) GROUP BY MONTH(fecha_inscripcion) ORDER BY mes "
+                cur.execute(sql)
+                results = cur.fetchall()
 
-    with db.cursor(pymysql.cursors.DictCursor) as cur:
-        try:
-            sql = """
-                SELECT 
-                    MONTH(fecha_inscripcion) as mes,
-                    COUNT(*) as total
-                FROM inscripcion 
-                WHERE YEAR(fecha_inscripcion) = YEAR(CURDATE())
-                GROUP BY MONTH(fecha_inscripcion)
-                ORDER BY mes
-            """
-            cur.execute(sql)
-            results = cur.fetchall()
-
-            meses_completos = [0] * 12
-            nombres_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
-                            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+                meses_completos = [0] * 12
+                nombres_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                                'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+                
+                for resultado in results:
+                    mes = resultado['mes'] - 1
+                    total = resultado['total']
+                    meses_completos[mes] = total
+                
+                return jsonify({
+                    'meses': nombres_meses,
+                    'inscripciones': meses_completos
+                }), 200
             
-            for resultado in results:
-                mes = resultado['mes'] - 1
-                total = resultado['total']
-                meses_completos[mes] = total
-            
-            return jsonify({
-                'meses': nombres_meses,
-                'inscripciones': meses_completos
-            }), 200
-            
-        except Exception as e:
-            db.rollback()
-            print(f"Error en API: {e}")
-            return jsonify({'error': 'Error al obtener stats de inscripciones'}), 500
-
+            except Exception as e:
+                db.rollback()
+                print(f"Error en API: {e}")
+                return jsonify({'error': 'Error al obtener stats de inscripciones'}), 500
+"""""""""""""""
 
 @usuario.route('/regist_user', methods = ['GET', 'POST'])
 def regist_user():
