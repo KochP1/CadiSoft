@@ -58,11 +58,7 @@
     {% if current_user.rol == 'administrador' %}
     <div class="graficos__wrapper">
         <div class="grafico__container">
-            <canvas id="myChart"></canvas>
-        </div>
-
-        <div class="grafico__container">
-            <canvas id="myChart2"></canvas>
+            <canvas id="inscripcionesChart"></canvas>
         </div>
     </div>
     {% endif %}
@@ -70,47 +66,95 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const ctx = document.getElementById('myChart');
+        async function cargarDatosInscripciones() {
+            try {
+                const response = await fetch('/inscripciones_stats', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
-            }]
-            },
-            options: {
-            scales: {
-                y: {
-                beginAtZero: true
+                if (!response.ok) {
+                    throw new Error(response.error)
                 }
-            }
-            }
-        });
 
-        const ctx2 = document.getElementById('myChart2');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                return null;
+            }
+        }
 
-        new Chart(ctx2, {
-            type: 'bar',
-            data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
-            }]
-            },
-            options: {
-            scales: {
-                y: {
-                beginAtZero: true
+        async function inicializarGrafico() {
+            const datos = await cargarDatosInscripciones();
+            
+            if (!datos) {
+                const datosEjemplo = {
+                    meses: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    inscripciones: [15, 22, 18, 25, 30, 28, 35, 40, 32, 27, 20, 18]
+                };
+                crearGrafico(datosEjemplo);
+                return;
+            }
+
+            crearGrafico(datos);
+        }
+
+        function crearGrafico(datos) {
+            const ctx = document.getElementById('inscripcionesChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: datos.meses,
+                    datasets: [{
+                        label: 'Número de Inscripciones',
+                        data: datos.inscripciones,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Inscripciones Mensuales - 2024',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cantidad de Inscripciones'
+                            },
+                            ticks: {
+                                stepSize: 5
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Meses del Año'
+                            }
+                        }
+                    }
                 }
-            }
-            }
-        });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', inicializarGrafico);
     </script>
 
 {% endblock %}

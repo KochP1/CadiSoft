@@ -3,6 +3,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from flask_mail import Message
 from flask_bcrypt import Bcrypt
 import random, datetime as dt
+
+import pymysql
 from . model import User
 
 usuario = Blueprint('usuario', __name__, template_folder='templates', static_folder="static")
@@ -54,43 +56,55 @@ def inicio_stats():
     db = current_app.config['db']
     db.ping(reconnect=True)
     
-    alumnosArray = []
-    profesoresArray = []
-    cursosArray = []
-    facultadesArray = []
 
     try:
         with db.cursor() as cur:
-            cur.execute('SELECT * FROM usuarios WHERE rol = %s', ('alumno',))
+            cur.execute('SELECT COUNT(*) as total FROM usuarios WHERE rol = %s', ('alumno',))
             alumnos = cur.fetchall()
 
-            cur.execute('SELECT * FROM profesores')
-            profesores = cur.fetchall()
-
-            cur.execute('SELECT * FROM cursos')
-            cursos = cur.fetchall()
-
-            cur.execute('SELECT * FROM facultades')
-            facultades = cur.fetchall()
-
-            for data in alumnos:
-                alumnosArray.append(data)
-            
-            for data in profesores:
-                profesoresArray.append(data)
-            
-            for data in cursos:
-                cursosArray.append(data)
-            
-            for data in facultades:
-                facultadesArray.append(data)
-
-            return jsonify({'mensaje': 'Request exitoso', 'alumnos': f'{len(alumnosArray)}', 'profesores': f'{len(profesoresArray)}', 'cursos': f'{len(cursosArray)}', 'facultades': f'{len(facultadesArray)}',}), 200
+            print(alumnos)
 
     except Exception as e:
         db.rollback()
         return jsonify({'error': 'Request fallido'}), 400
-    
+
+@usuario.route('/inscripciones_stats', methods = ['GET'])
+def inscripciones_stats():
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    with db.cursor(pymysql.cursors.DictCursor) as cur:
+        try:
+            sql = """
+                SELECT 
+                    MONTH(fecha_inscripcion) as mes,
+                    COUNT(*) as total
+                FROM inscripcion 
+                WHERE YEAR(fecha_inscripcion) = YEAR(CURDATE())
+                GROUP BY MONTH(fecha_inscripcion)
+                ORDER BY mes
+            """
+            cur.execute(sql)
+            results = cur.fetchall()
+
+            meses_completos = [0] * 12
+            nombres_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+            
+            for resultado in results:
+                mes = resultado['mes'] - 1
+                total = resultado['total']
+                meses_completos[mes] = total
+            
+            return jsonify({
+                'meses': nombres_meses,
+                'inscripciones': meses_completos
+            }), 200
+            
+        except Exception as e:
+            db.rollback()
+            print(f"Error en API: {e}")
+            return jsonify({'error': 'Error al obtener stats de inscripciones'}), 500
 
 
 @usuario.route('/regist_user', methods = ['GET', 'POST'])
