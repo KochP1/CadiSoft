@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 04-08-2025 a las 19:02:27
+-- Tiempo de generación: 03-09-2025 a las 04:55:34
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -70,6 +70,13 @@ CREATE TABLE `cursos` (
   `imagen` longblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `cursos`
+--
+
+INSERT INTO `cursos` (`idCurso`, `idFacultad`, `nombre_curso`, `imagen`) VALUES
+(2, 3, 'Administracion I', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -110,6 +117,13 @@ CREATE TABLE `facultades` (
   `facultad` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `facultades`
+--
+
+INSERT INTO `facultades` (`idFacultad`, `facultad`) VALUES
+(3, 'Administracion');
+
 -- --------------------------------------------------------
 
 --
@@ -124,6 +138,16 @@ CREATE TABLE `horario` (
   `horario_aula` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `horario`
+--
+
+INSERT INTO `horario` (`idhorario`, `horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES
+(15, 'Martes', '08:00:00', '09:00:00', 'G-28'),
+(16, 'Martes', '09:00:00', '10:00:00', 'G-28'),
+(19, 'Martes', '08:00:00', '09:00:00', 'F-30'),
+(20, 'Martes', '09:00:00', '10:00:00', 'F-30');
+
 -- --------------------------------------------------------
 
 --
@@ -135,6 +159,14 @@ CREATE TABLE `horario_x_curso` (
   `idhorario` int(11) NOT NULL,
   `idSeccion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `horario_x_curso`
+--
+
+INSERT INTO `horario_x_curso` (`idhorario_x_curso`, `idhorario`, `idSeccion`) VALUES
+(19, 19, 7),
+(20, 20, 7);
 
 -- --------------------------------------------------------
 
@@ -148,7 +180,7 @@ CREATE TABLE `inscripcion` (
   `fecha_inscripcion` date NOT NULL,
   `fecha_expiracion` date NOT NULL,
   `tipo` enum('Privada','Inces') NOT NULL,
-  `es_activa` tinyint(1) NOT NULL
+  `es_activa` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -193,6 +225,15 @@ CREATE TABLE `productos` (
   `stock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`idProducto`, `nombre`, `precio`, `stock`) VALUES
+(1, 'Porta carné', 2.00, 100),
+(2, 'Hoja de exámen', 4.00, 50),
+(3, 'Carpetas amarillas', 8.00, 20);
+
 -- --------------------------------------------------------
 
 --
@@ -204,6 +245,15 @@ CREATE TABLE `profesores` (
   `idusuarios` int(11) NOT NULL,
   `especialidad` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `profesores`
+--
+
+INSERT INTO `profesores` (`idProfesor`, `idusuarios`, `especialidad`) VALUES
+(1, 2, 'Arquitectura'),
+(2, 3, 'Odontologia'),
+(3, 4, 'Arte');
 
 -- --------------------------------------------------------
 
@@ -235,6 +285,13 @@ CREATE TABLE `secciones` (
   `aula` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `secciones`
+--
+
+INSERT INTO `secciones` (`idSeccion`, `idCurso`, `idProfesor`, `seccion`, `aula`) VALUES
+(7, 2, 1, 'AD-02', 'F-30');
+
 -- --------------------------------------------------------
 
 --
@@ -253,6 +310,16 @@ CREATE TABLE `usuarios` (
   `rol` enum('administrador','profesor','alumno') NOT NULL,
   `imagen` longblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`idusuarios`, `nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES
+(1, 'Juan', 'Andrés', 'Koch', 'Padrón', '30139712', 'juanandreskochp@gmail.com', '$2b$12$.f2Sb1KWvK3IYtvV/rZNWuIgC0xTTFcj6fIBEgvyxbVpoPtPNdvUi', 'administrador', NULL),
+(2, 'Eugenia', 'Cristina', 'Frontado', 'Petit', '7965839', 'eugin@gmail.com', '$2b$12$Cd3XGPXDMCs2bpfOwVw21eKCcQJsoRejTUgXwMlpyeMltm5hbxb3W', 'profesor', NULL),
+(3, 'Milena', 'Josefina', 'Padron', 'Petit', '30108732', 'milip12@gmail.com', '$2b$12$u/6SH.yR5x3YyZjZsBIbPO/cvWBHPkzEe8UiK1rtrxC0NVhd2orxy', 'profesor', NULL),
+(4, 'Eura', 'Antonia', 'Petit', 'Arenas', '7984239', 'eura@gmail.com', '$2b$12$xzJJ1DVUy8VJEIu0/1JmCOxAvn/P6kUOh/kpMEcoU277MCNy2O9GW', 'profesor', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -365,8 +432,8 @@ ALTER TABLE `registro_familiar`
 ALTER TABLE `secciones`
   ADD PRIMARY KEY (`idSeccion`),
   ADD UNIQUE KEY `seccion` (`seccion`),
-  ADD KEY `curso_seccion_fk` (`idCurso`),
-  ADD KEY `profesor_seccion_fk` (`idProfesor`);
+  ADD KEY `profesor_seccion_fk` (`idProfesor`),
+  ADD KEY `curso_seccion_fk` (`idCurso`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -384,7 +451,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  MODIFY `idCalificacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idCalificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `codigos_verificacion`
@@ -396,49 +463,49 @@ ALTER TABLE `codigos_verificacion`
 -- AUTO_INCREMENT de la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `idFactura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `factura_x_producto`
 --
 ALTER TABLE `factura_x_producto`
-  MODIFY `idFactura_x_producto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFactura_x_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `facultades`
 --
 ALTER TABLE `facultades`
-  MODIFY `idFacultad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idFacultad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
-  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `horario_x_curso`
 --
 ALTER TABLE `horario_x_curso`
-  MODIFY `idhorario_x_curso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idhorario_x_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `inscripcion`
 --
 ALTER TABLE `inscripcion`
-  MODIFY `idInscripcion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idInscripcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `insc_x_seccion`
 --
 ALTER TABLE `insc_x_seccion`
-  MODIFY `idinsc_x_seccion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idinsc_x_seccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `preinscripcion`
@@ -450,13 +517,13 @@ ALTER TABLE `preinscripcion`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `profesores`
 --
 ALTER TABLE `profesores`
-  MODIFY `idProfesor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idProfesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `registro_familiar`
@@ -468,13 +535,13 @@ ALTER TABLE `registro_familiar`
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `idSeccion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idSeccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idusuarios` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idusuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -543,7 +610,7 @@ ALTER TABLE `registro_familiar`
 -- Filtros para la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  ADD CONSTRAINT `curso_seccion_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `curso_seccion_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `profesor_seccion_fk` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
