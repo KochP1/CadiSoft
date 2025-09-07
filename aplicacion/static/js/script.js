@@ -1555,7 +1555,8 @@ async function crear_Seccion(idCurso, event) {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error()
+            alert(data.error);
+            throw new Error();
         }
 
         alert(data.message);

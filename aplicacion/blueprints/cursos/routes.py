@@ -1,5 +1,6 @@
 from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app, flash
 from datetime import date
+import pymysql
 
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
 
@@ -353,8 +354,41 @@ def crear_seccion(idCurso):
         if not seccion or not profesor:
             return jsonify({'error': 'Faltan campos'}), 400
         try:
-            
-            with db.cursor() as cur:
+            with db.cursor(pymysql.cursors.DictCursor) as cur: 
+                regist = 0
+                for record in horarios:
+                    cur.execute('''
+                                SELECT s.idSeccion, s.seccion, h.horario_dia, h.horario_hora, h.horario_hora_final
+                                FROM horario_x_curso hc 
+                                JOIN horario h ON hc.idhorario = h.idhorario 
+                                JOIN secciones s ON hc.idSeccion = s.idSeccion 
+                                WHERE s.idProfesor = %s 
+                                AND h.horario_dia = %s 
+                                AND (
+                                    (h.horario_hora <= %s AND h.horario_hora_final > %s) OR
+                                    (h.horario_hora < %s AND h.horario_hora_final >= %s) OR
+                                    (h.horario_hora >= %s AND h.horario_hora_final <= %s)
+                                )''', (profesor, 
+                                    record['dia'], 
+                                    record['hora_inicio'], record['hora_inicio'],
+                                    record['hora_fin'], record['hora_fin'],
+                                    record['hora_inicio'], record['hora_fin']
+                                    )
+                                )
+
+                    regist = cur.fetchone()
+                    if regist:
+                        return jsonify({
+                            'error': 'El profesor ya tiene una sección en el mismo horario',
+                            'detalles': {
+                                'seccion_existente': regist['seccion'],
+                                'dia': regist['horario_dia'],
+                                'hora_inicio': str(regist['horario_hora']),
+                                'hora_fin': str(regist['horario_hora_final'])
+                            }
+                        }), 400
+                
+            with db.cursor() as cur:    
                 cur.execute('INSERT INTO secciones (`idCurso`, `idProfesor`, `seccion`, `aula`) VALUES (%s, %s, %s, %s)', (idCurso, profesor, seccion, aula))
                 db.commit()
 
@@ -364,9 +398,12 @@ def crear_seccion(idCurso):
                 for record in horarios:
                     cur.execute('INSERT INTO horario (`horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES (%s, %s, %s, %s)', (record['dia'], record['hora_inicio'], record['hora_fin'], aula))
                     db.commit()
+                    idhorario = cur.lastrowid
 
+                    """""""""
                     cur.execute('SELECT idhorario FROM horario ORDER BY idhorario DESC LIMIT 1')
                     idhorario = cur.fetchone()
+                    """""""""
 
                     cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, idSeccion))
                     db.commit()
@@ -374,6 +411,7 @@ def crear_seccion(idCurso):
                 return jsonify({'message': 'Sección creada satisfactoriamente'}), 200
         except Exception as e:
             db.rollback()
+            print(e)
             return jsonify({'error': 'Error al crear sección'}), 500
 
     if request.method == 'GET':
