@@ -18,7 +18,7 @@ def index():
         segundoApellido = request.form.get('segundoApellido')
         cedula = request.form.get('cedula')
         email = request.form.get('email')
-        contraseña = request.form.get('email')
+        contraseña = request.form.get('contraseña')
         rol = request.form.get('rol')
         especialidad = request.form.get('especialidad')
         contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
@@ -31,7 +31,6 @@ def index():
         try:
             if imagen == None:
                 sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
-                contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
                 usuario = (
                     nombre,
                     segundoNombre,
