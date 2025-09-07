@@ -157,7 +157,9 @@ function isLoading() {
     if (isSearching) {
         loader.style.display = 'flex';
     } else if (!isSearching) {
-        loader.style.display = 'none';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 1500);
     }
 }
 
