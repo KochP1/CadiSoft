@@ -540,6 +540,13 @@ input[type=number] {
     margin-top: 30px;
 }
 
+@media (max-width: 500px) {
+    .alumnos-options__container{
+        align-items: center;
+        flex-direction: column;
+    }
+}
+
 .btn-excel{
     background-color: #1D6F42 !important;
     border-color: #1D6F42 !important;
@@ -670,6 +677,16 @@ input[type=number] {
 
 .edit__container form, .edit__container button, .edit__container input, .edit__container div, .edit__container select {
     margin-left: 60px;
+}
+
+@media (max-width: 500px) {
+    .edit__container form, .edit__container button, .edit__container input, .edit__container div, .edit__container select {
+        margin-left: 30px;
+    }
+
+    .edit-h2__container {
+        margin-left: 30px !important;
+    }
 }
 
 .edit__container input{
