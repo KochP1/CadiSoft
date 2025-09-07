@@ -1,4 +1,8 @@
 let isSearching = false;
+function setSearching(value) {
+    isSearching = value;
+    isLoading();
+}
 
 function href(url) {
     window.location.href = url;
@@ -148,11 +152,20 @@ async function recuperar_contraseña(idusuario, event) {
     return false;
 }
 
+function isLoading() {
+    const loader = document.getElementById('loader');
+    if (isSearching) {
+        loader.style.display = 'flex';
+    } else if (!isSearching) {
+        loader.style.display = 'none';
+    }
+}
+
 // Inicio
 
 async function stats() {
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
 
     const url = '/inicio_stats'
 
@@ -175,7 +188,7 @@ async function stats() {
     } catch (error) {
         console.log(error)
     } finally {
-        isSearching = false
+        setSearching(false);
     }
 }
 
@@ -306,73 +319,73 @@ async function crearProfesor(event) {
 
 
     if (especialidad === '') {
-        isSearching = false
+        setSearching(false);
         alert('El campo de especialidad esta vacio');
         return;
     }
 
     if (nombre === '') {
-        isSearching = false;
+        setSearching(false);
         alert('El nombre esta vacio');
         return;
     }
 
     if (apellido === '' || segundoApellido === '') {
-        isSearching = false;
+        setSearching(false);
         alert('los campos de apellidos deben ser llenados')
         return;
     }
 
     if (cedula === '') {
-        isSearching = false;
+        setSearching(false);
         alert('la cedula esta vacio')
         return;
     }
 
     if (email === '') {
-        isSearching = false;
+        setSearching(false);
         alert('El email esta vacio')
         return;
     }
 
     if (contraseña === '') {
-        isSearching = false;
+        setSearching(false);
         alert('La contraseña esta vacia')
         return;
     }
 
     if (cedula.length > 8) {
-        isSearching = false;
+        setSearching(false);
         alert('La cédula puede tener máximo 8 caracteres');
         return;
     }
 
     if (contraseña.length > 8) {
-        isSearching = false;
+        setSearching(false);
         alert('La contraseña puede tener máximo 8 caracteres');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
-        isSearching = false
+        setSearching(false);
         alert('Los nobres pueden tener máximo 12 caracteres');
         return;
     }
 
     if (apellido.length > 20 || segundoApellido.length > 12) {
-        isSearching = false
+        setSearching(false);
         alert('Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
 
     if (especialidad.length > 20) {
-        isSearching = false
+        setSearching(false);
         alert('La especialidad puede tener un máximo de 20 caracteres');
         return;
     }
 
     if (email.length > 50) {
-        isSearching = false;
+        setSearching(false);
         alert('El email puede tener un máximo de 50 caracteres');
         return;
     }
@@ -391,7 +404,7 @@ async function crearProfesor(event) {
     formData.append('imagen', imagen);
 
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
 
     try {
         const response = await fetch('/profesores/', {
@@ -408,26 +421,34 @@ async function crearProfesor(event) {
     } catch (error) {
         console.log(error)
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
 // Eliminar profesor
 async function eliminar_profesor(idusuarios) {
-    if (confirm('Estas seguro de que quieres eliminar el profesor?')) {
-        const response = await fetch(`/profesores/eliminar_profesor/${idusuarios}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-    
-        if (response.ok) {
-            alert('Profesor eliminado satisfactoriamente');
-            window.location.reload();
-        } else {
-            alert('Error al eliminar el profesor');
+    try {
+        if (confirm('Estas seguro de que quieres eliminar el profesor?')) {
+            if (isSearching) return;
+            setSearching(true);
+            const response = await fetch(`/profesores/eliminar_profesor/${idusuarios}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+        
+            if (response.ok) {
+                alert('Profesor eliminado satisfactoriamente');
+                window.location.reload();
+            } else {
+                alert('Error al eliminar el profesor');
+            }
         }
+    } catch(e) {
+        console.error(e);
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -442,6 +463,8 @@ function update_foto(idusuarios) {
         return;
     }
 
+    if (isSearching) return;
+    setSearching(true);
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -463,9 +486,9 @@ function update_foto(idusuarios) {
             }
         } catch (error) {
             console.error('Error:', error);
+        } finally {
+            setSearching(false);
         }
-
-
     });
 }
 
@@ -473,16 +496,20 @@ async function edit_email(idusuarios) {
     const email = document.getElementById('edit-email').value;
 
     if(!email) {
+        setSearching(false);
         alert('Debe ingresar el correo electrónico')
         return;
     }
 
     if (email.length > 50) {
+        setSearching(false);
         alert('El email puede tener un máximo de 50 caracteres');
         return;
     }
 
     try {
+        if (isSearching) return;
+        setSearching(true);
         const response = await fetch(`/update_email/${idusuarios}`, {
             method: 'PATCH',
             headers: {
@@ -499,6 +526,8 @@ async function edit_email(idusuarios) {
         }
     } catch (e) {
         console.log(`Error: ${e}`);
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -507,16 +536,20 @@ async function edit_nombres(idusuarios) {
     const segundoNombre = document.getElementById('editSegundoNombre').value;
 
     if (!nombre) {
+        setSearching(false);
         alert('Debe llenar al menos un campo para actualizar');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
+        setSearching(false);
         alert('los nombres pueden tener un máximo de 12 caracteres');
         return;
     }
 
     try{
+        if (isSearching) return;
+        setSearching(true);
         const response = await fetch(`/edit_nombres/${idusuarios}`, {
             method: 'PATCH',
             headers: {
@@ -533,6 +566,8 @@ async function edit_nombres(idusuarios) {
         }
     } catch (e) {
         console.log(`Error: ${e}`)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -541,16 +576,20 @@ async function edit_apellidos(idusuarios) {
     const segundoApellido = document.getElementById('editSegundoApellido').value;
 
     if (!apellido || !segundoApellido) {
+        setSearching(false);
         alert('Debe llenar todos los campos');
         return;
     }
 
     if (apellido.length > 20 || segundoApellido.length > 20) {
+        setSearching(false);
         alert('los apellidos pueden tener un máximo de 20 caracteres');
         return;
     }
 
     try{
+        if (isSearching) return;
+        setSearching(true);
         const response = await fetch(`/edit_apellidos/${idusuarios}`, {
             method: 'PATCH',
             headers: {
@@ -567,18 +606,24 @@ async function edit_apellidos(idusuarios) {
         }
     } catch (e) {
         console.log(`Error: ${e}`)
+    } finally {
+        setSearching(false);
     }
 }
 
 async function edit_cedula(idusuarios) {
     const cedula = document.getElementById('edit-cedula').value;
+    if (isSearching) return;
+    setSearching(true);
 
     if(!cedula) {
+        setSearching(false);
         alert('Debe ingresar la cédula')
         return;
     }
 
     if (cedula.length > 8) {
+        setSearching(false);
         alert('La cédula puede tener máximo 8 caracteres')
         return;
     }
@@ -600,19 +645,25 @@ async function edit_cedula(idusuarios) {
         }
     } catch (e) {
         console.log(`Error: ${e}`);
+    } finally {
+        setSearching(false);
     }
 }
 
 async function edit_contraseña(idusuarios) {
     const contraseñaActual = document.getElementById('edit-contraseña').value;
     const contraseaNueva = document.getElementById('contraseña-nueva').value;
+    if (isSearching) return;
+    setSearching(true);
 
     if (contraseaNueva.length > 8 || contraseñaActual.length > 8) {
+        setSearching(false);
         alert('La contraseña puede tener 8 caracteres máximo')
         return;
     }
 
     if (!contraseaNueva || !contraseñaActual) {
+        setSearching(false);
         alert('Debe llenar los dos campos para actualizar la contraseña')
         return;
     }
@@ -635,6 +686,8 @@ async function edit_contraseña(idusuarios) {
         }
     } catch(e) {
         console.log(`Error: ${e}`);
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -645,20 +698,20 @@ async function crearFacultad(event) {
     const nombreFacultad = document.getElementById('nombreFacultad').value;
 
     if (nombreFacultad === '') {
-        isSearching = false;
+        setSearching(false);
         alert('Debe introducir el nombre de la facultad');
         return;
     }
 
     if (nombreFacultad.length > 40) {
-        isSearching = false;
+        setSearching(false);
         alert('La facultad puede tener un máximo de 40 caracteres');
         return;
     }
 
 
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
     const formData = new FormData;
     formData.append('nombreFacultad', nombreFacultad)
 
@@ -677,7 +730,7 @@ async function crearFacultad(event) {
     } catch(e) {
         console.log(e)
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
@@ -697,19 +750,19 @@ async function editar_facultad(idfacultad, event) {
     const nombreFacultad = document.getElementById('edit-nombreFacultad').value;
 
     if (nombreFacultad === '') {
-        isSearching = false;
+        setSearching(false);
         alert('Debe introducir el nombre de la facultad');
         return;
     }
 
     if (nombreFacultad.length > 40) {
-        isSearching = false;
+        setSearching(false);
         alert('La facultad puede tener un máximo de 40 caracteres');
         return;
     }
 
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
 
     const formData = new FormData;
 
@@ -730,7 +783,7 @@ async function editar_facultad(idfacultad, event) {
     } catch(e) {
         console.log(e)
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
@@ -738,6 +791,8 @@ async function elim_facultad(idfacultad) {
 
     if(confirm('¿Estas seguro de quieres eliminar esta facultad?, esto afectara a los cursos que estan dentro de esta')) {
         try {
+            if (isSearching) return;
+            setSearching(true);
             const response = await fetch(`/facultades/edit_facultad/${idfacultad}`, {
                 method: 'DELETE',
                 headers: {
@@ -753,6 +808,8 @@ async function elim_facultad(idfacultad) {
             }
         } catch (e) {
             console.log(`Error: ${e}`)
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -765,6 +822,8 @@ async function eliminar_usuario(idusuarios) {
     if (confirm('Estas seguro de que quieres eliminar el alumno')) {
         
         try {
+            if (isSearching) return;
+            setSearching(true);
             const response = await fetch(`/alumnos/eliminar_alumno/${idusuarios}`, {
                 method: 'DELETE'
             });
@@ -777,6 +836,8 @@ async function eliminar_usuario(idusuarios) {
             }
         } catch(e) {
             console.log(`Error: ${e}`);
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -792,18 +853,23 @@ async function crear_registro_familiar(idAlumno, event) {
     const nombreMama = document.getElementById('nombreMama').value.trim();
     const apellidoMama = document.getElementById('apellidoMama').value.trim();
     const contacto = document.getElementById('contactoFamilia').value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!nombrePapa || !apellidoMama || !apellidoPapa || !nombreMama || !contacto) {
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (nombrePapa.length > 12 || nombreMama.length > 12) {
+        setSearching(false);
         alert('Nombres pueden tener maximo 12 caracteres');
         return;
     }
 
     if (apellidoPapa.length > 20 || apellidoMama.length > 20) {
+        setSearching(false);
         alert('Apellidos pueden tener maximo 20 caracteres');
         return;
     }
@@ -829,6 +895,8 @@ async function crear_registro_familiar(idAlumno, event) {
         window.location.reload();
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -838,18 +906,23 @@ async function edit_datos_papa(idFamilia, event) {
     const NombrePapa = document.getElementById('editNombrePapa').value.trim();
     const ApellidoPapa = document.getElementById('editApellidoPapa').value.trim();
     const formData = new FormData();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!NombrePapa || !ApellidoPapa) {
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (NombrePapa.length > 12) {
+        setSearching(false);
         alert('Los nombres pueden tener máximo 12 caracteres');
         return;
     }
 
     if (ApellidoPapa.length > 20) {
+        setSearching(false);
         alert('Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
@@ -873,6 +946,8 @@ async function edit_datos_papa(idFamilia, event) {
         window.location.reload();
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -882,18 +957,23 @@ async function edit_datos_mama(idFamilia, event) {
     const NombreMama = document.getElementById('editNombreMama').value.trim();
     const ApellidoMama = document.getElementById('editApellidoMama').value.trim();
     const formData = new FormData();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!NombreMama || !ApellidoMama) {
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (NombreMama.length > 12) {
+        setSearching(false);
         alert('Los nombres pueden tener máximo 12 caracteres');
         return;
     }
 
     if (ApellidoMama.length > 20) {
+        setSearching(false);
         alert('Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
@@ -917,6 +997,8 @@ async function edit_datos_mama(idFamilia, event) {
         window.location.reload();
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -925,13 +1007,17 @@ async function edit_datos_contacto(idFamilia, event) {
     const url = `/alumnos/edit_registro_fam_contacto/${idFamilia}`;
     const contacto = document.getElementById('edit-contacto').value.trim();
     const formData = new FormData();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!contacto) {
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (contacto.length > 11) {
+        setSearching(false);
         alert('El teléfono puede tener máximo 11 digitos');
         return;
     }
@@ -954,6 +1040,8 @@ async function edit_datos_contacto(idFamilia, event) {
         window.location.reload();
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -962,6 +1050,8 @@ async function eliminar_registro_familiar(idRegistro) {
 
     if(confirm('Estas seguro de que quieres eliminar el registro familiar?')) {
         try {
+            if (isSearching) return;
+            setSearching(true);
             const response = await fetch(url, {
                 method: 'DELETE'
             });
@@ -976,6 +1066,8 @@ async function eliminar_registro_familiar(idRegistro) {
             window.location.reload();
         } catch (e) {
             console.log(e)
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -990,7 +1082,7 @@ function buscar_alumno() {
         event.preventDefault();
 
         if (isSearching) return;
-        isSearching = true;
+        setSearching(true);
 
         const formData = new FormData;
         const cedula = document.getElementById('inscripcion-buscar-cedula').value
@@ -999,8 +1091,8 @@ function buscar_alumno() {
         formData.append('cedula', cedula)
 
         if (!cedula) {
+            setSearching(false);
             alert('Por favor ingrese una cédula');
-            isSearching = false;
             return;
         }
 
@@ -1021,21 +1113,19 @@ function buscar_alumno() {
         } catch(e) {
             console.log(e)
         } finally {
-            isSearching = false;
+            setSearching(false);
         }
     })
 }
 
 async function buscar_curso() {
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
     const curso = document.getElementById('curso-inscripcion').value;
     const url = '/inscripciones/buscar_curso';
 
-    console.log(curso)
-
     if (!curso) {
-        isSearching = false;
+        setSearching(false);
         return;
     }
 
@@ -1058,18 +1148,18 @@ async function buscar_curso() {
     } catch (e) {
         console.log(e);
     } finally {
-        isSearching = false
+        setSearching(false);
     }
 }
 
 async function buscar_horario() {
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
     const idSeccion = document.getElementById('select-seccion-inscripcion').value.trim();
     const url = '/inscripciones/mostar_horario';
 
     if (!idSeccion || idSeccion === 'Selecciona una Sección') {
-        isSearching = false;
+        setSearching(false);
         return;
     }
     
@@ -1094,7 +1184,7 @@ async function buscar_horario() {
     } catch(e) {
         console.log(e)
     } finally {
-        isSearching = false
+        setSearching(false);
     }
 }
 
@@ -1103,7 +1193,8 @@ async function elim_preinscripcion(event, id) {
     const url = `/inscripciones/elim_preinscripcion/${id}`;
 
     if (confirm('¿Estás seguro de que queires eliminar la preinscripción?')) {
-        
+            if (isSearching) return;
+            setSearching(true);
             try {
                 const response = await fetch(url, {
                 method: 'DELETE',
@@ -1123,6 +1214,8 @@ async function elim_preinscripcion(event, id) {
             window.location.reload();
         } catch(e) {
             console.error(e);
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -1135,32 +1228,31 @@ async function inscribir_alumno(event) {
     const periodoFinal = document.getElementById('FinPeriodo').value;
     const tipoInscripcion = document.getElementById('select-tipo-inscripcion').value;
     const idSeccion = document.getElementById('select-seccion-inscripcion').value;
+    if (isSearching) return;
+    setSearching(true);
 
     if (!form) {
-        isSearching = false;
+        setSearching(false);
         return;
     }
 
     if (!periodoInicio || !periodoFinal) {
-        isSearching = false;
+        setSearching(false);
         alert('Debes ingresar el periodo de inscripción');
         return;
     }
 
     if (!idSeccion) {
-        isSearching = false;
+        setSearching(false);
         alert('Debes ingresar la sección deseada');
         return;
     }
 
     if (!tipoInscripcion) {
-        isSearching = false;
+        setSearching(false);
         alert('Es necesario especificar el tipo de inscripción');
         return;
     }
-
-    if (isSearching) return;
-    isSearching = true;
 
     const formData = new FormData();
     formData.append('idAlumno', idAlumno);
@@ -1184,7 +1276,7 @@ async function inscribir_alumno(event) {
             alert(e.message);
             console.error(e);
         } finally {
-            isSearching = false;
+            setSearching(false);
         }
 }
 
@@ -1200,63 +1292,63 @@ async function crearAlumno(event) {
     const contraseña = document.getElementById('contraseñaAlumno').value.trim();
     const imagen = document.getElementById('imagenAlumno').files[0];
 
+    if (isSearching) return;
+    setSearching(true);
+
 
     if (nombre === '') {
-        isSearching = false;
+        setSearching(false);
         alert('El nombre esta vacio');
         return;
     }
 
     if (apellido === '' || segundoApellido === '') {
-        isSearching = false;
+        setSearching(false);
         alert('los campos de apellidos deben ser llenados')
         return;
     }
 
     if (cedula === '') {
-        isSearching = false;
+        setSearching(false);
         alert('la cedula esta vacio')
         return;
     }
 
     if (email === '') {
-        isSearching = false;
+        setSearching(false);
         alert('El email esta vacio')
         return;
     }
 
     if (contraseña === '') {
-        isSearching = false;
+        setSearching(false);
         alert('La contraseña esta vacia')
         return;
     }
 
     if (cedula.length > 8) {
-        isSearching = false;
+        setSearching(false);
         alert('La cédula puede tener máximo 8 caracteres');
         return;
     }
 
     if (contraseña.length > 8) {
-        isSearching = false;
+        setSearching(false);
         alert('La contraseña puede tener máximo 8 caracteres');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
-        isSearching = false
+        setSearching(false);
         alert('Los nobres pueden tener máximo 12 caracteres');
         return;
     }
 
     if (apellido.length > 20 || segundoApellido.length > 12) {
-        isSearching = false
+        setSearching(false);
         alert('Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
-
-    if (isSearching) return;
-    isSearching = true;
 
     const formData = new FormData();
     formData.append('nombre', nombre);
@@ -1284,7 +1376,7 @@ async function crearAlumno(event) {
     } catch (error) {
         console.log(error)
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
@@ -1300,7 +1392,7 @@ async function get_facultades() {
     const url = '/cursos/buscar_facultades';
 
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
 
     try {
         const response = await fetch(url, {
@@ -1321,7 +1413,7 @@ async function get_facultades() {
     } catch (e) {
         console.log(e);
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
@@ -1347,18 +1439,20 @@ async function crear_curso(event) {
     const url = '/cursos/';
     const facultad = document.getElementById('facultad-curso').value;
     const nombre_curso = document.getElementById('curso').value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!facultad || !nombre_curso) {
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (nombre_curso.length > 40) {
+        setSearching(false);
         alert('El nombre del curso puede tener 40 caracteres máximo');
         return;
     }
-
-    console.log('me ejecuto')
     const formData = new FormData();
 
     formData.append('idFacultad', facultad);
@@ -1370,7 +1464,6 @@ async function crear_curso(event) {
             body: formData
         });
 
-        console.log('me ejecuto')
         const data = await response.json();
 
         if(!response.ok) {
@@ -1382,6 +1475,8 @@ async function crear_curso(event) {
         window.location.reload();
     } catch (e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -1390,6 +1485,8 @@ async function elim_curso(idcurso) {
 
     if (confirm('Quieres eliminar este curso?')) {
         try {
+            if (isSearching) return;
+            setSearching(true);
             const response = await fetch(url, {
                 method: 'DELETE'
             });
@@ -1404,6 +1501,8 @@ async function elim_curso(idcurso) {
             window.location.reload();
         } catch (e) {
             console.log(e)
+        } finally {
+            setSearching(false);
         }
     }
 
@@ -1414,13 +1513,17 @@ async function edit_nombre_curso(idCurso, event) {
     const url = `/cursos/edit_nombre_curso/${idCurso}`;
     const curso = document.getElementById('editNombreCurso').value.trim();
     const formData = new FormData();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!curso) {
+        setSearching(false);
         alert('Debe ingresar un nombre para el curso');
         return;
     }
 
     if (curso.length > 40) {
+        setSearching(false);
         alert('El curso puede tener 40 caracteres máximo');
         return;
     }
@@ -1443,6 +1546,8 @@ async function edit_nombre_curso(idCurso, event) {
         window.location.reload();
     } catch (e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -1451,8 +1556,11 @@ async function edit_facultad_curso(idCurso, event) {
     const url = `/cursos/edit_facultad_curso/${idCurso}`;
     const facultad = document.getElementById('selectFacultadesEdit').value;
     const formData = new FormData();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!facultad) {
+        setSearching(false);
         alert('Debe seleccionar una facultad');
         return;
     }
@@ -1475,6 +1583,8 @@ async function edit_facultad_curso(idCurso, event) {
         window.location.reload();
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -1484,6 +1594,8 @@ async function eliminar_seccion(idSeccion) {
     const url = `/cursos/elim_seccion/${idSeccion}`;
 
     if (confirm('Estas seguro de quieres eliminar la sección')) {
+        if (isSearching) return;
+        setSearching(true);
         try {
             const response = await fetch(url, {
                 method: 'DELETE'
@@ -1499,6 +1611,8 @@ async function eliminar_seccion(idSeccion) {
             window.location.reload();
         } catch(e) {
             console.log(e)
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -1509,18 +1623,23 @@ async function crear_Seccion(idCurso, event) {
     const seccion = document.getElementById('crearSeccion').value.trim();
     const profesor = document.getElementById('profesorCrearSeccion').value.trim();
     const aula = document.getElementById('aulaSeccion').value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!seccion || !profesor || horariosSeleccionados.length <= 0 || !aula) {
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (seccion.length > 10) {
+        setSearching(false);
         alert('La sección puede tener un máximo de 10 caracteres');
         return;
     }
 
     if (aula.length > 10) {
+        setSearching(false);
         alert('El aula puede tener un máximo de 10 caracteres');
         return;
     }
@@ -1567,6 +1686,7 @@ async function crear_Seccion(idCurso, event) {
         while(horariosSeleccionados.length) {
             horariosSeleccionados.pop();
         }
+        setSearching(false);
     }
     
 }
@@ -1574,20 +1694,20 @@ async function crear_Seccion(idCurso, event) {
 async function edit_seccion(event, id, idSeccion) {
     event.preventDefault();
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
     const url = `/cursos/edit_seccion_campos/${idSeccion}`
     const edit = document.getElementById(id)
     const formData = new FormData();
 
     if (id == 'editSeccion') {
         if (edit.value.trim().length > 10) {
-            isSearching = false;
+            setSearching(false);
             alert('La sección puede tener un máximo de 10 caracteres');
             return;
         }
 
         if (!edit.value.trim()) {
-            isSearching = false;
+            setSearching(false);
             alert('El campo de estar llenado para ser actualizado');
             return;
         }
@@ -1617,14 +1737,14 @@ async function edit_seccion(event, id, idSeccion) {
     } catch(e) {
         console.error(e)
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
 async function edit_horario(idSeccion) {
     const url = `/cursos/edit_horario_seccion/${idSeccion}`;
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
 
         const requestData = {
         horarios: horariosSeleccionados
@@ -1655,17 +1775,17 @@ async function edit_horario(idSeccion) {
             horariosSeleccionados.pop();
         }
 
-        isSearching = false;
+        setSearching(false);
     }
 }
 
 async function buscar_horario_seccion(idSeccion) {
     if (isSearching) return;
-    isSearching = true;
+    setSearching(true);
     const url = '/inscripciones/mostar_horario';
 
     if (!idSeccion || idSeccion === 'Selecciona una Sección') {
-        isSearching = false;
+        setSearching(false);
         return;
     }
     
@@ -1690,7 +1810,7 @@ async function buscar_horario_seccion(idSeccion) {
     } catch(e) {
         console.log(e)
     } finally {
-        isSearching = false
+        setSearching(false);
     }
 }
 
@@ -1700,8 +1820,11 @@ async function buscar_horario_seccion(idSeccion) {
 async function colocar_logro_uno(idSeccion, idAlumno) {
     const url = `/cursos/subir_logro_uno/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!inputNota) {
+        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -1730,14 +1853,19 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
 async function colocar_logro_dos(idSeccion, idAlumno) {
     const url = `/cursos/subir_logro_dos/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro2-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!inputNota) {
+        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -1766,14 +1894,19 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
 async function colocar_logro_tres(idSeccion, idAlumno) {
     const url = `/cursos/subir_logro_tres/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!inputNota) {
+        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -1802,14 +1935,19 @@ async function colocar_logro_tres(idSeccion, idAlumno) {
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
 async function colocar_logro_cuatro(idSeccion, idAlumno) {
     const url = `/cursos/subir_logro_cuatro/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro4-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!inputNota) {
+        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -1838,14 +1976,19 @@ async function colocar_logro_cuatro(idSeccion, idAlumno) {
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
 async function colocar_logro_cinco(idSeccion, idAlumno) {
     const url = `/cursos/subir_logro_cinco/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro5-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!inputNota) {
+        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -1874,11 +2017,15 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
 async function calcular_definitiva(idSeccion, idAlumno) {
     const url = `/cursos/subir_definitiva/${idSeccion}`;
+    if (isSearching) return;
+    setSearching(true);
     const parsearNota = (id) => {
         const valor = document.getElementById(id).value.trim();
         return valor === "" ? 0 : parseFloat(valor);
@@ -1915,6 +2062,8 @@ async function calcular_definitiva(idSeccion, idAlumno) {
         document.getElementById(`input-def-${idAlumno}`).value = definitiva;
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 }
 
@@ -1925,7 +2074,7 @@ async function restaurar() {
         
         try {
             if (isSearching) return;
-            isSearching = true;
+            setSearching(true);
             const url = '/acerca/restaurar';
 
             const response = await fetch(url, {
@@ -1943,6 +2092,8 @@ async function restaurar() {
             log_out();
         } catch(e) {
             console.error(e);
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -1955,20 +2106,20 @@ async function crearProducto(event) {
     const precio = document.getElementById('precioProducto').value.trim();
     const stock = document.getElementById('stockProducto').value.trim();
 
+    if (isSearching) return;
+    setSearching(true);
+
     if (!producto || !precio || !stock) {
-        isSearching = false;
+        setSearching(false);
         alert('Todos los campos son obligatorios');
         return;
     }
 
     if (producto.length > 20) {
-        isSearching = false;
+        setSearching(false);
         alert('El producto puede tener un máximo de 20 caractéres');
         return;
     }
-
-    if (isSearching) return;
-    isSearching = true;
 
     const url = '/facturacion/inventario';
     const formData = new FormData();
@@ -1991,9 +2142,8 @@ async function crearProducto(event) {
     } catch(e) {
         alert(e)
         console.error(e)
-        isSearching = false;
     } finally {
-        isSearching = false
+        setSearching(false);
     }
 }
 
@@ -2002,6 +2152,8 @@ async function elim_producto(idProducto) {
 
     if (confirm('¿Estás seguro de que quieres eliminar el producto?')) {
         try {
+            if (isSearching) return;
+            setSearching(true);
             const response = await fetch(url, {
                 method: 'DELETE',
             });
@@ -2017,6 +2169,8 @@ async function elim_producto(idProducto) {
             window.location.reload();
         } catch(e) {
             console.error(e)
+        } finally {
+            setSearching(false);
         }
     }
 }
@@ -2026,9 +2180,11 @@ async function editar_producto(event, idProducto, campo) {
     const url = `/facturacion/edit_producto/${idProducto}`;
     const formData = new FormData();
     const edit = document.getElementById(campo).value.trim();
+    if (isSearching) return;
+    setSearching(true);
 
     if (!edit) {
-        isSearching = false;
+        setSearching(false);
         alert('El campo a actualizar de estar lleno');
         return;
     }
@@ -2036,7 +2192,7 @@ async function editar_producto(event, idProducto, campo) {
     if (campo === 'editNombreProducto') {
         
         if (edit.length > 20) {
-            isSearching = false;
+            setSearching(false);
             alert('El nombre del producto puede tener máximo 20 caracteres')
             return;
         }
@@ -2053,8 +2209,6 @@ async function editar_producto(event, idProducto, campo) {
     }
 
     try {
-        if (isSearching) return;
-        isSearching = true;
         const response = await fetch(url, {
             method: 'PATCH',
             body: formData
@@ -2072,7 +2226,7 @@ async function editar_producto(event, idProducto, campo) {
     } catch(e) {
         console.error(e);
     } finally {
-        isSearching = false
+        setSearching(false);
     }
 }
 
@@ -2080,6 +2234,8 @@ async function elim_factura(idFactura) {
     const url = `/facturacion/elim_factura/${idFactura}`;
 
     if (confirm('¿Estás seguro de que quieres eliminar la factura?')) {
+        if (isSearching) return;
+        setSearching(true);
         try {
             const response = await fetch(url, {
                 method: 'DELETE',
@@ -2096,6 +2252,8 @@ async function elim_factura(idFactura) {
             window.location.reload();
         } catch(e) {
             console.error(e)
+        } finally {
+            setSearching(true);
         }
     }
 }
@@ -2104,16 +2262,16 @@ async function buscar_producto() {
     const producto = document.getElementById('buscar-producto').value.trim();
     const formData = new FormData();
     const url = '/facturacion/buscar_producto_factura';
+    if (isSearching) return;
+    setSearching(true);
 
     if (!producto) {
-        isSearching = false;
+        setSearching(false);
         alert('Ingresa un producto para agregar');
         return;
     }
 
     try {
-        if (isSearching) return;
-        isSearching = true;
 
         formData.append('nombre', producto)
 
@@ -2133,7 +2291,7 @@ async function buscar_producto() {
     } catch(e) {
         console.error(e);
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 }
 
@@ -2145,39 +2303,41 @@ async function guardar_factura() {
     const cedula = document.getElementById('cedulaFactura').value.trim();
     const direccion = document.getElementById('direccionFactura').value.trim();
     const total = parseFloat(document.getElementById('total-factura').innerHTML);
+    if (isSearching) return;
+    setSearching(true);
 
     if (!cliente || !cedula || !direccion || !telefono) {
-        isSearching = false;
+        setSearching(false);
         alert('Todos los campos deben ser llenados');
         return;
     }
 
     if (!cliente.length > 50) {
-        isSearching = false;
+        setSearching(false);
         alert('El cliente puede tener un máximo de 50 caracteres');
         return;
     }
 
     if (!telefono.length > 11) {
-        isSearching = false;
+        setSearching(false);
         alert('EL teléfono puede tener un máximo de 10 caracteres');
         return;
     }
 
     if (!cedula.length > 8) {
-        isSearching = false;
+        setSearching(false);
         alert('La cédula puede tener un máximo de 8 caracteres');
         return;
     }
 
     if (!direccion.length > 50) {
-        isSearching = false;
+        setSearching(false);
         alert('La dirección puede tener un máximo de 30 caracteres');
         return;
     }
 
     if (!total || total <= 0) {
-        isSearching = false;
+        setSearching(false);
         alert('El monto no puede ser 0');
         return;
     }
@@ -2192,8 +2352,6 @@ async function guardar_factura() {
     }
 
     try {
-        if (isSearching) return;
-        isSearching = true;
         
         const response = await fetch(url, {
             method: 'POST',
@@ -2214,7 +2372,7 @@ async function guardar_factura() {
     } catch(e) {
         console.error(e);
     } finally {
-        isSearching = false;
+        setSearching(false);
     }
 
 
