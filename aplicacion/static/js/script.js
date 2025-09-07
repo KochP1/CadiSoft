@@ -170,8 +170,8 @@ async function stats() {
             throw new Error(`Error`)
         }
 
-        console.log(data.alumnos)
         mostrar_stats(data)
+        inicializarGrafico(data);
     } catch (error) {
         console.log(error)
     } finally {
@@ -216,6 +216,72 @@ function mostrar_stats(data) {
         interval(p_cursos, cursos);
         interval(p_facultades, facultades);
     }, 200)
+}
+
+async function inicializarGrafico(datos) {
+    
+    if (!datos) {
+        const datosEjemplo = {
+            meses: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            inscripciones: [15, 22, 18, 25, 30, 28, 35, 40, 32, 27, 20, 18]
+        };
+        crearGrafico(datosEjemplo);
+        return;
+    }
+
+    crearGrafico(datos);
+}
+
+function crearGrafico(datos) {
+    const ctx = document.getElementById('inscripcionesChart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: datos.meses,
+            datasets: [{
+                label: 'Número de Inscripciones',
+                data: datos.inscripciones,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Inscripciones Mensuales - ${new Date().getFullYear()}`,
+                    font: {
+                        size: 16
+                    }
+                },
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Cantidad de Inscripciones'
+                    },
+                    ticks: {
+                        stepSize: 5
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Meses del Año'
+                    }
+                }
+            }
+        }
+    });
 }
 
 //stats()
