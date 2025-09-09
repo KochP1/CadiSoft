@@ -374,7 +374,7 @@ async function crearProfesor(event) {
         return;
     }
 
-    if (apellido.length > 20 || segundoApellido.length > 12) {
+    if (apellido.length > 20 || segundoApellido.length > 20) {
         setSearching(false);
         alert('Los apellidos pueden tener máximo 20 caracteres');
         return;
@@ -705,9 +705,9 @@ async function crearFacultad(event) {
         return;
     }
 
-    if (nombreFacultad.length > 40) {
+    if (nombreFacultad.length > 30) {
         setSearching(false);
-        alert('La facultad puede tener un máximo de 40 caracteres');
+        alert('La facultad puede tener un máximo de 30 caracteres');
         return;
     }
 
@@ -757,9 +757,9 @@ async function editar_facultad(idfacultad, event) {
         return;
     }
 
-    if (nombreFacultad.length > 40) {
+    if (nombreFacultad.length > 30) {
         setSearching(false);
-        alert('La facultad puede tener un máximo de 40 caracteres');
+        alert('La facultad puede tener un máximo de 30 caracteres');
         return;
     }
 
@@ -1352,6 +1352,12 @@ async function crearAlumno(event) {
         return;
     }
 
+    if (email.length > 50) {
+        setSearching(false);
+        alert('El email puede tener un máximo de 50 caracteres')
+        return;
+    }
+
     const formData = new FormData();
     formData.append('nombre', nombre);
     formData.append('segundoNombre', segundoNombre);
@@ -1450,9 +1456,9 @@ async function crear_curso(event) {
         return;
     }
 
-    if (nombre_curso.length > 40) {
+    if (nombre_curso.length > 30) {
         setSearching(false);
-        alert('El nombre del curso puede tener 40 caracteres máximo');
+        alert('El nombre del curso puede tener 30 caracteres máximo');
         return;
     }
     const formData = new FormData();
@@ -1524,9 +1530,9 @@ async function edit_nombre_curso(idCurso, event) {
         return;
     }
 
-    if (curso.length > 40) {
+    if (curso.length > 30) {
         setSearching(false);
-        alert('El curso puede tener 40 caracteres máximo');
+        alert('El curso puede tener 30 caracteres máximo');
         return;
     }
 
@@ -2072,7 +2078,7 @@ async function calcular_definitiva(idSeccion, idAlumno) {
 // ACERCA DE
 
 async function restaurar() {
-    if (confirm('¿Estás seguro de que quieres restaurar el sistema?, todos los registros serán eliminados y no se podrán recuperae')) {
+    if (confirm('¿Estás seguro de que quieres restaurar el sistema?, todos los registros serán eliminados')) {
         
         try {
             if (isSearching) return;
@@ -2498,8 +2504,14 @@ function calc_total() {
 function calc_subtotal(id) {
     const subTotal = document.getElementById(`subTotal-${id}`);
     const subtTotalFactura = document.getElementById(`subtotal-facturacion-${id}`);
-    const cantidad = parseInt(document.getElementById(`cantidad-factura-${id}`).value.trim());
+    let cantidad = parseInt(document.getElementById(`cantidad-factura-${id}`).value.trim());
     const precio = parseFloat(document.getElementById(`precio-factura-${id}`).value.trim());
+
+    if (cantidad <= 0) {
+        alert("La cantidad no puede ser igual o menor a 0");
+        cantidad = 1;
+        document.getElementById(`cantidad-factura-${id}`).value = 1;
+    }
     const newSubtotal = cantidad * precio;
 
     document.getElementById(`cantidad-facturacion-${id}`).textContent = cantidad;
