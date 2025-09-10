@@ -149,7 +149,21 @@ def historial():
 
     if request.method == 'GET':
         with db.cursor() as cur:
-            cur.execute('SELECT f.idFactura, f.cliente, f.telefono, f.cedula, f.direccion, p.nombre, f.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto')
+            cur.execute('''
+                SELECT 
+                    f.idFactura, 
+                    f.cliente, 
+                    f.telefono, 
+                    f.cedula, 
+                    f.direccion, 
+                    GROUP_CONCAT(p.nombre SEPARATOR ', ') as productos,
+                    f.total, 
+                    f.fecha 
+                FROM facturas f
+                LEFT JOIN factura_x_producto fp ON f.idFactura = fp.idFactura
+                LEFT JOIN productos p ON fp.idProducto = p.idProducto
+                GROUP BY f.idFactura
+            ''')
             registros = cur.fetchall()
             insertRegistros = []
             columNames = [column[0] for column in cur.description]
