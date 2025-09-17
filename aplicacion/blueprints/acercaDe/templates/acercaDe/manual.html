@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Flipbook</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.1/turn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        #flipbook {
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+        }
+        .page {
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="flipbook"></div>
+
+    <script>
+        // Configurar PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        const url = '../../../../static/util/manual de usuario cadi.pdf';
+        
+        // Cargar PDF y convertir páginas a imágenes
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            const flipbook = document.getElementById('flipbook');
+            
+            for (let i = 1; i <= pdf.numPages; i++) {
+                pdf.getPage(i).then(page => {
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise.then(() => {
+                        const pageDiv = document.createElement('div');
+                        pageDiv.className = 'page';
+                        pageDiv.appendChild(canvas);
+                        flipbook.appendChild(pageDiv);
+                    });
+                });
+            }
+        }).then(() => {
+            // Inicializar flipbook
+            $("#flipbook").turn({
+                width: 800,
+                height: 600,
+                autoCenter: true
+            });
+        });
+    </script>
+</body>
+</html>
