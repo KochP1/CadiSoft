@@ -5,19 +5,28 @@ body{
 	padding:0;
 }
 
+
+
 .magazine-viewport .container{
 	position:absolute;
 	top:50%;
 	left:50%;
+	width:1230px;
+	height:870px;
 	margin:auto;
 }
 
 .magazine-viewport .magazine{
+	width:1230px;
+	height:870px;
+	left:-615px;
 	top:-300px;
-	z-index:2;	
+	z-index: 2;
 }
 
 .magazine-viewport .page{
+	width:615px;
+	height:870px;
 	background-color:white;
 	background-repeat:no-repeat;
 	background-size:100% 100%;
@@ -153,13 +162,14 @@ body{
 
 }
 
+
 .magazine-viewport .loader{
 	background-image:url(../pics/loader.gif);
 	width:22px;
 	height:22px;
 	position:absolute;
-	top:50%; /* 300px; */
-	left:50%; /*400px;*/
+	top:50%; /* 340px; */
+	left:50%; /*250px;*/
 }
 
 .magazine-viewport .shadow{
@@ -178,6 +188,7 @@ body{
 .magazine-viewport .next-button,
 .magazine-viewport .previous-button{
 	width:22px;
+	height:870px;
 	position:absolute;
 	top:0;
 }
@@ -208,7 +219,7 @@ body{
 .magazine-viewport .previous-button-hover,
 .magazine-viewport .previous-button-down{
 	background-image:url(../pics/arrows.png);
-	background-position:-4px 290px;
+	background-position:-4px 340px;
 	background-repeat:no-repeat;
 }
 
@@ -220,7 +231,7 @@ body{
 .magazine-viewport .next-button-hover,
 .magazine-viewport .next-button-down{
 	background-image:url(../pics/arrows.png);
-	background-position:-38px 290px;
+	background-position:-38px 340px;
 	background-repeat:no-repeat;
 }
 
@@ -235,6 +246,7 @@ body{
 	-ms-transition:margin-left 0.5s;
 	-o-transition:margin-left 0.5s;
 	transition:margin-left 0.5s;
+	z-index:2;
 }
 
 .thumbnails{
@@ -385,7 +397,7 @@ body{
     background-size: 88px 22px;
     display: inline-block;
     margin-bottom: 2px;
-    margin-right: 6px;
+    margin-right: 6px; /*aggiunto*/
 }
 
 .zoom-icon-in{
@@ -450,28 +462,37 @@ body{
     z-index: 1000;            
     background-color: rgba(255,255,255,0.6);
     padding: 4px 10px 2px;
-    border-radius: 12px;   
+    border-radius: 12px;    /* da 2 a 12 */
 }
 
-.down-pdf {	
-    margin-right: 6px;	
+/*
+.controls-pdf a {
+    margin-right: 12px;
 }
+*/
+
+.down-pdf {
+    margin-right: 6px;
+}
+
+
 
 .close-icon{
 	position:absolute;
 	z-index:1000;
 	top:10px;
 	right:10px;
-        cursor: pointer;
+    cursor: pointer;
 }
 
 .logo-backs {
     position: absolute;
+	top: 100px;
     bottom: 0;
     left: 0;
     width: 100%;
     opacity: 0.4;
-    background-image: url('/files/backgrounds/back1.svg');
+    background-image: url('../files/backgrounds/back14.svg');
     background-repeat: no-repeat;
     height: 100%;
     background-position: center left;
@@ -497,17 +518,17 @@ body{
 
 
 .hard-cover {
-   -webkit-perspective:2000px;
-   -moz-perspective: 2000px;
-   -ms-perspective: 2000px;
-   perspective: 1000px;
+	-webkit-perspective:2000px;
+	-moz-perspective: 2000px;
+	-ms-perspective: 2000px;
+	perspective: 1000px;
 }
 
 .modal-config {
     border: 4px solid #CCC;
     width: 595px;
-   max-height: 100%;
-    position: absolute!important;
+    max-height: 100%;
+    position: absolute;
     left: 35%;
     top: 12%;
     margin: -25px 0 0 -50px;
@@ -520,7 +541,10 @@ body{
     font-size: 11pt;
     display: none;
     overflow: auto;
+   /* overflow-y:scroll; */
 }
+
+
 
 .modal-config button {
     padding: 7px 10px;    
@@ -579,18 +603,31 @@ body{
 
 #prev {
    background-image:url('../pics/prev.png');
-    width: 29px;
+  /*  width: 29px;
     height: 26px;
     display: inline-block;
     margin-left: 5px;
-    margin-right: 0px;
+    margin-right: 0px; */
+    
+    width: 1.8em;
+    height: 1.6em;
+    display: inline-block;
+    margin-left: 0.2em;
+    margin-right: 0em;
+    
+    
 }
 #next {
        background-image:url('../pics/next.png');
-       width: 29px;
+    /*   width: 29px;
     height: 26px;
     display: inline-block;
     margin-left: 5px;   
-    margin-right: 0px; 
+    margin-right: 0px; */
+    
+        width: 1.8em;
+    height: 1.6em;
+    display: inline-block;
+    margin-left: 0.2em;
+    margin-right: 0em;
 }
-

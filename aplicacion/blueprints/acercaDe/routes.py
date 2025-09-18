@@ -26,3 +26,7 @@ def restaurar():
         except Exception as e:
             db.rollback()
             return jsonify({'error': f'Error al restaurar sistema: {e}'}), 500
+
+@acerca.route('/manual', methods = ['GET'])
+def manual():
+    return render_template('acercaDe/manual.html')
