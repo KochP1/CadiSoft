@@ -1595,6 +1595,22 @@ header h1 {
 
 /* TERMINA FACTURACION */
 
+/* MANUAL DE USUARIO */
+
+@media (max-width: 770px) {
+    .magazine-viewport {
+        width: 100vw !important;
+    }
+
+    .magazine-viewport .containe {
+        width: 100% !important;
+    }
+
+    .next-button {
+        display: none !important;
+    }
+}
+
 
 /* transición de desvanecido */
 html {
