@@ -145,9 +145,11 @@
                 </a>
                 <ul class="dropdown-menu user-dropdown">
                   <li><a class="dropdown-item" href="{{url_for('usuario.ajustes_usuario')}}">Ajustes</a></li>
+                  <!--
                   <li class="theme-icon">
                     <i class="fa fa-moon dropdown-item"></i>
                   </li>
+                  -->
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
                 </ul>
@@ -185,9 +187,11 @@
     
     {% endblock %}
 
+    <!--
     {% if current_user.is_authenticated %}
         <script src="{{ url_for('static', filename='js/darkMode.js') }}"></script>
     {% endif %}
+    -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
