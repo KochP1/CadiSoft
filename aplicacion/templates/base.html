@@ -32,7 +32,7 @@
   </div>
     {% if current_user.is_authenticated %}
 
-    <nav class="navbar navbar-expand-xxl bg-body-tertiary px-0">
+    <nav class="navbar navbar-expand-xxl bg-body-tertiary px-0" style="z-index: 5000;">
         <div class="container-fluid">
           <a class="navbar-brand" href="{{url_for('usuario.inicio')}}">
             <img src="{{ url_for('static', filename='images/Cadi_logo-removeBG.png') }}" alt="Cadi" width="70px" height="70px">
