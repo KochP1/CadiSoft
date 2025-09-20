@@ -3,7 +3,7 @@
 var proporzioneViewport = x / y;		
 	var larghezzaMinimaViewport = 0;		
 					
-//se il viewport è più stretto di 640 lo imposto a 640		
+//se il viewport stretto di 640 lo imposto a 640		
 	if (x < larghezzaMinimaViewport) {		
 		//alert('schermo troppo piccolo (' + x + ' x ' + y + ')');		
 		y = (larghezzaMinimaViewport * y) / x;		
@@ -25,7 +25,7 @@ var sfogliabileY = 800.00;
  		
 //calcolo la proporzione dello sfogliabile		
 var proporzioneSfogliabile = sfogliabileX / sfogliabileY;		
-//se la proporzione dello sfogliabile è maggiore della proporzione del viewport tengo fissa l'altezza		
+//se la proporzione dello sfogliabile maggiore della proporzione del viewport tengo fissa l'altezza		
 if (proporzioneSfogliabile < proporzioneViewport){		
 	altezzaEffettiva 	= y - margineY;		
 	larghezzaEffettiva 	= (altezzaEffettiva * (proporzioneSfogliabile));		
