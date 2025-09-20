@@ -3,28 +3,28 @@ var w=window,d=document,e=d.documentElement,g=d.getElementsByTagName('body')[0],
 //calcolo la proporzione del viewport
 var proporzioneViewport = x / y;
 
-	var larghezzaMinimaViewport = 0;
+var larghezzaMinimaViewport = 0;
 			
-//se il viewport è più stretto di 640 lo imposto a 640
-	if (x < larghezzaMinimaViewport) {
-		//alert('schermo troppo piccolo (' + x + ' x ' + y + ')');
-		y = (larghezzaMinimaViewport * y) / x;
-		x = larghezzaMinimaViewport;
-		//alert('reimpostato a ' + x + ' x ' + y);
-	}
+//se il viewport Ã¨ piÃ¹ stretto di 640 lo imposto a 640
+if (x < larghezzaMinimaViewport) {
+    //alert('schermo troppo piccolo (' + x + ' x ' + y + ')');
+    y = (larghezzaMinimaViewport * y) / x;
+    x = larghezzaMinimaViewport;
+    //alert('reimpostato a ' + x + ' x ' + y);
+}
 
 // imposto i margini attorno allo sfogliabile
-	var margineX = 35;
-	var margineY = 25;
+var margineX = 35;
+var margineY = 25;
 
 //console.log(proporzioneViewport);
-	if(proporzioneViewport<1){
-		var sfogliabileX = 615.00;
-		//console.log('vertical mobile' );
-	} else {
-		var sfogliabileX = 1230.00;
-		//console.log('horizontal mobile' );
-	}
+if(proporzioneViewport<1){
+    var sfogliabileX = 615.00;
+    //console.log('vertical mobile' );
+} else {
+    var sfogliabileX = 1230.00;
+    //console.log('horizontal mobile' );
+}
 
 var sfogliabileY = 870.00;
 
@@ -32,13 +32,13 @@ var sfogliabileY = 870.00;
 //calcolo la proporzione dello sfogliabile
 var proporzioneSfogliabile = sfogliabileX / sfogliabileY;
 
-//se la proporzione dello sfogliabile è maggiore della proporzione del viewport tengo fissa l'altezza
+//se la proporzione dello sfogliabile Ã¨ maggiore della proporzione del viewport tengo fissa l'altezza
 if (proporzioneSfogliabile < proporzioneViewport){
-	altezzaEffettiva 	= y - margineY;
-	larghezzaEffettiva 	= (altezzaEffettiva * (proporzioneSfogliabile));
+    altezzaEffettiva 	= y - margineY;
+    larghezzaEffettiva 	= (altezzaEffettiva * (proporzioneSfogliabile));
 } else {
-	larghezzaEffettiva 	= x - margineX;
-	altezzaEffettiva 	= ((larghezzaEffettiva) / proporzioneSfogliabile);
+    larghezzaEffettiva 	= x - margineX;
+    altezzaEffettiva 	= ((larghezzaEffettiva) / proporzioneSfogliabile);
 }
 
 
@@ -80,10 +80,8 @@ function applyConfig()
     }
     
     if (flipbookcfg.companyLogo!=null && $.trim(flipbookcfg.companyLogo)!='') {
-       // $('.logo-backs2').attr('src', flipbookcfg.companyLogo);
         $('.logo-backs2').show();
     } else {
-      //  $('.logo-backs2').attr('src', '');
         $('.logo-backs2').hide();        
     }  
     
