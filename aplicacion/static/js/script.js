@@ -484,6 +484,8 @@ function update_foto(idusuarios) {
                 alert('Imágen actualizada satisfactoriamente');
                 window.location.reload();
             } else {
+                console.log(response.status);
+                console.log(response.json());
                 alert('La imágen no pudo ser actualizada');
             }
         } catch (error) {
