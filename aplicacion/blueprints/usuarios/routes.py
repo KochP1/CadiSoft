@@ -361,26 +361,20 @@ def recuperar_contraseña(idusuario):
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):
-    print(current_app.config['DB_HOST'])
-    db = pymysql.connect(
-            host=current_app.config['DB_HOST'],
-            user=current_app.config['DB_USER'],
-            password=current_app.config['DB_PASSWORD'],
-            database=current_app.config['DB_NAME']
-    )
+    db = current_app.config['db']
 
-    cur = db.cursor()
+    with db.cursor() as cur:
+        db.ping(reconnect=True)
+        cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+        image_data = cur.fetchone()[0]
 
-    cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
-    image_data = cur.fetchone()[0]
-
-    mime_type = 'image/jpeg'
-    if image_data.startswith(b'\x89PNG'):
-        mime_type = 'image/png'
-    elif image_data.startswith(b'\xff\xd8'):
         mime_type = 'image/jpeg'
-    
-    return Response(image_data, mimetype=mime_type)
+        if image_data.startswith(b'\x89PNG'):
+            mime_type = 'image/png'
+        elif image_data.startswith(b'\xff\xd8'):
+            mime_type = 'image/jpeg'
+        
+        return Response(image_data, mimetype=mime_type)
 
 
 
