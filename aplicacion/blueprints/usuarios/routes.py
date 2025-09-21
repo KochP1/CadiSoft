@@ -253,7 +253,7 @@ def send_mail_async(app, email, id):
             )
             mail.send(msg)
         except Exception as e:
-            current_app.logger(f'Error al enviar correo: {e}')
+            print(f'Error al enviar correo: {e}')
 
 def send_mail(email, idusuarios):
     thread = Thread(target=send_mail_async, args=(current_app._get_current_object(), email, idusuarios))
