@@ -362,8 +362,13 @@ def recuperar_contraseña(idusuario):
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    db = current_app.config['db'] = pymysql.connect(
+            host=current_app.config['DB_HOST'],
+            user=current_app.config['DB_USER'],
+            password=current_app.config['DB_PASSWORD'],
+            database=current_app.config['DB_NAME']
+    )
+
     cur = db.cursor()
 
     cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
@@ -391,16 +396,24 @@ def update_foto(idusuarios):
     try:
         cur.execute('UPDATE usuarios SET imagen = %s WHERE idusuarios = %s', (imagen_blob, idusuarios))
         db.commit()
-        return jsonify({'mensaje': 'imagen de perfil actualizada', 'usuario': f'{idusuarios}'}).headers.extend({
+        response = jsonify({
+            'mensaje': 'imagen de perfil actualizada', 
+            'usuario': f'{idusuarios}'
+        })
+        
+        # LUEGO AGREGAR LOS HEADERS
+        response.headers.extend({
             'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
             'Expires': '0',
-            'X-Accel-Expires': '0'  # Especialmente importante para Railway/Nginx
-        }), 200
+            'X-Accel-Expires': '0'
+        })
+        
+        return response, 200
     except Exception as e:
         db.rollback()
-        return jsonify({'error': f'{e}'}), 400
         print(e)
+        return jsonify({'error': f'{e}'}), 500
     finally:
         cur.close()
 
@@ -424,10 +437,23 @@ def update_email(idusuarios):
     try:
         cur.execute('UPDATE usuarios SET email = %s WHERE idusuarios = %s', (data['email'], idusuarios))
         db.commit()
-        return jsonify({'mensaje': 'email actualizado', 'usuario': f'{idusuarios}'}), 200
+        response = jsonify({
+            'mensaje': 'email actualizado', 
+            'usuario': f'{idusuarios}'
+        })
+        
+        # LUEGO AGREGAR LOS HEADERS
+        response.headers.extend({
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'X-Accel-Expires': '0'
+        })
+        
+        return response, 200
     except Exception as e:
         db.rollback()
-        return jsonify({'error': f'{e}'}), 400
+        return jsonify({'error': f'{e}'}), 500
     finally:
         cur.close()
 
@@ -451,10 +477,23 @@ def edit_nombres(idusuarios):
     try:
         cur.execute('UPDATE usuarios SET nombre = %s, segundoNombre = %s WHERE idusuarios = %s', (data['nombre'], data['segundoNombre'], idusuarios))
         db.commit()
-        return jsonify({'mensaje': 'nombres actualizados', 'usuario': f'{idusuarios}'}), 200
+        response = jsonify({
+            'mensaje': 'nombres actualizados', 
+            'usuario': f'{idusuarios}'
+        })
+        
+        # LUEGO AGREGAR LOS HEADERS
+        response.headers.extend({
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'X-Accel-Expires': '0'
+        })
+        
+        return response, 200
     except Exception as e:
         db.rollback()
-        return jsonify({'error': f'{e}'}), 400
+        return jsonify({'error': f'{e}'}), 500
     finally:
         cur.close()
 
@@ -478,10 +517,23 @@ def edit_apellidos(idusuarios):
     try:
         cur.execute('UPDATE usuarios SET apellido = %s, segundoApellido = %s WHERE idusuarios = %s', (data['apellido'], data['segundoApellido'], idusuarios))
         db.commit()
-        return jsonify({'mensaje': 'apellidos actualizados', 'usuario': f'{idusuarios}'}), 200
+        response = jsonify({
+            'mensaje': 'apellidos actualizados', 
+            'usuario': f'{idusuarios}'
+        })
+        
+        # LUEGO AGREGAR LOS HEADERS
+        response.headers.extend({
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'X-Accel-Expires': '0'
+        })
+        
+        return response, 200
     except Exception as e:
         db.rollback()
-        return jsonify({'error': f'{e}'}), 400
+        return jsonify({'error': f'{e}'}), 500
     finally:
         cur.close()
 
@@ -505,10 +557,23 @@ def edit_cedula(idusuarios):
     try:
         cur.execute('UPDATE usuarios SET cedula = %s WHERE idusuarios = %s', (data['cedula'], idusuarios))
         db.commit()
-        return jsonify({'mensaje': 'cedula actualizada', 'usuario': f'{idusuarios}'}), 200
+        response = jsonify({
+            'mensaje': 'cedula actualizada', 
+            'usuario': f'{idusuarios}'
+        })
+        
+        # LUEGO AGREGAR LOS HEADERS
+        response.headers.extend({
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'X-Accel-Expires': '0'
+        })
+        
+        return response, 200
     except Exception as e:
         db.rollback()
-        return jsonify({'error': f'{e}'}), 400
+        return jsonify({'error': f'{e}'}), 500
     finally:
         cur.close()
 
@@ -534,9 +599,22 @@ def edit_contraseña(idusuarios):
             contraseñaNueva = bcrypt.generate_password_hash(data['contraseñaNueva']).decode('utf-8')
             cur.execute('UPDATE usuarios SET contraseña = %s WHERE idusuarios = %s', (contraseñaNueva, idusuarios))
             db.commit()
-            return jsonify({'mensaje': 'contraseña actualizada', 'usuario': f'{idusuarios}'})
+            response = jsonify({
+            'mensaje': 'contraseña actualizada', 
+            'usuario': f'{idusuarios}'
+            })
+        
+            # LUEGO AGREGAR LOS HEADERS
+            response.headers.extend({
+                'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+                'X-Accel-Expires': '0'
+            })
+            
+            return response, 200
         else:
-            return jsonify({'error': 'la contraseña actual es incorrecta'}), 401
+            return jsonify({'error': 'la contraseña actual es incorrecta'}), 400
     except Exception as e:
         db.rollback()
         return jsonify({'error': f'{e}'}), 400
