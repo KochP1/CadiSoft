@@ -391,7 +391,15 @@ def update_foto(idusuarios):
     try:
         cur.execute('UPDATE usuarios SET imagen = %s WHERE idusuarios = %s', (imagen_blob, idusuarios))
         db.commit()
-        return jsonify({'mensaje': 'imagen de perfil actualizada', 'usuario': f'{idusuarios}'}), 200
+        response = jsonify({'mensaje': 'imagen de perfil actualizada', 'usuario': f'{idusuarios}'}), 200
+        response.headers.extend({
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+            'X-Accel-Expires': '0'  # Especialmente importante para Railway/Nginx
+        })
+
+        return response
     except Exception as e:
         db.rollback()
         return jsonify({'error': f'{e}'}), 400
