@@ -359,9 +359,9 @@ def recuperar_contraseña(idusuario):
         return render_template('usuarios/recuperar.html', user = idusuario)
 
 
-
 @usuario.route('/get_profile_image/<int:idusuarios>')
 def get_profile_image(idusuarios):
+    print(current_app.config['DB_HOST'])
     db = pymysql.connect(
             host=current_app.config['DB_HOST'],
             user=current_app.config['DB_USER'],
