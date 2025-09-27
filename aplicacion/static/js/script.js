@@ -2034,7 +2034,7 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
 
 async function calcular_definitiva(idSeccion, idAlumno) {
     const url = `/cursos/subir_definitiva/${idSeccion}`;
-    if (isSearching) return;
+    //if (isSearching) return;
     setSearching(true);
     const parsearNota = (id) => {
         const valor = document.getElementById(id).value.trim();
