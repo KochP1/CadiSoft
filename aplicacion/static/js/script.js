@@ -1449,6 +1449,8 @@ async function crear_curso(event) {
     const url = '/cursos/';
     const facultad = document.getElementById('facultad-curso').value;
     const nombre_curso = document.getElementById('curso').value.trim();
+    const duracion_curso = document.getElementById('duracion').value.trim();
+
     if (isSearching) return;
     setSearching(true);
 
@@ -1467,6 +1469,7 @@ async function crear_curso(event) {
 
     formData.append('idFacultad', facultad);
     formData.append('nombre_curso', nombre_curso);
+    formData.append('duracion_curso', duracion_curso);
 
     try {
         const response = await fetch(url, {
@@ -1539,6 +1542,43 @@ async function edit_nombre_curso(idCurso, event) {
     }
 
     formData.append('curso', curso)
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        alert(data.message);
+        window.location.reload();
+    } catch (e) {
+        console.log(e)
+    } finally {
+        setSearching(false);
+    }
+}
+
+async function edit_duracion_curso(idCurso, event) {
+    event.preventDefault();
+    const url = `/cursos/edit_duracion_curso/${idCurso}`;
+    const duracion = document.getElementById('editDuracionCurso').value.trim();
+    const formData = new FormData();
+    if (isSearching) return;
+    setSearching(true);
+
+    if (!duracion) {
+        setSearching(false);
+        alert('Debe ingresar la duracion del el curso');
+        return;
+    }
+
+    formData.append('duracion', duracion)
 
     try {
         const response = await fetch(url, {

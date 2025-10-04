@@ -38,6 +38,13 @@
                 <button type="submit" class="btn btn-primary">Actualizar</button>
             </form>
 
+            <div class="edit-h2__container"><h2>Duración del curso</h2></div>
+            <hr class="divider">
+            <form class="edit__container" idcurso="{{record.idCurso}}" onsubmit="edit_duracion_curso(this.getAttribute('idcurso'), event)">
+                <input type="number" name="duracion" value="{{record.duracionCurso}}" id="editDuracionCurso">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
+
             <div class="edit-h2__container"><h2>Facultad</h2></div>
             <hr class="divider">
             <form class="edit__container" idcurso="{{record.idCurso}}" onsubmit="edit_facultad_curso(this.getAttribute('idcurso'), event)">

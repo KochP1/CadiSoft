@@ -23,6 +23,7 @@
                 <th>ID</th>
                 <th>Facultad</th>
                 <th>Nombre</th>
+                <th>Duración</th>
             </tr>
 
             {% for curso in cursos %}
@@ -30,6 +31,7 @@
                     <td>{{curso.idCurso}}</td>
                     <td>{{curso.facultad}}</td>
                     <td>{{curso.nombre_curso}}</td>
+                    <td>{% if curso.duracionCurso != None %} {{curso.duracionCurso}} horas {% endif %}</td>
                     <td class="tabla-btn">
                         <a href="{{url_for('cursos.seccion_curso', idcurso=curso.idCurso)}}" class="editar-link">
                             <button class="btn btn-primary btn-secciones">
@@ -69,6 +71,9 @@
 
                             <label>Nombre del curso</label>
                             <input type="text" class="form-control mb-3" name="curso" id="curso">
+
+                            <label>Duracion del curso</label>
+                            <input type="nunber" class="form-control mb-3" name="duracion" id="duracion">
 
                             <label>Facultad</label>
                             <select name="selectFacultad" id="facultad-curso" class="form-control mb-3">

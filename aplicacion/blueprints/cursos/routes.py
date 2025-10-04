@@ -14,11 +14,12 @@ def index():
     if request.method == 'POST':
         facultad = request.form.get('idFacultad')
         curso = request.form.get('nombre_curso')
+        duracion = request.form.get('duracion_curso')
 
         try:
             with db.cursor() as cur:
-                sql = 'INSERT INTO cursos (`idFacultad`, `nombre_curso`) VALUES (%s, %s)'
-                data = (facultad, curso)
+                sql = 'INSERT INTO cursos (`idFacultad`, `nombre_curso`, `duracionCurso`) VALUES (%s, %s, %s)'
+                data = (facultad, curso, duracion)
                 cur.execute(sql, data)
                 db.commit()
                 return jsonify({'message': 'Curso creado satisfactoriamente'}), 200
@@ -28,7 +29,7 @@ def index():
 
     try:
         with db.cursor() as cur:
-            sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad'
+            sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, C.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad'
             cur.execute(sql)
             registros = cur.fetchall()
             insertCursos = []
@@ -49,7 +50,7 @@ def buscar_curso():
         curso = request.form.get('curso')
 
         with db.cursor() as cur:
-            cur.execute('SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.nombre_curso = %s', (curso,))
+            cur.execute('SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.nombre_curso = %s', (curso,))
             registros = cur.fetchall()
             insertCursos = []
             columNames = [column[0] for column in cur.description]
@@ -89,7 +90,7 @@ def edit_cursos(idCurso):
 
     try:
         with db.cursor() as cur:
-            sql = 'SELECT c.idCurso, c.idFacultad, c.nombre_curso, c.imagen, f.facultad FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.idCurso = %s'
+            sql = 'SELECT c.idCurso, c.idFacultad, c.nombre_curso, c.duracionCurso, c.imagen, f.facultad FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.idCurso = %s'
             cur.execute(sql, (idCurso,))
             registros = cur.fetchall()
 
@@ -155,6 +156,25 @@ def edit_facultad_curso(idCurso):
         with db.cursor() as cur:
             sql = 'UPDATE cursos SET idFacultad = %s WHERE idCurso = %s'
             data = (facultad, idCurso)
+            cur.execute(sql, data)
+            db.commit()
+            return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error al modificar curso'}), 500
+
+@cursos.route('/edit_duracion_curso/<int:idCurso>', methods = ['PATCH'])
+def edit_duracion_curso(idCurso):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+    duracion = request.form.get('duracion')
+
+    if not duracion:
+        return jsonify({'error': 'Faltan campos'}), 400
+    
+    try:
+        with db.cursor() as cur:
+            sql = 'UPDATE cursos SET duracionCurso = %s WHERE idCurso = %s'
+            data = (duracion, idCurso)
             cur.execute(sql, data)
             db.commit()
             return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
