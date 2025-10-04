@@ -19,6 +19,8 @@
                     <h2>{{ record.nombre_curso }}</h2>
                     <h3>Sección: {{ record.seccion }}</h5>
                     <div class="seccion-participante__container">
+                        <i class="fa-solid fa-clock"></i>
+                        <p>{% if record.duracionCurso != None %} {{ record.duracionCurso }} horas {% endif %}</p>
                         <i class="fa-solid fa-user-group"></i>
                         <p>{{ record.participantes }}</p>
                         <a {% if record.participantes > 0 %} href="{{url_for('cursos.calificaciones', idSeccion=record.idSeccion)}}" class="editar-link" {% endif %}>

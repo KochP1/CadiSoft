@@ -152,7 +152,7 @@ def mis_secciones():
     if request.method == 'GET':
         try:
             with db.cursor() as cur:
-                sql = 'SELECT s.idSeccion, s.idProfesor, s.idCurso, c.nombre_curso, s.seccion FROM secciones s JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios JOIN cursos c ON s.idCurso = c.idCurso WHERE u.idusuarios = %s'
+                sql = 'SELECT s.idSeccion, s.idProfesor, s.idCurso, c.nombre_curso, c.duracionCurso, s.seccion FROM secciones s JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios JOIN cursos c ON s.idCurso = c.idCurso WHERE u.idusuarios = %s'
                 cur.execute(sql, current_user.id)
                 registros = cur.fetchall()
                 insertSecciones = []
