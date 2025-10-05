@@ -86,6 +86,10 @@ def generar_backup():
                                 values.append("NULL")
                             elif isinstance(value, (int, float)):
                                 values.append(str(value))
+                            elif isinstance(value, bytes):
+                                # PARA BLOB: usar formato hexadecimal
+                                hex_value = value.hex()
+                                values.append(f"0x{hex_value}")
                             else:
                                 # Escapar comillas simples
                                 escaped_value = str(value).replace("'", "''")
