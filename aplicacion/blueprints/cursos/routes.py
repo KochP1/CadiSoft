@@ -29,7 +29,7 @@ def index():
 
     try:
         with db.cursor() as cur:
-            sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, C.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad'
+            sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad'
             cur.execute(sql)
             registros = cur.fetchall()
             insertCursos = []
