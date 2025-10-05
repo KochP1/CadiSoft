@@ -46,6 +46,17 @@ def generar_backup():
     try:
         # Crear un string para almacenar el script SQL
         script_sql = f"-- Backup generado el: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        db_name = current_app.config['DB_NAME']
+
+        # CREATE DATABASE IF NOT EXISTS `cadisoft` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+        #USE `cadisoft`;
+
+        script_sql += f"CREATE DATABASE IF NOT EXISTS {db_name} DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n"
+        script_sql += f"USE {db_name};\n\n"
+        
+        # Desactivar restricciones de claves foráneas temporalmente
+        script_sql += "-- Desactivar verificación de claves foráneas\n"
+        script_sql += "SET FOREIGN_KEY_CHECKS = 0;\n\n"
         
         with db.cursor(pymysql.cursors.DictCursor) as cur:
             # Generar script para cada tabla
@@ -82,6 +93,9 @@ def generar_backup():
                         script_sql += f"{insert_stmt}\n"
                 
                 script_sql += "\n"
+        
+        script_sql += "-- Reactivar verificación de claves foráneas\n"
+        script_sql += "SET FOREIGN_KEY_CHECKS = 1;\n\n"
         
         # Crear respuesta para descargar el archivo
         output = io.BytesIO()

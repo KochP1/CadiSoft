@@ -1,305 +1,474 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Servidor: localhost
--- Tiempo de generación: 03-09-2025 a las 04:55:34
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- Host: shinkansen.proxy.rlwy.net    Database: cadisoft
+-- ------------------------------------------------------
+-- Server version	9.4.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Base de datos: `cadisoft`
---
 CREATE DATABASE IF NOT EXISTS `cadisoft` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `cadisoft`;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `calificaciones`
+-- Table structure for table `calificaciones`
 --
 
+DROP TABLE IF EXISTS `calificaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `calificaciones` (
-  `idCalificacion` int(11) NOT NULL,
-  `idusuarios` int(11) NOT NULL,
-  `idSeccion` int(11) NOT NULL,
-  `idInscripcion` int(11) NOT NULL,
+  `idCalificacion` int NOT NULL AUTO_INCREMENT,
+  `idusuarios` int NOT NULL,
+  `idSeccion` int NOT NULL,
+  `idInscripcion` int NOT NULL,
   `logro_1` double DEFAULT NULL,
   `logro_2` double DEFAULT NULL,
   `logro_3` double DEFAULT NULL,
   `logro_4` double DEFAULT NULL,
   `logro_5` double DEFAULT NULL,
-  `definitiva` double DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
+  `definitiva` double DEFAULT NULL,
+  PRIMARY KEY (`idCalificacion`),
+  KEY `curso_fk_idx` (`idSeccion`),
+  KEY `alumno_fk_idx` (`idusuarios`),
+  KEY `inscripcion_calificacion_fk` (`idInscripcion`),
+  CONSTRAINT `alumno_fk` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inscripcion_calificacion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `seccion_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estructura de tabla para la tabla `codigos_verificacion`
+-- Dumping data for table `calificaciones`
 --
 
+LOCK TABLES `calificaciones` WRITE;
+/*!40000 ALTER TABLE `calificaciones` DISABLE KEYS */;
+INSERT INTO `calificaciones` VALUES (9,11,8,9,18,20,18,15,18,NULL);
+/*!40000 ALTER TABLE `calificaciones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `codigos_verificacion`
+--
+
+DROP TABLE IF EXISTS `codigos_verificacion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `codigos_verificacion` (
-  `idCodigos` int(11) NOT NULL,
-  `idusuarios` int(11) NOT NULL,
+  `idCodigos` int NOT NULL AUTO_INCREMENT,
+  `idusuarios` int NOT NULL,
   `codigo` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `expiracion` datetime NOT NULL,
   `usado` tinyint(1) DEFAULT NULL,
-  `creado_en` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
+  `creado_en` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idCodigos`),
+  KEY `idusuarios_v2p` (`idusuarios`),
+  CONSTRAINT `idusuarios_v2p` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estructura de tabla para la tabla `cursos`
+-- Dumping data for table `codigos_verificacion`
 --
 
+LOCK TABLES `codigos_verificacion` WRITE;
+/*!40000 ALTER TABLE `codigos_verificacion` DISABLE KEYS */;
+INSERT INTO `codigos_verificacion` VALUES (4,1,'125006','2025-09-21 13:58:36',NULL,'2025-09-21 13:43:35'),(5,1,'181960','2025-09-21 14:26:16',NULL,'2025-09-21 14:11:16'),(6,1,'781663','2025-09-21 14:41:11',NULL,'2025-09-21 14:26:11');
+/*!40000 ALTER TABLE `codigos_verificacion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cursos`
+--
+
+DROP TABLE IF EXISTS `cursos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cursos` (
-  `idCurso` int(11) NOT NULL,
-  `idFacultad` int(11) NOT NULL,
+  `idCurso` int NOT NULL AUTO_INCREMENT,
+  `idFacultad` int NOT NULL,
   `nombre_curso` varchar(40) NOT NULL,
-  `imagen` longblob DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `duracionCurso` int DEFAULT NULL,
+  `imagen` longblob,
+  PRIMARY KEY (`idCurso`),
+  KEY `facultad_fk` (`idFacultad`),
+  CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `cursos`
+-- Dumping data for table `cursos`
 --
 
-INSERT INTO `cursos` (`idCurso`, `idFacultad`, `nombre_curso`, `imagen`) VALUES
-(2, 3, 'Administracion I', NULL);
-
--- --------------------------------------------------------
+LOCK TABLES `cursos` WRITE;
+/*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
+INSERT INTO `cursos` VALUES (2,3,'Administracion I',30,NULL),(10,3,'Administracion de negocio',40,NULL);
+/*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `facturas`
+-- Table structure for table `factura_x_producto`
 --
 
+DROP TABLE IF EXISTS `factura_x_producto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `factura_x_producto` (
+  `idFactura_x_producto` int NOT NULL AUTO_INCREMENT,
+  `idFactura` int NOT NULL,
+  `idProducto` int NOT NULL,
+  `cantidad` int NOT NULL,
+  PRIMARY KEY (`idFactura_x_producto`),
+  KEY `factura_fk` (`idFactura`),
+  KEY `producto_fk` (`idProducto`),
+  CONSTRAINT `factura_fk` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `producto_fk` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `factura_x_producto`
+--
+
+LOCK TABLES `factura_x_producto` WRITE;
+/*!40000 ALTER TABLE `factura_x_producto` DISABLE KEYS */;
+INSERT INTO `factura_x_producto` VALUES (14,6,2,1),(15,6,1,1),(16,6,3,1);
+/*!40000 ALTER TABLE `factura_x_producto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `facturas`
+--
+
+DROP TABLE IF EXISTS `facturas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `facturas` (
-  `idFactura` int(11) NOT NULL,
+  `idFactura` int NOT NULL AUTO_INCREMENT,
   `cliente` varchar(50) NOT NULL,
   `telefono` varchar(11) NOT NULL,
   `cedula` varchar(8) NOT NULL,
   `direccion` varchar(30) NOT NULL,
-  `fecha` datetime NOT NULL DEFAULT current_timestamp(),
-  `total` double NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `factura_x_producto`
---
-
-CREATE TABLE `factura_x_producto` (
-  `idFactura_x_producto` int(11) NOT NULL,
-  `idFactura` int(11) NOT NULL,
-  `idProducto` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
+  `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total` double NOT NULL,
+  PRIMARY KEY (`idFactura`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estructura de tabla para la tabla `facultades`
+-- Dumping data for table `facturas`
 --
 
+LOCK TABLES `facturas` WRITE;
+/*!40000 ALTER TABLE `facturas` DISABLE KEYS */;
+INSERT INTO `facturas` VALUES (6,'Juan Koch','04246778096','30139712','Sector paraiso','2025-09-10 22:36:07',14);
+/*!40000 ALTER TABLE `facturas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `facultades`
+--
+
+DROP TABLE IF EXISTS `facultades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `facultades` (
-  `idFacultad` int(11) NOT NULL,
-  `facultad` varchar(40) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `idFacultad` int NOT NULL AUTO_INCREMENT,
+  `facultad` varchar(40) NOT NULL,
+  PRIMARY KEY (`idFacultad`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `facultades`
+-- Dumping data for table `facultades`
 --
 
-INSERT INTO `facultades` (`idFacultad`, `facultad`) VALUES
-(3, 'Administracion');
-
--- --------------------------------------------------------
+LOCK TABLES `facultades` WRITE;
+/*!40000 ALTER TABLE `facultades` DISABLE KEYS */;
+INSERT INTO `facultades` VALUES (3,'Administracion');
+/*!40000 ALTER TABLE `facultades` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `horario`
+-- Table structure for table `horario`
 --
 
+DROP TABLE IF EXISTS `horario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `horario` (
-  `idhorario` int(11) NOT NULL,
+  `idhorario` int NOT NULL AUTO_INCREMENT,
   `horario_dia` varchar(10) NOT NULL,
   `horario_hora` time NOT NULL,
   `horario_hora_final` time NOT NULL,
-  `horario_aula` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `horario_aula` varchar(10) NOT NULL,
+  PRIMARY KEY (`idhorario`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `horario`
+-- Dumping data for table `horario`
 --
 
-INSERT INTO `horario` (`idhorario`, `horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES
-(15, 'Martes', '08:00:00', '09:00:00', 'G-28'),
-(16, 'Martes', '09:00:00', '10:00:00', 'G-28'),
-(19, 'Martes', '08:00:00', '09:00:00', 'F-30'),
-(20, 'Martes', '09:00:00', '10:00:00', 'F-30');
-
--- --------------------------------------------------------
+LOCK TABLES `horario` WRITE;
+/*!40000 ALTER TABLE `horario` DISABLE KEYS */;
+INSERT INTO `horario` VALUES (15,'Martes','08:00:00','09:00:00','G-28'),(16,'Martes','09:00:00','10:00:00','G-28'),(19,'Martes','08:00:00','09:00:00','F-30'),(20,'Martes','09:00:00','10:00:00','F-30'),(21,'Lunes','08:00:00','09:00:00','G-25'),(22,'Lunes','09:00:00','10:00:00','G-25'),(23,'Miércoles','09:00:00','10:00:00','G-25'),(24,'Miércoles','08:00:00','09:00:00','G-25'),(25,'Miércoles','08:00:00','09:00:00','G-28'),(26,'Miércoles','09:00:00','10:00:00','G-28');
+/*!40000 ALTER TABLE `horario` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `horario_x_curso`
+-- Table structure for table `horario_x_curso`
 --
 
+DROP TABLE IF EXISTS `horario_x_curso`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `horario_x_curso` (
-  `idhorario_x_curso` int(11) NOT NULL,
-  `idhorario` int(11) NOT NULL,
-  `idSeccion` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `idhorario_x_curso` int NOT NULL AUTO_INCREMENT,
+  `idhorario` int NOT NULL,
+  `idSeccion` int NOT NULL,
+  PRIMARY KEY (`idhorario_x_curso`),
+  KEY `horario_fk_idx` (`idhorario`),
+  KEY `seccion_horario_fk` (`idSeccion`),
+  CONSTRAINT `horario_fk` FOREIGN KEY (`idhorario`) REFERENCES `horario` (`idhorario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `seccion_horario_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `horario_x_curso`
+-- Dumping data for table `horario_x_curso`
 --
 
-INSERT INTO `horario_x_curso` (`idhorario_x_curso`, `idhorario`, `idSeccion`) VALUES
-(19, 19, 7),
-(20, 20, 7);
-
--- --------------------------------------------------------
+LOCK TABLES `horario_x_curso` WRITE;
+/*!40000 ALTER TABLE `horario_x_curso` DISABLE KEYS */;
+INSERT INTO `horario_x_curso` VALUES (21,21,8),(22,22,8),(23,23,8),(24,24,8),(25,25,9),(26,26,9);
+/*!40000 ALTER TABLE `horario_x_curso` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `inscripcion`
+-- Table structure for table `insc_x_seccion`
 --
 
+DROP TABLE IF EXISTS `insc_x_seccion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `insc_x_seccion` (
+  `idinsc_x_seccion` int NOT NULL AUTO_INCREMENT,
+  `idInscripcion` int NOT NULL,
+  `idSeccion` int NOT NULL,
+  PRIMARY KEY (`idinsc_x_seccion`),
+  KEY `inscripcion_fk` (`idInscripcion`),
+  KEY `seccion_inscripcion_fk` (`idSeccion`),
+  CONSTRAINT `inscripcion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `seccion_inscripcion_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `insc_x_seccion`
+--
+
+LOCK TABLES `insc_x_seccion` WRITE;
+/*!40000 ALTER TABLE `insc_x_seccion` DISABLE KEYS */;
+INSERT INTO `insc_x_seccion` VALUES (9,9,8);
+/*!40000 ALTER TABLE `insc_x_seccion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inscripcion`
+--
+
+DROP TABLE IF EXISTS `inscripcion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inscripcion` (
-  `idInscripcion` int(11) NOT NULL,
-  `idusuarios` int(11) NOT NULL,
+  `idInscripcion` int NOT NULL AUTO_INCREMENT,
+  `idusuarios` int NOT NULL,
   `fecha_inscripcion` date NOT NULL,
   `fecha_expiracion` date NOT NULL,
   `tipo` enum('Privada','Inces') NOT NULL,
-  `es_activa` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `insc_x_seccion`
---
-
-CREATE TABLE `insc_x_seccion` (
-  `idinsc_x_seccion` int(11) NOT NULL,
-  `idInscripcion` int(11) NOT NULL,
-  `idSeccion` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
+  `es_activa` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idInscripcion`),
+  KEY `alumno_inscripcion_idx` (`idusuarios`),
+  CONSTRAINT `alumno_inscripcion` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estructura de tabla para la tabla `preinscripcion`
+-- Dumping data for table `inscripcion`
 --
 
+LOCK TABLES `inscripcion` WRITE;
+/*!40000 ALTER TABLE `inscripcion` DISABLE KEYS */;
+INSERT INTO `inscripcion` VALUES (9,11,'2025-09-01','2025-09-30','Privada',1);
+/*!40000 ALTER TABLE `inscripcion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `preinscripcion`
+--
+
+DROP TABLE IF EXISTS `preinscripcion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `preinscripcion` (
-  `idPreinscipcion` int(11) NOT NULL,
+  `idPreinscipcion` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(12) NOT NULL,
   `segundoNombre` varchar(12) DEFAULT NULL,
   `apellido` varchar(20) NOT NULL,
   `segundoApellido` varchar(20) NOT NULL,
   `cedula` varchar(8) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `curso` varchar(40) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
+  `curso` varchar(40) NOT NULL,
+  PRIMARY KEY (`idPreinscipcion`),
+  UNIQUE KEY `cedula` (`cedula`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estructura de tabla para la tabla `productos`
+-- Dumping data for table `preinscripcion`
 --
 
+LOCK TABLES `preinscripcion` WRITE;
+/*!40000 ALTER TABLE `preinscripcion` DISABLE KEYS */;
+/*!40000 ALTER TABLE `preinscripcion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `productos`
+--
+
+DROP TABLE IF EXISTS `productos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `productos` (
-  `idProducto` int(11) NOT NULL,
+  `idProducto` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(20) NOT NULL,
   `precio` decimal(6,2) NOT NULL,
-  `stock` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `stock` int NOT NULL,
+  PRIMARY KEY (`idProducto`),
+  UNIQUE KEY `nombre` (`nombre`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `productos`
+-- Dumping data for table `productos`
 --
 
-INSERT INTO `productos` (`idProducto`, `nombre`, `precio`, `stock`) VALUES
-(1, 'Porta carné', 2.00, 100),
-(2, 'Hoja de exámen', 4.00, 50),
-(3, 'Carpetas amarillas', 8.00, 20);
-
--- --------------------------------------------------------
+LOCK TABLES `productos` WRITE;
+/*!40000 ALTER TABLE `productos` DISABLE KEYS */;
+INSERT INTO `productos` VALUES (1,'Porta carné',2.00,100),(2,'Hoja de exámen',4.00,50),(3,'Carpetas amarillas',8.00,20);
+/*!40000 ALTER TABLE `productos` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `profesores`
+-- Table structure for table `profesores`
 --
 
+DROP TABLE IF EXISTS `profesores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `profesores` (
-  `idProfesor` int(11) NOT NULL,
-  `idusuarios` int(11) NOT NULL,
-  `especialidad` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `idProfesor` int NOT NULL AUTO_INCREMENT,
+  `idusuarios` int NOT NULL,
+  `especialidad` varchar(20) NOT NULL,
+  PRIMARY KEY (`idProfesor`),
+  KEY `usuario_p_idx` (`idusuarios`),
+  CONSTRAINT `usuario_p` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `profesores`
+-- Dumping data for table `profesores`
 --
 
-INSERT INTO `profesores` (`idProfesor`, `idusuarios`, `especialidad`) VALUES
-(1, 2, 'Arquitectura'),
-(2, 3, 'Odontologia'),
-(3, 4, 'Arte');
-
--- --------------------------------------------------------
+LOCK TABLES `profesores` WRITE;
+/*!40000 ALTER TABLE `profesores` DISABLE KEYS */;
+INSERT INTO `profesores` VALUES (4,9,'Odontologia'),(5,12,'Ingenieria');
+/*!40000 ALTER TABLE `profesores` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `registro_familiar`
+-- Table structure for table `registro_familiar`
 --
 
+DROP TABLE IF EXISTS `registro_familiar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `registro_familiar` (
-  `idfamilia` int(11) NOT NULL,
-  `idusuarios` int(11) NOT NULL,
+  `idfamilia` int NOT NULL AUTO_INCREMENT,
+  `idusuarios` int NOT NULL,
   `NombrePapa` varchar(12) NOT NULL,
   `ApellidoPapa` varchar(20) NOT NULL,
   `NombreMama` varchar(12) NOT NULL,
   `ApellidoMama` varchar(20) NOT NULL,
-  `Telefono` varchar(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
+  `Telefono` varchar(11) NOT NULL,
+  PRIMARY KEY (`idfamilia`),
+  KEY `alumno_familia_fk` (`idusuarios`),
+  CONSTRAINT `alumno_familia_fk` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estructura de tabla para la tabla `secciones`
+-- Dumping data for table `registro_familiar`
 --
 
+LOCK TABLES `registro_familiar` WRITE;
+/*!40000 ALTER TABLE `registro_familiar` DISABLE KEYS */;
+/*!40000 ALTER TABLE `registro_familiar` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `secciones`
+--
+
+DROP TABLE IF EXISTS `secciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `secciones` (
-  `idSeccion` int(11) NOT NULL,
-  `idCurso` int(11) NOT NULL,
-  `idProfesor` int(11) NOT NULL,
+  `idSeccion` int NOT NULL AUTO_INCREMENT,
+  `idCurso` int NOT NULL,
+  `idProfesor` int NOT NULL,
   `seccion` varchar(10) NOT NULL,
-  `aula` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `aula` varchar(10) NOT NULL,
+  PRIMARY KEY (`idSeccion`),
+  UNIQUE KEY `seccion` (`seccion`),
+  KEY `profesor_seccion_fk` (`idProfesor`),
+  KEY `curso_seccion_fk` (`idCurso`),
+  CONSTRAINT `curso_seccion_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `profesor_seccion_fk` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `secciones`
+-- Dumping data for table `secciones`
 --
 
-INSERT INTO `secciones` (`idSeccion`, `idCurso`, `idProfesor`, `seccion`, `aula`) VALUES
-(7, 2, 1, 'AD-02', 'F-30');
-
--- --------------------------------------------------------
+LOCK TABLES `secciones` WRITE;
+/*!40000 ALTER TABLE `secciones` DISABLE KEYS */;
+INSERT INTO `secciones` VALUES (8,2,4,'AD-01','G-25'),(9,10,5,'ADNC-01','G-28');
+/*!40000 ALTER TABLE `secciones` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Table structure for table `usuarios`
 --
 
+DROP TABLE IF EXISTS `usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuarios` (
-  `idusuarios` int(11) NOT NULL,
+  `idusuarios` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(12) NOT NULL,
   `segundoNombre` varchar(12) DEFAULT NULL,
   `apellido` varchar(20) NOT NULL,
@@ -308,312 +477,30 @@ CREATE TABLE `usuarios` (
   `email` varchar(50) NOT NULL,
   `contraseña` varchar(200) NOT NULL,
   `rol` enum('administrador','profesor','alumno') NOT NULL,
-  `imagen` longblob DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `imagen` longblob,
+  PRIMARY KEY (`idusuarios`),
+  UNIQUE KEY `cedula` (`cedula`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Volcado de datos para la tabla `usuarios`
+-- Dumping data for table `usuarios`
 --
 
-INSERT INTO `usuarios` (`idusuarios`, `nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES
-(1, 'Juan', 'Andrés', 'Koch', 'Padrón', '30139712', 'juanandreskochp@gmail.com', '$2b$12$.f2Sb1KWvK3IYtvV/rZNWuIgC0xTTFcj6fIBEgvyxbVpoPtPNdvUi', 'administrador', NULL),
-(2, 'Eugenia', 'Cristina', 'Frontado', 'Petit', '7965839', 'eugin@gmail.com', '$2b$12$Cd3XGPXDMCs2bpfOwVw21eKCcQJsoRejTUgXwMlpyeMltm5hbxb3W', 'profesor', NULL),
-(3, 'Milena', 'Josefina', 'Padron', 'Petit', '30108732', 'milip12@gmail.com', '$2b$12$u/6SH.yR5x3YyZjZsBIbPO/cvWBHPkzEe8UiK1rtrxC0NVhd2orxy', 'profesor', NULL),
-(4, 'Eura', 'Antonia', 'Petit', 'Arenas', '7984239', 'eura@gmail.com', '$2b$12$xzJJ1DVUy8VJEIu0/1JmCOxAvn/P6kUOh/kpMEcoU277MCNy2O9GW', 'profesor', NULL);
+LOCK TABLES `usuarios` WRITE;
+/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'Juan','Andrés','Koch','Padrón','30139712','juanandreskochp@gmail.com','$2b$12$9aW1/aIXd4y59zCQ1A5nD.IhQp0c5PxfhOmD8ij1R0GML.ulJhnQu','administrador',_binary '�\��\�\0JFIF\0\0\0�\0�\0\0��\0LEAD Technologies Inc. V1.01\0�\�\0�\0�\��\0\0\0\0\0\0\0\0\0\0	\n\0\0\0\0\0\0\0	\n\0\0\0}\0!1AQa\"q2���#B��R\��$3br�	\n\Z%&\'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz�����������������������������������\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�����������\0\0w\0!1AQaq\"2�B����	#3R�br\�\n$4\�%�\Z&\'()*56789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz������������������������������������\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\�\������������\0FF\0�\�\0\0\0?\0�ySv\�\��S���z/���~\�\��ѫ\��}WO��\�Q��y������a\�ʤ[s*���7��?\Zm8i98�4��d�\�t���r\\Ѝ�r�h\��iu�lW���\�\�p���\�C\�YE=$�\�o\�ˮ�>�9���|�G�\�\�z\���O�\�s�G$drs���]J2\�\�_�\�m\�@�k+F7����\0��R���J��\�;�3��\�ݯ\��\�\�K�Õ���kh�\�_���3.cԐ\��;07�ېq߃�+(˕>W\�&\���\�\�ܺt\��\���\�\��k��<2�Af��s\�[#%s\�\��pӖ�\�\�\�W�\�\��\�\�k5uo�\�Q��n�^N1ߞƢ+\�\��w��%\�/v1m�l֏�\�gщ�PN2Oˀ2q���URj�$c�\�{kf�ߢ\�:iN\\�r(\��I[䞿-5\�j\�#Â:�\��\�\�U%7\�)\��Iyw�\���(�YE�\�QoK���-���(C�e#\�R~\\q\�\��\�iN*���\�\�k�KM_U���E�N7N\�\��\�\�h\�[����D �c��AT�\��f\�Q��W\�\��\���\0�-\�{�\�M�{K\"\�\��\���\0\��W\�\�q\�=�IsF)v趻\�G\�\�e\�\�kZ\�\����\�*�@�w�\'�\�\�QKA�\�{i��\0�\"q�cirv���~Ϸ�R���jS��#����l�ֽ\�{�\�\�]�\�L�\\!�掉\�k�۾�& C���\�89 \��\0\�t�ԓwq\�{w�\���mh\�[]s7\��۷��\�$��;<� �o$e�\�\�zb�\�ٯv����\�\�t\�r��\��Zo��|�\"�y�0\\/C��Âc�=\�5�ߑ\�M\�\�e�{�\�\�/�9=V��w۹nF |�鑎:��\�5P�����t\�w�e�\�\�\�q�\���z�ߢ�\�@x\�7c\�_��$�OST\�dҋMk�w_\���I.U$�ڻF\�o�R�2�2{\�\�2���\��Ѯ�\���O݌��Դ\�\�\�\�[W �2#9<�^\�zRj\�]�5��;��\�\\�5���]b\�\�_�(̶%\�jK��\�`��#��4\�\�d��\���\�\�u�*��h7{+��;u\��M\�`  ��d��wQ\�<ҳ���i�$�^�\�\�crs+\�\�\�si�\�\�\�}\�b\0W��~\\a	\�N\0�I�{�\'\�N��\�\�Z\�ֶ�{߷q�e�:��� �90���V���\�\�̨\�_k\��kEn\�u\��\�3�kq�c\��\����\�\�B.)J�n�\�O\�׳۷r}\�N\��^�\�W���S\�r��8\�s�Q:}ޫ��g�~���C�$�K��\�\�{\�\�mv%��\�rx\��MF<��m��\�5���\�J�\�H�\�*\�h\�\�\�\�\�\\�\��s����OrG_����y\�W�k�<\�Q�K�)Ke��_\�$E9l�]�9\�s\�>�<�C��m6�mo��\�]ی\\�\�.ˮ\�\�[\0\�\�\�\�\\m��ӟC��ǑE��.+\�\�W]����9$�wn�Z��D�J�v�l�c�p��)N\r;�\�\�_��z\ZM˙sM%$�W|ѿe\�t	6�\0�]�\�I=\�\n�I�￟�܎F�]ۄS\�}�ib $\�\�]�vᗀ\�\�z\��\�>R0A\�6\\�ʓRV\�J\�\�\�����S~\�yl\�蛾�\�}\�$�>e\�`�t\���\�5�Q\�\�\r>���4���T*r\�\�+�\�/5\�@\�Ḍ\0r<w,q��V\nQ\�wJ\�^\�{߰�i��\�vկ��{����\�z`�\��\�|Ǟ�\�(&��S\�\�\���t%.KBJ.�\�\�\�\�F\�۱�^6\�\0[\��\���r�m�\�Uݝ\�}>\�L[R��J\rsj으�ݽ4�I;�=n��S��ӌ֜�\��\�\�{[�\�\�?Qrr�\�=$\�\�vҶ\�ZYtz�	��\\`�}�=8\�V�\�\���K\�V\��\0��\�\�%x\��2?,��r\'��6ߘ[^oq+l���ֈP�\�\�9,X��dU�N\�^\�t\��^֤%\'\�.nUu$�e���\���U�\�/;��#\�5qIh�\Z\\�>�禎r��q\�d�WZ?�\�Rrܩ\�A\����\�:�\�Qjе�vK����ѣNrz\��V\�\�\�\�\�s��7!\0��\'\'\�ǯqD�MEI������\�r=�>^u\�[�Y�\0_�J2H\�b6\�fW9\'\�\�\�X�.\�w贷�|\�uS���\��Z_����O\�gPH#\r\�#�q\��JV�t�R�Wk;\�\����K\�RqM\���Ϯ��}̛\�R�p��\�ےO\�\��۲I%�6��7��\���M�~[u\�mt�� \r�ۀ\\\�\�\�\�~�F�Õo�����\�q�Q\�泾�vz�^�[�\�\\}ь`�~`;\�f�)\�K�\�.�\�ۯ�_�-\�%\�\�Ԭ����i\�\�5ÀQK\�\r��\0�\�>�c��\�\���W\�\�\�\��Ġ�g��\�\�\����|�*�T\r��O\�#9\�l�;�5PQ�Z\�\�\�\�/^�m\�9ym�k[�\�\�Kw}�\02\�>�r3��Fzg���\�+ZO]պ�gӧ��\�Z;7w��ҷ[t~}��`�\�d�2{~Y���\�v�\��\0Z�t�BM����\�u�\�A)�y\0�z\��\��\�ޅnki.�K�\��%\�˷];�|��\�\�\�y\n@\�)�J\�\�\�ɵ�\�\�\�\�\���W#\�\�_�K��(ɕ8RT�xG\�ܖ\�C\�R��\�˯����\�Te)).�J�\�T���\�\�W��w1 �\��\�3\�\�\���h��vZ\�;i\�\��\�\�\'��گui\�]?�I�\0x�\��\�\��\�\0�:\�����t��V󽵱P��\�Zj\�]\�\�B��\��?�p\�[�\�ぞ\�\�\�i\�\'F�\�\�O\�\�JI�\��I;{�\�\��#�]\��s���>�\�\�\�E&�.�\�m_�\�\�mh\�[l��]��2�̪��;c#���Cn)&���]��U$Tn\�[��\����\�\�f*\�U\�;`yn\�8\��\0}sT�\\Wُm���ϱWMG�Q\�j\�0}|\�\�\�ߩ�\�6�\�H8\��\�Nq����K\�{4��۶���\�)5i]�\�j\�\�~�Z~�\�\�*(\�0yc�\���q�rw�\�m�}���\Z��J\�\�wsv\Z��cB\��Rq���F@#�\�ֱ��]�F�\����d�e{8]5\�m��n\�0�R��H\��l�x�8���ݡ�S��>d﯐��\0g~\�b\�d�����w��p~P*��r:\�\�\�\�+&��V�\0�cuʔc;ke�\�=5\�\�Ib=�>��t�Q��\�\�X�/\�_̪I�8M�\�>�G�_Ϡ\�����c\n3�\�\�\�*�m$��od�Y�\���(\��\�wQv��\�ں\�m}�؃ f�+\��\�c��\��Sz?u]z_^\�\�;>\�EI\�isr%��<\�\�\�k/�EnV߰�o�\�Op=\�l\�[\�}\�kky?\�j0�i\�\��~�M��\�\�\�\�@v\�\�hRn\�95���\�\�R�V\�9�\��\�+\�(A�X�\�#\�\�7v��(��jVZm.�蕞ϫ�-�v+߶�v��\�3{:�` �x\�\����=*Bֵ��\�\�\�[���\�2\�kލ�Z\�姓��2	Ӯ\��9,A\�8�(�������\�_�]���`\������\�\�ݹ;\��\�©\�I���\�Y��E\���w!%\�\Z�����\�\�{\�n�9A��303\�~p:g�4\�_+�Zi���ֶ\��Md\�c٫h��m�\�o\�Ԫ\�1!N\�ە���g\�\�3�\�ך�h��\�\�h�\�O�r}ا9Z��o�V���u,\�*���#$�\�\���\0�\��m�o{+\�{^\�3������\�w\��,�X��g\'��~_�\�1N\�\��{�\�Z\�\�d��Fz\�p[\�<\��F\�\0\��\�3[E\�$\�\�ϧ��o%ʢ��\��A�\�%[�\�\�	�\'*����\�$�zG�}\�\�R)i%_�o\�\�i\���\��drxҍ=ش����!RI\�\\�Z����[��\����\�F �)<�\�8\�\�R\�b\�tJZtW��2jJ6�.\���E�[�JR�S\0�򓓆<�NsǶ:\n�&�e�w]�_���\n���\�\����w\�ǖM��=\�N\��\������Wz����\�\�\�;2�\'/��\�\ZW�\�\�B�9�R�aG\�鎴*q����O�@�k�W�֑[��\�ݥ\���\�#JɂT+�\'i�\�g�\0\�\�6\�R��e��i}[K�+���e̮ܞ\�\�\�\���!P�J\�\�P?!��\�il�g\�.\��U�W7e8Ǫi\�\�\��ݚv�I%�8\�$\'@<�\�\�~�^)&�\�ٻ[����\�m���׺\�\�a�\0F]�0\�/�\�g\�g��洧\�)^\�\�\�\�s�\�[�M\�gm���\�\�ZV\��y\��8�!���U]A;��^\�N��\�ƫ��ekm���\�\�2.HI\'�v�{.9 z�2\�I\�s(\�e_�\�^���J\�K�\�w���n咽�	��X)\n)�?B88�������\�g�\��\�%)r�W�\�\�~[>�\�\�6G�㑎�8\�:w�)\�/Ngͭї4��7�~k5�;\�\��(6\�T�19\r�\�p	Pp��<�\��j*\�\�}\Z��\��nR�8\�w%�ݤ�_+�E+�_�W8\�A�1Ӆ9\�k\'\�JJR�����\�\�\�%%�J�N�\�p� 6K\��\�=I\�ס\�W\�ڍ�x\�tխ?��1��}�m^\�\�\�\�{\�!\�|\�\nN7�\�:gߚ|���RR��t\�i\��k5�_��R��v��˟\�\�1؀*\�VR� \�u-f�I�\�ߞ���\Z\�M5�_\�Vw��\���<s\�m \�s�U(5\�4\�J�\�+�2\'h\'�Zm���\�eܿ�T,�,9<m#�pq�5-ɹAGe�/_-\r��\�\nM���(\�]�5ww\�6l\�\�\�.�0g\�s�\'j��\� ׶1\�ڃ����ZtJ�{�\�;jT\�\�˗u\�\�}\�<�c�\�;@\\!\�2T\�\�(��E�5\��\0�q�yڷ\�\�\�\�\�V\�z�ݑ\�9�\�\�=G�\�R�床O\�;?/�mQ�v��c\�M}\�o\�q��\�*=�\�==���FJ=,֯O7\���R�O}9BKh�w\�k�\�PXpq�\�\�\�\���cN\�vj\�\�T�I_M_O�.~E\Z�ӣ�{y7�\�r\�ʯ\0�g�q����\�ir�Q\\�V\�y\�\�\\�;\�*��)\�_;\�\�}v���pB�ԍ�\�\�\0z~U��Q\�J��\��[j��ܛ�]�}�\��\�˖T�e�\�@�˕^Ww� ���J*���\'\�\��d\�	J1\�MZJ��wˮ�\�\�bqq~`I\nJ�\�0�\�5���\�\�\�h�\�\�\�\�]V\�\�ƣ��\�i+F+Mt�W߾�q8l\�pNӐ;�s��ޝ*��\\T�=:\�\���y����y�Zy[�ƫ0V(��v��9\0�8#ү�\�v��\�]/�a(�%.d�\��f\n\�T\0:��<v-95gg{�ѭ�\0\�\�h�%�{\�e{��G\0x\�8�n�*\r;�=:�_\�n�\�S\r\"��ml\�ދt�-ukȍ\�D.s�\�����\��qP�=��N*\�Muk��ͧ:�\�V]9e~\�\�]\n�Al0RG<1\��aӓ\�g\�YF\�7e}\�m�\0��A\�\�..�\��J�%���R�\�\�|�q�\�\����y\���TҒZ\�������.nw�\�\���\�\�\�\\�\�\�2pF\0\�n�\�\�ڢQ�n�z[wd\�\�⛃\\�zhֶO�\�L7��\�d2#��u\�^3Z7MT�{5�V��C���7u\����F��K?-�\�\� b6S��A����=\�R�(�M�\�Ov\�\'�H낧n{6ޖ\���\0\�\��ᑞ�\�TFO8!NG淏�ow\�w�����\�c=�Z|�n\�\��Y[[6=�#h\�#�8oS\�NWZ\'\�Eyٷ۽�2$�$䟼\��\�=~e	\\�v\�q\'\��\�:~\�ӽ�^}�(�ڋ\��\0n\�\���\ZG�x\�3++q���Nk7k���֭�\�\�\��&k_�Y[t�fD�\�h\�q�rF9\'\� u�沓���\�\�\��Z���f�\�:�������\�\�\�r��I�*T\�\0\0��\�X\��~\�٫o����\�\�}QӬ���]���V\�ӿtf\�*Ĥ�\�\nx\�g\��\0׭c\�+��\����RK]V����)\�\�6׻�\�\�\���Ts!�}\�]��,C\���1�s��$�wi8l���\�\��sYI4\�hǳ���u,E,��,嶪n�\�\�\�\��\��e\�(��\�\�4���z���E{�\�J4\�Z�Vצ�~�Wl�H�n�G\�\�ʂ�\�\�c�py\�8�!zi\�+��&��K;�\�Bj%h�\�5ʺ\�oO-.lE��\�8\�ʥ�\'8\��P\\��1��զ�\�ݼ�]eh�\�v��\��\0խrʮ\�\0!J���8>��\�M\�yh��_$�\�m;�\����\�ݴ��\Zw�Xp�RU��\0\�\'�Lyۍ\�\�Ouh\��ul\�.\�\�\�J���\��~c��E^8\0Oc�R�m��}:|ն%�hI?u+���4\�K�\�$#\�\n�\0?��Ԝ��)�ZI\�\�\�K�\�>_v*\�HG�V\�oO\"��eۑ��p?*\'�\�]�}oe��[[��\�*�a�(\����Mt��V`\�pڤ�<���!grB��\�n`9=r+?v0�\��\0}\�~�+k�\�(U�I�\n:٨�\r�}5\�\�m�\�y׉~)�?¶�-��irY$o�\�[���*o�g?^#�G�\�l\���\�Jї6�)A�m�y.�-wiy�t0�O��gy�z�&�n����5��8�\�~�\�{Դ��Դ\�f�\�MN\�[Y��0\\\����\0��H\��q\��u?�S��>(|���\�l�ԗC��M^�u�Rj-%\�Vmj�ג�\�\�\�&�\��<\��]p9ʷ\��N9\���#V2�\Z��f՝\�j�\05{۩\�>Of\�i\�h���[��4�\�\\ܠ�*m$�I\�s\�t\'%\�ғ�\��>W���+���v\�\�&\�w����׸B\�$�FA��\�8$sX6\��;�\�}n�:�\�n�S䂔T�{\'\��g\��\�hM�ۦ\�X]Zv��\�(V\�O#>�\��\0��\�x��\�\�{�\�}�\�k\�;s�\�\�)�]V��\�\�[���o\�Q���0$�<�\nq�\�9�gy{�G���:�{i\�\�ͷ^h�\�[5k7�i��\�~̵\�C��9�\�=s�zөnyI\�_F���V\�=UޏWɩ\�ɸ\���].�R\�2w1�\�\�\���i��\"�%t��z�\�ӱ1J\�=/t��m\�O�\�$\'o u$pO�\�qW\�\�&�\�V\������]N\�z-m�v��w\r�\0^X�8\'\��u-{6���EY\�ѭ>델�(ݥ%t�ֺ/\�!��\�\�b=\�v���\0\�H\�\�s�=j\�d�̽\�8\�\���O0n\�j�Nܯw�\�m\���$\�H7�E\�8\�1���i\�6V�/3Z\�d\�\���G3�\�RѼm��ӧ}\�\n�9\�y�\�\\gi���N�\�\�e�����J���,��î\�\�\�*�\�ۀ\�>�\��y��]\�\����\�B\�m{\�\�V^��\�\�F\�Tr���v f�j.*VQ�ڶ\�\�߰B0\�|ϕKd���k\�\�<^�S��/�$/ c�/wh\�K\�\�W}���%A+ݴ�\�\�{m\�\�E��$rw�\���\�\�I\'t�\�\�_\��\�\�\�-R�V]�wԅ�:���\��\�ө���-}/mo\�E\�o\���y��Z^ɮ�-���L�*�\�B�s�xo�5�߻ʟ,�\�kz-�\0�\�\\�I\'���[�\�]H�B	\�8y9Oo��\�\�\�Bw�\�{8\�\�m|\�\�o�Q��\�m%\�姗ac�\�W\�\0A��69\�֜�\�\'-�8�\0.�^\�\�כ��I��mu���{\�t�\�A�Rw`+w\��\�1���i{�{��wmm\�ש7R��{�g\�k[�z\�\�\�|\r��g����\�A\�&���\\�Z|�\�\��V|�_\n�����\'�A8\�0y\�9\��\��k��]\�o\�\�Buo�/Ee~�_o^\�.6\�)^	�\��=��\\/���J\�\�O\�̇ϙ$�m�My�/̠\�z�\�@#	\�Y\�IrŦ��2�\�\�q�*\�\�׿����7�\0����\0��}ir�(\�5���{k�3���w����?��+)\�\\\�S\�|�/ZΤa�Wו+]\��o\�m\��S�\�j\�y�6\�\�|\0v�\�1\�\�\nGQ�:��{7.]���\��k�d>V�����.\�vV�\�\�\�����\�D!�0\n�v\�.p;\���((�\�\���\�M\�d�/!\�K��)�	;Y]-:k��\�I���λ��R\�	\ng�H�}GZ\"\�\�\�\�F/I~�\�)A\�8Ik�\�_�\�\�t\�R\�|Υnd@����9e\0\�=\�\�ӑ\�LS\�UkG[_\�\�asAZ0NI=S�O\�\Zp\�\�Kz��Nz�{ʵ�\�w���l�I�.�Ws4�����\�_M�\�����ݑ\�r9P��n\�׃Z\�J3��~m~L\��O�Iv\��\\�N\�#o_L�LS�Sj)��i�ע\��1pQI\�x\�N�\��?\�~�q���\�\����S��\�I4\�t�\�~:�\�V�\�1Km�\�1�\�\0\�\�=p\��j-\'\�\�\�vi\'�\��CrvR\�T\������L�YP������)=�\�8����9^�;-5��~#V�\�_wt\�ߪ\�\�\��<�\�\�\��4\�\�]���Q��+]_M�7�N\�He,\���\'�>~+,d\�\�J\n��$�\�YE^\�[\�tp،kT\�B\�\��jIB\�g�)(\��bϊ�y�B\�\�(�[�3ói\�^D�Z5\�L�l�AI�oQ7�\��x®\�\�\��\�\�\�B*�\�\�\�\�Ŵޗjm?u\�n�Z�M�\�p\�oiJ��\�pv�\0\�T�v׺\���ng��K�b\\�y�\�+M�\�dʦ8!\� p\0�s�V�|�j�\�nZ;\�k��\�\�մ�\��\�$\�N\�\�E�e\�E���q\������i��#�l\�ĲB�2�|�B�0\��d*�\�Q�*.2�Q��u�����\�\��^\��\�[sZ)kwo�\�{/ٍ\"\�\�V��Z��]$h\�\n�t��\�A\�~S\�~\\}^8���V\�%�E۳\�{%����&\'/�\�ԝ�u&��o]#\�޿��i����\��\�\�n��\\\�,\�Exb\�.�i�8>�Ͱʭ(T����i^*/��z�\��2\�cNҥd�����I]�\�h�L���\0��;�V�m��{\�~d��*\�O\�4��UT�\���f�x\'N\�I�F��S�;\�\�B�VV�i\���쒲\���\��.�̫�������ϟkZ�U\�L\���O�p5\'a\�\�Ny\�gT�\�ey\�+����罺��gKʧR��\�YrI\��^�\�.�S1\�\�\�\�p^A\�-/\�l\�\�Ԃ�\�\'����p-�J�0�yV�J.jэ��}mQ?K[\�9`(F\�\�rJ*1\�z��e\�]\'\��\n��m�/iDV��G,I�\�2\�	�[v��q^�1��]hY4�r�Z=7�\�[\�_���\��(J�yz6�\�ڨ\�vߖ���|/\�=~\���<d�uY�l��W�7 u9Q����)F.���\�.T\�},�o4�L�OZP��\�+tJ�o\�z.�Mέy�IP$�6�G~8�R�{�k�M�\�_!�J\\ɾ[;Y����a�.0q��>�8\�JJ\�q�m��&��K}�_з��qq�˲\�鯡��*2�\�̇\�%�r>n�\�g�\�\0(|ܮR�\�vj\���\�\��cm�̓WU9\\^�ֵ��Ӣ��\�m\�ϡu\�ڻ�<�d�\�:U\�[(\���I�\�w�\02$\�\Z�`�[\��v�_0\�3��y\�G�8�B�)�1J0��WKN�_�����q�v���5\��׳%`0�l\�J�����\�MF1\�]�\��r��{\�p�Q\�SJ.V����G\��\��O@\�\�\�~F�t�\�\�\�\�ڵ��\"\�r�RKK+F\�E���*\�|�.0:�����~<�H+.T�}�\��\�\�j1��}Ի-$�w�dD@\��PFF?�x�~5RR�q�\�\�7\�\�\�\�N���Wo�\�\�}�@7`0��\0�8\0G>�.7�ޜ\�m����6\�t\�Rw�%�iߕ\�w�\��)�<�X\�I\�ǧ=��\�m=#\�zI�����\�w\�M6\�\�\�ME^\�ݳ\�n_!F;�.Ӂ�\�\�9�\�E\�\�IF3z��\�e\��\�\�\�\��$\�\�cj읕�I_�U�\��\�\�^zrx\�Y.}n��\�z�o\�\�r8\��5/K\��2��@`>�\�`\�R8?C]W\�\�r\�\\�;E\�{_w\�șFѧ\�F.]�������\02WVuP\n��\�\���4���}\�\�[����k]\��=�+��\�F\�\�9�n2�vv\�Kz�_TTS��1Y\�d/\�6�Fx\���\�Oj%x�&�\�\�\�~\�\��d�nZ�msF6K��\�o���!$�23��#8#���K�[�ҏ�������5��$쵺V�z�����\�IǨ8\�q�{\�	�(�\�]�\���]}7cv\�\�GK\�{\���\�i��bT0�\�\�\'\�nR�\0�	���9���jϦ\�~z�EK݊Iɦ\�\�o$�o�G��\n���\��\�<qX�&�k\�g\�\�t�ԫUMIF)4\�/u�ۣ\��\�\�5	\�\�ʽ9�8M�W��t\�2OsSkGgx�[�;L�PV��yZ[GK����[N���\�\�*��\0�\�\\�m-��G\��PFIn��\�[q�\�V\�Z\'w�M}�\�O^\�\�\\�t\�eQ;ɽ�+�mn�\�\��pK8BԎ\',��8?�_�q�k�uM\��,�\03sB�;\�\�{6\�5�\��5��6 �z\�0\0\�	��\��)����/\�t�r��ޫ��_�OO��4cD\\\�~p�\�\�\�2q��ۖ\�KN][]�\"m\Z���\'&�\�[�I+���R\�[ \��\��MZ\�I���+Z��1�;jm\�J\�6ޟ}\�ؓ�P m��w^O\�\�z\�\��t�y^��\�\��KQ~\�\�R\�*�OT\�D�\�f\�1ԁ�\0\�6	\�\'\�*Z\�jM�[\�k\�گ[�\�\�\�JZ��-���S�յ8,df��Cq\\d�h\�o!�G�\�u�i*t\�Q�\�/�\�\�m9]\�O�\�Iʧ,Rs��R�|�nͥ�诵\��Y�W\�W~/��}�ω�\�\�Y\�7��6\�[۳H$��$\rp��\�Lj\�1l�\�7̣V��\�7F;�\�\\\�\�\�\�Z�\'��>\���N��&\�\��M\�}[I�4m\�m�u5\�\"��}�\�+\�Dd>i��\"2Y��W\r��\\\�Ԕ\�N\�j1��W3K],\�\�J\�Kc�t\�Gx\�\�n]=?.��1.�$Ԭ�ou�jd�?�8�0��O c1\�\\\�\�\�\�J�:J�M�uim��I[}�*1t\��\�\����\�\����j^[Z��M�\��F\�K|�V�H\�)�\�M�H\�,\�q弧/z4��\�^��n�\�\�p�\���;��LT��Jev�?2�0\�ʞ�$t\�\�\�ӫ(���\�f\���m.]=֝�ѿ\'\�\�_�Y�%�X��h�\'�\�U�*y�p�\�\�\�\�\�\�7��\�׻���؇v^\�\�k>�\�n�\�\\��P�����L\\C�5�����+�9\�Pz�\�ԩA\'{F�Z\�\�D־{�A:pr�S�Kt],�\0+\�U��FW�\�^E�`@�ЅT\�ȭ��c\�H<�\0K�\'\�ߺ\�m���t]b�g\�.U��ЛE\�u6�\�/\�m!�\ZI>\�\�<��2n���9f\�֘|D�]\���Vou\�[�%�R�d\�%k�\����W�\�9,�[k��:{��\�\�b\�\�H8\�-\�\�m��hن�a�J��\�chr\�t\�\\t��\�\�\�\�m�\�\�_9\�RJ�H�q�\�2���bۏ]:\�{>��\�:�\�\�7ri\�\�p�r�([+�q\�0�\�߀�>el\�\���Y�2I\�w�M�FВ\�\�ikm\��x,L\�Z�}�T��Jn\�y\�9$\���|\�g\��^�k�\�\�]i�6ױ�#,�\��*�q�*&%7`�}\�q�t����ܒI��\�\�o?>�w<7\�8\�)N���c\�ݶ\\������ۧ�+!\�5����Rpz\�\�\�cʢ�VI-\�\�\�݊�Z�\'�\�-[��r̈́c�)\�\�>|\�\�\�~\�\�\�O]7�D�{��乢\�Zk}֚v\��eJ\�F-��\0(�\�G7+q��Vv]-�\�t���RK�*\ZGM�Z\�d�[r�$��\�\��\0֝\�ѧil�d�]?\"%{F2��\�F\��~�\0>ñ\�~:t9瑚2i��md�\�+��-�\"w��(Y%eue̶m7�\�\�6I`\nx#�0�\�\�\�N��\�\�AE�H�Yk��-9B0&�\�NI\�\��|��=�;x�\�\�d~2��I�zͶ�mU\�\�\�ISiIF�wn\��k\�� \� #�PIp\�>e�<}Fi�=ew��\�N�\�\�S%�h\�q[>\�\����BwE�A��\r�	\�8\�Ïҳ�\�){�����ʾo�q�\�:k\��~z~O�\�+a�\�*7@��d\�p?�j�i\�\�[۬]�wdJ\\�=Smi��ں\�z�7\��#�\��No\��,\�ӫ��\0+3jNҴ�\�Y�-\�g�u\�\�\��\�6��\�Q۹�}h��qR|ѷ�M\�\�۹�VS\�o\�Mٽ˸ͪ�V c\0) t\��Z�A�j��.�n\�7�/#�is/u�[M5O���\0\�H�\�w\�\�\�#4\�ͧ�gk-�\�Ƌ�O[�$�\�*�ҳ���ō��`Lt\�?�z\�)7�\�MV�u�y�U$�u�Z-u��r�\�k�� ��\�Ҏe$ֽ.��L�I++j\�ѻtO��_^\�)	\�\0x\�x�\��8ϥQM��\��\0\�\���\�\�ˣkT�k\�\\ɸ\�=˂3�\��q�ßJ�E(����v�\�ۢ\�\�\��K��\�\�9�\�}��\0\�̫�\nNp\�\0ۑ�\�D���4\�����˧)Fm.\�\�[vo36i�+��2�\�y#�NN+)r�.�.\�i�\�\�lg4\�g���w\�u%}��-\"�m\�\�(\�#;l|�Ű��\�	\n3��w��D\�ti��۾�\�R�n*\�����\�\�>�; \�yq\�X\�E`\0%}2n�5j1\�Q�\�]U��\0ť\�\�\�W��\�\�\�?�J��� \�*��\�\�!���:\r�\�1ۚVPI\�\�Z�w�f9ST\�m\�\�woX\�+�Z\�-t��\�D���q催\\�Xg��z��5%\�h�_���d(ޥԧf�oݿ��ӿ����\��I\��[8<}+H\�H]�+6��]:|�2ԥe\�8��5\�t��w�\0�\�^�Àx\��b�\�\'--��}-o�E�\�K�*\�]/n˧\�\�=�)Ԧ2UYܜ\�#\�\�Q�v�R.�������\�M���\���\�J	�k.n��\�\�\�C7U\�\�4[�J�e�\�\�\�{����(#�\�2\�4��g�X�`\0=�\�V�\nM\�I+iv�Sj�wj\�\�\�\rQ�(\�ԪԔ�e\��\�rI6����Z��_\��\0�\�\�ww�^M�\�ܛKG�\�nZ(\�/v��?�q1no\��\�3<\�oi��/r2\�\�\�\�\'m9j5\�m�\��6W�\�\�*u��rj6�ե.E.[�\�}u�\�x\�ޓ�G�\�F�z�Y�\�+��+&df+�|�\0\�\�_\'9ɷ\�5vv�\��i�ݻy��ZqOK4䭾�y\�s\n%�\�dB6`�jd��a�\0\�֩�KEZɫk\�&�-խ����Ίk\�\n{x�ӭ\'\�\�d�\�E#\�-�\�\��ض��\���T\�3IFk�\�M��\�\�\�-խk\�\�~_�Q\Zز����%Y\0Q��\�Ss�8 �__�\�\'\'\�kF\�K\�mt]���M{�\�\�W\�sZ\�ȖH���)\�T�I\�ɓ��\�C[��B1�v߷�fe\�\�2Ȩ\\\"\��0Fq�0zt㸧y{�%u���vkE\��\�\�K4�ɼE��p\�	\�g\0��\�q�\�i�^���Q٭_M�\\p2��\";3�f$�RI�Q�\�7n�D\�k^ϥ��ep��Ĭ\'1�\�B�\� .J\�`;\�\�9^5)6�r\��.�ס.-�6�\�`��{\�c\"G\��\�,F�\0`ʿ0\�\�ϧ5�9|M�n�\�M?z\���\0�\'\�\Zqv��U�\�\�\�[�>��߆�#�\�iR\�\Z��\�\�Ki�0���\��2\�\�m�S\�R�\0nKҝ\�TUH8\�\�\\\�$�ϼ՛Koy�x�x�x�T稠��S�+�E\��\�\���2�\�)>x�\�\�/\�-4\�L��K�C$M;o\"h㐁�F9�\�a]N\�wz9~c[R.uZS��\�)Iv�\\�\�ͻ[ȼn�.��+B��	h�%\�ݧ(��\�T\�\�\�\�⟃|Cgm.��\���;:\��ѕh\�H�q�(��\�:�\0$�\�b\�V�&�B/\�\�Q[\�Y�ޖ\��G\�\��c�\��B5U�y\�Ƥ���\�\�t���gdw\�\�oRc9n@ݒ3�\�A#=;\�W\\\�N6Q�J\�]h�\��\���\�YZ\�J3\�\�̟g\��Z�Z- ,$��t\��}x���K�Y\�\r�\�w�2��Qj*2zr�?������ےy<\��lӊWNNQV�Wkͮ����䚓\�\�Vn\�ګ\���X�~~PT۱��\��V\�{+E���\�jN+�\�Q��S�\�~�\�\�E\�*܅�\�PG\�y<�5���9�]-oߧ5�~����{���V���8��T�pCarq׿\�z\�\\�\����\�;\�~\��~ɾTھ�]k�����p��c\�\��\�:�9\�h鶯���\0�a��Z4�SZZ\�}��6��0I�\��\\˥%7i�\'+t��毷s�C٧;�\�\�\�\�׫[�%v�����N>�q���x\�(YE>U��\�z�\�|�\\�\��N�m_��aIU\�8$�\��\�G O\"�\�\�\�IFR\�Wn�\�\�T�%��.ng�jֵ��i\�#��\�\��\�)<�\�\n>^~�ZJ�\�mJ�\�@�I:u4\�z\�k���\��~c���r��5QS�9��v�\�]�\�߇C)�ڴuv��\�\�LS�J�\��C�G�*j](56�Z�t\�i\�\�\�Q\\�^\�~\�����ǰ��\�\'�\Z\�s~\�W\�)^�\05��\�\�b���\�Ӷ�\���\�8\�7`0#\�\'�{f�Ԥ���%�sV��\����F\n/�\��w�t{>\�*\�\n�\�\�(\0\r\�{��e�mW��\�o\���)­�ӊj\�j���\�c\��\�)\0A��\�\��}A^޵7P\�I=Z[��|�\�8Fq��M�JMZ^�i���2+\0͓\�$n p�\�����R\�ǗE�k��!�{־�M+\���t9\�Q�u�`���s\�\�c�푟^��2I\�+\�\�N�o?\�\����]$�����_��3\�\�K8BE�\�\�.X�B�\�|�}j�\�ů�M�9+/E�\��I����^ַ�ٽ\�{�\�@��\�@#\�P8\�ۙ\�w#8\0�\�\�\�QK\�j��ˮ�w\�\�\�j\�}�m��n�\�\�зB�70A���@\�pFU\�<��N\n)\�)=S���\�Įv�bҾ�\�7{\�mׯS^��y�\��`�:��\�v�,\���f�-=_��\��y$\��Km-�4��	�\��	\0�@N�\�\��&�mr�r��Ϯ�n���5�e�w�����CQ\�t�M�\�u�\�4�#L���+��R�-�\�\�\�+�UB.Y˅Eg`��V�+J\�\�\�Z\�W[�U���m��!)\�T�\�\�s��K�V\�u��\�[+�\�O���垕.��G���7F�iX��F�\�,�$L�Ĥ2���\��y��\'J/\�\�\�\�pnr\�j\�4\�\�k�ԥ�b�?oJ\\�rjrz��~Ϸ��>L�\�x\�i�]r�++F�Q�\�V(�Z}�e���d\r\�\��,$nK\�ҶX���\�x�Tڋ�0��+�-Ž��\�w�\�\��l._�\�R�\ni^�K\�5VZ[ޒ�m��K�Ϯ���-��\�\n���m�\�\"\�^njq3�᱑\�y>\�E\'\��\05�-�\�\�[�Q�R\�{�\�+7�\�G7�M\�3Z��^y��I\�e�iR(Jeo�n\�I\�c�J7Ѯd�W���\�\�摇��RJ\�\���\�Dzm��\�]L�\��ȱ���=FfPC n1�����e$�[��F�V�}7�=ե�[7�:\�\�\�n\�U\�,�ŷ��\�\�@\���Z�n[_}�$\�W\�\�՗￱`\�m-tu�\�T��\�{;��ȹ\�G\Z\�N��,FK}\�\nSp\�I�k���⺿�Qrי+t\��\0pWA���@	�1Ѓ�`�Qw\�_�kkY�����靣Ć`X�]b�U�qg\�#\0I`\0��\��zy\�\�mG��:K��������mʲ��\�E���G�2p[p�\�)\�O�\�F۵��\0��j�ѿ*߷\���z��^\�[�a�\r\�\�D�ƪ\�b�<p{\�R��e�\�I-t���nf�\�m�q�\�eN:\�n�\�\��h�E\��%[]5\�Ie��[\�F8q�-p�\�dd�\�9\�N\�:\�/=�-[vעﱽg�\�i\�\Z�#�\�cf�WM\�xd8n3��\�	�\�s\�UjW䓋}/%�ѧreN2RR�\�4�V��\�\�kk�\�\�mԭ\�!ecix\Z\�	���\�R�\�vV\�b�A��-oz\�&\��K���k\�\�~\��\n�;S�$�\���J���\��]+Aլ//u��+�]��TV�Kykl\�*\�\�鲂�B$yO<����j\0�0�s�T\�\�զ�\�\\��\�\�\�n\\\��]�שÉU 騥N�b\�\�N)ɫ�+>W.�{�X�S\�v�\�/-���Azo1\r���\\]}���k&��R]p<��\�N>b\n���\��5+\'N�\�)5�vJ\�4\�޻\�u�z^Ǉ�R�4�Ҥ\�\�_�)^\�I\�\�ſz:�\�F���[�J�p\�S��y�W���WZ)/uvӥ\��\�K�y\�S��\�ɵk쬻\�[obD=\�+�8\� d~i\�\�m�N�׽����\��|��\'dݕ\�[�\0�&\\\�e\n�\�08\�\�O8?�sN\\�˚1\�\�\�\�]-\�\�T��i�]GKr\�ѥtZ�%[\�cn0q�\0�jS��[m��ֿ#X%(NW\��o��\�oU\���\09X�\�\�\���\�iJ�\�U֍\�m��g�\�U�,yR\�q�\��\���m�\�]\�a�Q�pO=\�捚QV�\�U\�\�k�\�7�e]/x���n\��\�V��N\�\\�\r؁\�\n�Ÿ\�)*r\�?�;z]�\0[�B�\�k��Iim�\�Ь�o�n\�\�\0\�y?\���sq����\�{�F�\�\�NܩK[�4�Ѥ\�\�U(xby#\n1\�>c\�?�J��h���[��~��d�߫z�\���\0MH\�[?/\�@,1�8\�w\�1\�*.\���u��ַ�};jD\�+��U�v��M�B��QK=�\��\�\�f҅\��]�\0�Gq$�&��wv\�k�\��d\�fNH\�\��\�޲\�]�ﾮ\�v�/ܽ\�J6�y-�\�{	 ��`s�\�b:.z�\\t��\�q�Ӧ��oە�Z\�\�\�n[��)�;�*J\�\0m9\�\�`8\n8�}iG\�v��蓾�\0̻�]�ԕ\�\��\�\�.m5\�\�ވΔ�\��]���\�\�\�JQwj/X��u�E\�\�\�\�\�N�r\�r\�_�\�eױ�p\�*��x\�ۃ�A\�C�i�\�\�g�\�$�V\�\�\��J�Z���� \� \��<wU��JMF\�E^6��\�N���h�E=v\��3\�f6	\nH,N=pI\�A=���r�\�ͪ�{\�w\�io}Y�\�IE�\�\��5\�P-��\�+�\0r\�q\�\n\�g�\n�eT\�e�[?\�U9}�c5N:o\�}��\01c\\p6�9��z�cқ�i-9[��\�\�nix{\�M�q�֝~~e\�NҜ����bp\���Ҝow̭ko-�}z�3�R\�{��v\�\�\�߫W6a)�\�	$���U]\�s+\�۵��.\�\�\�%���m�\�]Wn\�>��(Ts�m^:{\�\0\0y�\\�\��{�\�m˦�/�߉<�^6W���Z$��v��>n���/Y|8��\�ma�H\�ux��/\�\�^Kgin<�H\"S\�\0�t�E.\�a\�nυ�\�jS\�\�\�\�\��\�\�iJ;\�kt֪	Y��}\�\�\�\�}vU%.Y\�?d��2���+\�\�-�^�s\�I�\�GYҾɪj��ͅ�2[,\�3\����X\�1\�@9*	��֫\��q置�ݽ��]:S\nN��$a\�{\��\���\�u�4d^\�[��Z��gt̪-ض\�T���@##�\�\0c���\�֍�m/uu��v�*��Q\�N\n�+\�k�\�\�K�t\�\�.��4f�*\�$\�q�eQ6�v9=��W�՝����9rN\�Z��\����\�ܽ\�Zy�@{}�F]#\n�\�\�l3/�D�wV�\�Y\�]�$�f�~w�\�\�\���/��e\��,J\�~s�I\�y#$8\�\�i&�{\�ۊq��\�ߴ�\�6��\�o+Ouow{n\noy��{\�\"7)\�py\0r1u\�\�Uũ*mFMY\�\�z/��R�\�\'h\�\n�[�m{Z�m�1��}�\�gE]\�d\n�J\�V��6:\�w\�]�%��wWK}:=om5\�\�qt\�(=%�\�e\\\r��e�.99\�\��%�M.M�ek~?\�RK�\�\0�0xp:G\�MI�\��\Z/O��+��m����\�!�IKI+*�\�wdB\�e�\�G\��r2q�(oM>_�v\���/ϹY#�\�\�Z�P\�\0t�r\�pO������k\��	y\ZXJ�ȧ͌�HK�@y	��\'\'���v\�Z���^\�5H\�}�<�\�\�\�\�K*�,?֏w�\�E}\�4a���on.#Ki\�!���#\�-����\0Qߓ\�9\�vVэ{���Z�^�#\�N\�\�\��%�Ĝ�\�<\���՛O����/\�\�\�\�+��jV�\�p�P\�Ήk�s(RnPTy\�z�\�\�W�\�eQ�&�od�j�yV�JP�E��\�\�u��[����\0_\��O�6�}�iZ.��\\\�I��b7��c\n�\���[��հ>�.\�ԩZr�\��&\�\���\��N\���V&���\�)J.\�0����yz5�\�})�x\�U��X5��\�1\�[\�[��2�~�\���ar\�F\�<�\�\�RķQS�VVz����\�\�\�BRN�T�qi\'{\�\�1M\��OV\�\�\���\�\�\�Y�!d\n\�_���\�fx\��Lw)�.X�e���]�������F1���i�����^[3AdQ�r3٘���\�3�g�;�W��enW�*\�%ٮ��\�/Ғ\���ۻ�N�D��Z\0\�\�I\'�\�m�\�\����\���\�m5�¥\�\�n\�n\��\0\�\�HJ��\�H,	-�7��\�\�\���N\�i\�\�ɽ�\�\���^\�\�O�\n*\�촎��f�\�\�c�!�\�!s�^\�y\�9\�U+�AA]\�\�\�\\�\�&�muV\�\�\�\�)\�n\�8`m<u8x+��}�$䩥{8��Z4\�\�\�ynT��]\�-\���;����\�FOl8\�=�9ct�\�_\���&.\�h\�Mc\��מ�ߛ#w\�\\\'m\� ��3\�\�ޮ.+�\�\�\�o\�˹pR��ѻ��|�l�Zy~#~s�d\�~e%��\�\�۶\Z\�s(5�;\�\�ןr�߳�QJQ�j)�]�F\�.7�\'\���q�G\�T\�?q\�\��\0ٿ?���\'	�&�9W#[+=��\��{\�<\�\�B:p:�R����w�׷}\�\��]�e\�\�v��Ͽ\��\"\�\�\r��8�{��uJ*qZ5�G}5Z]�ԧ&�n^Hl��w���\�s\�v�P�\�\�Q\�\�\���mݟ\�t\�z�5[\�\�mZ\��\0_36r�z\�\0dm�\���9\�\�\�SR�\�K]]ڿ��z�P�R\�����\0��\�c\\0m#;q��7\�\0:����}]\��\��C���,\�i���\�4�vF\��8�V\�\0�\�ֱk޵�\�KD��\��7�b\�\�ҴwK~e��\���f-��\�8\�L��{\�j2��j\�\�Ւ}5\���qF\�\�Nگ>\�\��O\�P�������\�z7AM6�e�]WU\�\�\�PJMÕYu��\����1�\0\'�UX��\��\0tF\ZM�<�i\�얟4Q�v�(�\�*J����~�\�Kp;e@\�pq�� pI\\���c\�[Y\�\�R�M�v\�_K~�MI\�p���t\�[.�\�\�\�R�~\\\�\�C/<\�@x�����t�\�6�l�K��~�E/s��\�Iߤ[{r\�W篡u$*�,B\�\�p��B�\�9\�߀�,d�Tt�V��}.�\�\�55d�\�[+��\�[�;��=~\�>\'�\�|>���l���wnE��50Z�_ι�[%��.��nXS���\�p��J-ß�((�\�\�讝�����\�dԪKN��\�Ѧ��\�q\�\�V�v��\�\�\�}Y��t�\�Lvf\�Go\�]�\�#(.ŉ\0���\�\�\�j�\��m=��~��>�]jק\�:\�)n.��P��ќ|�#�m��󸍧��Ii6��\�>ޞ]�^�[���y{X�i��ѿs\��l�Q[� s�FH�\�3Y��exI[M�\�o\�Q�*�W��\0��\0#6I$�1\�]\�V?\�_ݣ�\�<`c\'\0\�ܒ�\�\�=-i}����%~XB��\�}{u�}\�B��u]CQ�\�.\�\�;fZ�ZI#a!�f�>c��\�����>\Z�Ew\�Q\�\��\�ϱ\�`���%	N<���i����Z�}\���\Z\��\0\��\�\�$qx��\�\�\�{l\�\�~�?�|����\�\�`J�W]\�Y\�a�x\�\�Δ۩���\�&��ZݷQA6��M���z�R�\�jayS��Z�5w\���\�ݚ\�\�\��\�{\ZM�_5\�\"\�\�3,�\�3<�Y$A�79$2�\�\�_eJP�\"\�T��QI\�I�yr�i{?/��^B���\Z��\0�K�\0JK�_+\�Ԧ4\�/\�\�D\�)?1Cj\�\�Ϗ�\r\�bx\�E9(�6��\��W0T[J\�Z^w}�У{�OjY�P\0\0$�q��v��#8\�\��R�m�}~Ct*B\�\�\�\�׿�Z^\�\�I�L[G\�Va����Lv��_��\�\�\�\�˕\�KYY\��^�yY.|\�n�\�rs\���m�\�\������\�E*Is#˸\�\�7���\�=pG9����K캯TkD��V_�^(�I�H�8=#�;P��\�\�\�_����R\��öG\�sI\ro��\�>�\�XaX\�\�\�w�u���\�\�~e\�)���VX� �fP�rW�c\��\�\�%\�Q[M?�IqN.\rig�L�k�L\Z���\��\"\�\�rXX�̒$V\�\�\�,q��\�\��#i\�X\��.\"�)\�Jn����J\�+;\�\��t�ovyu\�\�P�\nn\\�\�쵺z+��{]}\�\��[?\�Yͧ+\�xF\�s���\�Sj\"$V�\�\\�1.\�\�j�\����}&\Z�}��9=ӌ��mwwߪKC\�\�JXu(N2�̬\�K�i\'�nӻ��\��w>�\�#SXg��J�\��@|�\�\�\�prǃ\�}8�(�ʛ�z\�\'-\�Z+��l��\'xݥ-�ط��\�}\�\�ΑT~b:\�\�|\�7n�u\�Q�\�\�Z\�\�o\�\��9��\�(�\0^J\�;�\�x\�\�\�9\�xQ\�\��ҕ5\�(�$�ᦾz:nK�G�\�_}�\�̰v��\�l`\�I `q\�\�E�̥wK.�}9}^�~E�\�sG\�z$��[Yt\�r��Tm\�˵H#\���(\�\�\�Q��ml��w\"��\�-һk}�\�\�܀���8m�~bT`� \��4�>U)Z�*��\�\�\�w4mFܯD�k\�\�io�\�F\��\0\�`�y\�J�����-b\�\�.\�\�)\�]�T��T�\�\�\�FŸ\"�v\�\0\�\�\�\�\�\�j#\�e�o\�\�b\�\�\��d\�~\���G\�w}\�ѲA\0�(\�<�\nw������o�?�N˛YF\�׽�}U�\0A6���;�n]�d�d�\�\'\�ﭢ�z\�_\�.�7�ba5�=/k$�\�\�tO���O�:c\�z�\�\�1��?�\�_/ Q����\�m\�\��\03ن3�y\�p�lV�Rq�\��ն\�m\�\�\\i\�\�RVOE\'�{r\�Z\�\�\�Q�\�H\�=<c�]\�v��\\�u\��\�\�II\�)G�Z\�\�޿��6���\�\0��2};�\�X$\�^�\"������\�\�\�\�s>D\�Ւ���\�o�ƙ�t9\\��Ҝ��l����k5\�Pr���Ғ��_?\�\���a�m�)?1\��\�\��k.y^<�i\�\�Z-�z_o0�\�e9]\�k��۳��+m�j��æWy\�9l\�46\�+�>m\���5N4_-�����E��FO\�v�\�y��~i[\�N־�G�V�\�\��\�j<\�\�\���B�W� \�\�0p02{U\�>\�K\�\'����r�U�\�Wi�c��\�\���!q�*�\n�	\�8�\�\�Z\�-I\�59/v\�\�V\��NJS\�q�qѮ\�\�\�\��&�d��\�6��6\�9���\�f�[�i�֏^�Qt�#�\�4�ΗJ�u\����\�x�^Դ\�]\'BЛ\�\��K<\�\�p�\�Mӣ\n.o\�\\8\�ϸ,fIX\�%�W=Zӊ���d�\�{��\�\�\�k$�\�:(\�\�*����\�ڼw放\�6�o�-�?<>1iV\�G�5--5��oɎ\�i\�n�Z\�{�B\�?Ү.D!\�{Q0�aA?�\�3�*�Ud����>X��(�\�\'k\�\�}nZ��JRpT\�ov*<�%+(����+蟩\� �\�e�E\�\�\�k��n\�\�\0�t�\�|5\�\�Żyj�K��\�]WTw.w����\rm�\0\0\�\����Mv\�o:\\Ɖd�ȭ7�ۉ�hG,��	\'�g){%.v����\�\�wm?��ңR��G\�\�t\�\��\�W�\'�/5�\�}.\�{٣�\�t����}�(v\�\�\�n\�Hq�kϞi�T\�Q\�V�KIB\�\�i{���wW\��\�b\'>X\�|��\�3\�\�^F�=���\0���nB��(\"�%\�\�C&�v�Hfʓ\�A�<\�c3\�J�xX\�E����۳��Ki�{\�}%�C�\�9T{]&�5��\���C�\�\r[�VV֟j2.���x�G`\��ݹ���`\��g�X��S�j\��_\�E���D�ҥjp\�iEF<�J\��\�/�D�h�>��D\�\�t+�;�e�E��\�Vu8�\�\�\����t\�_$�mg\��[Z얫}7�S����NJ-n�{_��5���?�e\r�L\��})��ԥI�@���g�A\0;y�����k��\�0N<�\�R�\�ӗ���h���،n�.S�+5\�����\�\���\�\�񏄮͕֚�\"�d�f�?1p\�����g�\�A9VQ��Κ�\�\�m[���\�\�r:��}��W��6�~\�=/\��\�t\ZO��5G[�R9��̊\�bli���]˅�\�	\�\�\�*\�\�\�\�J5#ʹTڒ\�w�\�_\�_tR�l�\�\�\��n�\�n�^���a\�Ž��j�\�\"�UC7E$p\�9\�LR\�\�0n�y\�Z\�\�\��\0o�<�\�<���mW���\�?>�\�\�[�\�Ƃ4s�m\��\0%~U\'���\0\��zJ<\�q�{+��_�<Z\�E*�\ZzK����\�S\�Ǿ{yK�\�\�c��@\'#�\�יx�J[��wik\�\��1C\r8�gi��v��\�\�c\�g9E#p\r�Wܑ\������\�m�5��eR�\�\�5eͦ���\�g	\�b\�ߕ��9\�76э�\�G>��\�z*	@;�\0`\�)=@=\��*�ٖ\�0��\r�`Nx\�҈女�E��zY�[��\�ζ�0�\ne���@\���\�5\�E\�GY\�\�\�\�\�z��Y����쒛Zn��+�\�\�߳sIwu\�;v��[{K�8��\�i<\�/�w�k�d\�\�\�4\n<�\�\�p\�r�Hs\��ʤ\�>�h�=�]\�\���\�\�ա\�))E�;_T���e�O[\��\r���#�k\'I:�\�\�d㎼{\�\�Fϗ�ܵ\�RӖK};_O=�x*k\�k�I\�-ܵ�\0=�8�!�\�\�\�\�o�=G\'\�?AZ�\�\�V���_E\�\�Di\�\�i\�$\�mR.��-D\� \�\�)�F=�=E7\�isJQ嵕Ҋ�df�峊��V^�\�\�Y�#�\�kA�<�3P�����\�\�h\�kk\�Kl�ltF>\�Q\�]��X���Hlq�N;r?N�2�\\�N1tZ�v^\�\�==\�\�κ\��\����Q�˵Fs�\�v�aOe(�8\�\�mw׷\�TT%��\�z[M�wӽ��7\�\n\0\�\�1\n9\0��\�1\�\�	\�k;JҌZJ-Y���\�\�n)Ir�\�\�_�ڶ�-���G!\�X\"�w\�\��t\�S\�\�\�\�\�g��\�h�%5t\�����\0�z�c\�Tr��\�Sۅ8ɪ�W�n1\�M(\�\��\�\�^\�{�9\�ܮ\��v}\���\�b5`.F3�z�@q\�\��%y���um�/=�%\�)\�\�(\�(\�\�[i\�\�r\�f\�\�	۴dp\0=�����6����������bխ�U�Ǯ�$m\�8\��\0{\0\�\�RZr\�)tZ~\�-�%�^~]\�B��\�\�\Z6;�\�v\�ۿ�Z����\�Im�M�O�Y�kt\�\�U\�W�\0\0͜��\�S\�9\�ҹ\�W=�\�\�\�+\�ӳ\�/ggȟ+\�5��k�����_���\�ph\'\�\�)J.<�~\�\�QZ\�\�\�\�[��\�\�kv���\���}�rs����q���\��sYIIrƝ��e�\�\�\�ͭ�4;MB\�\�\\��O��\�\�cH\�`8=\�8\�ך\�\�wN����5�[�\ZB�jI\�>�\�[\�\�z�\�ܢ�ל��\�eP�܍\�\�=�>٫\���\�>T�U�_O_@\�v\\�>-}}��\�\�K2\�\�\���U�ǲ�zR�\�JN\�\�\��-׽�y�\��\�W%f��\�\�sB&PB�F�т�a�c�\�ִ�n+W�wk�\�xT�uj|�\��I�Լd�c1nq�uڼ������u�W\�D\�{ܮH\�(\�F-���\�{~ʿ|z4?\�\�ٗ6\�V�\�.-\�\�L\� �yľy�(C.2�@r�;�K9Ǫ?��\'*�z=U\�\�m$���\�翕\�\�:��f��\�K�\�\\��o\���S.�}w�\�sy�W���\�\�9l\"�6v#�\�\n��Ej��9\�O�[6\��]n\��O~*1��W,cud�\�\�{z��,g�\"�h_ȚX� ~\�U\�\�\�\0#�}O��Ih��K���\0[�R���ޟ\�վ�\0#\��?\rt�H.<s\�Hb�L\�\�{�*\�kd�;���\�\�!>aFr�\n�\�Hm��O7\�לㅥ)r7y\�_\n\�\�nW\�\��G\�\�x���u$\�~\�얪\�\�\�\����Wx\'�ROy}\��B���&�\�\�~TZ}�i�\�\�R7!d\"F�l\�\�\���)�\�E\���\�\\�T�D�\�\��e&�\�\�ևԪP�\�FʜS��dۓ��v�\�OM\�\�w�\�\�3\�_\�8\�|�O��a)�Jp�����.�����ogN+D�����\�w\�ug�h\�}�UU\����\��\���i%ND�u�\�~\r�\�|��$���\���~�\�F�\�q+\�ȑI��\�Q�q�I\0\��N��\�V�獗t\��\�\���\�.X7ef\��ѯ��S��M���7Ef{��i�Hٸc#�\n���\�)���S��NI\�\Z$\�\�_\n��\�j�Wܺpr~͵�ߕ�]\�\�oe�mk�>~�/�<=}�|QL6I��\"H\�w*�\��נ<�Ҧ\��\��h\�c���\�[k\�ﱧ-ִ���I��]\���g�j�8|\�\�\�B��2\0���\�>a\���w����\�I�I\�\�w�\�4\�\�\�~(\�\�+\�^\��M8}\�i��\�\��\�+*\�\"tTV�0I\0�v�\��\�\���12\�\\��\�{4������\�QPQ��\�\�>KM=(\�|mi\�E(RTP\�\�rà#�\�H\�+��2Z.w+Y�\�k}�\�\���(ssIii��\0�-߇\�X��&2�\�\�J��\0*\�n�<\�`w>�\�\�\�\�t\�\\���+&\�g�\�N��Z�8�v.6{I%��\�y֯\�T�_.8\�H�\�3��!A\�\\�s\�\�8�h\�ԭ�\��\0��V��u�Wm\'�%\�]쬣��~\'�\���\�$tB���(H*:6v�9\�Jx�\�D\�\�K\�N��\�e\'ZۮV�\�#��|S\0\�:z`pEu\'m:j���W\�ռ�sDeʠ\��7\'\�\�h�Z^ߠ�\�Bթ%�\0n8��\�\�M\�\�g��\�{l%u}u\��~g\�_�|6�-��[������o�Amsxda\Z�?\�?\�\�h �s\�\�xf3��\�{�\�I��|7\�w�]���B��kMIJ\�\�]+����}7i�>��\�t]�  `�8\�\�d�c�r+\�央�\�\�\�\�Z\�\��H���\�m\�-�-^����TZU�q�1�!�A\�B:\��ך2��\�\�\�z-o~\�B�l�\�\�V\�\�\�\�k�m\�\��b��pH<py����MYǕ_�\�~=�Ȅ��\�r�[k馗\�]�^���\���\�\�q\�s\��\0\�N>\�/,_[l�mf���^J-\�\�螏\�\�t �f_�\��A\0t*0zr3\�4���\'ȥѴ��\�\�o1;%\�\�\�\�g$��MEm\��\�\�i�\0\n\Z\�n1�l��\�_-�༣x(�\�%&������\�\�\\�����p2y\�\�{{��-��\�\�N�\��F���I9_���^_x\�ۜ|��\�x꽰8=*�h\�\��vw��˭��4\�tJ\�뛷�ӥ�O�dt\�\�^\0\0��x�*!5��ޛn��g\�\�&K�D�d�\�\�\�^����9\��\�\�\�\\\rǪ\�H�vz\�Ꞌh��v[k�\0S7IƟ6�M-������r�2\�\�(S��\0\�\09\�\�UyEY\�.\��<�\"�W*��v[;t�g�9\� \�@6�\��\���j�*\�>�?���Q\�Q\�V�\�Zz.�\\\�fQ�\nv�rN\�FF<�\�1۽6�r{�^\�d�zu\�ݙJJ���]\\t��[zv��Uө7u##��\�ֱi��]�\��/]�\�rj	|OD�n޽��~\�aF8,q\�G�\�c�\�%f\�n^Uf����\���\���搵�m&\�]z��\��\�f\�\'�U�2\�@�\�\�X�+\�ཽעZ}�ه/+�`\�5ծ\�4�\�c�e�Ux<6\�2\�g��\'����4��=֝�B�\0.���m���\�Ir\�K�n/t���S-��̽�\�$�?\�iԔ\�\�t\����㶽����\�#�j�\�/�o��\�R���3�A\�ʜ���\�׵)G\�\�v\�Yt�^�R�U\�U-f\�\�\�\�ߩv$a\�+�F�\�w7\�ש�9�yt\�O�mP�A[�\��KY6��\�\�.�ksy���\�y�\�\����\�PߌgNq\����U�J\rrǴZ��+�u\�\�J��I4�ζ\�u�\�[�?.�K�]x�V\�u����\\\\\�̏]VTb\�a���\��mJ��R{F\�j\�Q�\�v\�\�M��qN�pԡF�\�=\�[\��\�%��ԣq4ivvhOۥ�I�\�c�%��B��9���r\��O�Ԯ\�\�\�%��\�\��w�y>�U������ż\�4ȤX\�\�c\�Ș��V3�\'=y\�Wi�y\�뭭��\��pJ>\�޽�\�Y}\�\�c�s\��6\�6\�\�+<Rᬣ�YJL�0��}�#z�\�\"�=\�W�\�J1���qn-\�~Qvٯ3�<��-$�x\�+G��\�ݯe��W=\�I�f\���$���\���ys�=\�hǕl��V٭m\�\�v�>\�ݭ�\�\�Cӂ�&އ��\�\�~>�Y+/^W\�v��[\�\�Qi�z$�z���\�\�[7\�\�1\�\���3׵m\�7י;;\��\�\�=�\���꛲-6�N�\�<�*��T��\�o�5\�J3��\�id�J�5i�\�ڷ4�~7�\�]=��<�9,\�\�aq����nca�?9۞��\�\�q��Tz]9+�����b��\\e�Z鶯k麾�4y赳O&\�4\�1P��\n����\�>�\�\�..J\���z\�\��w�\����\����W�O��\�\�a7�0�#���Oɑ�Tc\nw\��I�mӄ\"���-�vPm�I+��\�]��c\�\�2qt\�\�\�s=����b�N�X�$G)\�1\n6��q�Ͼy5\n>\��uwKMm�\���\�jn)�W(٭U\�5�[/\��-SC�\�-\��9x�y`ub�I#�Ay\�A\�j�9S����o��\�٧o/\�+F)J2\�\�\�IZ�kf��h�\�׼0Ѵ�a9]�nܬrF\�϶N;W���-Tgd�f\�\\���\�e}�\�[\�ݣZ�KD�t\��<�\�Khw�_����)\0\��z�.xӔ�\�\�=�\�\��\��P|��N�\�=:�\�|�^ҡ\�Pŀ\�\�?�A��	Q�\�\��k\�\�I\�״��E�v\�p\�#f�_NT��r\�\�\�~*Җ\�튬�d�#\�Ӵ�\�^�:W�k\'.[\��5���\�dֽRGrT�\�p�kD�n�C\�\��[\�4\�2\�*\�^\\\�,�\�\�t��%g��@���TpGV\�Ռ[V�ۺZ.�5�\�cZ�0М奖�Ϣ�q\�\�;��zi��\��\0�\�׼\'�\�C6��\�j:v��\�Xꖞj[\��\n�bx�DlZ)$@\�~�\0\��Xw�Ҍ\�J�҅T�(�\��\�Z)F-\�&ݕϗ��\�V�U%%V2�\�\��招|�4�\�\�\��\�{ޗ}-\�P�]�,\\�\�K\�DYs�ݴ8Rv�x��\�5ʽ�g���\�\�??\'\�s\�q�c��\\T���[\'k\'\�c~6��]�$�Aʀx�Iۓ�y<�\�MY��������\�\�#\�\�\�:����\�m_[\�g���H0\� �\�\�N:rs�w�\�՚\�\�M-m\��\�\�:|���լ��\�\�\��]E.��\�UH�w\0~�\�ڛS�|�|6\�\�\�\�L\�8(\��WO\�_\� vw(�P��2\�rH�~\�U �\�\�z[\�{_���\�!\�JQO�]>W�S[+y���g\�e�p�\0�ݲ+�:��\0��n��-?�\"\�\'\'(ٷk5���u\�̃p\���_�;y\�8\� ԗ�\�I)=�i\�mY�e8{т�\�&��\�$�^\�1�\�\�CЮ@ \��1�ε��a�.U\�\�W\�b�e�R����o[.\�T��w\0:��\�L�ڦJ>\�iG�\�[�k�ۗV*��a�K\�[�\�o�\�U�\0�^ɜm#�\nX��إ;Y�W+\'m\\uײ�^�T\\�+��WI\�+t\��߹*�8\�ip*��\�\�\�nV\�޶�{S�|�\\\�i�\�d����\�z�6͹\0�\�O�\0\0���R\�n\�\�[\�_�\��	Ǖ�\�\�f\�\�gܺ��\�̠/<c�2sDd�����-\�n�\�\�Ȕ\�2}�W۷\�c\��XWw eq�\� ��:q֦Q\�Jr��\0\��\�\"��\�}6\�U?\�\�\�t�\0Vq�9\�v@�\��o\��\�m\��/�\�k;\�hkgk�6\�[�\'7p\�#��\��\�A-��#�\�\�\��껫�\�\�_Di\�:C�I�-�����Z�ff h�#鸁�?��%�QMy-\��\�\��\�\�\�Pv\��\�\��*4�i\�G;A\"�\�Q�^y�s��Z)\�_�[�G��tV\�W�\�խ�\�\�\�qc\'~@\�P0\��?>j�\�.\�\�\�\�^�|\�4\�\�d\�\�{�z_��\�iB��ʶ@�$\�\�q\��*㭠�im\�\�C�Z�^T�[W\�-�\'��[�\rB\�f1�͍\�c[�\r��,ps���s\�g���\n0wvmu\�]\���-�ԥF��av���\�\�~�~o\��\�:-��j�cΏ=���R���U���\�\�F���I\��\���\�=d��\�N�i\�yu\���\�m\'-Z�+I]�OU\��g\'u�j�(�\����\�Feg���\�n��s6\�\�߳\�[��뮦�Jѵ�{\�v\�\�\��\�klG&�\�(eiT�H�\�\�#��e2\�׊\�n\�I���\���}�\�$S�\�\�\�m�.�۩��\�Q�آ�k\�;T�j\�@e����H#�~g��������{٭\�\�\�S���3Xz5%kr$ݝ���u=gF��\�0\0=�O�r3�^�s�7��e%\�\�w\�\�M�\��\�Rq��\�\�\n�\�}�u���t�N�\��\0L�\�s��# \n�nH.zg�䃌\�e<��Wi\�t���\�\�௯s��eG��\�oD��W\\��\0\�;�b\�\Zm�&_>q(d��7\�3\�ֻ�\�9ch>\�K+G�\�`�\�G\�_���n�k��R\�\�\���C�Ha��`�nxl\�s\�\�i\Z{[�4\�ֵ���C��\�\�ӕ�\�7{st\�\�\�5ZI+\�ӳ\�;Ͷ\"w�#\����\��gFw\�\�;ū_\�\�\�e\�e�\�N�?,b\�`޶v\����Zw\�\'Q\�\�tI�X�lyd�;\� �p3�0=s\\�,\�n1�~�:}�N�r��I\�V�ݵˢ\�\����9�\'u�2�\�\����aCcs�F\�\��ʅGJ*\�%i]?5\�v\�S)\�*?��Vz\�\�~�yX�=\�;\�R\�\�\"a�\�j\�\�~��\��\�I\�U�Jάm\�M��ߟ�f�\�1�u\��uN?\'�\�n\�4׶\��\���ꊸ\0�\�\0\�n������\'\Zw�u~\�v��۽\�sON\rN��b\�\�Y\�l�-�]t]Q\�\�?b y�D�E!Hx�\�g.\��\��z������\�\Zt\�o��^�Go#�Y�+5g�\�)�V�\�f�W\��Z\�\�]\��\�a�ʹޟ\�}9��\�tkSi\�\�[\�\�۲m^ݖ�1T��+�\�x�g����\�&��AH�\�d�-\�B�f�U�E%_}�ֽ,��\�ũE��+=�}[�9�˞�p�d�Qn\�ϕ+�\�\�^3\�AF�������v\��\�A�\�zq\�{�z�(&�\�{^\�\�\�\�\��14���\�\�\�o�N�o3\�\�c�\0=�t\�x\�\��նǙ\�]�;\�^kZeܚփh׷z]��=�24W?g��$hYW8\�\n�Rk�3��_.�\�\�U�9�[I8����V\��Fr\�UEJ��j;&�m�ۼ���>�\�5\���\��\0	G�<+\�/iב�h/qr��q�h�\� T%\�i�\�0H\�/\"��t��M.G\Z��՛JI>��\�}����\Z\�\�\�Nr�\�d�\�MY�xY�g����\��wH�\�\�N��֫\�\�<w���\�0\�1�b��Y&$`9@]:H�{Z).E��S����]F���\�\\�\�a\�\�u�J\�)B4\�ѷ���%���k�\�\�˕\������xF\\�x\�?N�+�������w8���\�\��\�\�|K�[\�?]|�FLR�\���2=1�˵kj֜�]�m�~k�s?{Jm�N6vM�\�E�\�\��nJ���� �q9E=�\��\�yyR�\�V��^~_�\�=�\�.Y?�{~>W\�.�#aQ�1��\0zc��9|U��c�[6�;v�\�yjr�4�Ov����*�)8�\�\�t�\0\�\��ʗ��\�N��*�\0\r\�?,�\���\0=\�@\�I eO 7q��+����T�Z^ڥ\�\�w5��\�\�ٷ��h�\'��|�\�\0�.3!�$)\n9|z�w\�G:QZI��um�W����|\�\�msi��f�\�\�y@kme\�2\�YGsz��c�k(srr\��n��w~�\�w3�mEr��E�4��\�[|\�#�7/A\�ch\�\�k�1|\�.�̗*kYI-Z_kɭ|\�ϙBɴ�}Zz�7�Bu\�\�7����u\�\�Ze\�\�v~�O�����r�\�n֋�=�`N~\�\�::}9�q����ݨ\�[~�j\�y)Z-5˺צ�}\�d\�`\��\�;Q$�\�f��?\�\�����՛W\�\�\��\0+I-�wʹ�\�\�>���IZ�k}\��\�T�\�\�;\�6K�\�V�D\��\�\�\�\�p9=r�3�\�T��W9%�,o�������\�\�ޜ\�\�\�e��\�\�\�r:E�\�	\\\�\�x;7c��X��\"ѭn�W�~_�p�V\��ѵ�^+��O36\�\�\�@\0g\��vA���j\'R6|��K�]ߪ\�뿙�)+Oݔc��V�\�P���\�&jX�\�T�<�{��u�I��J1�z�Ҵ�\�I�\�\�\�\�(\�s��t��䟫\�}{�\�\�灄fc\�M�z\�\��\0�\r*rj2��\��7�\"b�\��ѓ}o{y\'\�.������.0�\0됧��\�t��#OU��]���(�(\�)E�/>�t��9�\0�� o|;�d�\r%��1\�]\�\��1�\0�� ���>���UZz�mI�v�z5d\�k\�\��\��1s\�a\�\�*W��ѵ\�{ͽ�\�.\��[���\\\�C]H�<\�d�!\�AϘv�9bp��8��Z�s�9+sI��\�\�g{+\��`���R�����\����\�Y\�VO��`9>U�\���\�>��<�\�o\�\�8��u��\\��\�Q\�|?m\Z�\�떉9	F\�\�>\�\�q��\�x#9Na]Q�UC�)�~�\�k��\��2\�<%*i(�J鴟�G��}�[CaF\�\"�\�0d9Pb�l2�I8�\\ \�y\0d�~FU\�%�Z�\�N�M\'m5i7\�\�}��&Sm\�\��h��k\�k�\�\�\�E�.y\�m#�\�	%rR\�S�0-�4o\�\�p7|\��\� *ڽ�<>2�Y�\�m(��\�-8�g�V\�Ez�*����\�I�\�6��Z_��u\�xޭu\�\�:)���\�\�\�\�M\�񸜆 ���c\�\�\�\�Ԏ:�t��F�]\��+m\�O\�\�,iӏ2囻�y�\�m9[�\�\��m[\�\�\�9\�Mqñ)\r˽�\�\�nn�(\��ʓһ�b�|��F+T��#f�������E�H�\�.��M�VV�kݘv\�>(n�|�$b\"�T�\�U8䲖)U�V���Q\�4�|˒\��ݥ�%��-\�+���+�Ή~\"�\��W�R�Pav�YCa	$��\�\�\�\�a��^ʧ��Ҕz��Vާ��\�դ�N�\�\ZO\�5-{\�\��=\�L�\�7\�\'1�0*\�.2.}�\�=\�ԥ89s8Ej���\��kCN��(\�\�M��t��Kwwݐ\�z��w\�6�3�ʂN>���c	%d��\�O]o�\�r+Tq����\�����\�\�yv�\�٭I����\�Fs\�\�A�u�c\rM7;%�4l�_i;;/\��1�H��>e���W�ODxֳ�w\�,\���e�rĮB�nB\�r�u�=	\�׳J����\��M�\��\�6�O\Z�Z\�\�>W{�\�_Tޏ�\�)����5\�.����+��B\�\�!\�ǵ\�]z�Y�@u���Jq]>�X�\�CU\�o}k�n�^k�\�k\�O�1O.���*�\��Ar\�kƸ��\�\�`dҶ\�\�ͻq�!]KD\��^�\�k/�:{\\\�\�k|�\�nX�-\�,ѝ\�����p����\�OF��Ti\�\�\�o=\�\�sf\�\�䦹�f��ԾVj�\0y�\�Eޙq5�\�j$VL�\��\�\�\�t\�#��p�SZ\�=�\�\���\07S\�\�n7\�\�\�e�k��s\�\�\��\�=x\��x8�߿\�\���<֝�^�|�;��\����\0�t��Wkk\���F<����\�l�\\�6xk\�\�1��FpR������vnߖ�O?A\�\�\�Q��JW�wk\�\��nϮ\��?Cl|9�J�]K�Y�w��,\�iHPc\�\Z\�\�zG�}�,}�2r�\�ou{�]\�\�\�\�}S\�||1y\'ys9=[v]�\��o�\�Z\�mj���4L�\�E %H�@\�\�\�\�zP�J�PT\�\�{\�+{iv�v\�߭�\�C碔�/g�\�n\�m���\�|���0�\0I\\\0:�\�?�^Mk�\\n�\�m\�M9�\�r�yT�\�Y/7���&O\�H��W\��\�\�\�w�÷jiJ7]<��\�/\�ˠ�\Z��pk�Ik\�{\�\�߮�\Z) �\��\�\��\�9`�Wm{�\�\�\�\�d�*iG�I\�_\r\�\����|�,�ep	��9�\�R\�\�v\�\�\�ziu�\�\�ͻ\�h�x��ߢ\�\�m.F6�pNA\�˂9\�\�\�ZR�\�<cd��\��\0>�q<ܪ1�R\\\�起��w�s��f1��G8d\�i��^\r\�mʾ\�\�B�.i9?u\����\�1<�����p\�rv�N:q\�U��m�Z�\�O\��5���[͵$�%m��\�=H\�Ƽ�ʆa\�\�)R2\�?y\"�®\�\��\�_�\��\0���\�ū��h�\����h\�p[II\��۞\�<ϕi%;�8\�\��N�eOẒ\�NϦ�\�˹b$��0s<\�$e�鞞�I\�>\��\�j�w\��$���\�Oy����~p3��f\\0`y�\\v\�I\�Z\�N\�\�\�i\���v��GUkr�\�iV2����d�\�F�\0(\�:�\0x����c%���\���).T\�\�ҷ��\�a\�1O�r\'\�I\' �c8�q�\�:nw兹o\�um�����7�-�)Zz?��\�\�}_�\�޺p\�\�ё���r0s�8��\�\�~\�V�\"ޞ~]?R��\�\�t��\��v��s��?:\�\'�T�\0\����=\�ݧ�i�\���\0Ҍg\�1z$�n��\�\�cO*	�\�y\�+�\�=�Z}�W].ֺz�e҅�5}9�\�k�\�\�b��\�}\�\�rH\�\'�9���\�\�ȕ�}v߱JД����\�E.�l�\�grHY�6ҧ�\�8\�c�?M�\�\�\�ͿE�\��\����F2�/%\�յ\�ֻw\�\�ڷ�1�d\02A�\�C=�֜��R�Vj\�W��Ҷ�r�\��_-���3\��n\���v�Y\�\�]A�\�n\�o4\�\r\�֑����_;c�X0;A\0��<�\��+�N�WJ\�mMh\�\�\�\�\�v�S\'�x�%\���u\�\�5�r[+\�\��>X\�	�m\�p�\�8\'$6\���=\r|\�\�\�N\�g\�\�}\�\��\�\�i[\�\�\�-�JJ\�R�\0��ܻ�˴��\0\�}9\�\�Y>�*ח*�\�/\�\�\�ta�ݭ\�m6��������%������|\�wR4Tc\'e)[M�Z\�s\�r\n:9N7v|�N\�Mi������Өi2i\�q%��J�,\�.\�XO\�\�\�/\�\�\\�8\\g5\�P���kN\�-�Z\�i\�Iu\��\��G,�\�%+imֻ]>\�\'��h�\�#,\�U�\ZQ����\r���B2sr�G6�\�Wv\���\��\�CI$�,o���\��[]�\�e��\�w�D\�\�\�\� `8\�nU\�wO�\'�C\�ElD)�\Z䆏[��;��ۣ\�\���jAt�u\���\�zt\�;��\�\�\�b\�5�FvH\��<�-v��PC�9\�9�cV\\�qWK�{��}:�Oc�n�sS��b���+o��\�t\�\���(#��ŲA�Fݘ�¨S\��ns\�\�]ЫR��U\�+I\�\�립U��S�\��̝\�.\�]�\�\�hֱ��M�SkF�Ԝ�PW\�$�Ƕ9�թIs�7-�vֻ\�\��e<-9)J\�\�J\�.�V��O]�͔�2�.\�A9��,r�\�?9)?.\�:W5z�P�\��Zh\��{ߗ\�wӤ�4�\\�\�+-7\�\�U�]�ݥ�*��\�\�!�!�\�\\sKU9諒\�\�7�V��*\'~T�މh�o\��\���ʓ�\�{T\0�@\�s�8\��\�\�׳Nэ\�t�����OӅ�z\��N\��5\�\�f�~\0Q�8[p��=+�M�wY+n���\�\�\�j�\�\�b��\�\�\�y=��,\�\�w�X�\�\��\�\�X�\�rp20y뙨栛m-�\�?&(�4�v\�\�\'}�\�l�\\\'���Rp�]cWa��\�A\�\���KګEB�\�w�\�\�\��\r#N\r�6�O���귱B�H�\�b�\��0IO�+�G̓�0��\�nsZF�\�JR浹R\�뮝U���\n�5\�j�j�z���\�n\�\�Zi�\�^\�i7*$������\"�Il���\�\\c�lppO�	ƭ%8�T�V�]��n\�\�Cɝ�\�n�^\�K۫�����\�x.�flu+�R˺��ݔ�Q\�G\\=\�]=c���ӿSͭ>�\��K��\0��s�B�I4?�2,_\�Q\\\�Uo�\�\'<�n\�O8ǫ�A<e;��\�mz�x���YAZV\�\�~G鶙:��,�\�k�N\�\�r2\0\�Rc�Nk�*�F騵\�H��m�w��\��Uʮ�\�g+-��u�\�إ�p�]�_�\0�\\\�h�1\�\'�Fs�茟�{Y�\�/K\��w%\�\�\�Քme\�y�����m۳wʸr@����\��\�\�Z�W\Z�qi4�IY\�쒻z�u\�$�V�V�K꼢�^˹�ڹQ�#�Td�\'{�UGw���h��]��Z\�*�uv}:_\�\�V~I\�)\�>��\��\0:M^\�ڥ�M��$ѪP���ѽ\�\�_R3��\�\�v�;p{�I\�RK��\�\�\�_�Ȅ\�Io\�諒\�\��\�F\��F\�#ۓ�?�CK\�\�\�w��\�\�o�;�\�\�\�\�k4�~��܋$� �RUI\�3�:�\�4\�\�\���\0.�\0�㦹f��n�W����\�\�\0YYWʸn6�{\�\0ϩ\�+rN3����\��t��/\��wv\�֚��^�|ɓ�`��A\�q\�A\�\�֦\�IF7����\�����\�\���\'�.�\0��|��8� g89<O�\�Rvj7\\\�\�]�\'\�\�]Ne\�e\�u\�\�~�\�m�P\\>�?�_ZI��kk���4��4�\�V��U�\����#�\�1ӆ9ϧ@)\�B).W\�\�$�\�\�}w�\�ңqiF1�\�\�r\��v\�dܱ\��l�g9=��\�[�i�Keum^\�{�#\�Z\�s�\��\0���\���.	$n#-���\���9\�\�XZjK^T\�MF\�4���w7M�&���\�]���9;�l��\�\�I\n\�H\�\�:~4�\�**	k\rTR\����_=���W��\�\�\��[yz\�\��\�\�\�w�IPr�`(O\�v�@ŗ%rq��\�>\�\�4\�wʬ�\�T��KD�����.i�4\��Z\���LɁ�.[s\�.N	4����tV\�ٵ\�\�\�4\�խwk�f�\�]\�I� *\�\\\�,\'\�±䊏[��\�k>\�\�.�8٦��\�^v�ok]m�����&R�@J�\\�쒃�ߧ\�Qq��\�K~v�g��\�\�z(N.\�qM��\�]\�+v��m%:#��v\�Cp3\���WM\�7kuo�[\�o-NOuV�w\�$ܶ�]_\�#\�\�&�5\�\�K0kXt�@\���\\\�@�\�ܶ\�\�79$\Z�\���Q�\n�%��\�j\�z\��u��9TyaU\�1��]\�+\����\�|��\�[eRP�PK60	#\�\�\�{\�\�\�j\�.�\"�\0K�\�\�=:��\�Y�|�N[��X-^ �3ˌ�\�#=}�\�\']SKn�ŵ��mm����K�0h�\Z찴p\�\�\"f(\ZbN\� �b\0A�#�|V7R�h�\���\�ﶗ���>�*��\Z<��\�\�\�\�\�\�_-\�b\�\��L\�\�p\�`�V2�>\�>�Bzd�\\q�N����֋\��OMz��Z|�Q�\�Esv��V\�\�\�jڒ@L�\���i!���pn/g}�!W�Fe ���bqͨ�˖�v��\��V\�\�I7����\�a^Q���q�NM\�\�m��\�OwmO9\�~1Yxv9\�awz�C\"��\�����nV\���3J�Q\���PN\�}<6QNn�\Zrz�d�G\�Y85\��\�o�\�\�ǥ\�\�>m\Z�*\���n\�Gf��׉>:\�+��a�[��\��\'\�\'�\�\���\�\�_���\�{�\�\�\��\n\\�産wi{6��PO��\�x\�+�1�9%x\�R�����n]���E��,<M�D[H��V$Je�~\�\�O�\Z�\��@Py	\�λL\�\rG\�:Q�a\�h�[[;-�\�[M�;hb*9J.3�X>Wd\�\�]y\�\�mw=\�\�\Z|څ����)\�\�H䷹��!�B\\�>܌\�8 ��8�<l�$\�(�6\�Q��-�Q�\�-�ַ>�	NUZ\�\�\�\�\�\�~]]�\�\��G\�\n\�$�4\�RH�3F\�\���B�Q\�2q\�\�\�̩S���\�.iG��\�N\�[�\0W=�F\�\\�|\�V\�i���\�\�/\�e�\��$-ln�\n�D�V$Q��\�\��8\�\�$e[	QIŨ�5\�\�E䴷���znT*6��\�++�n�\�\�\��\�\�Rd��F\�\�\0�A�k\�0ꠝ��<\�澿\r8�\�\\˖i>[��\��,M7BsRVjM\�g�]�Qԧ���\��\�{*�!��Zi�\�4RFO\�^����\�P�\�\�U8\�[ە?5��\�\�<Z��	=8\�N�\�\�[�\�sq|Dk�\Z\�wq\�)|H\�J�6\�\�yn��}`\�\��-mf�����\�)OyFQi��I���\�۹�i�\n\��q_�۬ob;�I ���@l^\�\�\�Xb����\�\��\�\�\�ֆ5\�R�nR{�{.\�\��\�\�\�XI_�\�`������N2W�\��\�8g��^wx��\�m>�MY.ǣC�x\�\�\����^k]����\�\�t�\\S$JU\� �\�^\�۵�rq\�<W]�Ǖ;+\�Ż/D�Ѿ.�d�\�ikym��Ϝ>%\�>�\�i�R�qm\�8Y�\�\�z�@\'鞽�f���]\�}̝=-\�^\��\�i�g�Z\�.su\�)ٓ�\�\�\'��\�zW���\�W�֍Y_\��M�J\�X��ε��\�Mپ\�,�\0(UR�@\�c�\��?O\�b\'Z�;\�\�\�{n�R׾\��j�\�jM)\�ܔ��-;\�ۯd�\�	YB��g\�z1\�9\0�\�\�7+8�\�\�Y\�\�_��i���{\�\�T�彍�W�*\���\�~\\s�H�9\�\\WU:��(\�ݲ�kK�\�\�\�\�]V�3n<Ϛ��I+\�\��^~�\�\�H\�>�\�mS�p	\�\�~\�j\�P��\�x\�ޞ\��ry�\"\�(-}\�%\�.���2ʜ(;A\�#\0�\�ڗ4��~{\�i�o\�_0J<��\\�J\�\�\�>�\��e��d\�.Ч���\�=89\�@\�\�R�}\��z\�=_\�\�(�4\��S�W~�{�B+�\�\�\�F\��\�m>�{J�F\n\�IE�9��\�m�M\�nN3�J\�J\�v\���\�\�\�Af�\0c\�-�\�\�b�-4�|��(\�d��k�\�EI\�%t��\���\�\��]\�``u\���N����]-d���5\�O�.���\�\��\�n���L\�\�\��~���U\�\�ۺ�y�/�\�\���\��\�o\�~Ã��\����q��;f�6r��W��=7\��\�^X%\��\�J\�\�u���lPۛ\�\�ݎy�\0\�\�\��Z\�2}�\��I\\��m]�k�OC\�\��R02ہ�r0Fq\�d\�����\�\��_�4\�ӊ�\�+�ken�\�\�-\�\�nW�*X{dq�}*-�w�E\�]�_�\n�۴�\�ݓѫ=,����t@�yl�9���\�	�CX��ZV�\�\'kw^}GK\�q\�m:��9\�\�\�|���\0[h\��ZRR��\�!&�\�mn\��n\�\�R^��oh�7E̶Zm�\�\�\�s\�\�岲\�dٸ:��\�6Wf8#��q�\�r\�-C�S��}_*�\���\0�6��|�>o��\�˥�\�K�\�crŃ�\�\�\�<d\�{\n\���\�{h�o[�\�\�\�N��Z���x\�ڭ�Upa�~^�H`G�0}��d\�\�\�f��[n�\0T[��js��\�~\�&��]\�\�\"�*$�2�\�zmF+�(\0\��\�r3�\�Ч\'v��\�\�\�v\�_�w\�\�y\n\��rJ*\�7v�]��.\�7m�\n	\�\0ve蠎P����\�\�j\�\�Y)i��\�\�+�c��ҋI9k�[Y��Z\�\�ߴF�\�^xhC��\�d�HV)f.\�\�\�pA·\�\�\�S����\�ӂ\�\�+�}\�KӺvש�9\"s�hF�\����w\�6���\�v|��X\�Z\\G���ڮQٳ��\\�=�\'��5$��b�\�ge\���2�8{�\�o����\�oϹZ\�\'�\0R+6\�vϗ�7`�CUV\�\�\��\���SJ,Sv\�d��\n�>j��z6��_\�v�O\�?�:\\Z7��?�@�JG���\'�\�\�\r��h\�o|�\�qrR�Z��\�F���\�}��|�3�l�T#%\�\�\�\�K{����\�\�\�t���)nH�N@$�s�>��x��IS�w|�\�wt\�eue\�Vz�\�O\�I�u�-}�K�\�\�|\�\��\0�~5\�\�ʼ�I�cF\�F\���%�2�톇̌��\���Kqم\�haۄi��6\�1�\��\��ouc��r�jj�\�fֺ&�Og\��G�\�m�05?\�+�+�v��<v�b�D1\�\��\�\0|�\�6�~9�4��)$��R\�\��\�O�Ty5r�I({6�\�J6roϓX\��<�T�q\�Ky_�\'ڣ\��amcn̋�0�\�7�#+p��ܓ]�\�+r)\'N�KE\�\�{�\�\\\�R\�7��q咽\�\��\���\�zg�|/�x�-/D�K�\Z5�[\�mm,okh��\�0�\r�1�\�!Fw0,K\�\'0���\�w\�\�M9)_Wu%�Z;��wR\�ʢw�\�W�ֻ�n\�}O���r=FH~\�--�g��0\�\"�\�\�e0\�&\nd�-��q���x�T�\�_�N<�\�[\�x\�\�\�]4\�\�`p\�T��}\��{\�\�\��K]��4�\"\�ݡ�\�?-!�\�`Ȫ\�\��lg1\�Zʒ�jJN�z5\'�K��G\�#٧K\�Q����V�}�]t�����\�F�k\�\�%����<���A s\�$g���﮼\�ݷ��̰3�\�3��\�uM\�-���-V�n\�\����\�\�W��\�]n�J�\�B\�\�\Z�̛C�p9㩮\�=YF�.K8(\�/\'m����-\�\�f8xTiJ*.i٥����iz\0�5Ƈ�M�����\�ł1\��VE}Ŕ2\0<�=+\�0�\�8*^ҝ\�\�\�oT\�{y1��\�\�~�/�1KU��\�ֹ\�W���������)nfiL�X�\�g\"? b=\�;�UI!���#��F^�RMr\�\�\�ɴ�\��k`��\�\�g��\0#k[g}\r�}\�\�E�N�K7w%ķ-\"ym;���\�$.[\0`Q��\�	�.E���\�\�n�\0�<O�\�\r�\�\�\�\�ӹ��\�\�:\\�D\�\��\�Ω\�H�\�`��)�$s��\\\�סZ)$\�%}eʮ�u�p��\�\ZI�ZͿuon�e{\�{�)kp�@¡\�q��3��A�����٣�Cܒ��\�龽3\�>2ہs�\�|^\0\�F\�\�C\�WC��\�$�\�{W����\�4t���\�U���g���#%d�Ӷ�\�\��<V>S�b�F\�N	��8=O�\0^��[\�AZ\���_\�y�kk�6����mqk\�\�&�̕t\�0�\�.\�_�\�1Ͼ0k���MQ��Qݫ]%�j�\�\���]�|B�iG�\�Q�R\�䝾g�X\�\ZP���Uʍ��C��� �^�\'8�U\�\'&�N\���_]>\�Y$��+m�\�t�\�\�6\�Ι%C��Fy\�\�G ����\�]�jэ�#et�\�yk��.\��)KYG�1\�\��蕭\�\�h�3FY�]\�C.�9\�\�\��\0#\�I6�\��Ѷ��O;|ݺZ�\�Q䵣u�\�\�\�}\�\�׶��eWvJ�c\�\�#�B\�\�\\o�rWwwO[����\�f\��\\\"\�\�\�u\��W\�MS\�o\�z>T\'$�\�3ԏ�\�<*\�.q\�\�>\�\�\�k.�Dʝ�Q�WI�l\���]_�`>\�\0V�˅+�A\�\'\�P1SQ7ʣ$\�WJ\�\�\�\�ױr�\�Q��t��J\�mfK\�\�tf^v�`�`���?*��z/g(���_\�G���X%x\�6���v�۵�\�5$\0`*��\�P\�\�\�zډ�]\�\�%kt����4\���\�O\�]��\�O?*��y�02MB_e�\�Kw\��\�%	Yj�\�W׮ɽ:~0��\�\��C.6n#a\03��?:\�J1��--�k{����̕��d��\�&\�\�iv��\�HK\�0\�mNۇ$�B\��\�ҩ\����\�n�\0\��\\P�)\'g��\�i��[~\'��\�r�p9\0\������\�������ε�wӺ�\0��\\\�\�3�Z�֫���\���1&�rF\�w�tϯ}\�\�(�mTV��\�y�\�*r�[V�m\�Z��\�N��7�g�\\�\���n\��\��<�\�\'ou^�I�\�\�g�\�h\�+F*J;^ͤ��^\�)rs�g�rq�\�A\0t�vⳒwJN*\�e\�\��	��9KH\�GD\�k�|^k��\�c��|/;�E�q�2N7-����Z���*��\�Z�_CZM�wh\�\�\�\�\�;�\'�Z��\�\�_p\0\�ۓ\��\�XNK\�iJ\�KU�\��\�n��J\�~\�\\\�\�\�v\�{\��\�`��n1\�o\�\��<�c��4쩸\�[\�T�4��M8ڢ���ީ[[�\��\'�I7��\Z\�v1\�r��\�u\�\�W:W�9�t\�{y�5���\�]P��\0yz*V��_?\��7b�>e\r�@���}Nx\'�\�ke(��m[�R}��c�\�Mc\�\�\�:.ϧw��y�^\�S\����\�\n\�YH��\�G\�<���\"E��ܥ2��|\�\��qewJXjTԹf�：��W�\�}|Ϲ\��%:��)�J*��\�j\�\'tӏT�}ϓ\�\��z��\�@9\�b���fON2t��\�\�Jjj.\�\�_9/\�����W杕7����i\�\�\�0\���.�n�\�n��Ѱ\�r,W�3Æ\�B�m.`�����\�\�9B-��J\�U�I��\�\�R��c(ƥ>W�(����M\'�?`�&S�i�{[|\��HD�1\r�ۓ����\�FQs\�K\�F\�\�W��\�q��u�-%vjϮ�m\�S\�t\�(\�k�n$�N~�\�{\�t=�5\�\�s�����\�D�\�\�\�]{\�\'8٭^�i�w\�k\�\�(/՚XԖ\�\0\n�\�q\�	�\�W<0���I��N\��\�r�IGݍ\�\��\�]/\�\�+S�)\���s-��s�]�7daY������1]�\�W疛Y\��\0!M8�KOu���\�k\�c\��	\�-\�-�\nG9׆v��\0V\�劌#	T�嶳���٘ƒ\�\��[\��~\'�xcន�\�魡WD.��\�9\�\�<gۮNz(\��K\�\�N�z\�i�Z��\�h��\�w\��\�\�[��J�\�\�\\�\"W��y<\�uϽqU�\�\�˖������Yԭ>KE�����r\�2�VV]��\�d���\��\�x\��Ri\�M(�����{��X\�\�E���՞\�tӮ�t:?�N\�\��\�V份��H\nX�hzc�\\g�k�QV�n7R\�J�\�֎;[�Ku82�\�\�Fq\�Q�\�U=U\����W\�~n��\�K\rp\�\�\�>\�\n�B!\�`\�yʌ��w9#5݆Q�%\nq�\\u���\�y��g\Z�I�\�\�{+�\0*[Yy��^�\�m�h\�-\�eus�\�b��P,Gӹ\�E\�	�A��v�4f�Ƽu�/ee~�i\��<\�S�o 22\�!\�\�B\0%AVP0�cqa�<��\�\�T�umٷ\�\�\"}�\�{[�\�a,�(�\0\rO�l�t�\�ܽ�g5\'��`e\�\�vd\�\\)\�\�U�\�\�\�����B\�m9k_�\��s�X:�\�\�\����m歲\�؅4)m��B\�J�8C�*�\�s�\�\�N�-%�\�\��\0y��8�>YE&\�I[�\�4\"��[\�Pv� \�p=�9\�\�\�mI�\�1r|ڭt�0�7IE\�\�\�\�\�+wI]\�\��\0\�\r�hDH�7OΆ5H�]�>n\�2F>�Z��\�唕��=7�\��/�c\�\�+Q��RRM\�\�6]\�\�\�]�\�%\'�YH\�DQX|�t��*9���\�x��V<\�6��Un�7\�\�框r\\\�\�2zGM�\�}�d�Zy6\�\�\��\�ATU\'����y�_�e�t\�QNm�+�\����\��\�B�Dԓ��n.\�m\�k��t;kDQ�\�i�<\��U��$eI�0kإ\�\���\�蒺o\�c�\�ZJ\�-��\�\��	��(\�󀊤�*ix\�ӿ5��n\rE8l�_\�L\�i�B\Z�?\��\0�\�ւedS�¢���F�f\�0=\�\�Ѧ\�̓��\�S7\�\�\�\�6v��K\�\���F)�\����\���\�=��\�1V�˧�若w���(��^\�Z\�Zͭ��\�h&\�\�a\�nR\0\'\'�\�㑎�j�\�ʓ��\�g\���+\�.[_\�󿖿z\�X\��\�߹��`\��:�O�\�M{\�\�\�Fъ\�\��H�\n��wW�\�׿��\�\�\�Cg\�\�x\��w\�\�g5%���Gu�����P���y}�[]r�\�\�\�A�>]�����\�\�y��y�i\�\�|\�Y=ȥI\�\�޼W\��}��,T.x\�v�`��\'�A\�ӟ֥>]}\�㯯~\��˕\�b�h��it�\�\�ݻ~ �Co\�w0\�ĒC1ۂpy�֓Q|�6�v\�W\��o\�\�T`�ғ\�_\rݚ\�\�\�\�3���s�\��<qN��\�O�\'\�\�\�%���tV�\�\�\�g�JFH��\�\�`{{\�(;=l\�\�7o�Pw�(�Zm�\�k�\�b]`\�\�\0�����d\�ۭcO�]\�r\�ef�\�O��I�g��\�[\�H\���h��`��۵�g� \�5%k��sh\�Z��[D�\�\�E�W\�\�V\�宆ܶ\���CO s\�Кʬ޻6╗\�]t]�;�$cν諫�ɧ��/?\�\�\�%e(U*�\�\0\�#<�\�ΣQ\\\�jQkm\�km�\0+�J%%{\�}mm?\��*�\n��+*��Xn\�\��Ǯq޹]�\Z^\��W{z�\�3��y�K�D�|�\��\�1 U���c�����\�\�8\���K[=�\�W\�_��	�jM�v���zh�&��,�@\�R\0�\�ʼ�\���\0\�)(\�2K^׽���\���\�u	9[�7��\�WM/?.\�\�*U�\�udB\n�\�\�f	�\�@A\0�8��is�\�^�r�J��\�\���\\\�\��M�]W�_4r�\0��5o\n\�\�\�\��ϴ���	�)\�\�c\'�\0	\�_��\�	ae\�$�i%\�\'{�=4}uW\�\�\�|=�.�z-�?\�4�\�\�\�k�vz$��s5}H�o\��d��\�U�Ӿ\�)�A�9J~\�u��\��>$\06����>\���\�7BV�䝓M�/ym���~\�\�U�9BS\\\�{/MU��/�֛� \�\�\Z\��\�>&k�O�\�\�\�Ǒ*Y��gS\"E\'�@�\��\n�H$\n��b�~�N�\\\�Ҕ�c(�Fϖ\�)\�J\�\�\�[[�>O��\�PqJ.��\�ܯ}l�z\�}\�?\�,Zm��͓mP�v#b0L�\��sבۚ�\\b\�j\�7-c�M\�\�޾�\0�\�`S�.-�h6�}ZZ+u��3٬�\�07�@�\�㍻�$�^3��\�\\���S�u\\\�\�?M\��n�i$\���,���\0\�Ku��A�1���G@A\�\�<�*\�S��ӏ+Z��/�\�\�)Ar����\�\�\�t���r�v\�\�t#i8���n�c\�F�V\����M/u+?\�NƌWpƾa�@\�g�\�x�\0뮚T\�{���wm.U�i\�\�Q\�(\�m��?\�\�f\�^!�y�>YQ�mM��\�b2q\�c�\�\�\�\�NܱkEm\Z[+/�q�R���Z&\�\�~�\���+���5\�<�Y@T\�\�.�,y\�\����\�ue)7((�e-\"�YY\�m\�����\�\�w\�\��gg\�\�\�A�(]��J|��<�A\�\�c�tP�\�d\�n�\�\�u�����Έ�\�M�4�J/�\�e�s��\�Ōvke\�s,0\��.�/�\�� \��$`{d�b\�%\�t�um��wOT�k�xZ�\�uf�9\�N\�VN\�\�]n�U�]��OKfU�!�kc\�`\�B���r0x��0jҿ$j7�\�$�?.�&c8ʓJQNR�]��w\�\�~\�\'\�\�n�\�W۴0̑�Ep\�\��\�O8�8\���b\�n��է\�%��\�\r)�YM-��iv��箪Z�v���\�Iy\08fQ��\'�\�OJ\�t\Z��e�斞������\�5�\�h\�\�ө\�\��o�(�I\�\��@\�YS�\�\�ǝ�\�\�\�|��\�\�#)F*�n\�;.]�������o�\"�c�\�9\���76\�_�\��\0\r?��TP^�Q嵬\��/_?�8{�xcWPB�2\��j��\�S���*O�s�F��Ҽ9�\�Q\�.�i\�T����\�q4\��\�Y(��i��D\����\�>*@Z\r�\�\�ҵ\�\�Q\"p>c;NNHS\�k\�0�Qr\���m{�?�\�\�jPI\�\�:�����q�yQ�v\�2�8�\�;_a�8;��\07\�0x�US�ʠӵ\�Kv��u\�\�\�\�F4�\��q\�6��/]4�\�^]���\�M�b���BYJ6Ϝ�\��\�2\��ZNIs(\�.\�uOo�?*̒x�\�.�yۊ[\�9[\�];\�cv+���0�*�d\�c�ç zz�\�ӕ_r\�Ö-;6��\�s�6vi�\�\�\��[r���:wT!\�\�\�\�\�\n�(\�{)\�A\�q�\�ܛ����\04�.k�\�e\�\�M{+-�m/驭�\�3G���x$\0\�\�Z\�JPqi_��\�־\�\�\�\�\�\��Ŧ��$���޾I\�G����J+#\�l�3�\�\���\�ef��\�\�|�~%�h�]\�\�\�\�;t\�hE!�$��ѐ8\�z�OSZ.X\�˗߿\�Z\�\�~�����\�n�w\\�Y�[u\��\02\�l�7d�x�\�o֋�\'\�R\�\�׽׮�G�\�\��\�m_\�\��{�&_\�\�x\\���\�r\�p�\��KvZ\�\�t\�]\�饿�����\�\�\��\�wBq�@N\�\�`�	\�1\�IG�ר����\��5mNRR��\�5��oO�\���z�Nܐ0rp�O\��MS�[IF\��~�o^\�ۛ*r�6��	/�V�\���˸�\\o\0\��\�r0{sU�Q��6۷G��\�R\�\Z\��t{��\�rd�`�^�����zU�S�Wk�w\�\�;l�nR�f\�։�I[�\�\��Y\�b?\�=r}})\�Z+;ۭ\��\�c5�7��|\�\�\�;u��[�{(\�\�,�F	�#��>���\�\�Q�\��\�\��{�C[.�\�.�\�c�����=\�v<\�<�\�Y˙�]sr\�.��W�\0\"_,m\�ѻ�\��on�n���ɐ\�$*��H\�<�d\�X5i��}[V�;t}��6\�v��\�[]\�\�}/��W9�\�\�\0>\\6I\�\�n\�g���z��\\��\�z$��\�f��\�\�ǖJ\�r],�\�0nY]@\r�v�pA�x\�z�\�5��UҌ�\�ne%\�f�\��EA�{5)�Is]_\�-���nI\r�\r�\�\���ʼ\�w\�8\0SYԌ\�w�n:o�\�_/�\�\�\�\�R�d�Il�o�\�]�c\� P�@�\n�9$�\�ӧ.U9T\�D�\�\��L%	�NUd��\�\��oo���n\�8�<v\�=���\�\�]��\ZV\�J�\�\�J��?S�\�`�K�D��$б#�x }Gz�>5���\\�\���2\�&�\�\��>�����>V\��\�\�vѷ�\�;�u��3>3�CS֦Ѯ4��\�\�0\�[#[G\��#\�Yr�\�i\r�NNӒ�1_�P�%lJ��\�)\�\�r5n��t\�mﾭ��\��u(J���\�\�wi/~\�5\�w{�\�K\�h\��=\�tK�MS\�Z\�5i\�e�j�\"\�\r�\���\�4�Ғ\�W��%R�\'$�kIt�\�$�&\�\���M)S�8\�)9j�\�.)�\�G\��:g�U�|�\�ćt�8\�\'5\�;\�\�\��*\��o\�W��H\�\�F\�x�\�:tko\�sѴ�\�\"����~bTd�\�q֥(\�.VZ�u���H��T���\�\��U��/F�N�\�XT��\� �0\�+8�\��d�\�I]ٻt}\��M�\�\��vJ�\0�\�\�\�,�H�@\�8\�\�8�>�\�\ZrU%𦒽���erߢ]ߗo�^��\"2	BprpH\�rkU~YE\'~\���bU+M](�\�^�\�\�s\�|c\�\�\�Ndr�\�E}\�\�\0\0a�X���k*�O\��^�=����$��Z�m�%\�\��\'\�c3ᫍA�;\�\�I$�G�\�\�\�#\�H�#�Cr0+\n���5\��m\�{�k�N���\��\�$��[\�u\�\�-\�Ы\�O�ph\�F\�\�\�4d�#�I�\�\� Ã\�۞\�.N>ז\�&�ʶ\�\�O�\�\�b\�4\�\�*�%u[m�NU��us~7\�\�8\09�G\�܌�\�\�=2-Ӕ\�\�d�\�QWm-�N���\�rG����5����^}�ռU=\�\�&�X\�ܧ�\�\n\�d�l0c�\�=x\�\�Wm3�5��*qJօڻ\�=,�֚u<�^*\�\�r�����+z;�\�/N�g=�M&��\�gqr���R�\"9J���`|�ŗ��q�y\�J3�&⢢\�N)-7I���\�t\�҇-ܯd\�\�E�g�i���2l�\���\�@##>��pU�.T\��m\�\�ky\'�\�\�{1��\�\�8�[���\\�q|���3�%�ʰS��dc\�W��j\��=m�}�꬯\�\�5i�%�v\�ֶ��\�\�5w��\�/\0�rĐ89��N|�J<�i\�F�m�\�\��1�\�M[�~[i\�\��<\�\�\�9\�H\0\r\�h?|\�`d�^x�N�b�sr�Z��W��[\�x8�pR�\��&�%���C\�_�[�]�\�ʬT����$\"�!OA\�\�5\�F�������\�\���\'�\�*\�^ͽ5~\�*hukxd\�\�\�<l]�)���\0\�\�\�5T(�c)F\�\�\�[\�{\�lm^U!��+�����t\�kkcӡ�\�U�\\l;0~]\�2\�q�H\�~�J.�Tb�SJڴ�\�ki\��?2��<�\"����\�MU�z��8Y g$ǰ!]ǡ^Fܞݫ��vJ3q\�.gm�Gעy\�>T�y9��\\�z6\��?&㴰��W t\��z\�]7�2\\\�^ɫ��g~E{-һ۷_3r	:\�\�s�dv��\������\�w\�P�Qm���V���\�_�͸r�0:�*>Vr�V\0���JVk�܉}�\�{]+$�\�0s~\�\�M{�5\�->�S��6a�\�t\'uL\�X2��E�ڼc�\�\�ݼ��J�\�j�n���Ϣ\�\�~%��)d\�,pN\�)^N�\r�_~�v|��ei��\'{97���o;��qQ�\�d�J�\�\��\�\��ɖ��\�\��c�s\�#�\�N2v�\�ݽ\�\�F��H\�\�O��N���\0����\�$��]˒3� g�:��2�,�\�s�t\���\�IB-\�F�w�U�\�:6\�;:�\��q�\�N@\�zSz]�f��Zi\�->��4��i(�\�k�Z\�\�m�cF\���\�S�ء�\�[����5�9����\�G\�k\��~$&\�\�Μ,ݺۥ�ߵ\��\'\�;W\�\�\�=�A\�q�q\�\�Ȣ��\�w\�k\�t\�չr�\�\�ϭ�\���¤��\�!�@;s�\�\����\��\�G��0�W��f\���վ�N\�\�{� �9�\0\�\�\'�Ʋqj6_��\�O�\�JVr�i)]%}��n�3��\�g89;�6B�pc���>ج\�\���R=��Wت�\�r�T\�U�\\�ow\�\��ٳ��YI��+�\�<�\�PF3�{�ΰ�[�\"�[\�����\�S�|�|�\�\�r���B\�\0�g8\�GR:b�\'y$��WV�o[���+SR�K��\��e��JI�2\0	;@*$\��\��\�O=ݥ�������\�N[A$���6\�ӵ�\0R�\�(\0gau\�g\�`\�7\\\�\��RmFr\�Z/]��#۾\�7&\�h��\�\�K�\�W=V�Mt�0��\�\�}pNS>�馹T��\��OM\n���\�i{\�ӷ\�ó���¯PG��G9�?\n\�PQ���um/�\�o�ާE\�g\�;K�ߧo�u���\Z��\�H%�H(w\�\� �\�\�\�^~g���\�\�\�\����ek5}\���\��r\�D��\�X�?r�Ӗ�i{ix�+�3��}g��j[������e>ಫ���\���\�\�\�?\�9\�a��\�	V�;+\�\�\�w�O\�Rw륛��\�p�\�b���\�iNj7\�\�V\��ɽ/ykuУ\�{M:��M:�K\�+Y{Vi����U\�66\�	\�l7U_��0��G	\��\�\�J*�ꍵ�ז��Fؗ:�9SQt�4�\�\�]�\�Zkv�\�\�\�tyH�S.\�\�\�\�ʹ80\�}k��\�h\�\�-��]ߧo%c̦\�\�\�\�}/\�\���E���&�pP�O\0w${`c�}�:��\�VN\�kEu\�_�=J{.g\�\�\�Ѧ�ѝ� �/\�NFr��\��\�~��q\�J\ZF�;Yw\���luBiE�\�ѵ�W}ܬ���$:��\�p}W\��#ʵr�~��I�=�����\�ߖ�wO\�ۢ��\�C-\�6Ae\�Hy\�s�=(�D�9uW]/����\�䥵�\�~���Ʈ�s�\�&<d	?v<�څ�a$�\�1���\�3�+C\�\�\�\�\��}ERnх\�\�\���{7~���&�I\�\�Z��<5xg�\�ry\�d:\�\0���ݑ ��0��UR�\�G\�ѵ�5d\��6�W�[\n�\'\nMBWi�%{ٽח�T~r\\x{\�\Z׈�\0���-v\�\�.�����/\�\�xCeP!�\�\�\��\��Tc�q�\nv�\��ٷ���\�c�r��/h\�\�%f�\���׷\�]5;�\�B1,|��.��T�|����Fz��\�.�S�d���~�-4�\�_VpW\�*r�\�Vvw\�m\�\'\�4�\�\�\�e\�\��ku1��,p�v-\�>߼\�\�\�q�0}(U��\�\�\ZpkݲQwj\�\�t��5\����\����-�\�s\��5\r\�\�鹹g�؜|\�\n��bOC�I\'=�\0�\�T��,R�v�m�\�[^\�\Zq{F)��Z���;I\�P�\�\�P�\0b�e�\�μ\�\�7�R��VV�\�k�#Ӡӧ�\\y^�\�^Zv)\�j��\0XT\�*|�T\�rF3�=���4�(Km�\��\�\�]̝[)ӌU��i?�G�9�\��1ڏ�{aP\�\�\�k2��?\\�4\�ʴ�yi�\�����2uuq�ݣ���[+�\�^\�7s!\�\�\�@Vr�2\�9,}1���\�J��_f)������\�\�Kg�\�y5�9�Mhն\�[k���\�\�缸���\�.���%�l��\���5\�U�����mZ7V�v\�=Sߢ�jq�F���^We�ߚ\����˶Ze��\�}\��!�²0`^6$�Ą\�g�t\�\�+U\�\�s��M[��^.����ˏ\��ҒV��K��\�����\��*IbB��\�x8\�\��`\��_�\�\�\��moy\�^\�ow�?>����r��-m�T�4\�\�	��O\'�ぴ���{WL[Jp\\�\�\�8�*\�?\�~\'?,���\�E&�Zh�\�籱g1���=�(\�\�\nGN�\�s޺ե\��(�,Ҳ��,��;�J^\�\�\��2\��\��\�\�m[\�w�iT�Nq\�5���\\mw&�V��\�\��������\�\�\�\���u:k��3�\�\��\��UB�Č�\\d�Һ��\�b\�\�?ӯ��U\ZP��tj\�ym߷��m*\�9c�\\�@wL\�Q\���\�mW-\�\��\�\��w!\�R��ˎ�\�.^�yo\�\�W�\0wPI���؋�n$\�\�Jm+4��\�\�-�=6}\�TI8(]z�\���h[�F\�i`�p�\'���˯�j�ʥ�\�\�߯ee��\�ME(\��(\�\�\�\�k�X�W�\";�\���@�\��\0�\n����$�\�h\��[N\�RMF/d�m�kk|\�XVl�P�7\��0:Mr\�[KKv��飯�BPjWrVZ\�]4�&]\�%�^F\n�������Z_\�6��6\�m�:�ù-(8�\�^W��\�\�5��)�*�n\�X\�T�y*A\�3ӿ�Tf�)])�-{;z\�W\\�=�\�\�\��\�\\�a�UA\�#\�3��\�.^hr+Z��\�\�kk~���6\�޺���LI\�*\�\�\�dx��\�*}2Jͻ[]���\��u\"�\�\r\�]<\��|\�+\�UC�6��#n�\�\0\�\�X8�VK�\�]\\�/˯��\�\�RQrj������Y\�]�\�\�bpp��9�\0r�d\�Q���u�T��\��\04�[\�|��Y\���ߧs��*B�*��z`\��\\\�QMr>k\�\���}�\�nu\�ǖ4�~\�Ӷ\�O���fK���Wpy䑞\0�#\0�\�\�95�\\�\�2\�֚|��\\\�\�\\дSiY>\�_o�B�\�P�}\�\�RB\������}�U\�\'d�~��\�e���\'��\�\���ﵮ���d�?\�>o�X���\�\�O?�j\�:PIj\����\��\���\���b\�\�\��_u��jtq��v�pG�8瞣5�8�{�>�\�\�֫�\������n[+�\0/2w��N�K�8\r�z(�<�R8�<�SK��m��\�%\�\�]��}Tf�5ݛ�o}4]?�w\�\�V[\��`2F,	3\'c +#���py�q�]O8\�(�Y\�I�����\�S�߻\�n~��ʵa\�\'&�\�+n\�M\'&잉\�\Zς\�\��[�\�u��\�*�0���B1\0�c�\�18\�s���Qף\�Ý�\��\�K_�G\�U����ʔ���[\�-k\����{�\�&�e4p�k)\0�w��e�\�:.J�f��(SO��z;^Ϣ����?NmU�\"\�\�\�Z]t��zݛ	\'��ڽ\�~\�$p9�\0�\�-ZqrQ�5\�{��\�\�\�\��;��\\ݓ�{_u�n�D\rx\��*7�#�zw\��\�:\�\��kh\'\�\��]?\�Խ\�\�6�\��\�k\�O\��,�9H\��Hn\�7d`�\��+8\�s\�V�k\�\��i\�JK�t\�ܷ\�\�u4\�Kx0졎r\�Py\��\��支\�d�OM�\'��iik4�\�7�����Uݡ\�,A�H����\�a\�z����\�s)J:[Ugo�\�^\�I\�\�/��w|��\�ϱ싮\�%���\\G�G�x\09\�Oa���\�\�s޵|�\�1��\�\���\�\�G\���J|���o��\�k��\0C\�O\Z�sëo{r���왖X\�# �#k0\���c\�\�@10N�W%_v\\����m�J\�~~b�N�쵽�J��\�\�\�תg\���m�\���f4�#\�\�!1�%�.2A\�P3�y\�W)F�y\\yn�-�\�n��\�bp���\�GU�\�ϧN�\�/�=n�na�U��\n2\'-�u\��y\���q�q��Iݥ}�\�wW\��8gA\�i8s6޶mߦ�-�[H�\�.�	\�kr\nlE#\r�q�xpI$�E�d\�ӲIr\�\�ҽ�\�\�:s\��+j\�k\'��\��\��=:�Z\�F2�Tu\�/8�#��	Ӵ�\�x�Y.�צ��Nk�F\�6J\�\�_�>\���Ve�\�\�1\�\� v\�Jކ\�i�(�S\��V�}7\�\�䪒O�Q�.\�V��ҵ�ݳ��B��l<��\�gkaU�np8Q\���jI\�7��Q��\�\�W\�w\�c(5\�\�ѻ^\�e\�ӿB�\�b2Af^C\�§q\�\�\�zף�U9�¹{\�Y��+\�\�\�\�hӝ;$ڲ�\�zˢ\�\�s��\�\�tR�\\x\��1$*�bT�<��\�\�E\�0�k�;\�m�.\�8�FW��\�f��[Y�\��\�\�Cw)I|�,�\�\�\�y\�%�\�3\�?0澧 ïdꦜݹy��]��U\�\��\��|\�\�\�T�]���\�\�\�Uew�<L,\0P�YFp:�n<�u�\�\�ӛ��\��Oee}�����t>~2�e\'��\�ѿ\�\���P\�\���\�`��\0H\��<�ޔ�k\�Ih�\�m[\�\�e>KE��\�����u���:����#\�P�m\�6	#�z\Z\�eFw��4d�\���1\�\�ԕ�u���צ�\�H��d\00G\�G�+��O{[]\�\��\0_Q\�\��{�\'��=�g)�F0U����I\�q��\03[YI�J0��WZ��N�	�Ò\�VwM���w\�n�\�!\n�r0�\�\�9?w\'��\�NT��\�K\�n2�\�\�\�)\�1�\\]��J\�7\��\�մ����cpʃՋ�������I]��r�DՌ\�ݒw\�e\�\�о�m��8\�㌎j�>��\�3ך\�\�ɵ�~&\�R�\��F\�[i\��m\�bev\���\\`�rw6\�9\�9�����.ex����Ggv���&�\�4�򭹞\�[o��\'^\��I\�v䎧�\�S�U�f\��]#+�Iɧ5M\�_n^\�\�\�~w,�\0\�x\�\�8�x\��\�&\�\�[�\�?�������۪\"�Q۫��\�^v�\0�\�]M\�px\�6�C�\r�ds\�\�5�R���Kv�RW��y2M���\�\'\����3�\�>l\�c�\�z����h䴻Wzk\�t3jqih��\�Gv�w]\�{�\�\n\�$�\�=��\�K�4V�\�Z��O�p\�m:G\��m��\�\�\�2�2��\�t�\�\�X�v��\���\�\�<�p��g̜�D\�~�\��&�R�%�mU$m\�x\�\�$\�ɳRKV���w��m�._�-\�W��\�r�<\�Rq��\�=�\���k�NO\�F\�.\�\�5�_\�o�\�1i�M\'����}\�K�R�\���9�\�F;\�\�K�2��N-8\�\����:!(�˙�\�r�����E�\�\�<�j�1\��c8��c�q�U&�\�ͼ�˙+\�\�����v��(\�y�#f\�_h;\0\0\�S�%�l6\�^\�|\�n_gF�\�f\�\�t\�\�\�v�\��f\�\"L���$l\�\�\0��\�t�[\��\�\�\�6\�sx��(\�ͫ]�/�^�ˈ�e�\�d��\�\��\�\��\�n\�j\�\�k~U\�\��\�q\�1�\�\�$����\��}�6t\��\�<���\rp�(�\�bs�v�\0\�V 2A瞇�\�28f\�7˥�z4ۺ\�~\�z^\���\�g \�g�\�Vۧ)8�\�\�/�\��\�k�\�5���&\�\�0\��>Ț\�\�\�F*���on�\��\��u�\��\�\�\'%\�]��\��^��\�C��g\�MB�ԯ(���\rE���q\nK]�\��9\Z\�\�}6\�\�\�ge��#rb\0�O\�$\�rG�\�x�\�\���8�J�N\�:\��#Լ�2x\�1�\�\�m�\�蹥���vW\�3��R�b���\�\'\0�A��k\�*Gߜ�+m}l\�\�\��ݟOS�P�S�m�Wmh�\�?U\�c\��\03`��\���+��3\���rO�:|�ܩ\��JϤ�\�\�usK�ѳv�\�^\�^\�\�\�cWM�G\��G\�67�\�Ed�\'\�A(�{���\���f�\�ߕ$�Ӫz=�\0�#ķ\�\�0\�ih&�k\�x\�V(-��b,�J�\�`\��\�i\�6�\�V^\�#�\�f\��_G�\�V�\"��|�Z(\�Yuv���ܽg\�#î�41\�,\�y&��9a�\�N\08b0!�;��p\���Q��M]5��\�>\�<\�l��\�ʴ��f\��]��\�\�~,\�Q\�=\��V�G\�\�(�\r�\0,j\�\��c԰�2�\�P�8\�<�jJJ�ޮ\�Gk�\�uF�\\#ɷ��wW\�U�\�\�\�-\��^\0\� �O��\�{��\�f\�~φa�єtd<���@\�R:#�T�n��\�Motﳆ\�\�\�uGM5_�8�kZ\�K\�O-v8�O\�\��*\�w�|�%\�21#�\'\r�&�#\�\�#�\�k�8��qt\�G\�˕�\�pԄ�\Zr\�ݶ\��ӡ嚇�t\�_ȟ\��f\r*2),�\�I#�\�`\�\�\��I\�Q��\��\0\�\�\�\�ku\�\�\�tW\�n��\0�dv�7۸q��a����\�\�\��\�*�ڒn+���j\���*\�r�(\�1�\�U~�\�X�\���\"9\�9l\����^=\0\�;\�/\�&�WF�\0[E�B���cz򋾍�v\��%\�\�\\���\�(��P\0�8l��\'�z\�1�\�\�\�\�\�ɵ�\�멬k*�k���Z�>�\�\�~D��2\�9$(\�\�A`?{�8�\�+��J\�ܒ\�\��}\�\��m�W�ק�yNL�\�1�s�7	�\�K|�\�\0\�Z�0�\�\�\�k�ﭬ�ס�]�\�[����\�\�\�t�b\��L\�H��F\��Pd`�N\���\�\�,]YҩI8�\�ܪ�����\�y�t��aO\�ʴ#\��\�\�nektDWQ\�p\Z	#\�2�d��p\�\�25�9e�PP�W\�I���t�z\�ݣ\��\�\\D\�z<�i��m^\�\�\���P\�\�X�c\�\�3`\r�p�\�\"�Jq�\�\�\�>]�t\�\�%sʔ\Z�¬\�k.ڻ��Q\�A@\�wd\�m�A\�p3\�2zc��P\�\����v��߮�n�-/u6���\�\�\�5���&�8TT\0[#��	8\�է\�r�kk(+]��\��\�\�q��Jkh��\'��\�\�\�2�\��T��ڹ=I\�\�\�����{ח�\�\����%��>[)\�i},�w�V��6\��!>h�?x�\�\�\��A\�\��8�7�e=�\���\�}�R\n4aWf�\�-���ߩ�ov3\Zyc\�Nܩ\�@\�t8c��5I\�9_�-9�]�[X��[\��\�I��W\�\�\�[\�Ԃf�7���AS\0\�8�\0&�9�SQ����\�\�\�{\�\�u\�$\�$��o\�J\��i}�\�\�M(\�c�L�\�$)%�9#�\�=zҳ�\��\�z����\��\���{5\�\�\�mbp\�6�8%@wŲ	��GC֪3qr�=�\�\�nɮ\�\����bӳ�z4���\�Xэ��\�\�2+)#nwc�\�­�\�(\�Y_�쭮�ܗ>X88��o�Ϲ\"���$\�=�g�y�\�V\�WVI%���\�\��9jO[(�YY+ym}�h�¯ʹ$�\�\�\�י��ce\�k�X�\�^\�I;y}\�=jLc\r��n�Fr\�җ-�\�[km�jU5w-%���<\���#\�*䓐�q�c��8#��*ewh��+Y~��*)r�;\�ϧ�zv9\�\�<.\�\�$6q\��:V7v��l�zh�\��\�\�$�WO\�V\�=o\�\�\�[��\�`\��0\�\�c\�q�\'��e)(��Gt��o\�~����+�jMh���w�9��\�[,\��rF\�Ǧk����^\�։]\�ޗ\�\�h��.gt�d��v�\�\�sYi��Ko\\+�APr�d�\�y��e=l���{�\0���f�R\�//*\�/��Iin�M \�;���2�`�NW��\�Z��7Fɷu��\�\��\�%�O���\'۹�j̭�\n�q��\����u��\�\�JQW�f���\�59s�\�u\�\�\�ڈ�z\r唂Te�Ӑ�\'�[B\�j��V\�N�J\��o]W6\�ߒ.)�ێY��lڪ2\n\�\�x=�Ҵ\�\�\\\�\�MY-��\0��\n2�4����-\�f\�\�Snۘ���\��Q�nF＼u\�\�I�s?{T�Փ_̻\�\�\�ӗmz�|��6_qR\�.I\��\n�\00=�\�\��\�\�%\�\�m~��͔]\�+�x�[�y�\'���\�-�\��\�\�\�\�P�M\�� \�d�_�ϸ�-�$k�8\�\�\�N1\�얼�?\�s\�xk\�)a����\�}n\�_z\�5�����\��x|\�m\�\0\03�����>Y�\�(�y�\��:=o\�o&~�B��T��\�����C��Y*��ʼ\�7#\�\Z\�\�=����um��m�\�]��	�rh�������4ZQ@3\�3\"(e�\�;\r�1�\'�3\\���\0�y$��J�\�ۭ��Ty�\�v��\�[k���x�Ēh\ZuҪ�y*0k�%P��A�\��goL\�\\.�\�抺QZ$�\�\�˻\�窠�*��,S�U�5\�\���_��ց\�\�~:\�.g�\�N�C16\�&�ţ\�A\�8\�#qV;}ڸ�.�U:~\�\�+%	��iIu\�\�^�L�B�Z�riG��%t�{��\�{t={H�1\�\0����\0\���\�\� \�\�]�!�������\�.rx#jn\�Y�y�RTcN�\�jJI\�l��\�o.�O�\�`0�咛�\�\��N�\�__��G�\�\�\�a<0�\�>է\�E�}��\�S����i*�d��T\��|���S�8)�d\��圹u\�[����ա��K\�*�����#\�w�Wu\r�\�v\��\�ặ��Jg�}R\�\�I��J�\�|�\��6!\�Ż�e���cNJ\�u6�\�\���:r\�E���i�\0\�\'����>\�\�d�\��XJ�)_!� �$Vc�p�\�\��n�=��~Y҄U�\��Z}�\�X\\\n�/<�]\��\0\�\'�����O\�i:���\�Dk.d�U�1�r�;����gR�%��+t�_+I�G\�b)E\�ӡ\'��M뿺��\�\����ڋA�\�n\�I��F����|ʥU~c��98\"�kO\�\�J�\�N\�\�_�K�Lp\�f\�NJ\�ֿ\�z�/��FE�w\�B��9�8p��9\�q\�\�\�I�\�r�k\�^6�׵�o\�G�\Zj\�\�M���-��\0-�k��V\��K\����\�\�\�#-\�	 p8�hr�\��V�\�\�/+\�k-:�:���\�7Q\�\�M�\�\��\�[����/\n˸6C0\�r\�9\�<\�W���z�ڕ�k\�|Տ/1��J�|�]�\�ַk5�Mu8�6��X�U29,�a��`9����\�S�N��B\�]�U�w>6���rO�Z֎�~}����jA�,r܂\nX3*�dz����ԵRj\Zod�\�ne�jsS�\�I\'\re�kd�#Z\�#vY�%�ǯ9��S��х5�5ӿ�C��%M\�*Mk�\�M_M<�6`n@�IPx\n\�pN>ç@*��QP��mk������Q�\\�ԓ\�\��\Z�}ފ6�/\�3��p\�\��qS[\�=\�o�FpQJWo���\�\�\'���4\�f\n���Ҹʩ���c׮r�ZMÚ)_�6��\����e\�\�\�of\�\�\�ѳn\�r���m\�A�l��#�1\�]���J�i\�2�J\�+�\�\�\�*�n�\�\�O\�O�]{jk@\�pT�1�\�z�8 �\0�o�D���7\�\�\�kk�=H��\�\�\�n˕;%%�ˣ�\�c^\�\��Q�`\�S��\�\�\�\���\�J�)ۖ-\�[$\�\�\�\�\���/��t\�_mt^ku婨��\n�]\�)��!�Io�r*=�u�\��V��l�n�׶�nI�\�ik������Mgu��n\�퍊����<��\�\'�WIE\����S�^z\�?z7N*��W\�\�O[s.�bҖ\n���n\�C\���)\'�z\�r~\�܉S\�V�\�j\��\�����l\�]\�>e\�rpp\�\�S\�\�z}�(�)8�_u->\�o\������h�\�\��4��\��\'�s��{c󭓚��\����4�ue�շ�c֦*<��%v\�:g���U�II)\�v���=�Ը�)C������iv1�C\0Î\�6��\��\�泏2\�iid�\�=\�\�\�`Q�T��\��\�\��0o�\0�*\�t<�qߎՌ��M\�zv�\��W\��\�t\�\�unfմ\��o���}\�\�l\�w�US��\�I\�8<\�\�	BvwW];s=��_3z6n^ꌮ\�\�e��z�\�swC=\0v\��\�<�����k=on��\�\�꒴lҞ\�\�m�����d�y8\������.=�\03XRUcn�\�\�o��Mir]�[�\�\�J\�.���*\�1\�I\�\�v\�ol�\���Ro�)\�\�\�[[Y%�nD׿\'�R\�Kt�$�Z�Vv6\�r\\NONz��淔d\�b\�\�\�\�_��7+�&\�M\Z\�.Mk欴�\�lF�@۱�A\0\�h\�c�z\�M_K%f�ν\�5d�tܬ�`\�}7�K�fS���<c�q��\�.ڿwd�[��\�J\�[�\��\0\'׿\�j0aj0��\��2T\�\0u\0��i(��Ԛq�����\�\��\�\�\�\�I�}�\r_^�\�6\�1�Q�`\��v���f�b�^\�\�-{�w.\�Q��k����f�o��+���\0R�\�2s��#�����yY�8�\�ʝݹ�q�\�T�+\�M-�ݖW�F�j�*ri\�%w��z�\�\��j�\�m�lu,�O� ��=\��=�W\�Y��u\Z�\\\�m�i�.��e{���\�x�j1暕\�]\�ﭴ�ou\�\�-/[+�GT\��˃���\�\�\�:�xnN-O�i��\�6���\�9\�֢R\�:\�\�.\�yf\�U�-d\��)\\Ņ2:��V��$\�q�\�1�|ͥk�-yb�z/\�!RwRqi6\�M%\�\�^�N#X��]��01?(g\�(h\�>\\ \�FAr*t�\�Ғ��\�k]�}	�\�4\�ɢ\\\�\��\�\�z\��+e�\�\�\�1$q�\r�\�/�_j��p#9\�;ڴ�R���I\�_;;Y�\���\�(\�\�ʥ�\�RZ\�en�\�̏\�Q\�7�L�\n�\���\0\0|(��hF\�ݔ�-:\�ݯn���S���IuM�|\�\�]�G�k� ���X⁃�\"\r1_�C\�\0\'o^<\�5\�a�\0uMEԔ��\�{7\�m/�V*��Z\\\���Q�\�sIK��W2N�^ߙ\�^\�3̍�\�\��\�ra\����ȧG	��\�\�\�\�^�3Y�>Nuh%gw\����\0�\�d$\�$�y\�o�e!>P�*�`�;�p{\�R�\�q���\�_�\�\�yձRi\�ܜl����\�\�\��p\��A\�?s\�Wx�\�y\�ֹe\�\�Ϣz&ݼ\�\���\�M9\�\�(|�\�\����X\�&$\��`�lw\�#��jɷ�$�k4��/>Ɣ�8���{Y+�\�\�=P�\�>Uܣ\�nA�\�\�\�[Rw���d�_�yۿ^\�I\�\�ݦ\����7\�ι*Y���˓ԅUTA����Xp8�\�\�PI8sM꬛\�]z\�\�\�.H�񊖖J*����+k\�_S�֮��X-�K\�\�\�\�s�W\�d�Y�ƣ��Rv�\�\�\�\�\�z�9�Wm8-|��\�]\�sk��A;�\����\0�د���en^^�\��\�|����_Dݽ4E\�P��9c�\0Dhc��\\���GNQ�^�\"���W��\�6qww�\�o�\�\�ۭ�;w,\�� \��r9\r�6���\�ow\��\�l�g��S�4��䝒\�ٻ��ۡ�o\�\�9\�8f\�N:�y<v�\�\�W���K^���b�W�y[\�\�/�\�\�_y�\0\0F>RRx�g�\�5�l�\�=4\��w��$�\�M+���}/\�_-Y�lF\�Cq�9p�v�rr��\�Ȯ�\'xJ**\�NU����uz\�\�\�v��q�o݋�\�\�\��{\�\�($R\�E �!�<\��O�\��Q��\\���\�\�˵��Lӂ�k�]{zyw4�}\��J��˴*�\�p\0�\�\�\�-(�F\\�h�\�v�-�r\�\�\�g�$�JZ�\02\��\�n[\��\0S\�\\�T���\�Qi(��KK�k��\04*pi;=V��\�\�=\�e��\�X�GrG˟E=\�]8��6��\�F��w�\"���+I���{\�o�\�B�D��v��-\�\'��t\�:V�t�=\�\\]�\�_\��\0>�T�\��\�[��\���}�;~P\\d�ۀ%��\��Z^W�������\�Kt{FO�\�zs+G\��li\�\�B�\r�\��:s\�T�\�\�6����^G+�\�\"��ջi\�\�G׿t_@���\��9 �^;~��Q��k�\�ꓓV3�WQs�o�.���=~fc�\\>`9�#�HP8\�\�cW�)i�Ko~\�pJ2�Թ\\n��]�=u~F=\�6\��\r��O|�+�\�j췋ꖑ��\�O�SN]�zG_�~�7u�X�9��>\�\�\�X\�G�\�/>���*��\�\�\�Jݶ�\�ө\�^�w.X��\�O\� \�9\��\"�Sv�Q\�?6���X�k�/f�\�\�\�\�՜�V�NI\�%��x\�\��j�Z�{�\�\�k۩\�N:?y�����\0n�\����/$\��\�%��rA�\�g���R�,n�/��\�_:�ge7}tIy\�\��\ZV�\"*\�!�v��\�x\��\�=n��l��\�\�K]7\�\�~&r���\�J.\�\'gw\�m�\0nи�g\�\�I�@\�x8*s\�kY�B���Z�Z\�%�\0\�V\�jI��ٸ���\�o+\ZK\'\�|�\�V�n\�\�듏z\�.<�Q\�KV��2&1\�2\�Y����H�)�7d*�푻g\\m\��kh\�r�E�\�^�BR|�2�RoM-o-u�K���(	�Ă\�Á���u�\�r��j�V�\Z^\�̆ڲ\\\�oK�\�\�CN\��䒹\0d\��rs�\�h�՟*I�Z�^\�Õ�_����o�\�:\��T\�r��\��2IQ���^�e\�Z����\�����\��\�%\�m��3�����E\�j\0xE\n\\�\�w~�\��%��u|:�\"���[\���G\�K�\�p�J�\�]]�\�}\��h�+��T\�\�X���;�J2�`�3_+V����\�\�n\�\�}5*��d�BqV�\�^v������C��\�U�\�\�\�s�ןU;\�*)A\�\�f��[^�w;`�(Z\�ۤ���]/\�ccH�E��R�\�\�333}P�=\�r�\'M\�\�6\\ܪʹ���ލ&\�,\"�R�V{���\�^�߹\�\�s\���\�n\�m`\�	\�x\�O|�\�\��^6\�+;\�\�tGB�\�N\�E*�u֧9��gQ\�7�*\�n\�\�@`a��\�2�ƷU�+Y�ˢ}�Y4\�\�,����2����=�|�K\�<��Cי\�9��mvM��\�rXrGcڽj8\�UȬ����ߒ\�\�|\�s\�	8��mY5m�\�]~Cq�\�\��r�Ϩ\�Hm\�y\�E��\n3n\\\�-�0F���c\�\���(-��f����+\�g}mx*`�y�����W{F־�]nK�iR�0�tj��F�-�c\��\��جk\�l����\��ھ\�Kn\�%h�(��;��V[[m/�\0k�\0�#�<|�WE,�yFP[�e�\�9�|ѳOG�N�W\�\�~c^\�NNQ\�\�\�*��\"��HT\�\�\�[\�\�Tܱ-\�>��`�Ԣ��mV\�\�\�bn�vJ�-o��Ҳ��g$0&\�\"�*0pH^N9\�j�\�\n:\�W\�\��t}IR�rV��zꖾw߲3\�\�\�1�`@�r�q�\�c\�7p8\�<%9{��Vz\��_�8�\�xkhimN߃Z>�\�I\r\�\�\�@_\���F����r{\�\�\�(,-r�\�׼��ke��\�~\�\�b��\�sMǕ\�-���]�d��,\�>\�.y^\�j\�\��d����\�rw��\�ӿ\�ϱ\�Qޚqj2K^�w[��&�n,12~Q�?O\�\�M��\�O\'\��\0���S�\�V�]/m4\��\0\�ˈ\�\0\Z0FW�}\�W�\�y\�\�mJI˖J\�\�t\�\�\�sv��5�\�վ\�n�\r{gu�8`pP \�\��H7q\�[6�c^gn���s�$�\�ҕ\�\�o%}���6\��0<\�T�o�xB㞙=�Zr��,\�ʭnm�\�\�\�9\�iJ\��\�(��}9�x>\�\�b/pA\�l�8 �N��\'\�\�\�\�8\�\�\�\���!�(Z1�{;뿥�Sa\"&�́�FS`p8\'�s���$�\�E\�/\�\�H�t�_\�\�v�)\�S�(\�W����g�\�e߫F�r\"���C(p7\� w=sU\�\�\�̵\�u\��&Z�=VϪ��]mc^GɹA?ys�N1��\�[k%>T�˥��\'\�n��N0q\�\�\�\\�M~ϣ\��/+cq\\)c����?\�;\�U(ٯ{H����]\�\�J+\�NKV\�\�}�z5\'\�i�R\�R>2@]�6\�/ q��\�#=\rJP��`\�ou{k~\���~N\�\�[�Oխ~o���\��HP�\n�I\��a\��\�:�q��WV�vZ�]o39?s��\��\0\�\�.��3N).�\rރ��\0\Z\�WQJ7������%�w]�\0w�V^:�\�\�N8#�\���\�ct�\\]�����O����\�ou+�磹\�2p�.S\�s\�=�\�O��M[E��\�wI�\0�2�[N\�Ѥ\�e\�g��q\��\0\\m��\��y�r\�tr\�}w�����\'k.m�\�\����\�ݱR\�0\��@U���\�P��o�6徒�[~��E�=tI]\�\�v輟\�\�r7��}Ė,C0\�\�<�ܜg\�@9�\�%�\���W\�\�_4\�I�h\�$\�\"�_ue��\�\�aH�m�\�\�\�\�p8\�\�Z䜷��\��.\�N�&��\�\�t�o��\Z\�\�8�\0�*qԎ��;\�[޼�\�\�_�t�\�\�U9!]:�:^\�=�\�m{��ƣ\�\�堍@bW1Q�\�q\�\�\�f�Q~\�J6Q�k�u[h���\0\'f�\�T�\�٭U�~o��n��\�a�\�s�z�\�:V��\�\�Ѥ\�\�m\��.Zϖ/\�V�}\�4�\�ظ#p\0\�9\��\�z\Z ��\�Ti\�Y&�$��\�s$�Ȓ�拽�|�$�V\�ع\ny+�F6�{��۟A\�\�\�\�j\�%;Yl�]\�m�	J|�\��ݴ\���������%�NJ�@#\�S\�\�x���+\\�\�Eu\��_\�\�&��\�\�d\�k_\�\�܌F,\�\�\�\�bݳ\�m\�~�R��\�Ǖ\��-w����ʽ\�\�ݬ��kj��\�\���q�\�v#�\�)$��չo{h��\�F�\�*�3\�ɥ�mRk�O3�մ֚��e\�!�=����o��\�\�_Vl��-�\�[Q��\�o�V\��\�~�\�\�U�訹)&�}���n\��V<\�/m ��� \���\\�\0�\���O�.Z�ۋpj\�\�\�z��\�{1U)5\�S蹶�\�h��\�~\\�.P��!@G2�@\'#���R�\�n-����[�*\�\�1r�*�z&\�\�\�U\�\�O@\�\nnE0��\0\�G;Idq\�\�޼٧u;y\�\�m\�|\�Zn��>�u=:\�QS��P\�=\0;�\�\�kύ+)-]�o\�׷�~\'U8�N\�6\�{��[�\�#�\�#�\�I�i��\�=�@¨���v\�\n\�\���	\�-r\�t[���򵻚oS���ºwקq�)�\�f\�\�u\�\�Qڪ\�U���~`�*�G�\�\0ת��	�\�*M�J	4��.]6��ͩ(��;8\���\"�>�\�=o2N\�\�.\�\��ŝ��y`���}�Z\�K�&�O�\0^�\�\�\�\�\�Ӵ]��\�O\�\�\�\���Wt\�}�\�<��\'!Sh\�A\�8�y\�d��\�B/\��\�Zj\��k\�k��\�Ȯ�\�/K;Y�\�=�\��2���w�\�0@`q�l�\�R+u\�*\r�ŷk�z�/�\�{8�ǖ1\�-�z\�1�uB��rpy]\�px9\�\�+��#)(����M_v�\�£q�*��\�\��}61\'�\�X3O\0g��\�\��\�?y{7e%\�\�\�e��\�܂�\�\�\�\�\�t�\�j��PUo��\�`\�_~yڽ좇\�=5w\�o�\�\��{_��m_����\�Ya�-�������\�c����Q�嶿f߯_�\�>nn\�\�\�*\�M_o\"\�变dj�v�v\�`g�յS\�\�\��\�\�b$�쒍�Wm]�\�\�\�|`�1��N0x\�X�\�\�·\�I?[/v�[˱�9�-�t\�W\�uгo0尤r���G\nA\nH\�}qZAÑ(�YGf\�W\�\��@��a+8ꜟ_U�\�i\�T�v�*N$�\�1�\�\��\�\n�˕(���\�}�\0\�(�Gd�ew���v�6�\�\�\�\�`0\�9%H� �\�}+x\'o\�V������1|�~\�I-���[Xֶ�(V\�T�ݴ.��\�zq��\�N.p\�M�6��i\�_~�!\�ݗ-\�I�f\���m��y��8ڤe���\r�r@b�\�ҋN�c�l\�wK��]﹜�5\�zY7\���\���\�p:�B	��\�An�os\�ֺ.ܥ�vJ\�M�\�޾�w2r��V\�\��_\��1����۴�Q��	�`=�	>NN^d\����k��N\�\�si�N\�\�W�z)X���� (�T��b;\�\�=�\��%x5��z�[[�`��\�r�\�\�׮\�[��⑲\�\�Xcj�\�N\�\�\�}iÕ7(\�-U\�~]�\�z=�!9F.K�ݫ�\�[u\��W^\�ЎF�@p\��\�\�\n22g\'��;���Z�v�\0���89E\�)G�T��\�\�te��\'\�ʒCs�3��;V\�_\r�g���K��#\�\�R\�_e�\�w���2�)\�\����tǒ�r�\���\�\�G�t\�\�\�F\�j\���ڞ�7�\�d�=	b�Eo$\�R����z?�c%\�\�-�kku��\�y �=I^z{V2���\�\��/���\���\�/{oc��\'\n2ml\�\�!�c`8�����(\�J��=����\�J׋o��u��;��9k�\�?2�\����\�~jj\�YE~\�\�+k\�\�\�m�ji7xJ>\��Rz\�h�F[�\�( �Td�\�;r\�x\��k�<��MA=tVR���\�NMs]$��\�٫Y=�_�j\�7��-�<r�\�\�\�U�d��V\\�\�\�=�\�8�xǛ�ek\�k�\0WF���}��X�<)/�c��N1���%���c��\�\�O��f�\�I�\'{$\�մ\�o\�\�ߵ�B\0x+�l�{�v�\�ד\�o� �������\�(��4�\�w\�5���\0L���a\�3\�\�\�\n��=�[j��_ih���Ǒ�>I\�\n�\\ϗG����x\�[\0c c\�\�On{u��.g\�\�\�]Y�vw�B�+6�^\�ߙq\�@\�g�=�$c����\�]e�w\�ϩ�v|\�2p�\�W\�y>�˪c\\��W�8\0d|\�p\�x=:�hM��\��k�\�kE}\�mIӛJ2��6OTި�\�ۋ`\�˅w*wm\������5\�\�k�\�\�}�\�w_��]\�o�:&�vݻ\�Q�=\�\�A?�r\�Z]���q\�~Ǌ4�AY$\�K�*�%��}O\�8N2yu\��y��\�\�+����o~��x�\�\�O(k6U@,pH\��1$�y9��\�b�\�j�\�\�]\�{؊-(��}\�{;?.o\��\��VU\� <\�?R�rr`dWS�\�\�\�Q\�m��\�\�NuQS�5Q���Em�\��[\�\�t�.�\�\�D���\���N9J\�B�P���w\�\�\�d\�\�uЩ4�OV�J�.��\�3\�t}z)c\n�E�;)\�\�eu\�T��z`��:�9Ŧ�\�\Zmf������Uޯ[A^\�}{\�\�}���\rߊ`\�ި	H\�\�<�\"�\�㓞�\�\�jU.Wf��v��\�N�%�:ӗ�R�\�+r\��\�~WG}�A+\�w\\\r\�V\\\0Xm�v}\��\�^ѩ*z��Y�r��ꕟ+u\�D�8\�8\�\�OT��連w\�c\�5�N\�\'f�bK�6\�r\�̧�	���^�t%eS��Zkmz$\�\�\r�B�mϖ\�_{仮\��\03\�u-Ji\�lHɉQ\�*.\��u\�\0 y\�rk�\���<�K�[k-;Y#͜U��cgu�\�\�m�\'\�f��WPU���1�(\'\�.T�;j\�*rt\�\��wvW\�e]�\�圯�\�\�?3R�#�$�6�\0\�6\�;K�\�?)\�\'ލOU;�\�\�D�#����n����v��\���~�ڧ�72�\�\�{W\\)�i�\��9\�i\�)�f�7ј���ڝB�\�G_��\�3�\�+\��9\�/i\�mm�/\�x��wMY[u�\0�\�\�g$�\\�Q�FI\0��\�p3\�^�#4\��\�\�W\���ɞ+��vnOK5uoB��PL|�N9:�\���Z\\\�]�k\��uǚ.ڥd�\�aT�\�s�\�\'\'9n\0<\�\�Zk\�̣\�M--�^Kd�L\�ŧ\�\�-\Z���/\�̶�\�$m\�;zt9<u��hZ\�8��_Ϳ\�U��J�I=��\�\��.\�����]��nS\�\���	r\'\�\�k\�{\�\�݋�\�k~��֥N]AB�F0H�>��\�R��wd\�\�\�\�^�o\�a*v�Rq\�\�z�6`c\�\�\�#?8 c8\\�9\�G\�Tj�8�\�Y�m\�\�\�]���4�M�.Uˣ�\�\��\07穷\�TM��I\n܁�T�\�b9\�]_\�?�\��\�\�]ۯ\�c6\�l�Z(\�.�\��w4c;�\�\�y8<av��皸�ƣr�U�\�e\���\�\�aȹZ\\�\�n���\�Џ�jn\�);�\�3є\�=\�$\�Z�|\�F\�ދ\�E\�\�N\��l\�\�F1Qqw�qV��컾\��\'IC��s�ۆ\�� \�\�\'�JեE\�\��\�\�\���Nm,��\n\�\�|۶��6҈�+��;��I��A�\���G=7f�W\�\�O�]m\�}�\0VW�˅)9]JK��~W\�\�\�~&�S/\�P>`J�9\0\�$z�3ڮ\�qJ+��r�W\�\���\�^V��vNjɶ\�\�E\�юC�\\\0\�o�?+k`1��x$x94S�\\d�QFw\�\�E���z�\�4\��\�Q\�Q��i\�n�{\�]GeE\�X�\�y#�n��\�\�ݮ\�\�ꖆ�my�\�G\�w\��\0y�ā\�1\'9 ���ǞF{�]\�Y�5\�\�5\�^\�r�l�\��Z\�\�Ӧ߉�r��\�\n\�c �q�\�C�+挗�{�\�\�-��\���i��+�ݯN��\0L\�o��\�\�8;s��q��?��\��\�\�Z&���\�G�\'���O�\�[��\�]\�fˠ\0\��q�\0�\�\�Gz��\�J\�\�-r�\�^�E���M�O\�ܢV=\�\�R˼���\�q\�+��W*�yV��o=�\��}\�G?2Zr�\�]�Kv\�\�u��j8Y\��Gɷ�W*yX���Ҫ\��\�d�]<�ĄU�3V�\�-�.��\�\�t6 �Dn\�2\n�\'$䁏b*��\�\�\�\�/wEo���\�M�\�Q��n\�Y.�V�{\�mY,��7n�.I\��涧\�(�-V����]�r�\"�*i\�f�\0\�\��C#����\�@;�\�\�\�V�{Ket\�U\��\�\�s6�N\�\�Kj�\�\�j5+��\0\�<py\0c�P�\�\�\��I\�\��\0\��M�\�\�ioV��k����>R��W�8��\"�Ys�FZj��z\�\��#k\�v���^m����XJ\�\r�\��/\�\�sI8\�Y˺�/}��s\'�J׽�\�䭷��H�	`8��(\\.\�p�1\�\0\�?\�\Z\�QѮnewk�\�Ud��\�)F�\���\��k�����V)�\��\���<\�!\�0��\�J�\�?��\�$����[t�\��c��\'��%\�7k\��_�\�\�+^��\�-�X2��,��{$\�둍�5�T�()ZiK�Oe�[\�T}�z+�M5-6Z\�\�Klx�ɛO�H\�\'\�i>PGȣ��@\�O^��\�B���岄RW\��\�O�<��\�\�J-[yE\�\��\���\�ź@\�XO�@= ���j��\�w�i�e�z]H�\�ٺkKG��K��SN�]��*H��ʩ�\�\�?�b\��i~nk\�Z�vW�\���ΈUp\��y�v�mvWmt\�\�ї_ޡ��o��X�s�\� \��8\�\\�\0Uir�i=o%f\�E{]�/\�\��]�$�\�6��:��:\�w����\�R�\�F<s���:\�ø�\�\�Ȭ\�\�\�\�׼��{\r\�F�;�T�\0����-�\0NV�X2\�\�I#�{�\�8\'�j\�\�m�r�d\�\��\�rT�\�\�W�K-�\'�s��\�0]�)��t#>�T3�ȭb�\\ͯu-4I\�K^��99\�-\�7�W��\�o�z��:�\�7,p\�9=�q�⶧B\n	�Ug�G��*(\�Y\�Z\�\��\�\�^�5=\�3y�ꡙcX\�s�p��A\�\�B3]j3��7i_[�[[�8��{�\�}w���E�M�\�#�\�-\�@\�>ԥ4��MF��^w\���M\'i%\�t���w\�]J\Z��\�X1D�A�,\�q�#\�\�]�q\�q\�}VR�\Z)Y��\��U��\�\�\���\�%�qRv�ֺ.�\��w3\����\�\�;\�\�1�݀+���jSv�J\�[�\�\�]�U\��\�\'\�e��Zy�mܰpT�S9\'+��F\�_\�>���\�	%�-��\�\�\����\�%曷n\��	F\����݀\�pH�\�\�Z:�I٭mf���k>\�0N2N\�\�)\�}���{���\�)hR�0\�3��~sT��-�Z\�����n~���?\�}nY�\�f\�~l�={r\0���c\�h\'^T�[V�\�\�k�Zj<�^\�ˮ�\0�ߙ��*\nr���J�	\�\�񫂗4\�j>_�=\�M:y$\�\'go\�k\�\�\��\�Cf\�F^��\�\�N瑃��Mm+r\�F�\�[V\���t\�sIY\�5����\0uߡ\�\�?\�|�&\�Gͼ�f\'2\0��+��\�==墶\�\�g\���\�\�8\�vj\�j\�\�\�}K��H��|Ÿ$�V03�nb\03c���N1J\�\�J\��4\�}��J\�j\�ɽ�W��\�\��4\�jH�Ժ�\�����\\#}\�q��@�O�6�c��\��F�kK�XJ*F\�}vZt\�\�\�YI�P��d���q 2Fp=kz^\�q��\�}~fp�,\�S�\�G+���\�+t�K�\�;��\�eC�P�\�\�?\�B��\���;K�\�\�-U�߭\�`��\�6m_e\�\�\�h��`��1\n\�6x\�\�\��\\QR))\�Gw�ץ�\�\�I{��EGk\��k��o>�ъF_���.I ��0OB8�\�Lf�\��r\�-��\��W�\��\'�V۽�\�\�o�\�FE\�ӆ� �\�\�\�v*r��2�Z��i�\�\�y\�Z7�v\�\�\�GВ+Wr�\�a��\n�\�#�n+��\�F6\�խ�t�w\�Γ���[\�]�[�{�2�#<\�\0\����;w�{\�\�\�\���%o˨�,\��it�G\�\��\�5t��\�M�w \�����#h\�\�&�\��R\��\�~�e86\�\���ֵ��[#��\�\�\�\��G �\�#\��S�*��I+��P�\�溻���\����8[��\�Wo,\�F�_��k	_�A�5n�\�\�\�\�R�I٥��.�.�͘�\0�\0�mu\'\�隮XR��>\�����%\�(٦�֚�\�\�ЊFB��A,\�eB6�2	e+�{V��o/uٮe\��\�i\�\�\�\�ӟ4��\�\�\�k{�-U�l[�\�N\�鸒v\��\�78�~U�挣\�\�ǧ*o\�]�(ƕ\�w��\�ӧ���c\�\�\�V��l�\��g�i�>yA\�\�V|\�;_�\���L�\\��3�\�o?N�\�\�\�@\n�(bq�����\�\��\�\���E�U���~ɭ�\��\�b\�ʝFE\�\�i\n:\�>\�\�\'NI?{Mt��\��*4\�\�x\�W��ؽ\�\�dm����K.\�vrq�#\�Y�\�c)sէGy$�^\�n\�W���,�\�\�붊\�\�,Zi\�WrL\"�q�=�\�O�n�o�f�q��3Ҽ\�nk��F2�Z\�,\�\�\�V�\�u{u��xl\"��)\�k\�z8ϚM�բ\�]:\�\�Q�\�:Iw�Y��a\�I�N\�@x�M\�B3\�\�_�q�aK��V�\�\�\�1\�\�2\�8�I)[W\�ڟ�p\�_,\�Wj5~7��g�Q��\�{kr��l$�g_�����C\�>��JW��j�ݾ�]~�}��T��y]�+��k�\�s\�|E����X\��\n\�J�p�\'��\�ag\�\�ܽ\�[�>�\�c��)r\�.�\�\��V�<�\�\'���\�\n�\�\�B�rH\�b	\�ӞMz�&�%\�\�\�ѭ�\�v\���J-(Ek\�]/\�\�w3\�\�CgHfˁ#�r\�\�\�pq\�\�0y�\�\��n��쬒{i�i.\�\�5%)9&\�m���kw\�F�\��e�_0 \����3���?Bi\�\�\�|��\�Ue\��\03_h\�\�\�(\�r�\'\�\�}�3n/_�Y@\\g�G;I�x�ҩS\�I&\�w̺��_K\�ؙUMZ|\�\\���\�m�2]�!\�ch�\�\�H\�Z��I�vN�O䖟��k>W�\�w�\�v�\�\���\�\\)\�K��~H#\'�\0\�ޚ�I>��%�W�O�s��W8�vQw�\�����)c�|ɜ%GN�;y�b�ʜV\�m>.�/>��f\�SJ�\�\�>w����\�\'�\�\'޿���\�gY{ɥ����)Ri�v��Z[�E�\�vaFF\n*�^pA\�\'�9�g\�!k(\�]���\0�hBT\�t���ݶ�\�yy\�?҉\�\�=��\�\���^¾\�&�\�c�N\�k�Zu\�\��\�\�)bd�g�]�^�Fz��s�G|䑻�?�\�5��\�\��9\�Y+\�+T\�\�ۭ��d\��L�\08�Q�@l#�\"�mk]?\�\�Эզ�-\"�k�w\�\�=xb1�\0\�[$�(<d\�\�8ǯZ\�K�ފ\�N\�?\�\�.\�̩8��;\�KN׷K�\�\�̟p\�\�\�� �U�Ny\�nI\�\�Qm+Y��[wB�\\\�Q\��T��\�\�\�L�˅;	\�0\�\�䜂\0\�j\��\�j���\�\�m\�\�=[��\�\��\�e�^ƕ�ʤ�\�\�`\\�`��\�\�I\�\�J\�J\�ӊQ����\�eV2��W#�W�\��\0�\�浳�\�\0��\�>P\�܆\'\'���zr�f�yZ\��Vi=5\���%)G�uK��]5�\�\�y?u��\�H\nB�2�`2q�\0\�[)7.[�w���k^���\�\�\�+l\�\����_K�\0V4!|��y\�ܒ�*H\�O �\��\�|\nvz&�o\�\�\�\�r��l�)\�\�\�\��I\�]\�O�G\�_b\�$yq��S����6\�+\�N8�u�~�v��:k����n7��\�+�?\'ؿ /\'�\0\�rN\��8�\�\\�1��\�\�r�\�ٸ\�kh\�;�7\�\�4\�|�\01 �\��c�?��\�u�\�j\�׷\�ׯs^[TQ����w�{�����c���|�Y\n�l^�KF��\�RQ�\�\�=u\�\�\�\�N\�^�J\�\�o\�Z���ܽ�e�nx9\�w|\� 6\�_µ浶V\�ǲ\���\����ʔ=\�\�\�D�M\�k�hՃ�#o\0�\�r<V��S|\�_��\�yJ	ZQ\�z\�E-�>��#?0o�m\0��\���G��\�i^\n�\�\�\�݋\�\�4�\��~���׭��m��\0\�ݴeC\'�d�q\��\0�\�/,\\eˮ��-;��X�7+��u[-\����[7hY\�#9U?t����Q\�\�\�M;Yj\�u\�\�O{��PNp��okY�k�\�Zl`�\"�A\�IRHU8\�\�\�/β�\�\Zi?v��{[\�j�qM���\��\�g�yaʍ��n\' �)nǩ\��\�8�{\�mi߿��cG&\�\�yg�VV\���\�\�jDX2��X\0T�TOC�9=z.\\�\�=zY�\0�B�Hl\�f��J\�Z-�������i��l\���nq�\�\�;`VєUEy8\�+�X�ɧ�\�f\�\�\'yh�]��O�M�m\�\r\�yj�Vo�#\�18 d�kf��\�ݕ�N��I\�e�\�1]\�M\�\�Ke��i\��e�X$�\�<٤m��#�Q��\�\��n:I \�>#C*��5��b������f�t4\�a\�T|\�\�\�ҕ����I�[+\�\�w\�>��!w�M�nG�#|�\�\�S(\�\Z�\�\�n��Dxn_-�\�t��PR�+i-%k\�\�\�Uum�w=|.OZ|ҔR\\\��\�I]n\�\�o\�^\�[\�_\�\�Z�\�M&f��\"Yo�2\�A\��\�\�>�3J \��\�\�1<I��F5\\\\�W�*�Q\�U]�j^�+^��{G�\�n\�\�OW\�\��KI�R�\�\�\�\�-:\�yE\�|ɦ$1T/���?uA\�K^c\�1\��[\�\�6\�R�.��e{�^��\�xZ0I�:2\�ZIF-E�n\�?�\�\rxN{6\�-[S�o�M\�\�0\r�\�3:$>c\��\�B�L�||\�2\�\�qUjJ����y\�)(Y��\�zh����\�ɰ1�R��N1t�\��廲��Vk\�\�\�:w�f��٬k٭��ď:(l<\�\� �\�q盗6�ҕ\�\�v\�o^۟eE�����j�Y�h���Y%�j\����\�~0\�<0T\n\�W��(�U��\���\���;�j1�\�7�Euh���\�ө\����n%���\'��O�n+ZN|�\�O\�oK�\�t�OU��]l\�Tz=5�\�_�\�溶�$ip\"�J�\�\�S%�y�\�\�s^�*��.�\�ߖ�W\�\�\�}����c+&�f���/+=\�\�s\��m)�*�F�\"9e8\�A��\�I\��?5z�|Cr�e)Y-[o�ӿ\�pT�S�IߖM-/emS�\0>�\�>E�9Y7I��������GbI�Wzq�\�z+%+r\��w�Z�\�*|\�Ѕ��U��k~\�]\�\�mW-�V\�߷S����H{\���&�\�Zy7]v1�Jr����d\�nߖ\�̦y��wm�lBc�B�r�\�8\�ӚٿuEC\�[�i�\��\�\�L�\�(\�r\�1\�v\�yv\�\�+G�@R�ئ@�����\�|ޣ�jP\\��md�����\�ݼ�\�\�mr�{\�d�\�\�\�̵����1�\'o\'��\�s�\�O���\��\�\�mG5$�����_\����ƨ�Pr\�N�\�\\qׁ�SU\��cΚ�\�7���4�cf��\��/W�]��L_�2@b\�\�\n�\�6v\�\�+�\�\�+$�gݴ��\�%R0p��;5�o��\�\�54̲\�*\�dUF�5_�E�\0�=�O\�_I�㽅5R�v\�N�H��8GU\�W\�]\�O�\�\��}\�\�Y\���d+�Y\"\�9F\0\�9\�\�\�\Z�%��(�Z�����\�-�\Z�p\�N\�m�\�o��\�\'X.YJ\�§˸d��n=Fp}�\�\�Y��\Z����\�W]�w���g\�\�r\�d\�^]�\�*o�+(T*N⡳�r˜��\�\��Z�\�\�\'5t��_[k���c\��\�\'�\�-\�\�\���0hc�\0��\�\�\'\�\�\�\�T�앖\��Z\�o+_\�\�<�{�Z\��\�\�g�\�ؙ�\\]�\�H\n3�3�}�\�)\�(Ӻ};4�;_W\�-\�e̚Z�z�]+�m�M\\�U~\�m\�\�T@=7`�\�\r��\n\���Zjw]��߭�S\�\�j\�Z\�{V\�cN\�J\�Xl%\"߁�)`q�rG$�\�롿q-o\'�/\�\��3��M\�2�\�\�]<\�\�݂P���\0\\\�ib1�o8\�=�W{�(�\�f�\�\�׹�8�\�{$��\�\�g\�n\�d�B�\�pU�\\�\�\�l/B	\�9\�k�	6��b�ʛ\�\�rnQ�Z�ti�\�{-�W]��(���c#�`h�6w9ݍ�x\0���q��糅�\�5\�\�.�[��J\�;\�i.\�.�\���4�\�[pt\0��\�\��\��洶�\�I\�\'x��]m�w4�\n��f�c�\�\��Z�\0]Kh\�I�<d\�y\�\�8��\�֪Q\�ݾ͞�}�\0uy\�.VoGv��.�\�F6��\���;\���\�\n*R�\�M#��}}\��X��\�qKm�Ѿ\��\���r3ʅ\�\�J�\�\�x�Cu��\\md\�Szi�u�L%\�\�\\֕�;G׫��\rx�±�*\�ۈ\�ʣ����֒�\�\�c%�Ut�[�1�qN-\�/��\�\�\�\�/�R8\��8��\n\�o�AY&�\�C(٤\�kr�-�_O����26\�*.p\�\�\�JΣQ|\�\�+~�\0Bգ;ߣ{}\�?r�$�#\�8�\�\�$w\�柳�R��t�Q�k\�\�\�j\�;SK��u\�ߎ���~\�H�N�\�q�}k9SW����+��q\�O���嶿\r���9c�\\n\�\�0[<�8?�L*T\�\�Q\�O�$\�k�\�\�n�\�\�;�$ۊ�\�/-#>�ﶆ\�qlh�u\��r0\��*c9$d}x���Z��޻��\0���롲�͵\�\�Iy7����멣m\�\��@�N�`q�$�:g҅R�\�Q�4��+(\�蚻\�\�K�Bs��\0t�R\�1v��]{�\�_�ZƷ\Z\�\�E����E{�\�1�4�z�p*��D`�|��Pcs���ǉp�U%�~ޢ��p�\�W\Z�\�x�o_+�r�\�\�%��\�\�uѷi=\�\����^\Z�}��K��\�\�4a&�r�n$i0fm\���3�򏻄\�\�\�f�d\�\�ZQ\�w�jST\�����~��\�{�\�%\Z�ⷺ�y#f�Ii�\�\�t\�2�Ś�*�-\�7�K\"A8}�\'8\��\�{��>u];�ݜRIt�t��\�\�v\�\�r\�\�\�{$�M\�v�-u{\���\�H�J\�m�]���0ڑ��\0<\�NH\0��\�\�\�\�\�e$�\�ۭ�\���\�����k8\�\�\�^Mo��\�ZM\r�^�\�5̱�cf\�G)\�\�^x\�z\�2�$\\�nX\�~f\�oN\�Y\��\�/g(˓KF\�^Ϯ��_\�<c\�E���Ck�{_iFW�\n+�c�r2\�8R�H�sּ\\\�ԥ&�/a(F۩��V�\�\��\�E[\�cU\�zКQ~KM/{w�g�\\[��\�#S�\�$FI\�1+\�\�5_�*1\�W�2z�\�\����eN*Ꚓ\�d\�\�}��]\�{����H\n��Q�rU�0rzY]�r��zr=��ֽ��\�B��{u\�\�__�\�o�&B� &\� m�\"@\�=�Ф�\��\�e\�\�++?ĉ\�\�e\�i�\�r\�ȱ6ќ�Wp%���i9=1]t\�\'U>e\�%{A颶��W߱\�Q\'ʥ&�\�_wE\�}O<\�\�W��+*\�\�I!�!I��==kҧS�����˪�\�߶ߡ�\�*���\�{h�\���0�\�s\�g=I\nH��\�һhՓ��VZi��-}|\�c�T\���d��uI�ߖ\��9��o\�UCC+c$���\�B=W]����\�ֶ�-uߢ0�*�*���\��\0#\ZX#�\\d\�.猝\�\�y\�\\\n\�I�y�n��\0#�Pr��\���\�_��#\nx$�*8R\�ߝ_�P�;S�|׺\���\�\�\�We\��\�/Ե\ZbT\��\����\0	�?\�ޗ\�(�\0z\��\0\�Wy�wI(\�f��[�\'g6\0˰/͐�\�Iұm�&��o妖��eS�q�\�+�KY\'\��\����\�a�\�>P��\�;�rc\��K��{�=5[��\�rm\�($\���\�y��A��@��\r�\0`x<`�\�~�ܥ\�J�b�\�\�\����9��\�4\\��I\�\����c�\�t�V��\�l\�\�\�ʹ��Ď�\�8\\\�r�\0v�\0�a�Z�)֩�NI��K\�n뭕�\�=l;p�\�\�\����Τ�.\�\�诧���KʬW`*d1�\�m�A\�\��\�\�]<R����j\�\�\�\�\�5L+VJ�l�/\�\����m\�ď\�>\"\�\�ʲ\�+@���\�[,\�\�3b�2\0`FH8`=zi՟2��\�չ[�]Tu\�\�\��isB	=��^�i��̞�[\��\�[Mh\�n�++k�!�\�Y��<Ѫ�@% ��w (8Գ*��\�I�II��\�Ӷ�\�m�י�N���%\�ŵ\�^:�Z��km\�C���޵�\��\�i�?*\� �,�[��Y\����}kԡ��씹�NWJ*N)��ۚ\�\�4L���[+�d�{��E5.�\�T�Px`ю0��\�r+�5e�6�\�[o����\�\�eJIk��\�t��\�W.۱\0p1\Z�A���FN0H\�J\�O\�kK4���vf���í�\�#fj\�wc�^H\�H8=9\�\�EkIM�\�;+ۖ�&Q��)?\�پW\�\�o\��4\�bT6\�\0rr��g�\���ս�qY\'��Ծh杯$��v]~\���|ѭ\�����p\0\�N\�H\0{g�oN��M���\�n���%	{��y\�\�Gd���o;\�щ\�q����۩<� u\�DJ2Q|�\�ֺ��-7���̡}[Qgo�tЈ�8.q�V?\�猎\�h\�r�˛�\�k\�_O�&\�佛�W-ݮե���2�*08<d�|Wj��~�\�Ҿ�7\�켞�\'۩��q�\�\�w����_�-Dʻ\�\�\�HU]\�@��7\�\�z�j\���\�\�>{�\0v\�[�0�+�˙?;\�\�e�~��.1\�W�\�=��u�\0>�\��lӕ�\�\��\�}\r��\'̵\�M[��S\�gB0��\��\�#��\�sJt\��\�gu��\�\��Z�\�-+R^v�{�v�\��[\\�\�\�r\�hf�v\r\Z�*d�[Ƥ�S9\�M��b�\�c0�x)N�5N.\�q�׳�V�\r�\�\�i8�m\Z��\�Kw\�ٶ�u\�k��(���/\�o\�\��\�܅#a��J�d�Fr\�&/�pt�\Zr���}��\�\�N��>��)\�\�eM\�Ԧ\�񎝽׿\�h����2y���n@�<���ɗ�U��:c u\�ˊ9�\�4\�������\0��Wc�9MU�×�3w�\�_qkߪ\�]�R�\�I\Z���\'\�]WhFV��V?\�=X\���\�D�}v\�\����q\�5\�%��Zy���\'W������u����\��I\�\��\�\�pd#��*�I�ʧ\�\�8\�\�\nuWޕV��\0��R\\�I)Ǥmn\�\�\�\���\�	xrE�Ӵ\�縎M\�\�I��8\�k|�\0{\�j�\0 �ج\���>*q��Fj-�WNmh\�\�8JP�\\��\����\���x�M���y�b���\Z����<�}k��\��K~k[U�h\�]�\"�4\\�x\�m�W_�\�fy|��z�x��J\�⍢u�	m\�]I\����\�8�\�-\�Tw�vO\��\�;����Қ\�N\�\�i�\�\�>\�#\�m\�x�e�A?/\��N2H\0nϡ�\��\�\�\�Zi$\�\�T��/\�sWt��\�\�\�\�\�\�\�ME�W��Xc��ˉ���+��\�b��\�Q\��^\�Ҿ\��\0���\�Q|\�[\�\�[%��8\�U\Z���F\�;�J[\�Z4\�Ȭ~\�̹\�>����cou\�}\��Ж��\�&\�v�\�D\���v�\�\�څ�\�{K\�\�\�\\�H\��\�哵��IV\�27��\�}f�VJ\\�Q�[�\�{\�}\��mM�N��*�|�N-\�+5�m4\����]O�5=6m:k�YF^db�\�\'k\�l����$r3\�O\��\�R\�\�T\�\�\\\�{+\�\�\'e��H��-jUiSq�_5����IY�/-\�s��\�cdR��)·�\�\��\����Rғ��t�zo��Ε.MZ���4U\�ە\�{��\���\�m2��x9��t淄�x�CW��\�[�e��;\�7��]t�\���܃\�\�\�\�\�\�\��\�_A\�]І�R�U�Rvw��\��\�ؗ(�nnX��V��;=>g+�[\r�� -\��n\��\�p\�\�xⷃw��Q[%e\�\�\��y\�\�s\�\�\\����)\�\�Gѫ��\�˂��n~\�!p>\\��\�\��Qr\�\�S^\�K\�F\��ɦy����\��Zr�g\�}\�R�\�c�Q�J�#\�%�$�\��\�0}s]��(\�)�Y;\�[�?��\�\�l��.��%~��O\�\�<-�HIR2��!T�`H�>�\�]�q�\�ڲO��O\�c�\�Nܻ��\�\�v�A �Y�@w�ʫ\�~��\�\��j�QN\�T�U�\�6�}�BN�Z�o�o�\0�ߧ�aPs���9�\�Q\���u\')i�\�٥�\�Rk��-ѷ\�n��,��,H+��mP1\��<�ֲ�%�\�r\�ײ�\"I\�u%*��\�[\�o���[A8#p�N\�Q� �è\0ⶦ�\�\�\�.��\�\�ڲqI��ޖ�\�B�\��R�r�=8U�\���U\'\�\�KK\�˿c\nj~\�Q��\�{鯖\�\�mj2�z�\��\0l��?,c\�ɔB� �ޠ뛃jQi�\�\�+\�tkڤ[\�1��\�{__+Ûl�����`\�\\�<\�d�\�T\�\�\�y��\�=\����*���[M\�Zv���\�y���+\�Kk\�\��\�D\�|\�\�ڡHʹ;x\�\��(\�}�\�\n\\�ݽ�m^\�\�~g�*b\�\����k%-6\�~ڟMh,t\�.f_�\�\�\��Ԃ�@�cE��\�v�r\�x\�l�ڛ\�^�r\\�f�}�V{�<&\�\�+���\�{?_we���y\�mͫ�f\�\�N9pw��<\�\�~�j-\�o˭��?6>\���V\�\��FF�\�=?Y�[��|RG�U�\"��y\�ʨ�m;�۵�k`z1թS�[mt�3\�\�\�De8\�t�w浯{�%׷\�qO\�O\����\�\�W`\�b��\n^q�99+ϳK6�;�YS\�;�\�[v\�~\�{�8�KG\�Ϟ�����~^��3��\�$X.��\�L\�v̅v��\�a���\��>�d%hҩN2���[�����&�FW\�\�_\�\���.B�{��Ṕ\��K�F\�e���zTۓ�r�zݦ��\�\�s�p\�J\�5�2Z�\0��\0�\�\�k�8\�m#9\�%�޼\�?_���ܠ��t\�ou/�\�^\�4\�\�.D쭲��\�\�4b���!;�\�:�\0\�\��\�[F�\�N�M�\�\�\�In\��\�\�e*|�\�\�]\�o�\�_�^0�)\�U�(\�\n�����c\�\�.W8�\�-\�}4\�yr(\�\��\�K�o�]�\��pp��מ0E\n����z(\�ͭ\�\�\�T\�բ�ۧ��^ȕnPx\�\�X�A\0`�\�=�֟\�ך�Q���G{m�\�&�J2K��k/u.�7��@�uX�\�<�\�J3Mr\�.;Y[G\�\�a�\�\\�\�%m=ӽ\�Dz}�W^&�n&��Cg�*J��\�bB��@�ŋ\0\�s$�����)�ӿ4%}\�nJ�l��ݫE�\�aI8\�)J�Z-�;\�\�˹\�Zi:^��\�6���-�K%\�\r�\�\���\�\�;A��w\�U\�תک^r�[Nr\�\�6�\���\��\�B�l�M^;�Er�zYl!6�˰�s0m\��\n\�\�\�\n�\n89=N>\���r\�\�\�;�v\�﻿�{��)Z\�P�{^\�r�=t+\�\�\�\�4ae�\�\�ZD�@��Pw\��N\�8\�1\�R�\'����ѽ-t���\����i_\�ů\�\�wm֢@���\����鱐\�RP0[�3��S&\�uun�Eu\�\�}}J�\�\�mZ\�Gm{�\��\�F8W(�®rc\�`��\0\�s�R��_3�Of���\0.��Wf\�\�ڲJ\�k��0e��te\�.$ٻ���RA���`�۷\�`�p3�D\�K��NWI\���\�\�,�\��ui4�\�\�Р\�s�xU�BI\�j\����^�\�Vq�p\�ו�\�z=4׿[u%E\��\�\�Z)7+/_ǩ��\�g!}�E?\��8(c�\�^�f���\�\�^\���9u߷Q(\��]ޟ���u\�z6��!m\�����\�/ld�\�ӌ\"\�-��]\��k�OO$5�nJ\��*J\�z.\�}�`\r��\�o\Z�7I�\�\�1�?/9�9\"�\�$\�M�O}\������\�R\�{��i[v`x��ۣ��>\�&U��b\�\�l�\��\�~��\�\�VNJϲ\����~�\0-�\�{\�&�\�\�\�\�\��\�=\�x\�0Wy\0B�e?.@\����Z\�\�\\��������7(�\�\�J\�\�\��U�\�d�\0��e�kV+yi]F\� e*T-\�H��\�@2\�W\'U\��8\�9\�:ԩ\�\�/n[�\�|V�[O\�\�竗\�#�|�O\�\�E}\�\�\�(\�\���Ǆ\\�/Ȟ9\nIr�\��HϦ9���t\'M\�\r򥮭�Wk�\�#:r�\Z�qq\�\�[�\'�\�S�\�a�X�Bz)\��L�:s\�U(ʜ��u{���\�\�\'\�\�Z��ﾇz\��\�q���q\�u��\�\�\�d��\0+u\�*�\�8\�M��}-\�\�)\0)P�dc���\���T��s{�}5o#��J��Ǘ�N\�{}\��B�Y�u1���r��;nf㍠\\\�v@\'���\���\��\0um�ގZ�V\���\�\��/\�\��\�C��c\\�\�q2\0\�1\�\�zWd9ғ�m����\03%i\�J\�\��[i\���-�.\�f\n�\0]�\�6�z�۞\�\�rݴ���\�\�^�\�HYE_e�^�q�\�\0	ق$s�PU�K��\�GL��)Zj\r\�)-����\�\�P�����\�n7\�2V#v��\�B\��l\�t\�Q\�\���\�Zv��\�I$�3\�\�[_\�^�\�U\�r\r\�H	�\'\0+�2\�*��Z){\�KU��U\�w\�\�o[\�\�*\�KT��۽��g8\�Tˑ�\'��s\����5\���\��%��ӍڲQ\��k��\�獻��=3�c��u\�?j��}-�\�Di�Q��\�G��\�P\�#�\0B��c\�\�:��j\\,���\�C�a�I �\�Vԥ\�g�I�՗���\0�\��*�s�;m\�\��:�\�;#\"2G\��G\0� �\��IC�m^\�[m��\0븹9`\�S��cg�����\�N�v�`\��kc\�(��\r\�\��ݐ��C��\'�O\0���*V��o��)kh�\�V\�\�c\�\�\�):wM\�\�zsG]T�.�[\����\ZBv��Ĳ\��!�\�%YF�\0�ӑ��+\�Qi>[�]Z\�e�\�&\�\ZQ�v_�ˣ]|�w��5--b���v\�[\�lVE��H\�\�N]FW\�\09\�0\�\"Qj:�/e\�\�e\�E�N\�<\��E��\�B\�k\�\�$\�\�Whx\�1!�mO@@\��O\��/5\�W\�\��\�9쥢W|�\�\�e\���׺.Y:D���*\'\�ز��7s���v\� u�JKN�wO���\0\�ʕ4\�SR��\�Enϭ�?�[�c��U���,bx\�)	V�# fRc\�\�n8�\�J�.Y�\�Mb\����Ӈ��Z���iYy�\�C\���\�\�f\�n��\�\�ѽ�����P�.�ꄁ��a\�Cn;}�.o<3\�R�+i�5��y����o3�����U��\�]��\�Z��O=ٌ\��%�v��TP\�%�����I@w`G�8�a�+نu��,��>[\�.H\�]u\\\�N�\�rO\�rMJ2\�r����_���\��\�\��W(�Ό�\�\0,\�I!�8ڽ8��J�2�X�F��޶��Z쬤޽���HJ.\�R��qM�\��K��b�\n�9U0ǒ��t\�q�\�]0�䞎�I��\�f�yB�G\��\�t\�F��K�/�h\�+)\���a\�9�\0��=\rm\�\�\�TS\�U�M�숕ګh\�6k�\�j�\�w�]^�۾\�\�rW\'����C� t\�=3ZBqNpP�_2�{�\�a)CX�\�\�\�tmy�K��n2�2��\nx\�m��6��?\n\�0\�Z\�O�\�\�W\�\�K\�ѭ\��w�\�\�\�\�Gu\n��7&K\�NA#`Q��	#���\��\�ou�#	h�\�\��w��\��>���\�^\�+w[\�Ϳ�Z�\"{rYY��\�U�;�	\0�\�b�M�F\�\�^\�\�\�\�\����j\�\������VK��\r\n!8-�F�kd���u<�b�Ro�K\�\�Z+\�\�^��\�R\�m\�\�W�R\�\�\��\0��wu}x,`+c\�fVfVs�r\\\�I(\�7�\�\�m[e���\�q�\�nJ1����\�;Y>�\�{�#2\�\�\�i,c-�{�\�\�~�r^\�T}ۦ\�\�\�u\��F\�\�/rV{&޺�6\��6���$Ub8\�9\�3\�Oj\�\�Ǘ[�io?5\�q|�\�Q���\�\��{u T�I?件x�b�y1#\0t�\�F1��e-4\��{��@\�X��F\�r\�w���\�e�K����<��!p�w�\�\�.q�o��8\�{;\�\�>\��?(\�\�\�X��>W\�[�a�8̄oU\0d��$\�\�sڅ̭%��k_?7\�R�➗\�\��\�׿M�7���A�\�h\�H\0g<}A\�hn*R�wQ��\�\����\���[Kk6�\�U����oS}�g1�\r�b\�Y�\�>S���q\�N)ie\ZrqZ�ʷ\�\�\�r����zk���\�\�\�5\�b�\�α\�\��\���\0\�\02\�#�N)_F�}۫-ڷMuHV[\�\�\�wV�8\�o�5��*I�4;Q���@���\�\n@\�%y<�O�Q��N\�F[=v��[��\�\�Rz\�g/�\��.�X�ۈn\��ڬС,\\2�\�nإI�����<��N\�\�\�(\���k���\"�d�v\�-g�{�\'\�/\n.�l��v\"���\�)��iJ�n�rG*F:1\�ʒ+\��I)ӆ�zA^O\�\��\�c\��fµ\n\�s�.�mǦ�ӊN��{��ϗ\�\�$�	CG4SM��yl��\�\�\�n\�\�Cd��tU7�Zn\�\�[�\�D�\�]�\0C\�\�\�#5g8\�ii&�\\\�e\�KI-�\�\�\�\�rǹT0T�R@8\�N�}�8]B��\0=�߱\�\�_���[K�\�o\�\�奔�\�\�\�\�\�W;J�\�\'w\�Fk�1\\\�9\�\�h�\��އ\r�G��\�\�\'}�\�wV\�mS9\�C������q^C�z\0\�C[\�)F�\�w\�)\�K.�\��\�~ӭ�Kn^�\���m\�s��\r�\�P3��\�=�?,�º�\�x\�~�\�:�\0�S���pq�JN\�Y>�/\�ȣ�}\�G#\�䐡�\�\0;t��m\�]ٶ�uz�W�ۥ\�ϙ�Fw\�\�m�ZHd!x\0\0A\0�X�98�\�B�c�C\�7\�\�k\�Yiu}ex(�\�{뭼\���(�,�\�ɕ\��ĩ#�q\�s\�S��X\�T����\�_O�^\�)/{K_}S}6���\�Br0N[� ��v�ce\��\0���KӲ\\�qqwW\��C\"B2\�ӕ�#\�\�׽W��\�k$�\�I>����\�ש4\�;�^\�\�\�\�\�M?A\�o��Vx\�[i#\�V5$\��*��\��]͔��\�\�;ۧc>8�۫GeXt�7fX\�K\�\"$Q��UO\�\�\r�-\�\�w�(\���\�V��\07��^d5+r\�J�\0�|�Kkw}��\�N���%�X��^\\2\�n@ُ�\���zxz~\�^KY�-�����8�Ђ�NIh���\�\�\�#��\�b��v�%K;I\�\�r@\� g�\�1^\�8Er(�\���;�>v5�i\�\�W}��Z��\�]��,~u\�d<��\Z�ጃ���Xp9�m\�m{ъ���\�\�\����\�ۙ8�\��}\�Z�\�\�\�\�]��F��\�p�u�*�+F.0\�W\�-#\�dռɖ��K\�g�\�Kv�̲ȷ6\�\\�\�+��\�� �B�*	s�ѥ�I$�OM:��\0�%%h\�\�J�[k��n�u\�\�\Z\�嵣y`�\0��S\���\�8\�y5�n�u\�7\�ӠATJ\�\�\�\�\�^W\���:=3M�\�\�\�\�3vR\�� e\��9\�#<\�oun�_��E�\��\�\�]�\�\��\�i�l0����H�*x\�=\�\�\�O��\0[�((�v�qߤ�\�\�k\�\�t\���|�ܸTQ�\�#\�%��\\t\�\��O��\�\�Uۣ��\��-ե}�\���\�xcG\��j\ZM�̿!V�!�u�E �\���F?�1�<Ejj�\�ʚ}#)G\�+&��\�tiK�E4\�v\�j�\0ͧݪ<\�P�3��\��s@$�\��{@�W\ZJ�9-�K�e����z�l�+{T�m#ʤ\��J΢Ӫi�T��rE+�ڕ�+=5i\�w<�V���>٧\\<+���\�%��n��\0\�\�9\�0$��8L\�^4Ԧ\�\�WmTp�MwN�\��\�-lHA�E\�+���גH\�B\0J���6`�ݕ�g9\�{�\�H�r�\�j\�\�\�6�֏k\�yr�R���m�\�w\��ZuJ��\�i��9a��\�u=\�\�8\��r�\�vZ%\�{\�n��R�r\�\�^z\�ߩ�;�\�Q\�\�m�)���U���9�s\�9\��_�\�\�8�ͥ\���w]�ۡ�2��\�2��\�\�\'�im%�~�����\�\�g�s�P�̭���=�\�D�/ggOݺ\��\�d\�A5k��p�wU�2�l0N?�\0N?<\���v1�;Y+\�mW\�\�v�,w�H�\\�Q�{\�\�\�RG��\�(d�v]İݕ\�	\0��\�Fy��~��Oo;-�\�\�J6\�NPV~��\�\�ۥ\�\�\�\�R\�x\nȮ�.\�T1\�\�6��{P�\�\�s٭�i%\�\��z�\�,\�����w~��*@~\�8�+�5W\�\�ĕ8\'*\n\�\�<T\�-A�\�\�v��n��%�iE$߽�w\�\�W(IN�/\�GP3�\�w�?Ud�\�\�et�K�Y)\�4\�\��Z�\�\��D�\�\�\�v�\�ђ�#i���;�MII�ͧ����\�4�{;\�˭����C��Cw\�0F:�\�\rԿ,}\�Z\�U-���gu��Um�]t\��\�U&������\'�B����Ԓ����5�zt�l9I󤴷N\�kf�+\�n�\�[a+\�\�\�d!�s����\�=I\�O�e$��[\��\�%~T\�>�\��\�[\��k���6WRcdTۓ#:�uU�\��\��׋��K�{\�v�V�\��\0�����\�\�:{�/��mc2W��`���\0u8ۜ`}ǊMEǞڧ�V�\0-�{�\�\\\�k��z/?%g��\'��X\�h���z\�\�\n\�ц\�#׮h\\ɸ�{;5~mU�V�\�e\�q\'�y�i\�9oWF\���~�1}�QdP#Q��p6�c�\��G?�)�r<�d\�։���\0��jJRR�\��vz�W\���8_�Z\�\�q�+���9XyQ>\�3�`%(q�9\0\���<\�^]N�����[A+\�k{(�/�[��XLUl*�_4O�9;?(\�+�޷kS\�|O\�}WAf��\��k+E��U�ىȌ���b�z\�\�\"�v��g\��ytV�ռ����>��Ӫ��\Zu\\W�)(٭�\�̛���\��\\y�\��\�>PJ�16�1�<{\�\Zj7��v�iZK\�\�F���M����\�\�\'̭\�\�}��\�sW\�����\�ڹ\�`�g<w��Et�Z��\�K];���ی%\�EZ\�\���\�\\Œ\�av�^�\�\�+T�\�JI(h�vz�9\��\�j\Z\�~]v\�߯�vy]\�%�R�J�\�q��#?\�\�>��\�4\�\�\�\�;��^z\�}\��\�d�\�e&�\���w�\�e\�A=�Ee `|Ɇ \n\�\�:w\����*R��J\�^�]K�U8|1������{�\�\�,\�D�\�\\\�\0cF�\Z\�[$\�\�5\�\�%N-&�>ҳ\�F�\�r&�����J\�\�\��(r��S�.T�w�v��s\��I\�\rIE�=�4�fS�|\�ݛ|��n[�\0[�\�\�e\0�9�\�����  �?Z�U\'\�̚[�\�K\�\�;\�Ε6��S\�ZۛD�KOO\�f�\'�}�\�\�+*\�8\�\�3\\ʤ\"\"*�\� ��j���\�\ZT \�J>늋n\�k�\�\�\�ۨ8�\�Rn0N�\�|�\�e�&^�ⵋp��\�Z\��M���\�\�\��*\�q�=8\���ҏ*�����\�t\�[K�t񱃫�ͦ�\�ii�Vi�SЬ��-�|3�����p͓\�_�\�={WuB1q�tVjI-�\�\�\�\��jU�_zK��W��\�\�ӵ��ay6G$1\�X�ViT9=zdw���\�\��W�\�:���hK�=t��Ա�ً,�р�\Z\�׏oQ��9l�	z\�M�+�l�ሒ��F�����7���ob\�B�\�\�f݀}r=F�\�D\�ʝ�M-��\�Ik\�EBKek/[v��+}\"\�a]�O�\�)�pÝ�6)8\�NN\�\�\�̫5e\�\�d�\�\�_�\�\�]�\�=֛.�\�\�\�w5��{t\�\�!�uݕ\�a��9\�ON3\�*\�;\�\�\�[˻[o��B3���m\�\"�?#��\�bP�C�v��b�%p�\�\r�ۯ\��ȵ�&�8\�o\'��۩��������Z%��՝��K�?կ;YAI\�*[*:(m�{���\�k�\�ޝu)\�].[\�tW6R\�%tH\0�T�\0��1�=:����qo�)�;h�\�o/5ܖ�k\�t[���\�\�\��Y@`\�U�;��%�\��GN\�\��oU{v�\���\Zjn<ڭ[\��JޝN�;h\����G�w\'nv\�t\�\�\�Sq��_.�ڴ\�\�\�n�5\�\�E]i�֖��۷-�8\�#\�r���F\�-\�}\�\�ڈ\�k���?˳���]\�tݓi�\0���\�Mn�\�~,�]�x�=ō�:E\�V\�ͪ,i3>�\�c�A�R�����<\��iƬ\�\�KᜪKU\�%8�vk�\�_	A�g\�\�)+_\�\�\�M5\�\�\�\Z�\0�u�\�ɧ\�P\"�\�i�k��ܹؒ\��	%�r0O\�eٍm;�\�3Kބ�T�m/ʥ&�\�ެ�炫J\\�\�\�_g�����\����o\�1�E�\���\�`ey�� \�\�\��/Z�\�\�{�\��T��\0\���]Q��׿4ן{ݑ��LQ��c\�}��\��\�\�D��]ړ\\\�/un�\��z4\�\'��\�\����)[S����!Fߐ\�u\�I�\�矗��{\�J\�u�V\�Kw\�ubd�\�d\�\�t\��zn]\��Co~�\�4n\�cU�T\�:�\�\�϶rs�\�7��-�{\�\�.�+|\�\�9EI(��u]^�_U۩y�p\�\�\�^��\�g�:~t%\�Jϕ\�h�_w\��}�\�Q\�U��E\�\�\�\�F��\�i�x�\'��\��\��**5��J\�(��\���9�\�W��{h�D�0����\�\Z/q~�о�N1\�OA��}}׷�\�\rs�\��kt\�M4\�̵\r����α�;F%m�CI��rp9\��J�\�J	Y+\�ޚ�L\�*-\�\�\�z\�\���\0!R�2��U�E\���w��\n�\�\�A$��JjZ-]^�\�Zw�\�ܖڲ�����W[u���Ȣaݜ��X\�g7\�\�O�1\��i�\�\�\��붃����5\�>�\0}\�1^*m!���2��\��ڇU�{l�\�k�t��\�Lc-m{\�f��[7ӿ\�^[�-�X6\�@b�72c�\�\�z�y\�Q\�f��\��\�\��}V�rV�մ��}����\�\�\�\�yp\�\��\�a�\��$A\�\��\�\�\�IN�ԭ.[Y]\�_��+�ߚъ٭�\�o\�\�\�LSiͶv�J\�\�2����RTm�?{\0�N\���\��/u_������啜c������R�K\�\�QV%�\��3:#�9�88ݞ\0\�O�2�&���\�߻{������\r[ᖩiw�����\�ݎ�\0A��2Eu\�g�\�0Fm\�\�@\��\��\�n��c#���RO���R�\�>�w|ϻ��\�\�4��}��Z\�\�\�7]�\�ӫ]Nz\�\�L\�uY�FB��Bv�\�w\�>\\|�{\�\�:0�4�MZV~�M+j�Z\'\�Ȉ�s9C�.N�WVv�I\�g\�w\���\'�\�K�;�$\�2\�K\�em&f]\�\���ܿ8�\�i8�+婨΄�j�\�륔c��꺝�sE[\�S�[^���}moy.]���<Ŀ�I�M*\�h.a��\��R��S�KŖ2F\�$�{*�\��,\�v�\�\�{�-n�G�K1\�J\n5�\�?$U�r۾�u9TѤ\�\�\�ơ�L2�X�Tm��\�n��\�\�n>\�T\�\�YG�v\��o��wi\�c���=�jk����_\�Uu\�\�ZmaW\�RU�T+\r����F}�\�Z\�s�J/ݶҍ�\�\��\�R���>�o���\�cP�R�x��yP�+\��Y^�\����\�\�5�ӳk��\�\�2�\�Sv]���\�q4���\�ye11\�@\�۶��s\��s�\�ێ�r��8\�2J\�h����\�\�y���N�گ.V�y\�Iz]?\�C\�\�H?eEL�i��BU�g \��\�:gv+�z\�.JVWV�rM�쮖�[{t<��\�0�\�;\�\���W]\�h46a�7\'h.��(p�F�,\�\�\��1����k_ӗ�\�s�\�e\�jq�_ʚz���Hl\"M�Gc;Բ\�.	L򞞽q�ƻ�Ђ~\�y%�[o�\�iV�;�N^�\�˾��Wk:��+�nx\�ã��#�Ƶ�P���h��\�k�\�d�w2\�t�\�}\��O�SJ\���3�\�of\�n\�\0*�q�\�\�\�4{U~X�\�+%��\�ؖ�\�R��\�=��]��\�m:9/t�6c`��/揔�pT\�<�3\�֜\�QR\�u\�IG��mw3J|\�.KE�\�\��[��y\�86�����#]�G\�O\�\\``�\0:�{J\�\�V延�y�اk�e-���;\�\�W\�\�嗚-\�v�$N\��\n�Ң�ɑ\��\�\'5��\�\�]D�\�o\�����\Z�n<��{�\�\�d��\�\�7�E _./\�\�ѫl����,{�F�\�g\�V�n\�(��\�\�w\�\�{;>W�\�Z\�;���4-%\�%�\�F�Ԅ�1�v$�\\� s�~j*2}î��KM�\ZvK�.\��\���b�xoV�`\�`Y@?#n\�Ol�����Oz\�K\'�7M=KjRO[6�\�~�݀����\"�C1�\�\�\��]�+�a���W)8\�Q��u\�/$�dA\�\�]FQ��i[\�_\�\�4\�$�\���c\\gmLu\��<\�P\�\�\�r�yvo\�\�\�h�j�\0���\0\�\�6�D\�̍�3H�\�\�	;����ޔ&��\�F\�o[;�ۧ\�\��\�Y;o\������j\�RE��H#\�<\�}:\�\�U\'ʽ\�\�\�=���[o\�q�Y8\�&\�O����޷�]K\"��nrG�^p~p0zn\�i�\�1^\�\�tJ��Mv\�m|ʻpiFI��.��O�q<\�p\�K+*\�]��yەo\�?�]\�N\�Ӳ\�\�^�{�_2ѭ5��\��\�wV\��-icMV\�]\�H��[\�7*T�.\�P�0\�0s���5kS��5�E\�\'(\�Pmv�mt�tfN~\�_/+\�i\�\�\�<\����hK�K�18�\�)�68\��;V	ٸ�\�m\��/��U\�i�]s(\�F���o};t-I*�^AP��*D�R�\�n\�\�SĹ$����\�e\�%��j����Ҕ2\�\�����\0��\�_\�K����0\r�h8\n�N}\�I\�c��(\�/uO�\�_.��2�ޖM+˥\�\�6י���qe.\�7L�_\�|\�\�IE]�\0>bIlu\�P�4��(�]��˳��\�\�kI\�\�-�ˣmt}#�;��\�\�̖:\�\���yks\�\���c\0}\�A\\�\�:�\�\�ͯ�k�ikm�^z�7�Z\\�z6���\�Ou\�<\�Y\�\�n�ь���#��o/v9\0\�Y*�R�*\�\�I��b\�w�z�sJ+U%\�u\�\�۷�\�˪\���6�aq\�\�dFِ\�F6n\�\0c?)$\�֒v��\Zv\�\�ލ����R\\�\"\�qM;\�\�\�oen�m\n�ĒYm�\�[��C,XA(\�S�\�FP�����\�I�Q^3P��\\ܻmնg*�~X�;^\�{w\�\�\�*C∌�%��ܶ�\"���X�9.�a�z`��Sj��%9���z>�ӯ��a̢�\�ߛK?+t�6d�@X\�{n�1e�\�<�UA\��\�\�=\r;4�uw$\�\�^\���\�	\�\�\�m��z\�X�񍹏|\�\�\�r�93bv�h\�\�\�O$w\�\�U�+Z2R��n\�\�_�	u]�\Z|���R��w\��+j\�tj\�Y\0�c�^iX\�b	QgnJ\�\�<��\�\rJ�Srr\�\�)4ڗK���۩\�G\�n\�6�\��\�\�\�b_�ME��� ۔88#8�m���\�;�Y|)J�5\��\��w�6\�嶽S\��^_��44K��\�3`�\0�\��\�£ar�\�\�\�ݮe�\�[���h��\����%�ޭt-C`��mU`\���~>���*\�熫O�\�d��-$\�Y\�s+7ͽ�iE�\�w��9�p7�UV�Wyc��\��\�\n�|�(\�V��\��\�\�k--�\�JO�E\�)\�\�\����\�<����%,�r\�ʘ���Ip\�{Z�Jj\���\�I\�\�n�EE򶒖��6O��}u3\�	A[gY$�\0X�\�mS��\�\�\����(\�[\�J\�+Y�\�e\�\�w!�FZ?$�igo_�s��Ю�� ��ua�,�XU9-��;:u\�9�t\�)/r���\�\�Ϯ���Q�+z�ti5�E۷��.��#]\�sM�Vy\�T�+�u#�\��\\��Щne��Tm\�o���ܵVjJ�X;�I\�k\�Ӳ�\�2\�\�\�j�v\�\��`r��w9/��^;��=+\'�a���\�Eh�N��q���\�\�-zk]\�ퟯ\�\�\�<a2\�\�,\�\�\�\�\��\�\�\�ݧ\Zs�(\'��*�ܖ\�\�牯\'wZ�\�\�9ɯT���\���G\�(\�N\�-�k��\�1�\�\�\�O_Z�ЧM\�:Jڧ\�׮\�s2攓�\�\��ͥ��WX\�A���`0C\�Ǖ\�\�\0\\����\�+Z/E{k�ח��O\�_\�\�/#\ZO[[�s\�][3nb6ұ�	�0f\0�#\�b�Ƣ��qnڤ\��\�\�\�\�R|�ݼv��Iy\��2\'����&T�DdP�H\�\�3׿$�\�\�匜d\�V���������\�\�g��1�\�I&R4\n���e\�`r\�@&E\�9�d����\�\�\��\�U\�]\�>n�?\�h��\�Ѩ\�#t0\��UN6�!@\�\'�\�N�Q|�{|:\���\�I��˿F����\Z.\"�\�*\�L��\0By\r\�׌q�k>K\�z8\��\�D���\�I&��jڽ�\�\�ۯ̴�f;G\�!T�1g�=Ȥ�Y��1T\�����^\�i-\Zku\�\�{_t�8�g\�\�t��\��zY\�\�\�\�8\�S3\�\ZKFDx\�bU�Q�� ��9�\�r�6\�\�+�I����\�[�i\�\�⹖�]>\�[k\�\�։o\�m�E;O��\�;ኂN\�\�}sT���\��l\��ꊕ�%h\�\��\��~~�\�	�eB��\�wG�U�\�~V$���\�8\�\�hw�N\�7\�;���\�P�촲���\0.��\�\�:�\�^hR=\�n�Dh\�,AA��\0<�\�e\'\ZWI7\�iԴ��a+En�\�i\�\\�������ظ `\��\�j����mm\�\�}[\r�\�o~\�n�woe,[$�t�\��$j��\��\�͍\�\��$�\�\�JV\��o\�/B�{]�h�Q\�\�\'vPϵ�\�5\0?)*H`��\�\�$�b\�T�{+=;yW+�޲\\���-��\��	jV���T�pX(nF\�\�#9��R�t�6Z;\�w�ȩ%g\�\�=�\��?�/\��Il\�$v\re�@S���0\�G=)YI5	�\�e\�\��\�\�R/+����/}S�Ko�\�dVWGp\������\�\�\�\�8�ֺ-$�����o[�\����m&�\��O�,\�-$�V@\�|̬J�y\\�q�}N3\�\���\�i&\�^�j�\�--x\�\��\�m~J\�;0.\��@\�\n2`�\�\�r#\��^\�\'�^\�H�h�gu\�_�\��wGG�\�,d\�m�I�t\�%�\����\�\�\�t\�r%\�\�c.��e\�\��\'��?\\\�*��\�\�\�\�~��V1�\�{$��˥���\ZP\�7M\�E#B\�Ue�\�S�w\\���^Fy9�t֑���^�י-7__4h\�\���}�\����$�`0\�x�B\�dn\�\��d�\�\�\'\�Q\�\�g~\�{>�\�@qjN.\�\�\�\�\����i�����I%u\�$B�\�\��\�y�9\Z�\�W�K[?\���\�̗\�;j��\��V\�\�hRL��вH�C&\�˱&A��\�\r�q\�c�ܽ\����Z\���\�[v4ڗ,\�\�K\��\�мt�]MwZ��c�\�H�HDI\�\�9\�Nq\�krI^\�Z>k\�٫]}�\0�9G��M�Wd䯿[�]_C��\�/\0�6ޅ\�U\�\�\�h+�\�\n��=�\�jC�\�1��4�6�}\�\��%��Ku\�p\�zv�ƃl�\���х\�	\�v���{{�1MV�is(sn\�K�G\�N\��c�\�n�\��C\�\�y��\�P\�T)E\nq�͂p�\�z�}4\�Zϗ�\��\�f�+����\�){\�]ן\�\�`\\}��Y�&�RϺݙ6\�?6c\�A\��\�#<��c̢\�&\�\�\�O�k\����\�$���_����y�>�p�\�-�\�Ǔ\�P]D�.)�-�rG|�V좣\�\�wKݺ\�\�\��#U\�em\�\�\��\�v��1j\�\�PO6�uYJ��	\Z�\�P\\rI\'�\�I���Z��\�];w����\�+Y5�\�u\�\�T�\�w\"E\�2�y��㌔9S�S��𫒸\�N6^\�Mj\��\��:��𭝷��\�\�Ȥu�\�2KC81~\�^9�L���\�N\0R08���f\�\��t��\�eoǨ7�+n\�-\�n�}?U�e��3Gx��\�,���	l�\��\�\�|� \�:��ũl�\�\�\�Z�\0v���-~\�\�\'\�SV?Nbg{�c��\�y!v�7�#,x\'J��m+\�F�{�//��J\�\�\�u�K��e\�z�@6P�,\�y�)��\�3�g{\�ܠp8�+X깭gnU�^}5\����]�k\�{Yke\�䉡���,o<)��\�4,�6�y �Ф\�1��V�\�$�\��Z\�\�\�\�~�\�\�F+�ѵ\�}W�\���?\�tvK欒�\�2��\�n\�V{�`y�8����\�&�\�篙\�}\Z�MWݾ�1�x\�\�&��vu,j\�x�ba�qބ\�^�v\�t��d�ԗ�����Nֻ]����>:�\�cp�\�ȑ�\r\�X+.ry#�R\�|\���\�˙[o/R�⯽\�em����\�\���\�\���G\�U\�,I\�\�\�Y�I\�W���E��\�_]�\0B^\�\�\�߷\��}{\�G\�#\\NcTˬH\�q\�J��\0�\�s�C��V��\0��i�{�J�\�\�I��\�\�\��0�\�Ѥ\�HU�\�;F͸^\�}}*�e{�.V֗v�]5��%r�K�\�={z��y�2�5�\�hVE ��I��H# �Ӡ\�C� �TR���\�\�\�\�\�\�J\�F1V���\�V�\�vޱ\�\�ne\�\�\�\�T�\�7 ���nr*��\�\�CM�Ҋ~]��Ɯ�m$�\�OMnhǸ\"hey�\"\Z0	\07rc�)��8�{F\�q\�Fݵ�\0%רԭi$�\�z�\�\�Z����cVت\�dBF\� �����\�\�*g%mݓk\�}�v��R\�\�J-\�Mt�\����e\�\�/�$U�EI\r�H\r�m\�z�J.7�\�+��\�[.]�v2\Z\�\�q\�Um\�u�\��\�uZ\\л:�,\�Y�\�<bB\��\0�\�\�\�<�\\��׾\�%\���)i�b\�y\�\�\�\��mFX\�t�6�s�0�1#�C|�\�$6\�W�������r���vJ�\�\'}��4Q^�\0$�v\�+��]�k�֚JF\�\�\n\�\�z3�(�f<�\�8\�(�6\����i���-;��\�Ϣ�O4vPA�ʛaUX�\�.$�\�܆\�\09\�\0\'<Ӵl��\�\�\�\�k��\�\�#N+�ݴ^�排\�\�[r\�\�A����RX\�\�Ɍ�\�GJ����4���Z�\�\�\�~�\�\�\�\�I��>���\03�����>\�Hܪ�e���\�z��8\�A\�LUI�\�)(�\�ɻK\�\�ʿ����\�<\�O\�\�\�ejR*+���0\�\�0\\�Wvx�g=x��T�O^k[�K\��u\Zߕ\�~m?/O\�\�a��ti!�I��D\'\�W$��\�H\�5<��M&�\��\�U���E}l\�Bֻn+�6}\�\�\�ݙ��\��\�\�@H�`e^&(/ 8\0��\�~\�\�\�y%\�\�(�v��Mh\�mwe\�\���5T�O�^\�\�g�\�t\� ʆ5�\�s\�)���\�\�ޔ\�\��4\�ۿ-�V�{2Q�J�Z��\�ԓX�K$��&0[(}��W9ef\�X��\�N~�\�4�\�[�攕ڎ�Z��g\�w�ь\�\�\�\�z�rb\�%c\06\�\�up\�O<\�NK\�Q�K�\�wM&���\�%�\Z��6\�\�%gۛ�\�˹J\�,�\�L|�X��\�#\0\�=:�iJo\�V\\�R���\�}��%�\�j\r]\�_]|ץ���e~̉�0U#p\�A,�\�B�\�#�)\�0Mot\�{[o�\�?���%�\r�M�k�\�z�\�)M�S\�\�*ab�\�\0�A\�8O\\q\�X\�)J�2i��\0\rV���AӚvO�ݽ\�ֲ\�\�DJ�io6\�\�\�e�N\�\\vݜ�s�*\�ƛI75+\�Ue\�{\�\�	�8\�JJZ�\�n�3S\�]E�\�aU�o<\�\\��\�[\0c�R���\�ݭ_]]��=�\�:m[�U\�y~(\�.,��\�\�\�Ȋh݇ͽFU�A\����\�2�竅4�\�~:m��*n1u$\�$me\�\�W̶��6-n����&�ƒ4Lv،r�3\�R\�\���cM�IZ\��˿{v\�k�\���{_}�\�W�U�\�3$�U�]�c�ƅ�q\�~f�\r��\�Y8\�-{�ǭ֪^^W\�B��rM\�l��]\�m8ۯB\�\�y\�Y�00wr>�\\�\�C���W*��ɋ\�\�YFVt\�{}\�_~\�u\�\�wi\�9D��\�\� ;I ���\�;\�f�m�yyR��RW�K�_�fB�դޒ|�W�{_\��9�48-^G�D\�ŉ1R\�\n�\�\�xۭf\�|���E}�l�y\n���I\�d�_-:�w^�#�h��P��23�bď\\\0\\ޔ%>g\�{\�wx��Q\�\��\�\�\�*<ֽ���|\�\�Q$��U%�\�7�:�\�����r�]�uv\�}�M�\�2c��\�\��L{�>\�\ZH\�~�\r\�3\��|�\'�pqӭ7R��e���\�O��]BR��h��\�[o���\��	|�\�\Z\"�F\��\0T00Ny\�\�\�\�,#���Kӥ�~�ߖܭ�\�\�vOo-ʎ�r\���[�\���\�X`\�Ja��Yy\'�Ҝ\�\"�\�\���\0\������[t\"x��I$YɍAʐA\�(P6>�I5t$ڒZIZ\�>�\�\Z�+\�\�{\�\�)\�y*�\�d�.<�;�ݵ@_\�ʱ\�\�\�Irǳ�����kuN/�O[�\�v[j6i�������r\�?0\�A�:����3�����\�m\�E��K�\�n\��\0_\�\�Aoyw~��\�]\��\\�w\�Np\�$��]h�n/�\�ߏ��\�P����$�ت�x��q��n\����\�E�Τ\"�\�g�Vӽ��\�5%ov)_\�޻�\�f]ҜH��r�X,���y\�\0���u9/*���=v\�ed��\�jG-��,�\�xg\�\�c<�q�ۯ^\�59�?v����}/��ܗѥ�O̿cᩝ\�\�\0y�3�DY�@�\�\�rnO�%\�\�kh����\�$��z5u\�{��\�i\���!%̅\��\�&\�CI��͸䁴w\�\'�W<\�\�\�\�\�\�E�����\�d�[j\�\�jo\�i�`����f\�<�.Y�m\�\���c�q�Nb�\ZP��z6\�ׯ���\�Pq�Isn\�\�\�z/�drڢƮ#�9%\�mT�\�C���\n;�\�w�{r�\��7��D��\�\�Yk�ش&I\�>h2h�\�K��Q檁��:�\0J�WEǪ�m�\�u\�#��F)r��[����e���y��\"2��\�Y�\��@\�\�NQP�ekI>�o�˺b�\�I߶��/�6\�-)�/)W\�\��#;~V\�Q�dpOjI��&\�I�wE�\�\�>]%\�\��n��\�ckJ�\��\�*�.�\�7�j�܅\�s\�h�\�J-\'ʒ�ն����\�\�Z=,�m���\�Β+2-�>`\����u\�	b2\'\�Ծi�BѲ\�\�/�_�\��\���\�>�AelC D��qr��6P�#vIx\�\�ED��m��\��\0��Q�f�\�\�e���M\�qo�\n��\���\�tFq���W\�R���}.\�\�\����I����^\��\03\']\�\�\�\�%�K\�uTly8P\��!�.W�Nje�IF6����\��ߧ}_�N.���$Ҳ\�\�];h�\�\��\�CU�^�hӐJ[\�\\8+�\�8u늟i\�Z\�e�{��%�J\���\0��Gs�\�\�loo!yZ\r\���\n)�/�\��$s��\�#�RN3��)\�6�z[\�\�mz=���4�)�^\�\�IIo\�\�m\�\�2\�Ak�3l\�ͱ�\n� �H��n\rѲn\�\��y�\�\�̚\\�VK[;+?�\�v\�&麲���������g��\�1Z8{*wv�KmɅ�]�\\�n�4|\��K\\�R\��\0�-\�\�\�;(�\�\�6K�vFD�n\�m8�9ҵ���Oz6Ѩ\����י�\�\nwI�.g��\�\�\�G�\�'),(9,'Milena','Josefina','Padron','Petit','7965839','milip12@gmail.com','$2b$12$ji0ntVMAwReQpfynriGVkeEwIAc.f2r4is5tte712XIZvbdNO4JAG','profesor',_binary '�\��\�\0JFIF\0\0\0\0\0\0�\�\0�\0\n\Z\Z\Z\Z\Z\Z\Z\Z\Z\Z\Z\Z -$)\Z\Z%7%)/0444\Z#9?92>-2404)#)22222252222222222222222222222222225222522222222222��\0,\0�\"\0�\�\0\0\0\0\0\0\0\0\0\0\0\0\0\0�\�\0?\0\n\0\0\0\0!1AQa�\"q��2��Bbr\��#R����\��C\�3s�S�\�\0\0\0\0\0\0\0\0\0\0\0\0\0\0�\�\0-\0\0\0\0\0\0\0!1AQa\"q����2\��#���\�\0\0\0?\0��n�U������*i�\\\ZC�\�Q�Rl���\�T�\Z*�e��W%��(a�JY\Z\�`�\�Y\�(�\�\�\�Y����	G}�*�\�l\�L%�$Q\�E��LGp��[�\�\�)�D\�U��\Z\Z=\��\0�\n�\�\06^?\n�\�djj\�N�K6uH7\�\�|\"E.F\�\0Z�Z��Gt5��\�ҡ���PTUչPJ+�Ϳg5\�j�\����〦\�W\Zo�*�+�ź9WWw%\�\��%R�LU \�y2\�8\�{:5`�6߂��!DF�jjC����ѯ\��*]ߑ�f5\�i-!鳄\�58Mv\n\�\�J��r�Uc��\�R+�ISUR�N���R)ԉ4L\�\"�:�6�WTV�m@�+�@���Zb�]��5\�\�<�� ��\�\��\�\n 5)���u5u4tβeȢj�`���Y\'��TDWQœCd��ϸ�I�\"�\�F43Z1\��`XUb�\�H��\�d\'��T�SRYL\�(X\n�V\�d\�S¬(\��\�\�a]G�\r+1�W>5p���55	\�Iq\�lX,\�\�\�\�F�T⬳\�٪R9\n&*\�c��w�-�aM9�$�\�M\�D\Z\�9o��zv=5��E#�\��i���3�\�\�\�A�K�}/b=�\��\��1G\'ss1\��U��Z�\�n�b1	5���l��\�B\�\n��*�j�l�\�\\\n�@j\�N�x����S��[�]A\r]]l\ZL�x����i�ɦ7�qv�����՞p�h�\��z��u\�\�2\�\�*��)R\�\�\�\�c<v>6�U{�\�x\�Ԗ{H`�F:\0z\�UxB�\�U�Ћ\�c�B\�%\�\��I�\�Q�E\�\�3\�\�,6���\�\�0jA�->�8\�yM��\�Pj@�� ކ�\�u\0\Z\�\ZN�R\�\\T3ts\�j\r\�ϡ��R��>\�B\�\�^\�s\�j�\�s\�izg��Az	�9�5Sps\�i^zg��1��/\�>�����-�	\�\�\�xeO�=N*-�˼D�b*��\'_y|EI(�)ދt��\�c�\�@{�3\�\�\��\�\�ֈ\�o�Jy⼍�\�o�/>��_^}\rU`�����8�\Z�]�y�5q�}\r7b~�}D=��\� \�˴/>�#i^})�2�M燴4\rN*]v�\�zU��8�\�b��}�{5\��\��\�\�н�{3\�ϰr\�@\�\�=\�55\�\�M��\�:�T\�%x1���\�5G$f3\��ҸgÖ��\�Pui\�I>�J.�r\�=A�\�NM\"����z�!\\-�tw��aY��6\n5\n9�\��eTA�S�Ȝ�&O3�4���!1A9\�bG��T�\�L�T�\�>:S\�.Ή�E#�T(��\�f<�d\�)�V+H�;\�\�[R\�\�p\�vy�Ed�óf$�9�\Z�\r4΍�^��\�\�\0#3�\�Ё�c3\�x}\�J�\��g�\�$�$�C�\�yV^\�T�\0�8m+�\��\�5��x9Њ���ܴF�ہ&r\'x\\�S̕c?j=d\�zx�\' ��ǯ\Z遜z\�\\,�+ᙞ���2�\�O�\"�\�*�7Z�b��Dm!��\�~u\�n\�@y�Ŧ�4M�Ybb4\�><�т΃����\0\�BÈo�&)�K�Ow�g\�*-�ELg�\���\�>��]��@X3\�@@c%\"}N�S��dAmt|��\�T�P=\�\"7�x��+��\'{oSKA\�\��Twc�\�&�\�EU\�9�/#o	\�^OJ\"[oރ\�g�c\�)�i��\��\�\�ƀΧ\�W�\��u15\���?\�\'�¡�\�p\�58VGP>�KL��\���=(\'�m�\�<«g�\�\�\�6\�5+�Z�mVɀ\�\�A�I��%\�2�j\�\�\�]�\�\\|�kSc��b\�0a���K\�*Aqr�J�\�Ec�q�QeW2\n�$xV\�n\�6Cu��=%��\�!F�3��&�\�v+j���\�\�FP1F]?\�v��͵Z\�P(\03\�\�\']7\���\\\�u$��¥�3R��t,�?\�\�)�\��@Ut`\�.$i\�V+v��\0��T�\�\�\��84\�?�\�K�c�Ͻ#�{�\0=o\�in\�d�\�\�=�j}\�\'�\0��k�j@	�<;�<�z\�}\0#o\�=ά�\Z�@y	���	C��N^K�ޑ���=\'.�\�I�s&R|g�\�:\�\�\�\��{���\�e��\�oF\n*0�M\�CW0�!pP\'�T5\�^��\�Hb�\r�\�C�,O�1E]�F�\��H�\�u6\���\0\�� \Z3��O�sYV�v�,*?�e\�T��Nj�0�\�|�O�+O\�*��~�\�\�WSX\�\'>�|t���\�:~D_gEBl\0$\�\nȰ\��\��VF�\�\�\���}2�u\�\����>�\�ꭢs���I� \�U\��`ּ#f\�ڈFLÊ���*[�l\r]T�\'	?3Xo\�W�q\��\0O��G\��wnb�\�\�\�K@\�)(�df�\�ذ5�����iu\�a�N5�|~�{*	Ǟ#�\�M\'c�\�\�}\�>�(<J�c)�7�\0X\�P�pg$�Ƭ�!�\�kJ\�l\�\��u���\��D3�^8�S\Z�,#�\�L�\�` ��<X��e�M\�\�K�mSG�\�?Jm�\�h�� �Q\�t;�Oh�S�\'v p\�:W��ٷW�w�HX3^�c\�u�A�hP\�@P\�D�\�s\�EBxq�]��\�\�_�\06\�2\�ܺ\�NfYW_�F^U�v\�l>\��\0��C\�\nwi�e�u,2f�\���:\�U\�;20Ǜ\�W\�\r�d�O{�\�\�JL{S;\�#��zSHdwT)\�g\��\�Ф8\��c�\�_��>\�l\�8\�\�\�\�\�ִ\�FW92�h݇�oR\�m?h�\��q\�:/�]\�u؞�E�=\�Q⮣��\n�k�w�\�l\�����qOP\�\�Lܱ�\�τtQI\�\�l�P�\�0\�h�\���PwaTU\�\�\'ʺ��\�l\�V�}�{\�;�҂��=\��	=Y\'��\�?�B�k�\'Ҩ\�s,a{nF��\�\��ʙE�m\Z����B�y\�\rud\�\��Qm\0]\�y~\�>����h]�(0\�\�#\�\�()�<ڥ\�u\�\��]-�\�2��\�\�t���M�Fb\�x�툑N\�/g��{\�\�\�\�3�\�)\�8F�\�G\�\�ٹ\�n\�>D�Δ����\�\�n�/ZK�\�K\��l\�sR�\�\�:3\�,!��|A��]�q�\�u��vy疝MV�\�\�N0�H x\�9t�8ɲ�qF�\�\���S�gg$\�Y#C\�3\� s\�^On�l�̧\�~%Tz\�wӯ[VKN�\�Ub\�`���	5\�hf�|�\�@@7Q\�\'PA��\�0hE\�\�p-\�	:aT\�8�:ׁAp�&[����+\�Z�%�\�\0g��\�A��B8wl/3~\r�\�\\�Lm��j�\�\�L�\�?\�>�Q�m�\�\�\�\�X�?\ng�}Ù��\0\���ʛ���r\�\'ᙋ�ڙkhA>D�D��\�YÇ=����v\0\�\�7�8�����1@�`}3����\�E!\0�-\�2��\��U�e�\�b�\nT�0z\�\��TX\�&K�ЃD�\��B�����L�����gí\���y�\05�\r\�[c\�\��\0e����5��>tA~x�\�����js�\�0\���s�=��O��\�2�\�g�2��.\�sOe�L\���R�\r1k�\�&B\�G\��\�`#�\��\�\�]]r�\Z^�dَڐ�V\\nD���{&\����(�SHP\�U��?	�v�*���$b\'�\��\0�\�qV&:���)�ų\�GH��s�?\�?�\Z͘\�O癩O#[\�X\���1{\�lJ���N�ӗ�{X�%��\�y�\r5���\�O�7P\�\�@k�\�k\�?L\���\rW&1\�]�c7	`G��C�و�m�S�Y���k\�b\�x\�)bLZS�\�d5���*\�\�V\�Iw�\0�\�8\�\�8bŶ=�\�Y��w�+��\�TgZ��\�@!��\�.,FF]A�\�\�l��\�1�eA\'t�\�:\n\�]�نH�B�\�yg��\�X��\�i:*��\�_\��\0F\�ڻ@B[\n�d\�8�;\�\�\�\�j�C \'3�2I<e\�u\�K�q\�\�\�X��\�A�1�f����]\�\�]$\�6\�+�SO��T\�\�A8\���\0��(���8�\�Ən\�\�Ǒ�O�j[\����\�\�F�(��5\�Y=��[PY�*��y�\��E^\�\'_�9a�U�\0\�q`��$��58T	0y���v�ִUp\�{��0x\�\���v\�\�\�=����`����q\��BS�\���B���*�\���5��m��\��͈\�cq��\�GJ�v��\�\�ٴ\�\�d@N\�޹4\���V7�\�\�Q�m�^8\�I���m�K±�\0�.�ΐ\�\��۵o#���\�\�*\�\�Nѿ�6C\��;����\0��`\�Rk\�\�gx\�\�\'8�\�r^\��o�pE\�v^;�\�Eu/l=\�ڦ\�g�\�#�&�vY�\���u֊\�.2���*�B2$\�\�ߐ�b\�\��q\�7� xI1Qomp�v\�!b��FOg\�E��\�\�S\�\�?�\�ɺ\Z)�P\0�\�*^ڝ�G\��뽢���2r��i�ն�\0ŅO�=k?j\\�LrF��_\�m�L�yb+<\�u�SZ̵�cvlc,�Φ\�\�xt�\�Ŷ0<Q����\�n\�B{0��;��\�u\"5\�\�˸�l�p{�c\�\��L�	�02�\',�\08�\�Zܷ\����kr=\�h3�\�R1I\�z׀ڶ׶\�Ԫt��[-#\'>�K\�\�\�q\�\�b\�@�\'?�I.�Ri��;\��6ȁc@5�H�\�(\0n?XxV~׷Y\�E\Z��?!�/ꯟ�\�f��\�B�\"�#J^w\�w�0\������A\����\�\�{aY{�\�3[\�S��\�e\��n���}�\���Ƽn\�q��|G�$\�#\�3\����f<1�l�e.OSk�\�.A\�\�`zM/\���\n[\\\\Yc\�I\�y\Z�&~��ӕN\05��/�Vӹ&�o\�+�@s�_/ٕ&�{�=��L\n~\��\'\�(m7?��<�ȫ5�\�F�0\�c�ƍ1e`eqc\� 9\��Z7ҜK�p�����\\\�&x`3\�\0�U�\ra�9�:\�Mb�\�[s!07	\�>�f����\�.E���WQ�Q�\���r\�p\Z��\�I\�ס\��r\�����\�#��~F�xP}��~\�4�Mhk#�7O�1\�&�,qn\�)�J��wo�\\\�0J�B\�F\�\�cK{M�\�PI�::�6\�q)p\�\�yg�\�V�q�\�9�\�#�1� Ҩ ��M\�\�BV\�;j8g��\�V<󬽿hV%�\�\�[\r\�!��,�P��\�E`\�<1n��R�\nr���5%�ڛE��$�\0��\�\0�NѸ�U\�Of\n	�\�>�	\�\�W\�\�F����\�qnm�#/\ZE\�\��\03J\�q�h#k\�7\"18o�6�Z\�\�<�\n\�T�*3��\�~|Ft��:�\�\�$T�\�uן\�-#d\0\'\�=4�\0>�|\�$����.�,\'��D{8u\�~�d-��\n\�NGҍ\n\�@[2\�!\�r�56n<�\�\�\�TL�4�\�x�f$sÑ�W\n�.���G�Q�l����kn�\0y\'\�n���?�l\'��Dǘ�\�ػ�2����\nam4w�~X���\��g:��QqOL\�u\Z�F\���| ���H[���\��\"�o\��<\n\�~Y\�<\�[��|\�fj��\�!\�\�\�< ǩ�-\�2�<\'^1Tr�$n\�*�@j\�ϙ\����\\j\r\�:p\�?Aŗ\\��\�(�Y�)\\\��_\�O�\�Xe�\�\�k�C\�|��WR<�x\�\'t�j�\�\��E�\�w�\�\�\�\Zʭ�=\�xo�6N\n�;�Qɇ\���\�7-ɵ\��\�HW!f\�ê�>��\�\�\�{\�\�\�[V�ݕ<���6�G{\��GH������$p\0g\�QE�4\�\0�c�Iӝi�	u�\��+��yo�\Z(V\��[����\��\�6���C\�D�2\��yS`�$(\�dϩˡ�L=\�o\��\�M��<�0�0(�h�0\�G0r�sC(\��sΆ\�\�\�?jN_�\�9n�˖�0�8|k�\'\�.\�=�k燔n�\�5\�\�\�-q��\0�\�\�}X��kj��\�9�;\�[g:\�T\�\rB�Ԉ:4\�l���\�\�?�\�Yڐ�\���(�zt��b�\�FM���\��㾊�,^ݽ\��\��\�L%�9� ��@���4U�7O9<c:��\'5�Y�\'�HU6}\�\�G�\n=��dʽʪ\�\�*~�G�C\\a�0\�#O(\�cH\�@���w�Ö60~4�0o�\��ҡ��e\�\\q��Box\0��&Ԛ>\�0��G �oF�$\�K�ǣ;R\�5k�e\�XvU�� r$�\0\�\�L#��n\��\\?:4)�;Ey����lF��V%ݠ��Oq	\�TW�щ@ʹה��\�C��:\�\�uy��l6f�]\�`�\�>����3\�\��\�C�Y�\0�al\0s �u�Qp�J�\�`�\�_�iXwd�\"	��ufk\��L�=�PkBՐr��\�1�V\�\�FE|���\'P�!S�Yօ�`�H�3W;�u�ЁF\�>ul1�_?J|\�û�\�НFB|LPԎ�A\��P���p\�Kj\�\�A\�\�΋y��Y?-\"��\�.�\��L����]a����F�\���#�\�EM�i�\��bRk��\�U] \�D�$/{v꭭�\��(\'\�qw\�rͲ����،�\�B]��\\	�!eg\�O5\�Xq4�謤�~yk�-Xu&\�\�P4VY-\� R͸�hhGS�f^٧!��	�.N���~�-��\'~X\�}\�)��:\�M\�y� ��.�dj\"�d��>\"Ȥ~�\�R\�ƙ��Ry\�\�\�b�����Ⱥ*�\�Ȝ�h�cZ���\�\�\�G���nZ\�9�;���m�p\0{�\r)�\�W0\�!\�ݔ\�p\0�\\�5G4����} �\0a��GtR���#I\0\'v\�\�h�\�Ȓ���\n&)��eV\�\�1\�p,���\�:\n=\�wjG�]�B\�9a�\�1�3\�+�\�Z\�P�\�a��\0`\�\�;���\�;�vY\��\rRA\�a��kdiU3\�\�k��\�ʲ@\0O<3E�f2\\�\�>\"*�vC�I�\�)ᇭ3k�n8\�\�\'ZZ\�ˋRg~fB)�\�c\�1�N���\���\0X�a\�:O\�%7Hߜ�\�P�F\��/\�(\��\�Y�7\��s\�J\�+p\� �o\�\��Хԕ\�)ħ27A\�\�:^�\�  ��*3\�A\�{\�ho�D�.�\���΂�\��\\Q\n\�\���=bI\�L*[pc�$�<c\�Ҩ;6�\�\"�~�\0���<\�\�M\'e\�!!�4�u\��5\�Q�2\�/@�g\"\�����ә�vm�\�\�i`\��}�\r����#\�Ì32d!����\��#�$-�IN1:w�G*)�Ж\�f\�Ǳ\�d&⵴�\�ƀ�#֟\�\�Ƚ\�h\�\��b\nF�	\�gwJ\�ض���E��剝2ӺP\�_�@�\��Ko\�Edm�rO),	\\���}D��M��87t�pI��N}�\�<J\��~���\�\n	�w�ʢ嵸U>�\�\�r�2Fj�#^t�\��%mAsr\��\�\�g�o�\�\�\�\�q�.�Ω�\�<�iS�`զ\�qed\�4�Nóp����}�+p1��\�|F\�?fvr)Ýc��q��\�\�2V\�[k�\�YE}ć��4f8�G?}\��M\�\�Y\\�(0G�V��R�[�Y-q��_�gض|\'�U�,�	<��wjU��\��\��\r��:d+>\�ױ[c��\�\�\'5\\�\�\�T�g�Ŕ�^xW,�	#Ϋ���u~H\�\�\�\�J���mV\�`\�\�}\�s3\0I�9�:�.[=\�^*|\�\�;\��\�K\�κ���L\�T��`0ǽ\�I˥Um�\�^\r��\�fD�ɶ\�\�8@\�\�#û�P(�,\���s�MD\�Y\�g�`	��YI#�R�\�\��#��>�gZ�d�\�\�/xw�\�x�GH>T\�\�\��\��\�W+�\�T�s`\�\�ᘍ�	M\'L�q6�	�\�\"� w�dˈ�>#ҬݤC=�\�ă��9\�I�\�\�\�\�\�\�k\��`�l�Ř�#2u����m�U\�\�\�}\�7�ڒeV2���[+9CK\�`{\�\r�B%�N\�@�Z3���NgZ�v6;��\�m-�����u�ػ�\�:Wg(�ZռBsKk��\rX�1G�\�km�\�rp��a\�\�s{T~M=\�\�\�\�\��ض\�,p�ɽ�9\�#Of\�ߐ]�\�E��B�*\�񢩁�h�̟zyff��?k��Iq�\��<�T\�\�Z��s\�m(�K��9i熌�����|�[\��\�\�\n\�\�b�t\�s�[2\��\�g�R\�f�#�O{\�&`hJ*�D�\Z\�\��p\�6\\\\a\'�$�D\�\'I��Nٸ\�0Zw\n@\�E\\\�6�e�\�\�\�\�V�\�r�ӧ\�\�_gkjZ\�Xgf��Q\�/`�\�\�f�\�\�1�1\0s2O�\n\�\�͆\�\�{\�2���\�8\�g�\�<�2\�V�\�e-\0  � �ސu�dcΣ.���w�Ht�MI�C��K����}�\�nl�>:\�Hvk\�w\��I\�\"�#S-\��>\�\�.n���\�\�	�K\�\�l[w`7�q�3�O�m\�\�Į��r\�K+�K\�/�-ˇ�ѻP�@9F\�\�\�nZBU�o� �R���8\�\Z���\�x	f\�\�n���� �,#|f�N\�\����\�\�/�};��2AE �7��3�#��\�O\�´�v\rӚa|�\� Q\�	&�\��\�\�\�~\�3>��\n/��\�\�\�X���_\"�F\�,؁,1p9WU�F	 \0��-\�s����\rpE�\'V&\�\n\�\�D-\�k��~\�&!#3���\Zhl�����Л�8{Ӥ\�{�H�jmW�\0\�1�\�Z}��\�)�N{�;���2E�q\��qSt\�6Ǿ\�	k@(XRW	b\0�-\0\�s�\�;.Ф�\�pH�Wo+\����v��\�\�\�&d�#\�r�\��$�H���B\�\�9󤂞�tZj)Z���\�s�e�:A\0�¯9\�\�\��\�\"�{7b�q5\�|\�Q\"s߄ה�C\\$�g��{_ѥ���@\"\'�RJr�K��Q��-�=������\�\�O fX�T\�{نx���\�R\�@2{��\�cL�?\�=��\�,&req��\�k`fݩ\�I�\"\rf�(\��\�1OD��X��3�]���\� ��\�R��\�~�\�K\�\�m\�Wã;!#��z�)��l7��g|�\�\�[�-�r�e��`͚Xw�\�\�㎝�0\�m*���\�5(�\"u�6\�)��eXl�2\ZcB�\�\r\'uh\\��N\�o\�/*\�~\�V�T\�):j�O�,g�+\�5\�`\�J<;��7\�E� +�7\�\'\�JCi\�ۭ�����%�\Z\�+z�dڳ\�E3��\�\�b�ohf&x|\�^�p�\�v�\���yD\���H`L\��j}6\�E@ke\��7\'\�փ\�R\�܉,\�\�\���\�ڛ `�10e� �4\�L�Mo]L\'IF��\�N	�W�36��p�\�\�rw�ʽ1\�N\�sq��\�E\�\���\�Vs\��L͂n\�Ws\�$�h@�\�\�\�El2\�\"]Ș�&5\�K?M�~�C̩~~�v\�hE�v��Q�[ubm7\�F���\�9<⭷��,\�2�dǍdl\�:1\\K9\�,w�5�1PU\�ْr��W���Z6�\�˗�j=�Q9�\�c�\r#:\�;c�khp.^\�Q\�3]QnO\�mG�\�'),(11,'Juan','Andrés','Koch','Padrón','30139715','juanjo@gmail.com','$2b$12$k1yYXr7iSN5sxl628eyiaeyQy/XVyKAclswfWaUAgzu55NwFueRIG','alumno',NULL),(12,'Juan','Carlos','Koch','Gonzales','11456758','juankochg@gmail.com','$2b$12$TbnMUxYl0ePouv2.RctOxeOWOHiFlA4Hpiy8v5o1nYrcrAPY.RzMG','profesor',NULL);
+/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `calificaciones`
---
-ALTER TABLE `calificaciones`
-  ADD PRIMARY KEY (`idCalificacion`),
-  ADD KEY `curso_fk_idx` (`idSeccion`),
-  ADD KEY `alumno_fk_idx` (`idusuarios`),
-  ADD KEY `inscripcion_calificacion_fk` (`idInscripcion`);
-
---
--- Indices de la tabla `codigos_verificacion`
---
-ALTER TABLE `codigos_verificacion`
-  ADD PRIMARY KEY (`idCodigos`),
-  ADD KEY `idusuarios_v2p` (`idusuarios`);
-
---
--- Indices de la tabla `cursos`
---
-ALTER TABLE `cursos`
-  ADD PRIMARY KEY (`idCurso`),
-  ADD KEY `facultad_fk` (`idFacultad`);
-
---
--- Indices de la tabla `facturas`
---
-ALTER TABLE `facturas`
-  ADD PRIMARY KEY (`idFactura`);
-
---
--- Indices de la tabla `factura_x_producto`
---
-ALTER TABLE `factura_x_producto`
-  ADD PRIMARY KEY (`idFactura_x_producto`),
-  ADD KEY `factura_fk` (`idFactura`),
-  ADD KEY `producto_fk` (`idProducto`);
-
---
--- Indices de la tabla `facultades`
---
-ALTER TABLE `facultades`
-  ADD PRIMARY KEY (`idFacultad`);
-
---
--- Indices de la tabla `horario`
---
-ALTER TABLE `horario`
-  ADD PRIMARY KEY (`idhorario`);
-
---
--- Indices de la tabla `horario_x_curso`
---
-ALTER TABLE `horario_x_curso`
-  ADD PRIMARY KEY (`idhorario_x_curso`),
-  ADD KEY `horario_fk_idx` (`idhorario`),
-  ADD KEY `seccion_horario_fk` (`idSeccion`);
-
---
--- Indices de la tabla `inscripcion`
---
-ALTER TABLE `inscripcion`
-  ADD PRIMARY KEY (`idInscripcion`),
-  ADD KEY `alumno_inscripcion_idx` (`idusuarios`);
-
---
--- Indices de la tabla `insc_x_seccion`
---
-ALTER TABLE `insc_x_seccion`
-  ADD PRIMARY KEY (`idinsc_x_seccion`),
-  ADD KEY `inscripcion_fk` (`idInscripcion`),
-  ADD KEY `seccion_inscripcion_fk` (`idSeccion`);
-
---
--- Indices de la tabla `preinscripcion`
---
-ALTER TABLE `preinscripcion`
-  ADD PRIMARY KEY (`idPreinscipcion`),
-  ADD UNIQUE KEY `cedula` (`cedula`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indices de la tabla `productos`
---
-ALTER TABLE `productos`
-  ADD PRIMARY KEY (`idProducto`),
-  ADD UNIQUE KEY `nombre` (`nombre`);
-
---
--- Indices de la tabla `profesores`
---
-ALTER TABLE `profesores`
-  ADD PRIMARY KEY (`idProfesor`),
-  ADD KEY `usuario_p_idx` (`idusuarios`);
-
---
--- Indices de la tabla `registro_familiar`
---
-ALTER TABLE `registro_familiar`
-  ADD PRIMARY KEY (`idfamilia`),
-  ADD KEY `alumno_familia_fk` (`idusuarios`);
-
---
--- Indices de la tabla `secciones`
---
-ALTER TABLE `secciones`
-  ADD PRIMARY KEY (`idSeccion`),
-  ADD UNIQUE KEY `seccion` (`seccion`),
-  ADD KEY `profesor_seccion_fk` (`idProfesor`),
-  ADD KEY `curso_seccion_fk` (`idCurso`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`idusuarios`),
-  ADD UNIQUE KEY `cedula` (`cedula`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `calificaciones`
---
-ALTER TABLE `calificaciones`
-  MODIFY `idCalificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `codigos_verificacion`
---
-ALTER TABLE `codigos_verificacion`
-  MODIFY `idCodigos` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `cursos`
---
-ALTER TABLE `cursos`
-  MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de la tabla `facturas`
---
-ALTER TABLE `facturas`
-  MODIFY `idFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `factura_x_producto`
---
-ALTER TABLE `factura_x_producto`
-  MODIFY `idFactura_x_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `facultades`
---
-ALTER TABLE `facultades`
-  MODIFY `idFacultad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `horario`
---
-ALTER TABLE `horario`
-  MODIFY `idhorario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT de la tabla `horario_x_curso`
---
-ALTER TABLE `horario_x_curso`
-  MODIFY `idhorario_x_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT de la tabla `inscripcion`
---
-ALTER TABLE `inscripcion`
-  MODIFY `idInscripcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `insc_x_seccion`
---
-ALTER TABLE `insc_x_seccion`
-  MODIFY `idinsc_x_seccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `preinscripcion`
---
-ALTER TABLE `preinscripcion`
-  MODIFY `idPreinscipcion` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `productos`
---
-ALTER TABLE `productos`
-  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `profesores`
---
-ALTER TABLE `profesores`
-  MODIFY `idProfesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `registro_familiar`
---
-ALTER TABLE `registro_familiar`
-  MODIFY `idfamilia` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `secciones`
---
-ALTER TABLE `secciones`
-  MODIFY `idSeccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `idusuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `calificaciones`
---
-ALTER TABLE `calificaciones`
-  ADD CONSTRAINT `alumno_fk` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `inscripcion_calificacion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `seccion_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `codigos_verificacion`
---
-ALTER TABLE `codigos_verificacion`
-  ADD CONSTRAINT `idusuarios_v2p` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `cursos`
---
-ALTER TABLE `cursos`
-  ADD CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `factura_x_producto`
---
-ALTER TABLE `factura_x_producto`
-  ADD CONSTRAINT `factura_fk` FOREIGN KEY (`idFactura`) REFERENCES `facturas` (`idFactura`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `producto_fk` FOREIGN KEY (`idProducto`) REFERENCES `productos` (`idProducto`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `horario_x_curso`
---
-ALTER TABLE `horario_x_curso`
-  ADD CONSTRAINT `horario_fk` FOREIGN KEY (`idhorario`) REFERENCES `horario` (`idhorario`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `seccion_horario_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `inscripcion`
---
-ALTER TABLE `inscripcion`
-  ADD CONSTRAINT `alumno_inscripcion` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `insc_x_seccion`
---
-ALTER TABLE `insc_x_seccion`
-  ADD CONSTRAINT `inscripcion_fk` FOREIGN KEY (`idInscripcion`) REFERENCES `inscripcion` (`idInscripcion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `seccion_inscripcion_fk` FOREIGN KEY (`idSeccion`) REFERENCES `secciones` (`idSeccion`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `profesores`
---
-ALTER TABLE `profesores`
-  ADD CONSTRAINT `usuario_p` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `registro_familiar`
---
-ALTER TABLE `registro_familiar`
-  ADD CONSTRAINT `alumno_familia_fk` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `secciones`
---
-ALTER TABLE `secciones`
-  ADD CONSTRAINT `curso_seccion_fk` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`idCurso`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `profesor_seccion_fk` FOREIGN KEY (`idProfesor`) REFERENCES `profesores` (`idProfesor`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-10-05 17:44:02
