@@ -1,6 +1,9 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash
+from datetime import datetime
+import io
+from flask import request, render_template, redirect, send_file, url_for, Blueprint, current_app, jsonify, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
+import pymysql
 
 acerca = Blueprint('acerca', __name__, template_folder='templates', static_folder='static')
 
@@ -30,3 +33,70 @@ def restaurar():
 @acerca.route('/manual', methods = ['GET'])
 def manual():
     return render_template('acercaDe/manual.html')
+
+# NUEVO ENDPOINT PARA GENERAR SCRIPT DE BASE DE DATOS
+@acerca.route('/generar-backup', methods = ['GET'])
+@login_required
+def generar_backup():
+    db = current_app.config['db']
+
+    if not current_user.rol == "administrador":
+        return jsonify({'error': 'No tienes permisos suficientes para realizar esta acción'}), 401
+    
+    try:
+        # Crear un string para almacenar el script SQL
+        script_sql = f"-- Backup generado el: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        
+        with db.cursor(pymysql.cursors.DictCursor) as cur:
+            # Generar script para cada tabla
+            for table in tables:
+                script_sql += f"-- Estructura y datos para tabla: {table}\n"
+                
+                # Obtener estructura de la tabla
+                cur.execute(f"SHOW CREATE TABLE {table}")
+                create_table = cur.fetchone()
+                script_sql += f"{create_table['Create Table']};\n\n"
+                
+                # Obtener datos de la tabla
+                cur.execute(f"SELECT * FROM {table}")
+                rows = cur.fetchall()
+                
+                if rows:
+                    # Obtener nombres de columnas
+                    column_names = [desc[0] for desc in cur.description]
+                    
+                    # Generar INSERT statements
+                    for row in rows:
+                        values = []
+                        for value in row.values():
+                            if value is None:
+                                values.append("NULL")
+                            elif isinstance(value, (int, float)):
+                                values.append(str(value))
+                            else:
+                                # Escapar comillas simples
+                                escaped_value = str(value).replace("'", "''")
+                                values.append(f"'{escaped_value}'")
+                        
+                        insert_stmt = f"INSERT INTO {table} ({', '.join(column_names)}) VALUES ({', '.join(values)});"
+                        script_sql += f"{insert_stmt}\n"
+                
+                script_sql += "\n"
+        
+        # Crear respuesta para descargar el archivo
+        output = io.BytesIO()
+        output.write(script_sql.encode('utf-8'))
+        output.seek(0)
+        
+        filename = f"backup_db_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
+        
+        return send_file(
+            output,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/sql'
+        )
+        
+    except Exception as e:
+        print(e)
+        return jsonify({'error': f'Error al generar backup: {str(e)}'}), 500

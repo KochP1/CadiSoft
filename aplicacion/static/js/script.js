@@ -2148,6 +2148,57 @@ async function restaurar() {
     }
 }
 
+async function respaldo() {
+    if (confirm('A continuación se generara un backup de la base de datos')) {
+        
+        try {
+            if (isSearching) return;
+            setSearching(true);
+            const url = '/acerca/generar-backup';
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error);
+            }
+
+            const blob = await response.blob();
+            const response_url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = response_url;
+            
+            // Obtener el nombre del archivo del header Content-Disposition
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = 'backup.sql';
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="?(.+)"?/);
+                if (filenameMatch) {
+                    filename = filenameMatch[1];
+                }
+            }
+            
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(response_url);
+            document.body.removeChild(a);
+            
+            alert('Backup descargado exitosamente');
+        } catch(e) {
+            console.error(e);
+        } finally {
+            setSearching(false);
+        }
+    }
+}
+
 // FACTURACIÓN
 
 async function crearProducto(event) {
