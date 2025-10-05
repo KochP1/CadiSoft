@@ -62,6 +62,8 @@ def generar_backup():
             # Generar script para cada tabla
             for table in tables:
                 script_sql += f"-- Estructura y datos para tabla: {table}\n"
+
+                script_sql += f"DROP TABLE IF EXISTS `{table}`;\n\n"
                 
                 # Obtener estructura de la tabla
                 cur.execute(f"SHOW CREATE TABLE {table}")
