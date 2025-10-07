@@ -1899,7 +1899,7 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        //alert(data.message);
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
@@ -1940,7 +1940,7 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        //alert(data.message);
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
@@ -1981,7 +1981,7 @@ async function colocar_logro_tres(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        //alert(data.message);
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
@@ -2022,7 +2022,7 @@ async function colocar_logro_cuatro(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        //alert(data.message);
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
@@ -2063,7 +2063,7 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        //alert(data.message);
         calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
