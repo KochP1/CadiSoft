@@ -520,7 +520,7 @@ def calificaciones(idSeccion):
                 for record in periodoArray:
                     inicioPeriodo = record['fecha_inscripcion']
                 
-                cur.execute('SELECT c.idCalificacion, c.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN usuarios u ON c.idusuarios = u.idusuarios WHERE c.idSeccion = %s AND i.fecha_inscripcion = %s', (idSeccion, inicioPeriodo))
+                cur.execute('SELECT c.idCalificacion, c.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, i.asistencia, i.idInscripcion, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN usuarios u ON c.idusuarios = u.idusuarios WHERE c.idSeccion = %s AND i.fecha_inscripcion = %s', (idSeccion, inicioPeriodo))
                 registro_calificaciones = cur.fetchall()
 
                 insertCalificaciones = []
@@ -531,6 +531,8 @@ def calificaciones(idSeccion):
                 for record in insertCalificaciones:
                     record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
                     record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+
+                print(insertCalificaciones)
                 
                 return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
         except Exception as e:
@@ -682,3 +684,24 @@ def subir_definitiva(idSeccion):
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES
+
+@cursos.route('/asistencia/<int:id>', methods = ['PATCH'])
+def asistencia(id):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    data = request.get_json()
+
+    if not data or 'asistencia' not in data:
+        return jsonify({'error': 'Datos incompletos'}), 400
+    
+    asist = data['asistencia']
+    
+    try:
+        with db.cursor() as cur:
+            cur.execute('UPDATE inscripcion SET asistencia = %s WHERE idInscripcion = %s', (asist, id))
+            db.commit()
+            return jsonify({'message': 'Asistencia actualizada satisfactoriamente'}), 200
+    except Exception as e:
+        db.rollback()
+        return jsonify({'error': 'Error al poner asistencia'}), 500

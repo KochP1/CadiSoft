@@ -1951,7 +1951,7 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
 
 async function colocar_logro_tres(idSeccion, idAlumno) {
     const url = `/cursos/subir_logro_tres/${idSeccion}`;
-    const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
+    const inputNota = document.getElementById(`input-logro3-${idAlumno}`).value.trim();
     if (isSearching) return;
     setSearching(true);
 
@@ -2110,6 +2110,46 @@ async function calcular_definitiva(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
         document.getElementById(`input-def-${idAlumno}`).value = definitiva;
+    } catch(e) {
+        console.log(e)
+    } finally {
+        setSearching(false);
+    }
+}
+
+async function asistencia(id, idAlumno) {
+    const url = `/cursos/asistencia/${id}`;
+    const inputNota = document.getElementById(`asistencia-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
+
+    if (!inputNota) {
+        setSearching(false);
+        alert('Debe ingresar una asistencia');
+        return;
+    }
+
+    const requestData = {
+        asistencia: inputNota
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        //alert(data.message);
+        calcular_definitiva(idSeccion, idAlumno);
     } catch(e) {
         console.log(e)
     } finally {
