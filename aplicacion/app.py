@@ -13,14 +13,6 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
-
-    # Configuración de Flask-Session
-    app.config['SESSION_TYPE'] = 'filesystem'  # Usa sistema de archivos
-    app.config['SESSION_PERMANENT'] = True
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
-    app.config['SESSION_USE_SIGNER'] = True
-    app.config['SESSION_FILE_DIR'] = '/tmp/flask_sessions'  # Railway tiene /tmp
-    app.config['SESSION_FILE_THRESHOLD'] = 100
     
     # Asegúrate de que cada dispositivo tenga su propia sesión
     app.config['SESSION_REFRESH_EACH_REQUEST'] = True
@@ -50,7 +42,6 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
 
     mail = Mail(app)
-    Session(app)
 
     try:
         with db.cursor() as cursor:
@@ -67,11 +58,7 @@ def create_app():
     app.app_context().push()
 
 
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-
-    login_manager.session_protection = "basic"  # o "strong"
-    login_manager.refresh_view = "usuario.index"
+    login_manager = LoginManager(app)
 
     from aplicacion.blueprints.usuarios.model import User
     @login_manager.user_loader
