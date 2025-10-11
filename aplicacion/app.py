@@ -8,15 +8,14 @@ from dotenv import load_dotenv
 from .config import Config
 from flask_apscheduler import APScheduler
 from flask_session import Session
+from werkzeug.middleware.proxy_fix import ProxyFix
 import redis
 
 load_dotenv()
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
-    
-    # Asegúrate de que cada dispositivo tenga su propia sesión
-    app.config['SESSION_REFRESH_EACH_REQUEST'] = True
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
     app.config['SECRET_KEY'] = getenv('SECRET_KEY')
     app.config['DB_HOST'] = getenv('DB_HOST')
