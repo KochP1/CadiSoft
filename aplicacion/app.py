@@ -49,10 +49,10 @@ def create_app():
     
     app.app_context().push()
 
-    app.config['SESSION_TYPE'] = 'redis'
-
-    redis_url = getenv('REDIS_URL') # Si Railway proporciona una URL completa
-    app.config['SESSION_REDIS'] = redis.from_url(redis_url)
+    redis_url = app.config['SESSION_TYPE'] = 'redis'
+    if redis_url:
+        app.config['SESSION_REDIS'] = redis.from_url(redis_url)
+        print("Configurando sesiones con Redis usando URL.")
     Session(app)
 
     app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
