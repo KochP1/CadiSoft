@@ -378,6 +378,10 @@ input[type=number] {
     .nav-list{
         align-items: start;
     }
+
+    .profesores-user{
+        margin-left: 0px !important;
+    }
 }
 
 /* FIN NAVBAR */
