@@ -25,8 +25,6 @@ def create_app():
     app.config['DB_PORT'] = getenv('DB_PORT')
 
     # --- CONFIGURACIONES CLAVE PARA SESIONES MÚLTIPLES EN PRODUCCIÓN (Railway/HTTPS) ---
-    # 0. Refrescar la sesión en cada solicitud (si se requiere, como en tu snippet)
-    app.config['SESSION_REFRESH_EACH_REQUEST'] = True
     # 1. Fuerza que la cookie solo se envíe sobre HTTPS (ESENCIAL en Railway)
     app.config['SESSION_COOKIE_SECURE'] = True
     # 2. Controla cuándo la cookie es enviada por el navegador (buena práctica de seguridad)
