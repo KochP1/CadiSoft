@@ -25,6 +25,13 @@ def create_app():
     app.config['DB_NAME'] = getenv('DB_NAME')
     app.config['DB_PORT'] = getenv('DB_PORT')
 
+    redis_url = getenv('REDIS_URL')
+    if redis_url:
+        from flask_caching import Cache
+        cache = Cache(config={'CACHE_TYPE': 'RedisCache', 'CACHE_REDIS_URL': redis_url})
+        cache.init_app(app)
+        app.config['cache'] = cache
+
     # CONFIGURACIÓN CLAVE PARA RAILWAY - Solo Flask-Login
     app.config['SESSION_TYPE'] = None  # No usar Flask-Session
     
