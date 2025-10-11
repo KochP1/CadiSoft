@@ -4,3 +4,4 @@ node_modules/
 .env
 __pycache__/
 CLAUDE.md
+flask_session/

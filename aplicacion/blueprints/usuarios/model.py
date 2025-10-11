@@ -2,7 +2,7 @@ from flask_login import UserMixin
 
 class User(UserMixin):
     def __init__(self, id, nombre, segundoNombre, apellido, segundoApellido, cedula, email, contraseña, rol, imagen):
-        self.id = id
+        self.idusuarios = id
         self.nombre = nombre
         self.segundoNombre = segundoNombre
         self.cedula = cedula
@@ -35,7 +35,7 @@ class User(UserMixin):
         return None
     
     def get_id(self):
-        return str(self.id) 
+        return str(self.idusuarios) 
     
     @staticmethod
     def get_by_cedula(db, cedula):
