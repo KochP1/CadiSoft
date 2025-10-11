@@ -28,7 +28,7 @@ def create_app():
     # 1. Fuerza que la cookie solo se envíe sobre HTTPS (ESENCIAL en Railway)
     app.config['SESSION_COOKIE_SECURE'] = True
     # 2. Controla cuándo la cookie es enviada por el navegador (buena práctica de seguridad)
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
     # 3. La sesión no es permanente por defecto (depende de login_user(remember=True))
     app.config['SESSION_PERMANENT'] = False
     # 4. Establece la duración de la cookie si se usa remember=True
