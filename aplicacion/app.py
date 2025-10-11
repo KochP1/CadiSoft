@@ -25,6 +25,14 @@ def create_app():
     app.config['DB_NAME'] = getenv('DB_NAME')
     app.config['DB_PORT'] = getenv('DB_PORT')
 
+    app.config['SESSION_COOKIE_SECURE'] = True
+    # 2. Controla cuándo la cookie es enviada por el navegador (buena práctica de seguridad)
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    # 3. La sesión no es permanente por defecto (depende de login_user(remember=True))
+    app.config['SESSION_PERMANENT'] = False
+    # 4. Establece la duración de la cookie si se usa remember=True
+    app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
+
     app.secret_key = app.config['SECRET_KEY']
 
     db = pymysql.connect(
