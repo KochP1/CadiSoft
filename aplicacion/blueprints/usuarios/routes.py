@@ -1,3 +1,4 @@
+import uuid
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response, session
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_mail import Message
@@ -12,6 +13,13 @@ bcrypt = Bcrypt()
 
 @usuario.route('/', methods = ['GET', 'POST'])
 def index():
+    if current_user.is_authenticated:
+        # Usuario ya autenticado, redirigir según rol
+        if current_user.rol == 'administrador':
+            return redirect(url_for('usuario.inicio'))
+        elif current_user.rol == 'profesor':
+            return redirect(url_for('profesores.mis_secciones'))
+
     if request.method == 'POST':
         db = current_app.config['db']
         cedula = request.form['cedula']
@@ -20,22 +28,22 @@ def index():
         user = User.get_by_cedula(db, cedula)
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
+            # Forzar nueva sesión para este dispositivo
+            session.clear()  # Limpiar sesión anterior
+            login_user(user, remember=True)
+            
+            # Agregar identificador único de sesión
+            session['session_id'] = str(uuid.uuid4())
+            session['user_agent'] = request.headers.get('User-Agent')
+            
             if user.rol == 'administrador':
-                login_user(user, remember=True)
-                session.modified = True
                 return redirect(url_for('usuario.inicio'))
-            
-            if user.rol == 'profesor':
-                print('Cumpliendo ', user.rol)
-                login_user(user, remember=True)
-                session.modified = True
+            elif user.rol == 'profesor':
                 return redirect(url_for('profesores.mis_secciones'))
-            
-
-            return render_template('usuarios/index.html', message_error = 'Permisos insuficientes')
+            else:
+                return render_template('usuarios/index.html', message_error='Permisos insuficientes')
         else:
-            return render_template('usuarios/index.html', message_error = 'Credenciales incorrectas')
-
+            return render_template('usuarios/index.html', message_error='Credenciales incorrectas')
 
     return render_template('usuarios/index.html')
 
