@@ -20,12 +20,12 @@
             <div class="edit__container">
                 {% if current_user.imagen != None %}
                     <div class="img-editar">
-                        <img src="{{url_for('usuario.get_profile_image', idusuarios=current_user.id)}}" alt="{{current_user.nombre}} {{current_user.apellido}}">
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=current_user.idusuarios)}}" alt="{{current_user.nombre}} {{current_user.apellido}}">
                     </div>
                 {% endif %}
                 <form id="updateFoto">
                     <input type="file" id="fotoPerfil">
-                    <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="update_foto(this.getAttribute('idusuarios'))">Actualizar</button>
+                    <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="update_foto(this.getAttribute('idusuarios'))">Actualizar</button>
                 </form>
             </div>
 
@@ -34,7 +34,7 @@
             <div class="edit__container">
                 <input type="text" name="nombre" value="{{current_user.nombre}}" id="editNombre" maxlength="12">
                 <input type="text" name="segundoNombre" value="{{current_user.segundoNombre}}" id="editSegundoNombre" maxlength="12">
-                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_nombres(this.getAttribute('idusuarios'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="edit_nombres(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Apellidos</h2></div>
@@ -42,21 +42,21 @@
             <div class="edit__container">
                 <input type="text" name="apellido" value="{{current_user.apellido}}" maxlength="20" id="editApellido">
                 <input type="text" name="segundoApellido" value="{{current_user.segundoApellido}}" maxlength="20" id="editSegundoApellido">
-                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_apellidos(this.getAttribute('idusuarios'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="edit_apellidos(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Cédula</h2></div>
             <hr class="divider">
             <div class="edit__container">
                 <input type="number" name="cedula" value="{{current_user.cedula}}" id="edit-cedula">
-                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_cedula(this.getAttribute('idusuarios'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="edit_cedula(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Email</h2></div>
             <hr class="divider">
             <div class="edit__container">
                 <input type="email" name="email" value="{{current_user.email}}" id="edit-email" maxlength="50">
-                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.id}}" onclick="edit_email(this.getAttribute('idusuarios'))">Actualizar</button>
+                <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="edit_email(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Contraseña</h2></div>
