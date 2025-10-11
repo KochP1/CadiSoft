@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from .config import Config
 from flask_apscheduler import APScheduler
 from flask_session import Session
+import redis
 
 load_dotenv()
 
@@ -33,15 +34,6 @@ def create_app():
     password=app.config['DB_PASSWORD'],
     database=app.config['DB_NAME']
 )
-    
-    app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
-    app.config['MAIL_PORT'] = getenv('MAIL_PORT')
-    app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
-    app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
-    app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
-    app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
-
-    mail = Mail(app)
 
     try:
         with db.cursor() as cursor:
@@ -57,9 +49,21 @@ def create_app():
     
     app.app_context().push()
 
+    app.config['SESSION_TYPE'] = 'redis'
+
+    redis_url = getenv('REDIS_URL') # Si Railway proporciona una URL completa
+    app.config['SESSION_REDIS'] = redis.from_url(redis_url)
+    Session(app)
+
+    app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = getenv('MAIL_PORT')
+    app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
+    app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
+    mail = Mail(app)
 
     login_manager = LoginManager(app)
-
     from aplicacion.blueprints.usuarios.model import User
     @login_manager.user_loader
     def load_users(user_id):
