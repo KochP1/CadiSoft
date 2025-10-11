@@ -14,12 +14,13 @@ load_dotenv()
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
 
+    # Configuración de Flask-Session
+    app.config['SESSION_TYPE'] = 'filesystem'  # Usa sistema de archivos
     app.config['SESSION_PERMANENT'] = True
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
-    app.config['SESSION_COOKIE_NAME'] = 'mi_app_session'
-    app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SECURE'] = False  # True si usas HTTPS en producción
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_USE_SIGNER'] = True
+    app.config['SESSION_FILE_DIR'] = '/tmp/flask_sessions'  # Railway tiene /tmp
+    app.config['SESSION_FILE_THRESHOLD'] = 100
     
     # Asegúrate de que cada dispositivo tenga su propia sesión
     app.config['SESSION_REFRESH_EACH_REQUEST'] = True
