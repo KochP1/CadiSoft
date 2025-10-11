@@ -25,34 +25,21 @@ def create_app():
     app.config['DB_NAME'] = getenv('DB_NAME')
     app.config['DB_PORT'] = getenv('DB_PORT')
 
-    # Configuración de Redis para sesiones
-    redis_url = getenv('REDIS_URL')
-    if redis_url:
-        try:
-            redis_client = redis.from_url(redis_url)
-            redis_client.ping()
-            app.config['SESSION_TYPE'] = 'redis'
-            app.config['SESSION_REDIS'] = redis_client
-            app.config['SESSION_USE_SIGNER'] = True
-            app.config['SESSION_PERMANENT'] = True
-            app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
-            app.config['SESSION_KEY_PREFIX'] = 'flask_session:'
-            print("Redis configurado correctamente para sesiones")
-        except Exception as e:
-            print(f"Error conectando a Redis: {e}")
-            app.config['SESSION_TYPE'] = 'filesystem'
-    else:
-        app.config['SESSION_TYPE'] = 'filesystem'
-
-    # Configuración de cookies para sesiones múltiples
+    # CONFIGURACIÓN CLAVE PARA RAILWAY - Solo Flask-Login
+    app.config['SESSION_TYPE'] = None  # No usar Flask-Session
+    
+    # Configuración de cookies para múltiples sesiones
     app.config['SESSION_COOKIE_NAME'] = 'app_session'
     app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SECURE'] = True  # True para HTTPS
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Cambia a 'Lax' o 'None'
-    app.config['SESSION_REFRESH_EACH_REQUEST'] = True
-
-    # Inicializar Flask-Session ANTES de Flask-Login
-    Session(app)
+    app.config['SESSION_COOKIE_SECURE'] = True  # Railway usa HTTPS
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    
+    # Configuración específica de Flask-Login
+    app.config['REMEMBER_COOKIE_NAME'] = 'remember_token'
+    app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
+    app.config['REMEMBER_COOKIE_SECURE'] = True
+    app.config['REMEMBER_COOKIE_HTTPONLY'] = True
+    app.config['REMEMBER_COOKIE_SAMESITE'] = 'Lax'
 
     # Configuración de la base de datos
     db = pymysql.connect(

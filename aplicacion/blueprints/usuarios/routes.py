@@ -29,8 +29,8 @@ def index():
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             # Forzar nueva sesión para este dispositivo
+            login_user(user, remember=True, duration=dt.timedelta(days=7))
             session.clear()  # Limpiar sesión anterior
-            login_user(user, remember=True)
             
             # Agregar identificador único de sesión
             session['session_id'] = str(uuid.uuid4())
