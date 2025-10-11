@@ -1150,6 +1150,10 @@ input[type=number] {
     outline: none;
 }
 
+.reprobado {
+    color: #ff0000;
+}
+
 .calificacion-input:focus {
     border: none;
     outline: none;

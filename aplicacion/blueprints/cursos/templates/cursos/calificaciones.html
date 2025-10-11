@@ -33,7 +33,8 @@
                 <th>Logro 4</th>
                 <th>Logro 5</th>
                 <th>Definitiva</th>
-                <th>Asistencia</th>
+                <th>Asistencias</th>
+                <th>Inasistencias</th>
             </tr>
 
             {% for record in calificaciones %}
@@ -46,35 +47,47 @@
                     <td>{{record.cedula}}</td>
 
                     <td>
-                        <input class="calificacion-input mod-calificacion" id="input-logro1-{{record.idusuarios}}" type="text" value="{% if record.logro_1 != None %} {{record.logro_1}} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_uno(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'))"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <input class="calificacion-input mod-calificacion" id="input-logro1-{{record.idusuarios}}" type="text" value="{% if record.logro_1 != None %} {{record.logro_1}} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_uno(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'), this.getAttribute('idInscripcion'))"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                        idInscripcion="{{record.idInscripcion}}">
                     </td>
 
                     <td>
-                        <input class="calificacion-input mod-calificacion" id="input-logro2-{{record.idusuarios}}" type="text" value="{% if record.logro_2 != None %} {{record.logro_2}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_dos(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'))"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <input class="calificacion-input mod-calificacion" id="input-logro2-{{record.idusuarios}}" type="text" value="{% if record.logro_2 != None %} {{record.logro_2}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_dos(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'), this.getAttribute('idInscripcion'))"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                        idInscripcion="{{record.idInscripcion}}">
                     </td>  
                     <td>
-                        <input class="calificacion-input mod-calificacion" id="input-logro3-{{record.idusuarios}}" type="text" value="{% if record.logro_3 != None %} {{record.logro_3}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_tres(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'))"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <input class="calificacion-input mod-calificacion" id="input-logro3-{{record.idusuarios}}" type="text" value="{% if record.logro_3 != None %} {{record.logro_3}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_tres(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'), this.getAttribute('idInscripcion'))"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                        idInscripcion="{{record.idInscripcion}}">
                     </td>  
 
                     <td>
-                        <input class="calificacion-input mod-calificacion" id="input-logro4-{{record.idusuarios}}" type="text" value="{% if record.logro_4 != None %} {{record.logro_4}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_cuatro(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'))"
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                        <input class="calificacion-input mod-calificacion" id="input-logro4-{{record.idusuarios}}" type="text" value="{% if record.logro_4 != None %} {{record.logro_4}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_cuatro(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'), this.getAttribute('idInscripcion'))"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                        idInscripcion="{{record.idInscripcion}}">
                     </td>
                     
                     <td>
-                        <input class="calificacion-input mod-calificacion" id="input-logro5-{{record.idusuarios}}" type="text" value="{% if record.logro_5 != None %}{{record.logro_5}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_cinco(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'))"
+                        <input class="calificacion-input mod-calificacion" id="input-logro5-{{record.idusuarios}}" type="text" value="{% if record.logro_5 != None %}{{record.logro_5}} {% else %} {% endif %}" idSeccion="{{data[0].idSeccion}}" idAlumno="{{record.idusuarios}}" readonly onchange="colocar_logro_cinco(this.getAttribute('idSeccion'), this.getAttribute('idAlumno'), this.getAttribute('idInscripcion'))"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                        idInscripcion="{{record.idInscripcion}}">
+                    </td>
+
+                    <td>
+                        <input class="calificacion-input {% if record.definitiva < 14 %} reprobado {% else %} {% endif %}" type="text" id="input-def-{{record.idusuarios}}" value="{% if record.definitiva != None %} {{record.definitiva}} {% else %} {% endif %}" readonly>
+                    </td>
+
+                    <td>
+                        <input class="calificacion-input mod-calificacion" id="asistencia-{{record.idusuarios}}" type="text" value="{% if record.asistencia != None %}{{record.asistencia}} {% else %} {% endif %}" idInscripcion="{{record.idInscripcion}}" idAlumno="{{record.idusuarios}}" readonly 
+                        onchange="asistencia(this.getAttribute('idInscripcion'), this.getAttribute('idAlumno'))"
                         oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                     </td>
 
                     <td>
-                        <input class="calificacion-input" type="text" id="input-def-{{record.idusuarios}}" value="{% if record.definitiva != None %} {{record.definitiva}} {% else %} {% endif %}" readonly>
-                    </td>
-
-                    <td>
-                        <input class="calificacion-input mod-calificacion" id="asistencia-{{record.idusuarios}}" type="text" value="{% if record.asistencia != None %}{{record.asistencia}} {% else %} {% endif %}" idInscripcion="{{record.idInscripcion}}" idAlumno="{{record.idusuarios}}" readonly onchange="asistencia(this.getAttribute('idInscripcion'), this.getAttribute('idAlumno'))"
+                        <input class="calificacion-input mod-calificacion {% if record.inasistencia >= 3 %} reprobado {% else %} {% endif %}" id="inasistencia-{{record.idusuarios}}" type="text" value="{% if record.inasistencia != None %}{{record.inasistencia}} {% else %} {% endif %}" idInscripcion="{{record.idInscripcion}}" idAlumno="{{record.idusuarios}}" readonly 
+                        onchange="inasistencia(this.getAttribute('idInscripcion'), this.getAttribute('idAlumno'))"
                         oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                     </td>
 

@@ -1867,7 +1867,7 @@ async function buscar_horario_seccion(idSeccion) {
 
 // CALIFICACIONES 
 
-async function colocar_logro_uno(idSeccion, idAlumno) {
+async function colocar_logro_uno(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_uno/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
     if (isSearching) return;
@@ -1881,7 +1881,8 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
 
     const requestData = {
         logro: inputNota,
-        idAlumno: idAlumno
+        idAlumno: idAlumno,
+        idInscripcion: idInscripcion
     }
 
     try {
@@ -1900,7 +1901,7 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
         }
 
         //alert(data.message);
-        calcular_definitiva(idSeccion, idAlumno);
+        calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
     } finally {
@@ -1908,7 +1909,7 @@ async function colocar_logro_uno(idSeccion, idAlumno) {
     }
 }
 
-async function colocar_logro_dos(idSeccion, idAlumno) {
+async function colocar_logro_dos(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_dos/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro2-${idAlumno}`).value.trim();
     if (isSearching) return;
@@ -1922,7 +1923,8 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
 
     const requestData = {
         logro: inputNota,
-        idAlumno: idAlumno
+        idAlumno: idAlumno,
+        idInscripcion: idInscripcion
     }
 
     try {
@@ -1941,7 +1943,7 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
         }
 
         //alert(data.message);
-        calcular_definitiva(idSeccion, idAlumno);
+        calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
     } finally {
@@ -1949,7 +1951,7 @@ async function colocar_logro_dos(idSeccion, idAlumno) {
     }
 }
 
-async function colocar_logro_tres(idSeccion, idAlumno) {
+async function colocar_logro_tres(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_tres/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro3-${idAlumno}`).value.trim();
     if (isSearching) return;
@@ -1963,7 +1965,8 @@ async function colocar_logro_tres(idSeccion, idAlumno) {
 
     const requestData = {
         logro: inputNota,
-        idAlumno: idAlumno
+        idAlumno: idAlumno,
+        idInscripcion: idInscripcion
     }
 
     try {
@@ -1982,7 +1985,7 @@ async function colocar_logro_tres(idSeccion, idAlumno) {
         }
 
         //alert(data.message);
-        calcular_definitiva(idSeccion, idAlumno);
+        calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
     } finally {
@@ -1990,7 +1993,7 @@ async function colocar_logro_tres(idSeccion, idAlumno) {
     }
 }
 
-async function colocar_logro_cuatro(idSeccion, idAlumno) {
+async function colocar_logro_cuatro(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_cuatro/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro4-${idAlumno}`).value.trim();
     if (isSearching) return;
@@ -2004,7 +2007,8 @@ async function colocar_logro_cuatro(idSeccion, idAlumno) {
 
     const requestData = {
         logro: inputNota,
-        idAlumno: idAlumno
+        idAlumno: idAlumno,
+        idInscripcion: idInscripcion
     }
 
     try {
@@ -2023,7 +2027,7 @@ async function colocar_logro_cuatro(idSeccion, idAlumno) {
         }
 
         //alert(data.message);
-        calcular_definitiva(idSeccion, idAlumno);
+        calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
     } finally {
@@ -2031,7 +2035,7 @@ async function colocar_logro_cuatro(idSeccion, idAlumno) {
     }
 }
 
-async function colocar_logro_cinco(idSeccion, idAlumno) {
+async function colocar_logro_cinco(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_cinco/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro5-${idAlumno}`).value.trim();
     if (isSearching) return;
@@ -2045,7 +2049,8 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
 
     const requestData = {
         logro: inputNota,
-        idAlumno: idAlumno
+        idAlumno: idAlumno,
+        idInscripcion: idInscripcion
     }
 
     try {
@@ -2064,7 +2069,7 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
         }
 
         //alert(data.message);
-        calcular_definitiva(idSeccion, idAlumno);
+        calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
     } finally {
@@ -2072,7 +2077,7 @@ async function colocar_logro_cinco(idSeccion, idAlumno) {
     }
 }
 
-async function calcular_definitiva(idSeccion, idAlumno) {
+async function calcular_definitiva(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_definitiva/${idSeccion}`;
     //if (isSearching) return;
     setSearching(true);
@@ -2091,7 +2096,8 @@ async function calcular_definitiva(idSeccion, idAlumno) {
 
     const requestData = {
         definitiva: definitiva,
-        idAlumno: idAlumno
+        idAlumno: idAlumno,
+        idInscripcion: idInscripcion
     }
 
     try {
@@ -2110,6 +2116,12 @@ async function calcular_definitiva(idSeccion, idAlumno) {
             throw new Error(data.error);
         }
         document.getElementById(`input-def-${idAlumno}`).value = definitiva;
+
+        if (definitiva < 14) {
+            document.getElementById(`input-def-${idAlumno}`).classList.add('reprobado');
+        } else {
+            document.getElementById(`input-def-${idAlumno}`).classList.remove('reprobado');
+        }
     } catch(e) {
         console.log(e)
     } finally {
@@ -2149,7 +2161,51 @@ async function asistencia(id, idAlumno) {
         }
 
         //alert(data.message);
-        calcular_definitiva(idSeccion, idAlumno);
+    } catch(e) {
+        console.log(e)
+    } finally {
+        setSearching(false);
+    }
+}
+
+async function inasistencia(id, idAlumno) {
+    const url = `/cursos/inasistencia/${id}`;
+    const inputNota = document.getElementById(`inasistencia-${idAlumno}`).value.trim();
+    if (isSearching) return;
+    setSearching(true);
+
+    if (!inputNota) {
+        setSearching(false);
+        alert('Debe ingresar una cantidad');
+        return;
+    }
+
+    if (parseInt(inputNota) >= 3) {
+        document.getElementById(`inasistencia-${idAlumno}`).classList.add('reprobado');
+    } else {
+        document.getElementById(`inasistencia-${idAlumno}`).classList.remove('reprobado');
+    }
+
+    const requestData = {
+        inasistencia: inputNota
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        //alert(data.message);
     } catch(e) {
         console.log(e)
     } finally {

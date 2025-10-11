@@ -1,9 +1,13 @@
 from datetime import datetime
 import io
+from os import getenv
 from flask import request, render_template, redirect, send_file, url_for, Blueprint, current_app, jsonify, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 import pymysql
+from dotenv import load_dotenv
+
+load_dotenv()
 
 acerca = Blueprint('acerca', __name__, template_folder='templates', static_folder='static')
 
@@ -46,7 +50,7 @@ def generar_backup():
     try:
         # Crear un string para almacenar el script SQL
         script_sql = f"-- Backup generado el: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        db_name = current_app.config['DB_NAME']
+        db_name = getenv('DB_NAME')
 
         # CREATE DATABASE IF NOT EXISTS `cadisoft` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         #USE `cadisoft`;

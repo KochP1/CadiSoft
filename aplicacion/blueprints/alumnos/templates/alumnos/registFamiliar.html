@@ -33,28 +33,18 @@
         <table class="table table-striped-columns table-alumnos" id="tablaAlumnos">
             <tr>
                 <th>ID</th>
-                <th>Nombre alumno</th>
-                <th>Segundo nombre alumno</th>
-                <th>Apellido alumno</th>
-                <th>Segundo apellido alumno</th>
-                <th>Nombre papá</th>
-                <th>Apellido papá</th>
-                <th>Nombre mamá</th>
-                <th>Apellido mamá</th>
+                <th>Alumno</th>
+                <th>Papá</th>
+                <th>Mamá</th>
                 <th>Contácto</th>
             </tr>
 
             {% for familia in familias %}
             <tr>
                 <td>{{familia.idFamilia}}</td>
-                <td>{{familia.nombre}}</td>
-                <td>{{familia.segundoNombre}}</td>
-                <td>{{familia.apellido}}</td>
-                <td>{{familia.SegundoApellido}}</td>
-                <td>{{familia.NombrePapa}}</td>
-                <td>{{familia.ApellidoPapa}}</td>
-                <td>{{familia.NombreMama}}</td>
-                <td>{{familia.ApellidoMama}}</td>
+                <td>{{familia.nombre}} {{familia.segundoNombre}} {{familia.apellido}} {{familia.SegundoApellido}}</td>
+                <td>{{familia.NombrePapa}} {{familia.ApellidoPapa}}</td>
+                <td>{{familia.NombreMama}} {{familia.ApellidoMama}}</td>
                 <td>{{familia.Telefono}}</td>
                 <td>
                     <a href="{{url_for('alumnos.edit_registro_familiar', idFamilia=familia.idFamilia)}}" class="editar-link">

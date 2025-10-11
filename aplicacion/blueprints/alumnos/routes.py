@@ -94,7 +94,7 @@ def constancia_estudio(idAlumno):
             for record in registroAlumno:
                 insertAlumno.append(dict(zip(columNamesAlumno, record)))
 
-            cur.execute('SELECT c.nombre_curso, s.seccion, ca.definitiva FROM calificaciones ca JOIN secciones s ON ca.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso JOIN usuarios u ON ca.idusuarios = u.idusuarios WHERE ca.idusuarios = %s AND ca.definitiva > 9.6', (idAlumno,))
+            cur.execute('SELECT c.nombre_curso, s.seccion, ca.definitiva FROM calificaciones ca JOIN secciones s ON ca.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso JOIN usuarios u ON ca.idusuarios = u.idusuarios WHERE ca.idusuarios = %s AND ca.definitiva > 9.6 AND ca.aprobado = 1', (idAlumno,))
             registros = cur.fetchall()
             insertRegistros = []
             columNames = [column[0] for column in cur.description]
