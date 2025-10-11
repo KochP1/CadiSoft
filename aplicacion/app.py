@@ -94,6 +94,7 @@ def create_app():
     mail = Mail(app)
 
     login_manager = LoginManager(app)
+    login_manager.session_protection = None 
     from aplicacion.blueprints.usuarios.model import User
     @login_manager.user_loader
     def load_users(user_id):
