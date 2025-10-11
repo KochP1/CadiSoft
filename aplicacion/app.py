@@ -38,6 +38,12 @@ def create_app():
     # 6. AÑADIDO: Firma la cookie de sesión para mayor seguridad
     app.config['SESSION_USE_SIGNER'] = True
 
+    # AÑADIDO: Asegurar que la cookie se aplica al dominio actual (necesario en proxies)
+    # None permite al navegador usar el dominio del host actual.
+    app.config['SESSION_COOKIE_DOMAIN'] = None
+    # AÑADIDO: Asegurar que la cookie se aplica a todas las rutas.
+    app.config['SESSION_COOKIE_PATH'] = '/'
+
     #app.secret_key = app.config['SECRET_KEY']
 
     db = pymysql.connect(
@@ -65,9 +71,19 @@ def create_app():
     app.config['SESSION_TYPE'] = 'redis'
     redis_url = getenv('REDIS_URL')
     if redis_url:
-        app.config['SESSION_REDIS'] = redis.from_url(redis_url)
-        print("Configurando sesiones con Redis usando URL.")
+        # Intenta conectar usando la URL (p. ej., de Railway)
+        try:
+            # Esta llamada fallará si el hostname 'redis.railway.internal' no es resoluble localmente
+            app.config['SESSION_REDIS'] = redis.from_url(redis_url)
+            app.config['SESSION_REDIS'].ping() # Prueba la conexión
+            print("Configurando sesiones con Redis usando URL (REDIS_URL).")
+        except Exception as e:
+            # Error de conexión (probablemente el error 11001 "getaddrinfo failed")
+            print(f"ATENCION: FALLO la conexión a Redis usando REDIS_URL. Error: {e}")
+            print("Volviendo a la sesión basada en cookies (SESSION_TYPE='null') para iniciar la aplicación.")
+            app.config['SESSION_TYPE'] = 'null' # Fallback para que la app no se bloquee localmente
     Session(app)
+    print(f"Sesión configurada con tipo: {app.config.get('SESSION_TYPE', 'cookie por defecto')}")
 
     app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
     app.config['MAIL_PORT'] = getenv('MAIL_PORT')
