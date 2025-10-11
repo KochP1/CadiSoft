@@ -11,33 +11,32 @@ from . model import User
 usuario = Blueprint('usuario', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
 
-@usuario.route('/', methods = ['GET', 'POST'])
+@usuario.route('/', methods=['GET', 'POST'])
 def index():
+    # Si ya está autenticado, redirigir
     if current_user.is_authenticated:
-        # Usuario ya autenticado, redirigir según rol
+        print(f"Usuario ya autenticado: {current_user.id} - {current_user.cedula}")
         if current_user.rol == 'administrador':
             return redirect(url_for('usuario.inicio'))
         elif current_user.rol == 'profesor':
             return redirect(url_for('profesores.mis_secciones'))
-
+    
     if request.method == 'POST':
         db = current_app.config['db']
         cedula = request.form['cedula']
         contraseña = request.form['contraseña']
-
+        
         user = User.get_by_cedula(db, cedula)
-
+        
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
-            session.clear()
+            print(f"Login exitoso para: {user.cedula}")
             
-            session['session_id'] = str(uuid.uuid4())
-            session['user_agent'] = request.headers.get('User-Agent')
-            session['login_time'] = dt.datetime.now().isoformat()
-
-            login_user(user, remember=True, duration=dt.timedelta(days=7))
-
-            session.modified = True
+            # APPROACH SIMPLE: Solo login_user
+            login_user(user, remember=True)
             
+            print(f"Después de login_user - Autenticado: {current_user.is_authenticated}")
+            
+            # Redirigir según rol
             if user.rol == 'administrador':
                 return redirect(url_for('usuario.inicio'))
             elif user.rol == 'profesor':
@@ -46,7 +45,7 @@ def index():
                 return render_template('usuarios/index.html', message_error='Permisos insuficientes')
         else:
             return render_template('usuarios/index.html', message_error='Credenciales incorrectas')
-
+    
     return render_template('usuarios/index.html')
 
 
