@@ -50,7 +50,7 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
 
     mail = Mail(app)
-    session = Session(app)
+    Session(app)
 
     try:
         with db.cursor() as cursor:

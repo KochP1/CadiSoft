@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response, session
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_mail import Message
 from flask_bcrypt import Bcrypt
@@ -21,7 +21,7 @@ def index():
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             if user.rol == 'administrador':
-                login_user(user, remember=True)
+                login_user(user, remember=True, force=True)
                 return redirect(url_for('usuario.inicio'))
             
             if user.rol == 'profesor':
