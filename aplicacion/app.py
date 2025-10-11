@@ -41,6 +41,14 @@ def create_app():
         REMEMBER_COOKIE_DOMAIN=None,
         REMEMBER_COOKIE_PATH='/',
     )
+
+    app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = getenv('MAIL_PORT')
+    app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
+    app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
+    mail = Mail(app)
     
     # Inicializar Flask-Login PRIMERO
     login_manager = LoginManager(app)
@@ -68,13 +76,34 @@ def create_app():
     # Registrar blueprints
     from aplicacion.blueprints.usuarios.routes import usuario
     from aplicacion.blueprints.diagnostico.routes import diagnostico
-    # ... otros blueprints
+    from aplicacion.blueprints.cursos.routes import cursos
+    from aplicacion.blueprints.facturacion.routes import facturacion
+    from aplicacion.blueprints.profesores.routes import profesores
+    from aplicacion.blueprints.alumnos.routes import alumnos
+    from aplicacion.blueprints.facultades.routes import facultades
+    from aplicacion.blueprints.inscripciones.routes import inscripciones
+    from aplicacion.blueprints.acercaDe.routes import acerca
     
     app.register_blueprint(usuario, url_prefix='/')
     app.register_blueprint(diagnostico, url_prefix='/debug')
-    # ... otros blueprints
+    app.register_blueprint(cursos, url_prefix='/cursos')
+    app.register_blueprint(facturacion, url_prefix='/facturacion')
+    app.register_blueprint(profesores, url_prefix='/profesores')
+    app.register_blueprint(alumnos, url_prefix='/alumnos')
+    app.register_blueprint(facultades, url_prefix='/facultades')
+    app.register_blueprint(inscripciones, url_prefix='/inscripciones')
+    app.register_blueprint(acerca, url_prefix='/acerca')
+
     
     app.config['db'] = db
+    app.config['mail'] = mail
+
+    Config.set_db(db)
+    app.config.from_object(Config)
+
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
     
     # Middleware para debug
     @app.before_request
