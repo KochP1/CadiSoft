@@ -22,11 +22,13 @@ def index():
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             if user.rol == 'administrador':
                 login_user(user, remember=True)
+                session.modified = True
                 return redirect(url_for('usuario.inicio'))
             
             if user.rol == 'profesor':
                 print('Cumpliendo ', user.rol)
-                login_user(user)
+                login_user(user, remember=True)
+                session.modified = True
                 return redirect(url_for('profesores.mis_secciones'))
             
 
