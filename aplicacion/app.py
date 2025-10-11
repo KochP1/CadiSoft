@@ -1,4 +1,5 @@
-from flask import Flask
+from datetime import timedelta
+from flask import Flask, current_app
 from flask_login import LoginManager
 from flask_mail import Mail
 import pymysql
@@ -11,6 +12,16 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
+
+    app.config['SESSION_PERMANENT'] = True
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+    app.config['SESSION_COOKIE_NAME'] = 'mi_app_session'
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SECURE'] = False  # True si usas HTTPS en producción
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    
+    # Asegúrate de que cada dispositivo tenga su propia sesión
+    app.config['SESSION_REFRESH_EACH_REQUEST'] = True
 
     app.config['SECRET_KEY'] = getenv('SECRET_KEY')
     app.config['DB_HOST'] = getenv('DB_HOST')
@@ -56,10 +67,14 @@ def create_app():
     login_manager = LoginManager()
     login_manager.init_app(app)
 
+    login_manager.session_protection = "basic"  # o "strong"
+    login_manager.refresh_view = "usuario.index"
+    
     from aplicacion.blueprints.usuarios.model import User
     @login_manager.user_loader
     def load_users(user_id):
-        return User.get_by_id(db, user_id)
+        db = current_app.config['db']
+        return User.get_by_id(db, int(user_id))
 
     # importar blueprints
     from aplicacion.blueprints.usuarios.routes import usuario

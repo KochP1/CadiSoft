@@ -35,6 +35,9 @@ class User(UserMixin):
                 )
         return None
     
+    def get_id(self):
+        return str(self.id) 
+    
     @staticmethod
     def get_by_cedula(db, cedula):
         cur = db.cursor()

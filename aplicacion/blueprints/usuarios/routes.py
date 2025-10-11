@@ -23,7 +23,7 @@ def index():
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             if user.rol == 'administrador':
-                login_user(user)
+                login_user(user, remember=True)
                 return redirect(url_for('usuario.inicio'))
             
             if user.rol == 'profesor':
