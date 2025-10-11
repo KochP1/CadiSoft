@@ -28,13 +28,15 @@ def index():
         user = User.get_by_cedula(db, cedula)
 
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
-            # Forzar nueva sesión para este dispositivo
-            login_user(user, remember=True, duration=dt.timedelta(days=7))
-            session.clear()  # Limpiar sesión anterior
+            session.clear()
             
-            # Agregar identificador único de sesión
             session['session_id'] = str(uuid.uuid4())
             session['user_agent'] = request.headers.get('User-Agent')
+            session['login_time'] = dt.datetime.now().isoformat()
+
+            login_user(user, remember=True, duration=dt.timedelta(days=7))
+
+            session.modified = True
             
             if user.rol == 'administrador':
                 return redirect(url_for('usuario.inicio'))

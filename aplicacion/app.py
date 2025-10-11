@@ -24,29 +24,30 @@ def create_app():
     app.config['DB_PASSWORD'] = getenv('DB_PASSWORD')
     app.config['DB_NAME'] = getenv('DB_NAME')
     app.config['DB_PORT'] = getenv('DB_PORT')
-
-    redis_url = getenv('REDIS_URL')
-    if redis_url:
-        from flask_caching import Cache
-        cache = Cache(config={'CACHE_TYPE': 'RedisCache', 'CACHE_REDIS_URL': redis_url})
-        cache.init_app(app)
-        app.config['cache'] = cache
-
-    # CONFIGURACIÓN CLAVE PARA RAILWAY - Solo Flask-Login
-    app.config['SESSION_TYPE'] = None  # No usar Flask-Session
     
-    # Configuración de cookies para múltiples sesiones
-    app.config['SESSION_COOKIE_NAME'] = 'app_session'
+    app.config['SESSION_COOKIE_NAME'] = 'flask_app_session'
     app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SECURE'] = True  # Railway usa HTTPS
+    app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_DOMAIN'] = None  # Importante para Railway
+    app.config['SESSION_COOKIE_PATH'] = '/'
     
-    # Configuración específica de Flask-Login
-    app.config['REMEMBER_COOKIE_NAME'] = 'remember_token'
+    # Configuración Flask-Login mejorada
+    app.config['REMEMBER_COOKIE_NAME'] = 'flask_remember_token'
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
     app.config['REMEMBER_COOKIE_SECURE'] = True
     app.config['REMEMBER_COOKIE_HTTPONLY'] = True
     app.config['REMEMBER_COOKIE_SAMESITE'] = 'Lax'
+    app.config['REMEMBER_COOKIE_DOMAIN'] = None
+    app.config['REMEMBER_COOKIE_PATH'] = '/'
+    
+    # Configuración para prevenir cache de login
+    @app.after_request
+    def add_header(response):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
 
     # Configuración de la base de datos
     db = pymysql.connect(
