@@ -15,7 +15,6 @@ bcrypt = Bcrypt()
 def index():
     # Si ya está autenticado, redirigir
     if current_user.is_authenticated:
-        print(f"Usuario ya autenticado: {current_user.id} - {current_user.cedula}")
         if current_user.rol == 'administrador':
             return redirect(url_for('usuario.inicio'))
         elif current_user.rol == 'profesor':
@@ -31,12 +30,10 @@ def index():
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
             print(f"Login exitoso para: {user.cedula}")
             
-            # APPROACH SIMPLE: Solo login_user
             login_user(user, remember=True)
             
             print(f"Después de login_user - Autenticado: {current_user.is_authenticated}")
             
-            # Redirigir según rol
             if user.rol == 'administrador':
                 return redirect(url_for('usuario.inicio'))
             elif user.rol == 'profesor':

@@ -20,11 +20,10 @@ def create_app():
     # ProxyFix para Railway
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
     
-    # CONFIGURACIÓN MÍNIMA Y SÓLIDA
     app.config.update(
         SECRET_KEY=getenv('SECRET_KEY'),
         
-        # Configuración de cookies ESENCIAL
+        # Configuración de cookies
         SESSION_COOKIE_NAME='app_main_session',
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SECURE=True,
@@ -50,7 +49,7 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
     mail = Mail(app)
     
-    # Inicializar Flask-Login PRIMERO
+    # Inicializar Flask-Login
     login_manager = LoginManager(app)
     login_manager.session_protection = "strong"
     
