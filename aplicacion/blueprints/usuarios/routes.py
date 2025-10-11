@@ -12,8 +12,6 @@ bcrypt = Bcrypt()
 
 @usuario.route('/', methods = ['GET', 'POST'])
 def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('usuario.inicio'))
     if request.method == 'POST':
         db = current_app.config['db']
         cedula = request.form['cedula']
