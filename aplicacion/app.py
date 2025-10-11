@@ -105,13 +105,13 @@ def create_app():
     scheduler.start()
     
     # Middleware para debug
-    @app.before_request
-    def log_session_info():
-        if request.endpoint and 'debug' not in request.endpoint:
-            print(f"=== BEFORE REQUEST ===")
-            print(f"Endpoint: {request.endpoint}")
-            print(f"User authenticated: {current_user.is_authenticated}")
-            print(f"Session keys: {list(session.keys())}")
-            print(f"User ID in session: {session.get('_user_id')}")
+    # @app.before_request
+    # def log_session_info():
+    #     if request.endpoint and 'debug' not in request.endpoint:
+    #         print(f"=== BEFORE REQUEST ===")
+    #         print(f"Endpoint: {request.endpoint}")
+    #         print(f"User authenticated: {current_user.is_authenticated}")
+    #         print(f"Session keys: {list(session.keys())}")
+    #         print(f"User ID in session: {session.get('_user_id')}")
     
     return app
