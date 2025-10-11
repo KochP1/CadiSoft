@@ -49,7 +49,8 @@ def create_app():
     
     app.app_context().push()
 
-    redis_url = app.config['SESSION_TYPE'] = 'redis'
+    app.config['SESSION_TYPE'] = 'redis'
+    redis_url = getenv('REDIS_URL')
     if redis_url:
         app.config['SESSION_REDIS'] = redis.from_url(redis_url)
         print("Configurando sesiones con Redis usando URL.")
