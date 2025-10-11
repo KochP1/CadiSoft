@@ -7,6 +7,7 @@ from os import getenv
 from dotenv import load_dotenv
 from .config import Config
 from flask_apscheduler import APScheduler
+from flask_session import Session
 
 load_dotenv()
 
@@ -48,6 +49,7 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
 
     mail = Mail(app)
+    session = Session(app)
 
     try:
         with db.cursor() as cursor:
@@ -69,7 +71,7 @@ def create_app():
 
     login_manager.session_protection = "basic"  # o "strong"
     login_manager.refresh_view = "usuario.index"
-    
+
     from aplicacion.blueprints.usuarios.model import User
     @login_manager.user_loader
     def load_users(user_id):
