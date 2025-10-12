@@ -39,6 +39,9 @@ def create_app():
     # Inicializar Flask-Login
     login_manager = LoginManager(app)
     login_manager.session_protection = "strong"
+    login_manager.login_view = "usuario.index"
+    login_manager.login_message = "Por favor inicia sesión para acceder a esta página"
+    login_manager.login_message_category = "info"
     
     # Configuración de base de datos
     db = pymysql.connect(

@@ -19,11 +19,19 @@
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 {%for message in messages %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>{{message}}</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        </button>
-                    </div>
+                    {% if message == 'Por favor inicia sesión para acceder a esta página' %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>{{message}}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>{{message}}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                    {% endif %}
                 {% endfor %}
                 {% endif %}
                 {% endwith %}

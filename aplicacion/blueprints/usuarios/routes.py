@@ -52,6 +52,7 @@ def index():
 
 
 @usuario.route('/inicio')
+@login_required
 def inicio():
     try:
         return render_template('usuarios/inicio.html')
@@ -62,6 +63,7 @@ def inicio():
 
 
 @usuario.route('/inicio_stats')
+@login_required
 def inicio_stats():
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -319,6 +321,7 @@ def forgot_password():
 
 
 @usuario.route('/ajustes_usuario')
+@login_required
 def ajustes_usuario():
     return render_template('usuarios/ajustes.html')
 
