@@ -1,9 +1,8 @@
 from datetime import datetime
 import io
 from os import getenv
-from flask import request, render_template, redirect, send_file, url_for, Blueprint, current_app, jsonify, flash
-from flask_login import login_user, logout_user, current_user, login_required
-from flask_bcrypt import Bcrypt
+from flask import render_template, send_file, Blueprint, current_app, jsonify
+from flask_login import current_user, login_required
 import pymysql
 from dotenv import load_dotenv
 
@@ -15,10 +14,12 @@ acerca = Blueprint('acerca', __name__, template_folder='templates', static_folde
 
 tables = ['usuarios', 'profesores', 'secciones', 'registro_familiar', 'productos', 'preinscripcion', 'insc_x_seccion', 'inscripcion', 'horario_x_curso', 'horario', 'facultades', 'factura_x_producto', 'facturas', 'cursos', 'codigos_verificacion', 'calificaciones']
 @acerca.route('/')
+@login_required
 def index():
     return render_template('acercaDe/index.html')
 
 @acerca.route('/restaurar', methods = ['POST'])
+@login_required
 def restaurar():
     db = current_app.config['db']
 
@@ -35,6 +36,7 @@ def restaurar():
             return jsonify({'error': f'Error al restaurar sistema: {e}'}), 500
 
 @acerca.route('/manual', methods = ['GET'])
+@login_required
 def manual():
     return render_template('acercaDe/manual.html')
 

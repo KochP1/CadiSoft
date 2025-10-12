@@ -125,9 +125,10 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="{{url_for('acerca.manual')}}">Manual de usuario</a></li>
+                  <li><a class="dropdown-item" onclick="descargar_manual()" style="cursor: pointer;">Descargar manual de usuario</a></li>
                   {% if current_user.rol == 'administrador' %}
-                  <li><a class="dropdown-item" onclick="respaldo()">Respaldo</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="restaurar()">Restaurar</a></li>
+                  <li><a class="dropdown-item" onclick="respaldo()" style="cursor: pointer;">Respaldo</a></li>
+                  <li><a class="dropdown-item"  onclick="restaurar()" style="cursor: pointer;">Restaurar</a></li>
                   {% endif %}
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{{url_for('acerca.index')}}">Acerca del sistema</a></li>
@@ -151,7 +152,7 @@
                   </li>
                   -->
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
+                  <li><a class="dropdown-item" onclick="log_out()" style="cursor: pointer;">Cerrar sesión</a></li>
                 </ul>
               </li>
               {% endif %}
@@ -168,7 +169,7 @@
                 <ul class="dropdown-menu user-dropdown">
                   <li><a class="dropdown-item" href="{{url_for('usuario.ajustes_usuario')}}">Ajustes</a></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" onclick="log_out()">Cerrar sesión</a></li>
+                  <li><a class="dropdown-item" onclick="log_out()" style="cursor: pointer;">Cerrar sesión</a></li>
                 </ul>
               </li>
               {% endif %}

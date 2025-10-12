@@ -6,6 +6,7 @@ alumnos = Blueprint('alumnos', __name__, template_folder='templates', static_fol
 
 # ALUMNOS 
 @alumnos.route('/', methods = ['GET'])
+@login_required
 def index():
     try:
         db = current_app.config['db']
@@ -24,6 +25,7 @@ def index():
         cur.close()
 
 @alumnos.route('/buscar_alumno', methods = ['POST'])
+@login_required
 def buscar_alumno():
     db = current_app.config['db']
     cedula = request.form['cedula']
@@ -45,6 +47,7 @@ def buscar_alumno():
 
 
 @alumnos.route('/eliminar_alumno/<int:idusuarios>', methods = ['DELETE'])
+@login_required
 def eliminar_alumno(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -62,6 +65,7 @@ def eliminar_alumno(idusuarios):
 
 
 @alumnos.route('/edit_alumno/<int:idusuarios>')
+@login_required
 def edit_alumno(idusuarios):
     try:
         db = current_app.config['db']
@@ -81,6 +85,7 @@ def edit_alumno(idusuarios):
         cur.close()
 
 @alumnos.route('/constancia_estudio/<int:idAlumno>', methods = ['GET'])
+@login_required
 def constancia_estudio(idAlumno):
     db = current_app.config['db']
 
@@ -111,6 +116,7 @@ def constancia_estudio(idAlumno):
 # REGISTRO FAMILIAR
 
 @alumnos.route('/crear_registro_familiar/<int:idusuarios>', methods = ['POST'])
+@login_required
 def crear_registro_familiar(idusuarios):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -136,6 +142,7 @@ def crear_registro_familiar(idusuarios):
 
 
 @alumnos.route('/registro_familiar', methods = ['GET'])
+@login_required
 def registro_familiar():
     db = current_app.config['db']
     if request.method == 'GET':
@@ -154,6 +161,7 @@ def registro_familiar():
 
 
 @alumnos.route('/edit_registro_familiar/<int:idFamilia>')
+@login_required
 def edit_registro_familiar(idFamilia):
     db = current_app.config['db']
     try:
@@ -173,6 +181,7 @@ def edit_registro_familiar(idFamilia):
 
 
 @alumnos.route('/edit_registro_fam_papa/<int:idFamilia>', methods = ['PATCH'])
+@login_required
 def edit_registro_fam_papa(idFamilia):
     db = current_app.config['db']
     NombrePapa = request.form.get('NombrePapa')
@@ -194,6 +203,7 @@ def edit_registro_fam_papa(idFamilia):
 
 
 @alumnos.route('/edit_registro_fam_mama/<int:idFamilia>', methods = ['PATCH'])
+@login_required
 def edit_registro_fam_mama(idFamilia):
     db = current_app.config['db']
     NombreMama = request.form.get('NombreMama')
@@ -212,6 +222,7 @@ def edit_registro_fam_mama(idFamilia):
 
 
 @alumnos.route('/edit_registro_fam_contacto/<int:idFamilia>', methods = ['PATCH'])
+@login_required
 def edit_registro_fam_contacto(idFamilia):
     db = current_app.config['db']
     contacto = request.form.get('contacto')
@@ -229,6 +240,7 @@ def edit_registro_fam_contacto(idFamilia):
 
 
 @alumnos.route('/eliminar_registro_familiar/<int:idRegistro>', methods = ['DELETE'])
+@login_required
 def eliminar_registro_familiar(idRegistro):
     db = current_app.config['db']
     try:
@@ -245,6 +257,7 @@ def eliminar_registro_familiar(idRegistro):
 
 
 @alumnos.route('/buscar_registro_familiar', methods = ['POST'])
+@login_required
 def buscar_registro_familiar():
     try:
         db = current_app.config['db']

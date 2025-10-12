@@ -1,8 +1,10 @@
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify
+from flask_login import login_required
 
 facturacion = Blueprint('facturacion', __name__, template_folder='templates', static_folder="static")
 
 @facturacion.route('/',methods = ['GET', 'POST'])
+@login_required
 def index():
     db = current_app.config['db']
     if request.method == 'GET':
@@ -39,6 +41,7 @@ def index():
 
 
 @facturacion.route('/inventario',methods = ['GET', 'POST'])
+@login_required
 def inventario():
     db = current_app.config['db']
     if request.method == 'GET':
@@ -70,6 +73,7 @@ def inventario():
                 return jsonify({'error': f'Error al crear producto: {e}'}), 500
 
 @facturacion.route('/elim_producto/<int:idProducto>', methods = ['DELETE'])
+@login_required
 def elim_producto(idProducto):
     db = current_app.config['db']
 
@@ -82,6 +86,7 @@ def elim_producto(idProducto):
             return jsonify({'error': f'Error al eliminar producto: {e}'}), 500
 
 @facturacion.route('/buscar_producto', methods = ['GET', 'POST'])
+@login_required
 def buscar_producto():
     db = current_app.config['db']
     with db.cursor() as cur:
@@ -103,6 +108,7 @@ def buscar_producto():
             return f'Error: {e}'
 
 @facturacion.route('/edit_producto/<int:idProducto>', methods = ['GET', 'PATCH'])
+@login_required
 def edit_producto(idProducto):
     db = current_app.config['db']
     
@@ -144,6 +150,7 @@ def edit_producto(idProducto):
                 return jsonify({'error': f'Error: {e}'}), 500
 
 @facturacion.route('/historial_facturas', methods = ['GET', 'POST'])
+@login_required
 def historial():
     db = current_app.config['db']
 
@@ -192,6 +199,7 @@ def historial():
                 return f'Error: {e}'
 
 @facturacion.route('/elim_factura/<int:id>', methods = ['DELETE'])
+@login_required
 def elim_factura(id):
     db = current_app.config['db']
 
@@ -205,6 +213,7 @@ def elim_factura(id):
             return jsonify({'error': f'Error: {e}'}), 500
 
 @facturacion.route('/buscar_producto_factura', methods = ['POST'])
+@login_required
 def buscar_producto_factura():
     db = current_app.config['db']
 

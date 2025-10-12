@@ -2313,6 +2313,40 @@ async function respaldo() {
     }
 }
 
+async function descargar_manual() {
+    if (isSearching) return;
+    setSearching(true);
+    const url = '/descargar-pdf/manual.pdf'
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al descragar manual de usuario');
+        }
+
+                const blob = await response.blob();
+        
+        const urlTemporal = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = urlTemporal;
+        link.download = 'manual.pdf';
+        document.body.appendChild(link);
+        
+        link.click();
+        
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(urlTemporal);
+
+    } catch(e) {
+        console.log(e)
+    } finally {
+        setSearching(false);
+    }
+}
+
 // FACTURACIÓN
 
 async function crearProducto(event) {

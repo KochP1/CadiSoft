@@ -1,4 +1,5 @@
 from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app, flash
+from flask_login import login_required
 from datetime import date
 import pymysql
 
@@ -7,6 +8,7 @@ cursos = Blueprint('cursos', __name__, template_folder='templates', static_folde
 # ENDPOINTS DE CURSOS
 
 @cursos.route('/', methods = ['GET', 'POST'])
+@login_required
 def index():
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -44,6 +46,7 @@ def index():
 
 
 @cursos.route('/buscar_curso', methods = ['GET', 'POST'])
+@login_required
 def buscar_curso():
     db = current_app.config['db']
 
@@ -64,6 +67,7 @@ def buscar_curso():
 
 
 @cursos.route('/buscar_facultades')
+@login_required
 def buscar_facultades():
     try:
         db = current_app.config['db']
@@ -85,6 +89,7 @@ def buscar_facultades():
 
 
 @cursos.route('/edit_cursos/<int:idCurso>', methods = ['GET'])
+@login_required
 def edit_cursos(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -124,6 +129,7 @@ def edit_cursos(idCurso):
 
 
 @cursos.route('/edit_nombre_curso/<int:idCurso>', methods = ['PATCH'])
+@login_required
 def edit_nombre_curso(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -145,6 +151,7 @@ def edit_nombre_curso(idCurso):
 
 
 @cursos.route('/edit_facultad_curso/<int:idCurso>', methods = ['PATCH'])
+@login_required
 def edit_facultad_curso(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -164,6 +171,7 @@ def edit_facultad_curso(idCurso):
         return jsonify({'error': 'Error al modificar curso'}), 500
 
 @cursos.route('/edit_duracion_curso/<int:idCurso>', methods = ['PATCH'])
+@login_required
 def edit_duracion_curso(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -184,6 +192,7 @@ def edit_duracion_curso(idCurso):
 
 
 @cursos.route('/eliminar_curso/<int:idcurso>', methods = ['DELETE'])
+@login_required
 def eliminar_curso(idcurso):
     db = current_app.config['db']
     cur = db.cursor()
@@ -202,6 +211,7 @@ def eliminar_curso(idcurso):
 
 # ENDPOINTS DE SECCIONES POR CURSO
 @cursos.route('/seccion_curso/<int:idcurso>')
+@login_required
 def seccion_curso(idcurso):
     db = current_app.config['db']
 
@@ -230,6 +240,7 @@ def seccion_curso(idcurso):
 
 
 @cursos.route('/buscar_seccion/<int:id>', methods = ['GET', 'POST'])
+@login_required
 def buscar_seccion(id):
     db = current_app.config['db']
     try:
@@ -254,6 +265,7 @@ def buscar_seccion(id):
         return redirect(url_for('cursos.seccion_curso', idcurso = id))
 
 @cursos.route('/edit_seccion/<int:id>/<int:idCurso>',methods = ['GET'])
+@login_required
 def edit_seccion(id, idCurso):
     db = current_app.config['db']
     if request.method == 'GET':
@@ -289,6 +301,7 @@ def edit_seccion(id, idCurso):
 
 
 @cursos.route('/edit_seccion_campos/<int:id>', methods = ['PATCH'])
+@login_required
 def edit_seccion_campos(id):
     db = current_app.config['db']
     if request.method == 'PATCH':
@@ -313,6 +326,7 @@ def edit_seccion_campos(id):
             return jsonify({'error': f'Error: {e}'}), 500
 
 @cursos.route('/edit_horario_seccion/<int:id>', methods = ['PATCH'])
+@login_required
 def edit_horario_seccion(id):
     db = current_app.config['db']
     data = request.get_json()
@@ -352,6 +366,7 @@ def edit_horario_seccion(id):
 
 
 @cursos.route('/craer_seccion/<int:idCurso>', methods = ['GET', 'POST'])
+@login_required
 def crear_seccion(idCurso):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -459,6 +474,7 @@ def crear_seccion(idCurso):
 
 
 @cursos.route('/elim_seccion/<int:idSeccion>', methods = ['DELETE'])
+@login_required
 def elim_seccion(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -484,6 +500,7 @@ def dateToString(fecha: date) -> str:
     return f"{fecha.day:02d}/{fecha.month:02d}/{fecha.year}"
 
 @cursos.route('/calificaciones/<idSeccion>', methods = ['GET'])
+@login_required
 def calificaciones(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -547,6 +564,7 @@ def calificaciones(idSeccion):
 
 
 @cursos.route('/subir_logro_uno/<int:idSeccion>', methods = ['PATCH'])
+@login_required
 def subir_logro_uno(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -572,6 +590,7 @@ def subir_logro_uno(idSeccion):
 
 
 @cursos.route('/subir_logro_dos/<int:idSeccion>', methods = ['PATCH'])
+@login_required
 def subir_logro_dos(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -595,6 +614,7 @@ def subir_logro_dos(idSeccion):
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 @cursos.route('/subir_logro_tres/<int:idSeccion>', methods = ['PATCH'])
+@login_required
 def subir_logro_tres(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -645,6 +665,7 @@ def subir_logro_cuatro(idSeccion):
 
 
 @cursos.route('/subir_logro_cinco/<int:idSeccion>', methods = ['PATCH'])
+@login_required
 def subir_logro_cinco(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -668,6 +689,7 @@ def subir_logro_cinco(idSeccion):
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 @cursos.route('/subir_definitiva/<int:idSeccion>', methods = ['PATCH'])
+@login_required
 def subir_definitiva(idSeccion):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -699,6 +721,7 @@ def subir_definitiva(idSeccion):
 # FINALIZA ENDPOINTS DE CALIFICACIONES
 
 @cursos.route('/asistencia/<int:id>', methods = ['PATCH'])
+@login_required
 def asistencia(id):
     db = current_app.config['db']
     db.ping(reconnect=True)
@@ -720,6 +743,7 @@ def asistencia(id):
         return jsonify({'error': 'Error al poner asistencia'}), 500
     
 @cursos.route('/inasistencia/<int:id>', methods = ['PATCH'])
+@login_required
 def inasistencia(id):
     db = current_app.config['db']
     db.ping(reconnect=True)

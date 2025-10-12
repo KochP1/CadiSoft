@@ -1,6 +1,6 @@
 from datetime import timedelta
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import login_required
 from flask_bcrypt import Bcrypt
 
 inscripciones = Blueprint('inscripciones', __name__, template_folder='templates', static_folder="static")
@@ -8,6 +8,7 @@ bcrypt = Bcrypt()
 
 # PRE INSCRIPCIONES
 @inscripciones.route('/', methods = ['GET', 'POST'])
+@login_required
 def index():
     if request.method == 'GET':
         db = current_app.config['db']
@@ -23,6 +24,7 @@ def index():
             return render_template('inscripciones/index.html', preinscripciones = insertRegistros)
 
 @inscripciones.route('/procesar_preinscripcion/<int:id>/<curso>', methods = ['GET'])
+@login_required
 def procesar_preinscripcion(id, curso):
     db = current_app.config['db']
     with db.cursor() as cur:
@@ -37,6 +39,7 @@ def procesar_preinscripcion(id, curso):
         return render_template('inscripciones/preinscripcion.html', preinscripcion = insertRegistros, idusuario = id, curso = curso)
 
 @inscripciones.route('/elim_preinscripcion/<int:id>', methods = ['DELETE'])
+@login_required
 def elim_preinscripcion(id):
     db = current_app.config['db']
     
@@ -50,6 +53,7 @@ def elim_preinscripcion(id):
 
 # INSCRIPCIONES
 @inscripciones.route('/alumnos_regulares', methods = ['POST', 'GET'])
+@login_required
 def alumnos_regulares():
 
     # POST alumno
@@ -130,6 +134,7 @@ def alumnos_regulares():
         return render_template('inscripciones/alumnosRegulares.html')
 
 @inscripciones.route('/buscar_alumno', methods = ['POST'])
+@login_required
 def buscar_alumno():
     cedula = request.form.get('cedula')
     rol = 'alumno'
@@ -161,6 +166,7 @@ def buscar_alumno():
         }), 500
     
 @inscripciones.route('/buscar_curso', methods = ['POST'])
+@login_required
 def buscar_curso():
 
     if not request.json:
@@ -207,6 +213,7 @@ def time_delta_serializer(time_data):
 
 
 @inscripciones.route('mostar_horario', methods = ['POST'])
+@login_required
 def mostrar_horario():
     if not request.json:
         return jsonify({'error': 'La cédula es requerida'}), 400
@@ -250,6 +257,7 @@ def mostrar_horario():
         }), 500
 
 @inscripciones.route('/inscribir_alumno', methods = ['POST'])
+@login_required
 def inscribir_alumno():
     db = current_app.config['db']
     cur = db.cursor()

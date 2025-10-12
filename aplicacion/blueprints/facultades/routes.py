@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 facultades = Blueprint('facultades', __name__, template_folder='templates', static_folder='static')
 
 @facultades.route('/', methods = ['GET', 'POST'])
+@login_required
 def index():
     db = current_app.config['db']
     cur = db.cursor()
@@ -29,6 +30,7 @@ def index():
     return render_template('facultades/index.html', facultades = insertRegistros)
 
 @facultades.route('/edit_facultad/<int:idfacultad>', methods = ['PATCH', 'DELETE'])
+@login_required
 def edit_facultad(idfacultad):
     db = current_app.config['db']
     cur = db.cursor()
@@ -58,6 +60,7 @@ def edit_facultad(idfacultad):
             cur.close()
 
 @facultades.route('/filtrar_facultad', methods = ['POST'])
+@login_required
 def filtrar_facultad():
     db = current_app.config['db']
     cur = db.cursor()

@@ -1,11 +1,12 @@
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import current_user, login_required
 from flask_bcrypt import Bcrypt
 
 profesores = Blueprint('profesores', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
 
 @profesores.route('/', methods = ['GET', 'POST'])
+@login_required
 def index():
     db = current_app.config['db']
     cur = db.cursor()
@@ -90,6 +91,7 @@ def index():
         cur.close()
 
 @profesores.route('/eliminar_profesor/<int:idusuarios>', methods = ['DELETE'])
+@login_required
 def eliminar_profesor(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -106,6 +108,7 @@ def eliminar_profesor(idusuarios):
 
 
 @profesores.route('edit_profesores/<int:idusuarios>')
+@login_required
 def edit_profesores(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -125,6 +128,7 @@ def edit_profesores(idusuarios):
         cur.close()
 
 @profesores.route('/filtrar_profesor', methods = ['POST'])
+@login_required
 def filtrar_profesor():
     db = current_app.config['db']
     cur = db.cursor()
@@ -147,6 +151,7 @@ def filtrar_profesor():
 # MIS SECCIONES ROUTES
 
 @profesores.route('/mis_secciones')
+@login_required
 def mis_secciones():
     db = current_app.config['db']
     if request.method == 'GET':

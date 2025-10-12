@@ -387,6 +387,7 @@ def recuperar_contraseña(idusuario):
 
 
 @usuario.route('/get_profile_image/<int:idusuarios>')
+@login_required
 def get_profile_image(idusuarios):
     db = current_app.config['db']
 
@@ -406,6 +407,7 @@ def get_profile_image(idusuarios):
 
 
 @usuario.route('/update_foto/<int:idusuarios>', methods = ['PATCH'])
+@login_required
 def update_foto(idusuarios):
     imagen = request.files['imagen']
         
@@ -441,6 +443,7 @@ def update_foto(idusuarios):
 
 
 @usuario.route('/update_email/<int:idusuarios>', methods = ['PATCH'])
+@login_required
 def update_email(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -481,6 +484,7 @@ def update_email(idusuarios):
 
 
 @usuario.route('/edit_nombres/<int:idusuarios>', methods = ['PATCH'])
+@login_required
 def edit_nombres(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -521,6 +525,7 @@ def edit_nombres(idusuarios):
 
 
 @usuario.route('/edit_apellidos/<int:idusuarios>', methods = ['PATCH'])
+@login_required
 def edit_apellidos(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -561,6 +566,7 @@ def edit_apellidos(idusuarios):
 
 
 @usuario.route('/edit_cedula/<int:idusuarios>', methods = ['PATCH'])
+@login_required
 def edit_cedula(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -601,6 +607,7 @@ def edit_cedula(idusuarios):
 
 
 @usuario.route('/edit_contraseña/<int:idusuarios>', methods = ['PATCH'])
+@login_required
 def edit_contraseña(idusuarios):
     db = current_app.config['db']
     cur = db.cursor()
@@ -642,9 +649,35 @@ def edit_contraseña(idusuarios):
     finally:
         cur.close()
 
-
+from flask import send_file, abort
+from werkzeug.utils import safe_join
+import os
+@usuario.route('/descargar-pdf/<nombre_archivo>')
+@login_required
+def descargar_pdf(nombre_archivo):
+    try:
+        carpeta_pdfs = os.path.join(current_app.root_path, 'static', 'util')
+        ruta_archivo = safe_join(carpeta_pdfs, nombre_archivo)
+        
+        if not os.path.exists(ruta_archivo):
+            abort(404, description="Archivo no encontrado")
+        
+        if not nombre_archivo.lower().endswith('.pdf'):
+            abort(400, description="Solo se permiten archivos PDF")
+        
+        return send_file(
+            ruta_archivo,
+            as_attachment=True,
+            download_name=nombre_archivo,
+            mimetype='application/pdf'
+        )
+        
+    except Exception as e:
+        current_app.logger.error(f"Error descargando PDF: {e}")
+        abort(500, description="Error al descargar el archivo")
 
 @usuario.route('/log_out', methods = ['POST'])
+@login_required
 def log_out():
     try:
         logout_user()
