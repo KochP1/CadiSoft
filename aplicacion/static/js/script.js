@@ -1814,8 +1814,27 @@ async function edit_horario(idSeccion) {
     if (isSearching) return;
     setSearching(true);
 
-        const requestData = {
-        horarios: horariosSeleccionados
+    // 🔥 LIMPIAR Y VALIDAR el array ANTES de enviar
+    const horariosLimpios = horariosSeleccionados.filter(item => 
+        item && 
+        item.celdaId && 
+        item.dia && 
+        item.horaInicio && 
+        item.horaFin && 
+        item.curso
+    );
+    
+    console.log('📤 Enviando horarios limpios:', horariosLimpios);
+    
+    // Verificar que no hay undefined
+    if (horariosLimpios.some(item => !item.celdaId)) {
+        alert('Error: Hay horarios corruptos. Por favor recarga la página.');
+        setSearching(false);
+        return;
+    }
+
+    const requestData = {
+        horarios: horariosLimpios
     };
     
     try {
@@ -1830,19 +1849,18 @@ async function edit_horario(idSeccion) {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.error);
-            throw new Error();
+            alert(data.error || 'Error al actualizar horario');
+            throw new Error(data.error);
         }
 
         alert(data.mensaje);
         window.location.reload();
     } catch(e) {
-        console.log(e);
+        console.error('Error en edit_horario:', e);
+        alert('Error al conectar con el servidor');
     } finally {
-        while(horariosSeleccionados.length) {
-            horariosSeleccionados.pop();
-        }
-
+        // Limpiar array correctamente
+        horariosSeleccionados.length = 0;
         setSearching(false);
     }
 }
@@ -2845,95 +2863,86 @@ function mostrar_horario(data) {
     if (!data || !data.length) return;
 
     const dias = {
-        'Lunes': 1,
-        'Martes': 2,
-        'Miércoles': 3,
-        'Jueves': 4,
-        'Viernes': 5,
-        'Sábado': 6
+        'Lunes': 1, 'Martes': 2, 'Miercoles': 3, 
+        'Jueves': 4, 'Viernes': 5, 'Sabado': 6
     };
 
     const horas = {
-        '08:00:00': 1,  // 8:00-9:00 am
-        '09:00:00': 2,  // 9:00-10:00 am
-        '10:00:00': 3,  // 10:00-11:00 am
-        '11:00:00': 4,  // 11:00-12:00 am
-        '12:00:00': 5,  // 12:00-01:00 pm
-        '13:00:00': 6,  // 01:00-02:00 pm
-        '14:00:00': 7,  // 02:00-03:00 pm
-        '15:00:00': 8,  // 03:00-04:00 pm
-        '16:00:00': 9   // 04:00-05:00 pm
+        '08:00:00': 1, '09:00:00': 2, '10:00:00': 3, '11:00:00': 4,
+        '12:00:00': 5, '13:00:00': 6, '14:00:00': 7, '15:00:00': 8,
+        '16:00:00': 9, '17:00:00': 10
     };
 
-    // Obtener referencia a la tabla
     const tabla = document.getElementById('tabla-horario');
+    
+    // LIMPIAR el array completamente antes de cargar
+    horariosSeleccionados.length = 0;
     
     data.forEach(element => {
         const dia = element.horario_dia;
         const horaInicio = element.horario_hora;
         const horaFin = element.horario_hora_final;
         const nombreCurso = element.nombre_curso || 'Curso';
-        const idHorario = element.idhorario
+        const idHorario = element.idhorario;
         const aula = element.horario_aula;
         const color = getRandomColor();
 
         const inicioNumeros = horaInicio.replace(/:00:00$/, '').replace(/^0/, '');
         const finNumeros = horaFin.replace(/:00:00$/, '').replace(/^0/, '');
         
-        // Obtener índices de fila
         const filaInicio = horas[horaInicio];
         const filaFin = horas[horaFin];
-        
-        // Obtener índice de columna
         const columnaDia = dias[dia];
         
         if (columnaDia && filaInicio && filaFin) {
-            // Llenar todas las celdas desde horaInicio hasta horaFin
             for (let i = filaInicio; i < filaFin; i++) {
                 const fila = tabla.rows[i];
                 if (fila && fila.cells[columnaDia]) {
-                    fila.cells[columnaDia].innerHTML = `${nombreCurso}<br>${aula}`;
-                    fila.cells[columnaDia].classList.add('horario-curso');
-                    fila.cells[columnaDia].style.backgroundColor = color;
+                    const celda = fila.cells[columnaDia];
+                    celda.innerHTML = `${nombreCurso}<br>${aula}`;
+                    celda.classList.add('horario-curso');
+                    celda.style.backgroundColor = color;
                 }
             }
         }
 
-        
+        // ESTRUCTURA CONSISTENTE: Siempre incluir celdaId Y horario
         if (document.getElementById('editSeccion')) {
+            const celdaId = `columna-${dia.toLowerCase()}-${inicioNumeros}-${finNumeros}`;
+            
             horariosSeleccionados.push({
-                horario: idHorario
-            });
-
-            horariosSeleccionados.push({
-                celdaId: (`columna-${dia.toLowerCase()}-${inicioNumeros}-${finNumeros}`),
+                celdaId: celdaId,
                 dia: dia,
                 horaInicio: horaInicio,
                 horaFin: horaFin,
                 curso: nombreCurso,
                 seccion: document.getElementById('editSeccion').value.trim(),
                 color: color,
-                horario_aula: aula
+                horario_aula: aula,
+                horario: idHorario  // ← Incluir el ID del horario también
             });
-
-            console.log(horariosSeleccionados);
         }
     });
+    
+    console.log('📊 Horarios cargados:', horariosSeleccionados);
 }
 
 function limpiar_horario() {
-    const tabla = document.getElementById('tabla-horario');
+    // Eliminar elementos undefined/null y duplicados
+    const horariosLimpios = [];
+    const celdasVistas = new Set();
     
-    // Reiniciar todas las celdas del horario
-    for (let i = 1; i < tabla.rows.length; i++) {
-        const fila = tabla.rows[i];
-        for (let j = 1; j < fila.cells.length; j++) {
-            const celda = fila.cells[j];
-            celda.textContent = '';
-            celda.style.backgroundColor = 'transparent';
-            celda.classList.remove('horario-curso');
+    horariosSeleccionados.forEach(item => {
+        if (item && item.celdaId && !celdasVistas.has(item.celdaId)) {
+            horariosLimpios.push(item);
+            celdasVistas.add(item.celdaId);
         }
-    }
+    });
+    
+    horariosSeleccionados.length = 0;
+    horariosSeleccionados.push(...horariosLimpios);
+    
+    console.log('Array limpiado:', horariosSeleccionados);
 }
 
 
@@ -2942,33 +2951,49 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-const horariosSeleccionados = [];
+let horariosSeleccionados = [];
 function select_horario(idCelda, nombreCurso) {
     const celda = document.getElementById(idCelda);
+    if (!celda) return;
 
-    if (!celda) {
-        return;
-    }
-
-    const seccion = (document.getElementById('crearSeccion')?.value.trim() || 
-                document.getElementById('editSeccion')?.value.trim());
+    // DETECCIÓN MEJORADA
+    const yaEstaSeleccionada = celda.innerHTML.trim() !== '' && celda.style.backgroundColor !== '';
     
-    const aula = (document.getElementById('aulaSeccion')?.value.trim() || document.getElementById('editAulaSeccion')?.value.trim());
-
-    const color = getRandomColor();
-    const dia = celda.getAttribute('data-dia');
-    const horaInicio = celda.getAttribute('data-hora-inicio');
-    const horaFin = celda.getAttribute('data-hora-fin');
+    console.log(`🔄 Celda: ${idCelda}, Seleccionada: ${yaEstaSeleccionada}`);
     
-    const existe = horariosSeleccionados.some(item => 
-        item.celdaId === celda.id
-    );
-    
-    if (!existe) {
+    if (!yaEstaSeleccionada) {
+        // SELECCIONAR
+        const seccion = (document.getElementById('crearSeccion')?.value.trim() || 
+                        document.getElementById('editSeccion')?.value.trim()) || 'Sin sección';
+        const aula = (document.getElementById('aulaSeccion')?.value.trim() || 
+                      document.getElementById('editAulaSeccion')?.value.trim()) || 'Sin aula';
+        const color = getRandomColor();
+        const dia = celda.getAttribute('data-dia');
+        const horaInicio = celda.getAttribute('data-hora-inicio');
+        const horaFin = celda.getAttribute('data-hora-fin');
 
         celda.style.backgroundColor = color;
-        celda.innerHTML = `${nombreCurso}<br>${seccion}`;
+        celda.innerHTML = `${nombreCurso}<br>${seccion}<br><small>${aula}</small>`;
+        celda.classList.add('horario-seleccionado');
 
+        // ELIMINAR cualquier elemento existente con este celdaId (incluyendo undefined)
+        const indicesAEliminar = [];
+        horariosSeleccionados.forEach((item, index) => {
+            if (item && item.celdaId === celda.id) {
+                indicesAEliminar.push(index);
+            }
+        });
+        indicesAEliminar.sort((a, b) => b - a).forEach(index => {
+            console.log(index == celda.id)
+        });
+
+        
+        // Eliminar en orden descendente para no afectar índices
+        indicesAEliminar.sort((a, b) => b - a).forEach(index => {
+            horariosSeleccionados.splice(index, 1);
+        });
+
+        // AGREGAR nuevo elemento
         horariosSeleccionados.push({
             celdaId: celda.id,
             dia: dia,
@@ -2977,22 +3002,58 @@ function select_horario(idCelda, nombreCurso) {
             curso: nombreCurso,
             seccion: seccion,
             color: color,
-            horario_aula: aula
+            horario_aula: aula,
+            horario: null  // Para nuevos horarios, no hay ID todavía
         });
         
+        console.log('✅ Seleccionada:', celda.id);
+        
     } else {
+        // DESELECCIONAR
         celda.style.backgroundColor = '';
         celda.innerHTML = '';
+        celda.classList.remove('horario-seleccionado');
         
-        const index = horariosSeleccionados.findIndex(item => 
-            item.celdaId === celda.id
-        );
-        if (index !== -1) {
-            horariosSeleccionados.splice(index, 1);
-        }
-    }
-}
+        // ELIMINAR - Buscar por celdaId y eliminar SOLO ese elemento
+        let indicesAEliminar = [];
 
+        if (horariosSeleccionados.length == 1) {
+            horariosSeleccionados = [];
+        } else {
+            horariosSeleccionados.forEach((item, index) => {
+                console.log('ITEM: ' + item.celdaId)
+                console.log('CELDA OBTENIDA: ' + celda.id);
+                if (item.celdaId === celda.id) {
+                    console.log('ITEM: ' + item.celdaId)
+                    console.log('CELDA OBTENIDA: ' + celda.id);
+                    console.log('index: ' + index)
+                    indicesAEliminar.push(index);
+                }
+            });
+
+            if (indicesAEliminar.length > 0) {
+                // DESELECCIONAR
+                celda.style.backgroundColor = '';
+                celda.innerHTML = '';
+                celda.classList.remove('horario-seleccionado');
+            }
+
+            console.log('indices: ' + indicesAEliminar);
+            
+            // Eliminar en orden descendente
+            indicesAEliminar.sort((a, b) => b - a).forEach(index => {
+                horariosSeleccionados.splice(index, 1);
+            });
+        }
+        
+        console.log('❌ Deseleccionada:', celda.id);
+    }
+    
+    // LOG MEJORADO - Filtrar elementos undefined
+    const horariosValidos = horariosSeleccionados.filter(item => item !== undefined && item !== null);
+    console.log('📊 Horarios actuales:', horariosValidos.map(h => h.celdaId));
+    console.log('🔍 Array completo:', horariosValidos);
+}
 let flagNotas = false
 
 function toggleInputNotas() {

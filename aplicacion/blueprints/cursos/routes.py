@@ -324,45 +324,68 @@ def edit_seccion_campos(id):
         except Exception as e:
             db.rollback()
             return jsonify({'error': f'Error: {e}'}), 500
-
-@cursos.route('/edit_horario_seccion/<int:id>', methods = ['PATCH'])
+        
+@cursos.route('/edit_horario_seccion/<int:idSeccion>', methods=['PATCH'])
 @login_required
-def edit_horario_seccion(id):
+def edit_horario_seccion(idSeccion):
     db = current_app.config['db']
-    data = request.get_json()
-        
-    if 'horarios' not in data:
-            return jsonify({'error': 'Datos incompletos'}), 400
-        
-    horarios = data['horarios']
-    if not isinstance(horarios, list) or len(horarios) == 0:
-        return jsonify({'error': 'El horario no es válido'}), 400
     
     try:
-            
+        data = request.get_json()
+        horarios = data.get('horarios', [])
+        
+        # VALIDACIÓN DE DATOS
+        if not horarios:
+            return jsonify({'error': 'No se recibieron horarios'}), 400
+        
+        # Filtrar horarios válidos
+        horarios_validos = []
+        for horario in horarios:
+            # Validar que tenga todos los campos necesarios
+            if (horario and 
+                horario.get('celdaId') and 
+                horario.get('dia') and 
+                horario.get('horaInicio') and 
+                horario.get('horaFin') and 
+                horario.get('curso')):
+                
+                horarios_validos.append(horario)
+        
         with db.cursor() as cur:
+            # 1. Eliminar horarios existentes de esta sección
+            cur.execute('DELETE h FROM horario h JOIN horario_x_curso hc ON hc.idhorario = h.idhorario WHERE hc.idSeccion = %s', (idSeccion,))
+            db.commit()
 
-            for record in horarios:
-                if 'horario' in record:
-                    cur.execute('DELETE FROM horario WHERE idhorario = %s', (record['horario'],))
-                    db.commit()
             
-            for record in horarios:
-                if 'horario' not in record:
-                    cur.execute('INSERT INTO horario (`horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES (%s, %s, %s, %s)', (record['dia'], record['horaInicio'], record['horaFin'], record['horario_aula']))
-                    db.commit()
+            # 2. Insertar nuevos horarios
+            for horario in horarios_validos:
+                try:
+                    cur.execute('''
+                        INSERT INTO horario (horario_dia, horario_hora, horario_hora_final, horario_aula)
+                        VALUES (%s, %s, %s, %s)
+                    ''', (
+                        horario['dia'],
+                        horario['horaInicio'],
+                        horario['horaFin'],
+                        horario.get('horario_aula', ''),
+                    ))
 
                     cur.execute('SELECT idhorario FROM horario ORDER BY idhorario DESC LIMIT 1')
                     idhorario = cur.fetchone()
-
-                    cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, id))
-                    db.commit()
-
-            return jsonify({'mensaje': 'Horario actualizado'}), 200
+                    cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, idSeccion))
+                    
+                except Exception as e:
+                    print(f"Error insertando horario {horario}: {e}")
+                    continue
+            
+            db.commit()
+        
+        return jsonify({'mensaje': 'Horario actualizado correctamente'}), 200
+        
     except Exception as e:
-        print(e)
         db.rollback()
-        return jsonify({'error': 'Error al crear sección'}), 500
+        print(f"Error general en edit_horario_seccion: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 
 @cursos.route('/craer_seccion/<int:idCurso>', methods = ['GET', 'POST'])
@@ -486,6 +509,7 @@ def elim_seccion(idSeccion):
         with db.cursor() as cur:
             sql = 'DELETE FROM secciones WHERE idSeccion = %s'
             cur.execute(sql, (idSeccion,))
+            cur.execute('DELETE h FROM horario h JOIN horario_x_curso hc ON hc.idhorario = h.idhorario WHERE hc.idSeccion = %s', (idSeccion,))
             db.commit()
             return jsonify({'message': 'Sección eliminada satisfactoriamente'})
     except Exception as e:
