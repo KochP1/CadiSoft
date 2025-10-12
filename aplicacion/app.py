@@ -14,7 +14,7 @@ def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static', static_url_path='/')
 
     if getenv('ENVIRONMENT') == 'production':
-        from keep_alive import keep_alive
+        from aplicacion.keep_alive import keep_alive
         keep_alive()
     
     # ProxyFix para Railway
