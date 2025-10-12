@@ -1,16 +1,12 @@
 from datetime import timedelta
-from flask import Flask, current_app, request, session
-from flask_login import LoginManager, current_user, login_user
-from flask_mail import Mail
+from flask import Flask
+from flask_login import LoginManager
 import pymysql
 from os import getenv
 from dotenv import load_dotenv
 from .config import Config
 from flask_apscheduler import APScheduler
-from flask_session import Session
 from werkzeug.middleware.proxy_fix import ProxyFix
-import redis
-import uuid
 
 load_dotenv()
 
@@ -40,15 +36,6 @@ def create_app():
         REMEMBER_COOKIE_DOMAIN=None,
         REMEMBER_COOKIE_PATH='/',
     )
-
-    app.config['MAIL_SERVER'] = getenv('MAIL_SERVER')
-    app.config['MAIL_PORT'] = getenv('MAIL_PORT')
-    app.config['MAIL_USE_TLS'] = getenv('MAIL_USE_TLS')
-    app.config['MAIL_USERNAME'] = getenv('MAIL_USERNAME')
-    app.config['MAIL_PASSWORD'] = getenv('MAIL_PASSWORD')
-    app.config['MAIL_DEFAULT_SENDER'] = getenv('MAIL_DEFAULT_SENDER')
-    mail = Mail(app)
-    
     # Inicializar Flask-Login
     login_manager = LoginManager(app)
     login_manager.session_protection = "strong"
@@ -95,7 +82,6 @@ def create_app():
 
     
     app.config['db'] = db
-    app.config['mail'] = 'sendgrid_api'
 
     Config.set_db(db)
     app.config.from_object(Config)

@@ -1,5 +1,5 @@
 from os import getenv
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response, session
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 import random, datetime as dt
@@ -201,7 +201,6 @@ def generar_codigo_verificacion(usuario_id):
 
 
 def send_mail(email, id):
-    #mail = current_app.config['mail']
     codigo = generar_codigo_verificacion(id)
 
     html_body = f"""
