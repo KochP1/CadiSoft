@@ -11,9 +11,9 @@ def keep_alive():
             try:
                 url = getenv('APP_URL')
                 response = requests.get(f"{url}/debug/health", timeout=10)
-                print(f"[{datetime.now()}] Ping exitoso: {response.status_code}")
+                print(f"[{datetime.datetime.now()}] Ping exitoso: {response.status_code}")
             except Exception as e:
-                print(f"[{datetime.now()}] Error en ping: {e}")
+                print(f"[{datetime.datetime.now()}] Error en ping: {e}")
             
             time.sleep(600)  # 10 minutos
     
