@@ -69,3 +69,9 @@ def debug_set_test():
     session['test_user_agent'] = request.headers.get('User-Agent')
     session.modified = True
     return jsonify({'status': 'test values set', 'test_value': session['test_value']})
+
+@diagnostico.route('/health')
+def health():
+    return jsonify({
+        'message': 'ping a la app'
+    }), 200
