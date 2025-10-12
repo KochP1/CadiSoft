@@ -1,7 +1,7 @@
 import datetime
 import threading
 from os import getenv
-from datetime import time
+import time
 import requests
 
 def keep_alive():
@@ -15,7 +15,7 @@ def keep_alive():
             except Exception as e:
                 print(f"[{datetime.datetime.now()}] Error en ping: {e}")
             
-            time.sleep(600)  # 10 minutos
+            time.sleep(600)
     
     # Ejecutar en un hilo separado
     thread = threading.Thread(target=ping)
