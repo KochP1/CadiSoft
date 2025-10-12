@@ -95,7 +95,7 @@ def create_app():
 
     
     app.config['db'] = db
-    app.config['mail'] = mail
+    app.config['mail'] = 'sendgrid_api'
 
     Config.set_db(db)
     app.config.from_object(Config)

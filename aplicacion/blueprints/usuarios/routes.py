@@ -1,13 +1,16 @@
 from os import getenv
-import uuid
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response, session
 from flask_login import login_user, logout_user, current_user, login_required
-from flask_mail import Message
 from flask_bcrypt import Bcrypt
 import random, datetime as dt
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from dotenv import load_dotenv
 
 import pymysql
 from . model import User
+
+load_dotenv()
 
 usuario = Blueprint('usuario', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
@@ -198,7 +201,7 @@ def generar_codigo_verificacion(usuario_id):
 
 
 def send_mail(email, id):
-    mail = current_app.config['mail']
+    #mail = current_app.config['mail']
     codigo = generar_codigo_verificacion(id)
 
     html_body = f"""
@@ -249,13 +252,32 @@ def send_mail(email, id):
         </html>
         """
     
-    msg = Message(
-    "Recuperación de cuenta cadiSoft",
-    recipients=[email],
-    html = html_body,
-    body=f"Tu codigo de verifiación es: {codigo}"
+    sendgrid_api_key = getenv('SENDGRID_API_KEY')
+    from_email = getenv('FROM_EMAIL')
+
+    message = Mail(
+        from_email=from_email,
+        to_emails=email,
+        subject='Recuperación de cuenta cadisoft',
+        html_content=html_body
     )
-    mail.send(msg)
+    
+    if not sendgrid_api_key:
+        current_app.logger.error("SENDGRID_API_KEY no encontrada en configuración")
+        return False
+    
+    try:
+        sg = SendGridAPIClient(sendgrid_api_key)
+        # sg.set_sendgrid_data_residency("eu")
+        # uncomment the above line if you are sending mail using a regional EU subuser
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+        return True
+    except Exception as e:
+        print(e.message)
+        return False
 
 @usuario.route('/forgot_password', methods = ['GET', 'POST'])
 def forgot_password():
@@ -271,22 +293,25 @@ def forgot_password():
                 cur.execute(sql, data)
                 found_email = cur.fetchall()
 
-                if found_email:
-                    try:
-                        columNames = [column[0] for column in cur.description]
-                        record = [dict(zip(columNames, row)) for row in found_email]
-
-                        for item in record:
-                            idusuarios = item['idusuarios']
-
-                        send_mail(email, idusuarios)
-                        return jsonify({'message': 'Revise su bandeja de correo electrónico', 'idusuario': idusuarios}), 200
-                    
-                    except Exception as e:
-                        print(e)
-                        return jsonify({'error': 'Error, servidor de correo no disponible'}), 400
-                else:
+                if not found_email:
                     return jsonify({'error':'El correo electrónico no existe'}), 400
+
+                try:
+                    columNames = [column[0] for column in cur.description]
+                    record = [dict(zip(columNames, row)) for row in found_email]
+
+                    for item in record:
+                        idusuarios = item['idusuarios']
+
+                    sendMail = send_mail(email, idusuarios)
+                    if not sendMail:
+                        return jsonify({'message': 'Error al enviar correo electrónico'}), 400
+                    
+                    return jsonify({'message': 'Revise su bandeja de correo electrónico', 'idusuario': idusuarios}), 200
+                
+                except Exception as e:
+                    print(e)
+                    return jsonify({'error': 'Error, servidor de correo no disponible'}), 500
         except Exception as e:
             print(e)
             return jsonify({'error': 'Error al buscar correo electrónico'}), 400

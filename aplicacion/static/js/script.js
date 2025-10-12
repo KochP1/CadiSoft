@@ -1,3 +1,14 @@
+function isLoading() {
+    const loader = document.getElementById('loader');
+    if (isSearching) {
+        loader.style.display = 'flex';
+    } else if (!isSearching) {
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 1500);
+    }
+}
+
 let isSearching = false;
 function setSearching(value) {
     isSearching = value;
@@ -27,6 +38,8 @@ async function log_out() {
 
 // Olvidar contraseña
 async function olvidar_contraseña(event) {
+    if (isSearching) return;
+    setSearching(true);
     event.preventDefault()
     const url = '/forgot_password';
     const email = document.getElementById('email-olvidar-contraseña').value.trim();
@@ -34,11 +47,13 @@ async function olvidar_contraseña(event) {
 
     if (!email) {
         alert('Todos los campos son obligatorios')
+        setSearching(false);
         return;
     }
 
     if ( email.length > 50) {
         alert('El email puede tener 50 caracteres máximo');
+        setSearching(false);
         return;
     }
 
@@ -61,11 +76,15 @@ async function olvidar_contraseña(event) {
         window.location.href = `/verificacion_dos_pasos/${data.idusuario}`
     } catch (e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 
 }
 
 async function verificar_codigo(idusuario, event) {
+    if (isSearching) return;
+    setSearching(true);
     event.preventDefault();
     const url = `/verificacion_dos_pasos/${idusuario}`
     const codigo = document.getElementById('codigo-olvidar-contraseña').value.trim();
@@ -73,12 +92,14 @@ async function verificar_codigo(idusuario, event) {
 
     if (!codigo) {
         alert('Debe ingresar el codigo de verificación');
+        setSearching(false);
         return;
     }
 
     
     if (codigo.length > 6) {
         alert('Un código de verificación no puede tener más de 6 digitos');
+        setSearching(false);
         return;
     }
 
@@ -101,11 +122,15 @@ async function verificar_codigo(idusuario, event) {
         window.location.href = `/recuperar_contraseña/${data.user}`
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 
 }
 
 async function recuperar_contraseña(idusuario, event) {
+    if (isSearching) return;
+    setSearching(true);
     event.preventDefault();
     const url = `/recuperar_contraseña/${idusuario}`;
     const contraseñaNueva = document.getElementById('recuperar-contraseña').value.trim();
@@ -114,16 +139,19 @@ async function recuperar_contraseña(idusuario, event) {
 
     if (!contraseaNuevaConfirmar || !contraseñaNueva) {
         alert('Todos los campos son obligatorios');
+        setSearching(false);
         return null;
     }
 
     if(contraseñaNueva !== contraseaNuevaConfirmar) {
         alert('La confirmación de la contraseña no es igual a la nueva contraseña');
+        setSearching(false);
         return null;
     }
 
     if (contraseñaNueva.length > 8 || contraseaNuevaConfirmar.length > 8) {
         alert('La contraseña puede tener máximo 8 caracteres');
+        setSearching(false);
         return null;
     }
 
@@ -147,22 +175,12 @@ async function recuperar_contraseña(idusuario, event) {
 
     } catch(e) {
         console.log(e)
+    } finally {
+        setSearching(false);
     }
 
     return false;
 }
-
-function isLoading() {
-    const loader = document.getElementById('loader');
-    if (isSearching) {
-        loader.style.display = 'flex';
-    } else if (!isSearching) {
-        setTimeout(() => {
-            loader.style.display = 'none';
-        }, 1500);
-    }
-}
-
 // Inicio
 
 async function stats() {
