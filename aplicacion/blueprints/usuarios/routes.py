@@ -1,3 +1,4 @@
+from os import getenv
 import uuid
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, Response, session
 from flask_login import login_user, logout_user, current_user, login_required
@@ -242,7 +243,7 @@ def send_mail(email, id):
             
             <div class="footer">
             <p>© {dt.datetime.now().year} CadiSoft - Todos los derechos reservados</p>
-            <img src="http://127.0.0.1:5000/images/Cadi_logo-removeBG.png" alt="Logo cadiSoft" width="150">
+            <img src="https://cadisoft-production.up.railway.app/images/Cadi_logo-removeBG.png" alt="Logo cadiSoft" width="150">
             </div>
         </body>
         </html>
