@@ -196,74 +196,65 @@ def generar_codigo_verificacion(usuario_id):
         raise
 
 
-from threading import Thread
-def send_mail_async(app, email, id):
-    with app.app_context():
-        try:
-            mail = current_app.config['mail']
-            codigo = generar_codigo_verificacion(id)
+def send_mail(email, id):
+    mail = current_app.config['mail']
+    codigo = generar_codigo_verificacion(id)
 
-            html_body = f"""
-                <html>
-                <head>
-                    <style>
-                    body {{ font-family: Arial, sans-serif; }}
-                    .header {{ 
-                        background-color: #833d3d;
-                        color: white;
-                        padding: 20px;
-                        text-align: center;
-                    }}
-                    .code {{
-                        font-size: 24px;
-                        font-weight: bold;
-                        color: #833d3d;
-                        margin: 20px 0;
-                        text-align: center;
-                    }}
-                    .footer {{
-                        margin-top: 20px;
-                        font-size: 12px;
-                        color: #777;
-                        text-align: center;
-                    }}
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                    <h1>Recuperación de cuenta cadiSoft</h1>
-                    </div>
-                    
-                    <p>Hola,</p>
-                    <p>Has solicitado un código de verificación para recuperar tu cuenta.</p>
-                    
-                    <div class="code">
-                    Tu código es: {codigo}
-                    </div>
-                    
-                    <p>Este código expirará en 15 minutos.</p>
-                    
-                    <div class="footer">
-                    <p>© {dt.datetime.now().year} CadiSoft - Todos los derechos reservados</p>
-                    <img src="http://127.0.0.1:5000/images/Cadi_logo-removeBG.png" alt="Logo cadiSoft" width="150">
-                    </div>
-                </body>
-                </html>
-                """
+    html_body = f"""
+        <html>
+        <head>
+            <style>
+            body {{ font-family: Arial, sans-serif; }}
+            .header {{ 
+                background-color: #833d3d;
+                color: white;
+                padding: 20px;
+                text-align: center;
+            }}
+            .code {{
+                font-size: 24px;
+                font-weight: bold;
+                color: #833d3d;
+                margin: 20px 0;
+                text-align: center;
+            }}
+            .footer {{
+                margin-top: 20px;
+                font-size: 12px;
+                color: #777;
+                text-align: center;
+            }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+            <h1>Recuperación de cuenta cadiSoft</h1>
+            </div>
             
-            msg = Message(
-            "Recuperación de cuenta cadiSoft",
-            recipients=[email],
-            html = html_body,
-            body=f"Tu codigo de verifiación es: {codigo}"
-            )
-            mail.send(msg)
-        except Exception as e:
-            print(f'Error al enviar correo: {e}')
-
-def send_mail(email, idusuarios):
-    thread = Thread(target=send_mail_async, args=(current_app._get_current_object(), email, idusuarios))
-    thread.start()
+            <p>Hola,</p>
+            <p>Has solicitado un código de verificación para recuperar tu cuenta.</p>
+            
+            <div class="code">
+            Tu código es: {codigo}
+            </div>
+            
+            <p>Este código expirará en 15 minutos.</p>
+            
+            <div class="footer">
+            <p>© {dt.datetime.now().year} CadiSoft - Todos los derechos reservados</p>
+            <img src="http://127.0.0.1:5000/images/Cadi_logo-removeBG.png" alt="Logo cadiSoft" width="150">
+            </div>
+        </body>
+        </html>
+        """
+    
+    msg = Message(
+    "Recuperación de cuenta cadiSoft",
+    recipients=[email],
+    html = html_body,
+    body=f"Tu codigo de verifiación es: {codigo}"
+    )
+    mail.send(msg)
 
 @usuario.route('/forgot_password', methods = ['GET', 'POST'])
 def forgot_password():
@@ -291,10 +282,12 @@ def forgot_password():
                         return jsonify({'message': 'Revise su bandeja de correo electrónico', 'idusuario': idusuarios}), 200
                     
                     except Exception as e:
+                        print(e)
                         return jsonify({'error': 'Error, servidor de correo no disponible'}), 400
                 else:
                     return jsonify({'error':'El correo electrónico no existe'}), 400
         except Exception as e:
+            print(e)
             return jsonify({'error': 'Error al buscar correo electrónico'}), 400
     return render_template('usuarios/forgot.html')
 
