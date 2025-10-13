@@ -2023,11 +2023,8 @@ async function buscar_horario_seccion(idSeccion) {
 async function colocar_logro_uno(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_uno/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro1-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -2057,19 +2054,14 @@ async function colocar_logro_uno(idSeccion, idAlumno, idInscripcion) {
         calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function colocar_logro_dos(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_dos/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro2-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -2099,19 +2091,14 @@ async function colocar_logro_dos(idSeccion, idAlumno, idInscripcion) {
         calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function colocar_logro_tres(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_tres/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro3-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -2141,19 +2128,14 @@ async function colocar_logro_tres(idSeccion, idAlumno, idInscripcion) {
         calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function colocar_logro_cuatro(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_cuatro/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro4-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -2183,19 +2165,14 @@ async function colocar_logro_cuatro(idSeccion, idAlumno, idInscripcion) {
         calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function colocar_logro_cinco(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_logro_cinco/${idSeccion}`;
     const inputNota = document.getElementById(`input-logro5-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una calificacion');
         return;
     }
@@ -2225,15 +2202,12 @@ async function colocar_logro_cinco(idSeccion, idAlumno, idInscripcion) {
         calcular_definitiva(idSeccion, idAlumno, idInscripcion);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function calcular_definitiva(idSeccion, idAlumno, idInscripcion) {
     const url = `/cursos/subir_definitiva/${idSeccion}`;
     //if (isSearching) return;
-    setSearching(true);
     const parsearNota = (id) => {
         const valor = document.getElementById(id).value.trim();
         return valor === "" ? 0 : parseFloat(valor);
@@ -2277,19 +2251,14 @@ async function calcular_definitiva(idSeccion, idAlumno, idInscripcion) {
         }
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function asistencia(id, idAlumno) {
     const url = `/cursos/asistencia/${id}`;
     const inputNota = document.getElementById(`asistencia-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una asistencia');
         return;
     }
@@ -2316,19 +2285,14 @@ async function asistencia(id, idAlumno) {
         //alert(data.message);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 
 async function inasistencia(id, idAlumno) {
     const url = `/cursos/inasistencia/${id}`;
     const inputNota = document.getElementById(`inasistencia-${idAlumno}`).value.trim();
-    if (isSearching) return;
-    setSearching(true);
 
     if (!inputNota) {
-        setSearching(false);
         alert('Debe ingresar una cantidad');
         return;
     }
@@ -2361,8 +2325,6 @@ async function inasistencia(id, idAlumno) {
         //alert(data.message);
     } catch(e) {
         console.log(e)
-    } finally {
-        setSearching(false);
     }
 }
 

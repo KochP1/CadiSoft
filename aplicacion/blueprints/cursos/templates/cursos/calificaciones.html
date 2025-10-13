@@ -31,6 +31,30 @@
         <hr class="divider">
     </div>
 
+    <div class="graficos__wrapper" 
+        data-calificaciones="{{ calificaciones | tojson | forceescape }}">
+        
+        <!-- Gráfica 1: Distribución de Calificaciones -->
+        <div class="grafico__container">
+            <div class="grafico-header">
+                <button class="btn-descargar" onclick="descargarGrafica('calificacionesChart', 'distribucion-calificaciones')">
+                    <i class="fa-solid fa-download"></i> Descargar
+                </button>
+            </div>
+            <canvas id="calificacionesChart"></canvas>
+        </div>
+        
+        <!-- Gráfica 2: Asistencias vs Inasistencias -->
+        <div class="grafico__container">
+            <div class="grafico-header">
+                <button class="btn-descargar" onclick="descargarGrafica('asistenciasChart', 'asistencias-inasistencias')">
+                    <i class="fa-solid fa-download"></i> Descargar
+                </button>
+            </div>
+            <canvas id="asistenciasChart"></canvas>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table class="table table-striped-columns table-alumnos" id="tablaAlumnos">
             <tr>
@@ -111,6 +135,7 @@
     </div>
 
     <script>
+        // Validación del formulario de fechas
         document.getElementById('formFechas').addEventListener('submit', function(e) {
             const desde = document.getElementById('fecha_desde').value;
             const hasta = document.getElementById('fecha_hasta').value;
@@ -127,11 +152,202 @@
                 return;
             }
         });
+
+        let chartCalificaciones = null;
+        let chartAsistencias = null;
+
+        // Función para descargar una gráfica individual
+        function descargarGrafica(canvasId, nombreArchivo) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) {
+                alert('No se pudo encontrar la gráfica');
+                return;
+            }
+
+            // Crear un enlace temporal para la descarga
+            const enlace = document.createElement('a');
+            
+            // Convertir canvas a imagen PNG
+            enlace.href = canvas.toDataURL('image/png');
+            enlace.download = `${nombreArchivo}-${new Date().toISOString().split('T')[0]}.png`;
+            
+            // Simular click en el enlace
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+        }
+
+        // Función para preparar datos de calificaciones
+        function prepararDatosCalificaciones() {
+            const graficosWrapper = document.querySelector('.graficos__wrapper');
+            const calificacionesJson = graficosWrapper.getAttribute('data-calificaciones');
+            const calificaciones = JSON.parse(calificacionesJson);
+            
+            const definitivas = calificaciones.map(record => {
+                return record.definitiva || 0;
+            });
+
+            const rangos = {
+                '0-9': 0,
+                '10-13': 0,
+                '14-17': 0,
+                '18-20': 0
+            };
+
+            definitivas.forEach(nota => {
+                if (nota >= 0 && nota <= 9) rangos['0-9']++;
+                else if (nota >= 10 && nota <= 13) rangos['10-13']++;
+                else if (nota >= 14 && nota <= 17) rangos['14-17']++;
+                else if (nota >= 18 && nota <= 20) rangos['18-20']++;
+            });
+
+            return {
+                labels: Object.keys(rangos),
+                datos: Object.values(rangos)
+            };
+        }
+
+        // Función para preparar datos de asistencias vs inasistencias
+        function prepararDatosAsistencias() {
+            const graficosWrapper = document.querySelector('.graficos__wrapper');
+            const calificacionesJson = graficosWrapper.getAttribute('data-calificaciones');
+            const calificaciones = JSON.parse(calificacionesJson);
+            
+            let totalAsistencias = 0;
+            let totalInasistencias = 0;
+
+            calificaciones.forEach(record => {
+                totalAsistencias += record.asistencia || 0;
+                totalInasistencias += record.inasistencia || 0;
+            });
+
+            return {
+                totalAsistencias: totalAsistencias,
+                totalInasistencias: totalInasistencias
+            };
+        }
+
+        // Crear ambas gráficas cuando el documento esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gráfica 1: Distribución de Calificaciones (Bar Chart)
+            const datosCalificaciones = prepararDatosCalificaciones();
+            const ctx1 = document.getElementById('calificacionesChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: datosCalificaciones.labels,
+                    datasets: [{
+                        label: 'Cantidad de Estudiantes',
+                        data: datosCalificaciones.datos,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',    // Rojo para 0-9
+                            'rgba(255, 205, 86, 0.7)',    // Amarillo para 10-13
+                            'rgba(75, 192, 192, 0.7)',    // Verde claro para 14-17
+                            'rgba(54, 162, 235, 0.7)'     // Azul para 18-20
+                        ],
+                        borderColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(255, 205, 86)',
+                            'rgb(75, 192, 192)',
+                            'rgb(54, 162, 235)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribución de Calificaciones Finales',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cantidad de Estudiantes'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Rangos de Calificación'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfica 2: Asistencias vs Inasistencias (Doughnut Chart)
+            const datosAsistencias = prepararDatosAsistencias();
+            const ctx2 = document.getElementById('asistenciasChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Asistencias', 'Inasistencias'],
+                    datasets: [{
+                        data: [datosAsistencias.totalAsistencias, datosAsistencias.totalInasistencias],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',  // Verde azulado para asistencias
+                            'rgba(255, 99, 132, 0.8)'   // Rojo para inasistencias
+                        ],
+                        borderColor: [
+                            'rgb(75, 192, 192)',
+                            'rgb(255, 99, 132)'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Asistencias vs Inasistencias',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = datosAsistencias.totalAsistencias + datosAsistencias.totalInasistencias;
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) + '%' : '0%';
+                                    return `${label}: ${value} (${percentage})`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%' // Hace el gráfico tipo anillo
+                }
+            });
+        });
     </script>
 
     <script src="../../../../js/excel.js"></script>
     <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/file-saverjs@latest/FileSaver.min.js"></script>
     <script src="https://unpkg.com/tableexport@latest/dist/js/tableexport.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {% endblock %}
