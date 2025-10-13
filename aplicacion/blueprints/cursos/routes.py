@@ -628,6 +628,122 @@ def calificaciones(idSeccion):
             cursor.close()
             print(e)
             return redirect(url_for('cursos.seccion_curso', idcurso = curso[0]))
+
+@cursos.route('/filtrar_periodos/<idSeccion>', methods=['POST'])
+@login_required
+def filtrar_periodos(idSeccion):
+    db = current_app.config['db']
+    db.ping(reconnect=True)
+
+    if request.method == 'POST':
+        try:
+            # Obtener las fechas del formulario
+            fecha_desde = request.form.get('fecha_desde')
+            fecha_hasta = request.form.get('fecha_hasta')
+            
+            # Validar que se recibieron ambas fechas
+            if not fecha_desde or not fecha_hasta:
+                flash('Por favor, selecciona ambas fechas')
+                return redirect(url_for('cursos.calificaciones', idSeccion=idSeccion))
+            
+            # Validar que fecha_desde no sea mayor que fecha_hasta
+            if fecha_desde > fecha_hasta:
+                flash('La fecha "Desde" no puede ser mayor que la fecha "Hasta"')
+                return redirect(url_for('cursos.calificaciones', idSeccion=idSeccion))
+
+            with db.cursor() as cur:
+                # Obtener información básica de la sección (igual al endpoint original)
+                cur.execute('''
+                    SELECT s.idSeccion, c.nombre_curso, s.seccion 
+                    FROM secciones s 
+                    JOIN cursos c ON s.idCurso = c.idCurso 
+                    WHERE s.idSeccion = %s
+                ''', (idSeccion,))
+                registro = cur.fetchall()
+
+                insertRegistro = []
+                columNames = [column[0] for column in cur.description]
+                for record in registro:
+                    insertRegistro.append(dict(zip(columNames, record)))
+                
+                # Obtener períodos dentro del rango de fechas seleccionado
+                cur.execute('''
+                    SELECT DISTINCT i.fecha_inscripcion, i.fecha_expiracion, i.idInscripcion
+                    FROM insc_x_seccion 
+                    JOIN inscripcion i ON insc_x_seccion.idInscripcion = i.idInscripcion 
+                    WHERE insc_x_seccion.idSeccion = %s 
+                    AND i.fecha_inscripcion = %s AND i.fecha_expiracion = %s
+                    ORDER BY i.fecha_inscripcion DESC
+                ''', (idSeccion, fecha_desde, fecha_hasta))
+                registro_periodos = cur.fetchall()
+
+                periodoArray = []
+                columPeriodo = [column[0] for column in cur.description]
+                for record in registro_periodos:
+                    periodoArray.append(dict(zip(columPeriodo, record)))
+                
+                # Si no hay períodos en el rango seleccionado
+                if not periodoArray:
+                    flash('No se encontraron períodos en el rango de fechas seleccionado')
+                    return redirect(url_for('cursos.calificaciones', idSeccion=idSeccion))
+                
+                # Obtener calificaciones para TODOS los períodos en el rango
+                # Primero obtenemos todos los idInscripcion del rango
+                id_inscripciones = [str(periodo['idInscripcion']) for periodo in periodoArray]
+                placeholders = ', '.join(['%s'] * len(id_inscripciones))
+                
+                cur.execute(f'''
+                    SELECT 
+                        c.idCalificacion, 
+                        c.idusuarios, 
+                        u.nombre, 
+                        u.segundoNombre, 
+                        u.apellido, 
+                        u.segundoApellido, 
+                        u.cedula, 
+                        i.fecha_inscripcion, 
+                        i.fecha_expiracion, 
+                        i.es_activa, 
+                        i.asistencia, 
+                        i.inasistencia, 
+                        i.idInscripcion,
+                        c.logro_1, 
+                        c.logro_2, 
+                        c.logro_3, 
+                        c.logro_4, 
+                        c.logro_5, 
+                        c.definitiva 
+                    FROM calificaciones c 
+                    JOIN inscripcion i ON c.idInscripcion = i.idInscripcion 
+                    JOIN usuarios u ON c.idusuarios = u.idusuarios 
+                    WHERE c.idSeccion = %s 
+                    AND i.fecha_inscripcion = %s AND i.fecha_expiracion = %s
+                    ORDER BY i.fecha_inscripcion DESC, u.nombre, u.apellido
+                ''', (idSeccion, fecha_desde, fecha_hasta))
+                
+                registro_calificaciones = cur.fetchall()
+
+                insertCalificaciones = []
+                columNamesCalificaciones = [column[0] for column in cur.description]
+                for record in registro_calificaciones:
+                    insertCalificaciones.append(dict(zip(columNamesCalificaciones, record)))
+
+                # Formatear fechas para mostrar en el template
+                for record in insertCalificaciones:
+                    record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                    record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+                
+                # Pasar también las fechas seleccionadas al template para mostrarlas
+                return render_template('cursos/calificaciones.html', 
+                                    data=insertRegistro, 
+                                    calificaciones=insertCalificaciones,
+                                    periodoArray=periodoArray,
+                                    fecha_desde_seleccionada=fecha_desde,
+                                    fecha_hasta_seleccionada=fecha_hasta)
+                
+        except Exception as e:
+            print(f"Error en filtrar_periodos: {e}")
+            return redirect(url_for('cursos.calificaciones', idSeccion=idSeccion))
         
 
 

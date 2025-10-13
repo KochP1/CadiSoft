@@ -6,12 +6,25 @@
         <h1>Calificaciones {{data[0].nombre_curso.lower()}}, sección {{data[0].seccion}}</h1>
         <h2>Periodo {{calificaciones[0].fecha_inscripcion}} - {{calificaciones[0].fecha_expiracion}}</h2>
 
-        <div class="alumnos-options__container">
-            <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
-            <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
-            <button class="btn btn-primary btn-crear" id="toggle-calificacion" onclick="toggleInputNotas()">Activar modificación</button>
-            <form action="" method="post" class="filtrar-alumno__form">
-                <input type="search" placeholder="Buscar periodo" class="filtrar-alumno__input" name="periodo">
+        <div class="alumnos-options__container calificaciones-opt__container" style="align-items: center;">
+            <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()" style="height: 40px;">Generar reporte</button>
+            <button class="btn btn-primary btn-excel" onclick="migrarExcel()" style="height: 40px;">Migrar a excel</button>
+            <button class="btn btn-primary btn-crear" id="toggle-calificacion" onclick="toggleInputNotas()" style="height: 40px;">Activar modificación</button>
+            <form id="formFechas" action="{{url_for('cursos.filtrar_periodos', idSeccion=data[0].idSeccion)}}" method="post" class="filtrar-alumno__form" style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                <div class="fecha-group mb-3">
+                    <label for="fecha_desde">Desde:</label>
+                    <input type="date" id="fecha_desde" name="fecha_desde" class="form-control" required value="{{ fecha_desde_seleccionada if fecha_desde_seleccionada else '' }}">
+                </div>
+                
+                <div class="fecha-group mb-3">
+                    <label for="fecha_hasta">Hasta:</label>
+                    <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control" required value="{{ fecha_hasta_seleccionada if fecha_hasta_seleccionada else '' }}">
+                </div>
+
+                <div class="fecha-group mb-3" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <label for="btn-fecha">Filtrar por fechas:</label>
+                    <button type="submit" class="btn btn-primary" style="width: 169px; height: 38px;">Filtrar</button>
+                </div>
             </form>
         </div>
 
@@ -96,6 +109,25 @@
 
         </table>
     </div>
+
+    <script>
+        document.getElementById('formFechas').addEventListener('submit', function(e) {
+            const desde = document.getElementById('fecha_desde').value;
+            const hasta = document.getElementById('fecha_hasta').value;
+            
+            if (!desde || !hasta) {
+                e.preventDefault();
+                alert('Por favor, selecciona ambas fechas');
+                return;
+            }
+            
+            if (desde > hasta) {
+                e.preventDefault();
+                alert('La fecha "Desde" no puede ser mayor que "Hasta"');
+                return;
+            }
+        });
+    </script>
 
     <script src="../../../../js/excel.js"></script>
     <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>

@@ -1264,6 +1264,12 @@ async function inscribir_alumno(event) {
         return;
     }
 
+    if (periodoInicio > periodoFinal) {
+        setSearching(false);
+        alert('La fecha "Inicio" no puede ser mayor que la de "Finalización"');
+        return;
+    }
+
     if (!idSeccion) {
         setSearching(false);
         alert('Debes ingresar la sección deseada');
