@@ -69,16 +69,16 @@
               <form id="crear-profesor-form" onsubmit="crearProfesor(event)">
 
                 <label>Nombre</label>
-                <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor">
+                <input type="text" class="form-control mb-3" name="nombre" id="nombreProfesor" onkeypress="return validarTecla(event)">
 
                 <label>Segundo nombre</label>
-                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor">
+                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreProfesor" onkeypress="return validarTecla(event)">
 
                 <label>Apellido</label>
-                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor">
+                <input type="text" class="form-control mb-3" name="apellido" id="apellidoProfesor" onkeypress="return validarTecla(event)">
 
                 <label>Segundo apellido</label>
-                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor">
+                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoProfesor" onkeypress="return validarTecla(event)">
 
                 <label>Cedula</label>
                 <input type="number" class="form-control mb-3" name="cedula" id="cedulaProfesor">
@@ -96,7 +96,7 @@
                 <input type="file" class="form-control mb-3" name="imagen" id="imagenProfesor">
 
                 <label class="label-tipo">Especialidad</label>
-                <input type="text" class="form-control mb-3" name="especialidad" id="especialidadProfesor">
+                <input type="text" class="form-control mb-3" name="especialidad" id="especialidadProfesor" onkeypress="return validarTecla(event)">
 
                 <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
               </form>

@@ -59,7 +59,7 @@
               <form id="crear-profesor-form" onsubmit="crearProducto(event)">
 
                 <label>Nombre</label>
-                <input type="text" class="form-control mb-3" id="nombreProducto">
+                <input type="text" class="form-control mb-3" id="nombreProducto" onkeypress="return validarTecla(event)">
 
                 <label>Precio</label>
                 <input type="number" class="form-control mb-3" id="precioProducto">

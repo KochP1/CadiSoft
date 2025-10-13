@@ -185,16 +185,16 @@
               <form id="crear-alumno-form" onsubmit="crearAlumno(event)">
 
                 <label>Nombre</label>
-                <input type="text" class="form-control mb-3" name="nombre" id="nombreAlumno">
+                <input type="text" class="form-control mb-3" name="nombre" id="nombreAlumno" onkeypress="return validarTecla(event)">
 
                 <label>Segundo nombre</label>
-                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreAlumno">
+                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreAlumno" onkeypress="return validarTecla(event)">
 
                 <label>Apellido</label>
-                <input type="text" class="form-control mb-3" name="apellido" id="apellidoAlumno">
+                <input type="text" class="form-control mb-3" name="apellido" id="apellidoAlumno" onkeypress="return validarTecla(event)">
 
                 <label>Segundo apellido</label>
-                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoAlumno">
+                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoAlumno" onkeypress="return validarTecla(event)">
 
                 <label>Cedula</label>
                 <input type="number" class="form-control mb-3" name="cedula" id="cedulaAlumno">

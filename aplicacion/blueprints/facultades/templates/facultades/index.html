@@ -47,7 +47,7 @@
                   <form id="crear-facultad-form">
     
                     <label>Nombre de la facultad</label>
-                    <input type="text" class="form-control mb-3" name="facultad" id="nombreFacultad">
+                    <input type="text" class="form-control mb-3" name="facultad" id="nombreFacultad" onkeypress="return validarTecla(event)">
                     <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="crearFacultad(event)">Guardar</button>
                   </form>
                 </div>
@@ -66,7 +66,7 @@
                   <form id="edit-facultad-form">
     
                     <label>Nombre de la facultad</label>
-                    <input type="text" class="form-control mb-3" name="facultad" id="edit-nombreFacultad">
+                    <input type="text" class="form-control mb-3" name="facultad" id="edit-nombreFacultad" onkeypress="return validarTecla(event)">
                     <button type="submit" class="btn btn-primary w-100 btn-crear-profesor" onclick="editar_facultad(this.getAttribute('idfacultad'), event)" id="btn-edit-facultad">Guardar</button>
                   </form>
                 </div>

@@ -32,16 +32,16 @@
             <div class="edit-h2__container"><h2>Nombres</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="nombre" value="{{current_user.nombre}}" id="editNombre" maxlength="12">
-                <input type="text" name="segundoNombre" value="{{current_user.segundoNombre}}" id="editSegundoNombre" maxlength="12">
+                <input type="text" name="nombre" value="{{current_user.nombre}}" id="editNombre" maxlength="12" onkeypress="return validarTecla(event)">
+                <input type="text" name="segundoNombre" value="{{current_user.segundoNombre}}" id="editSegundoNombre" maxlength="12" onkeypress="return validarTecla(event)">
                 <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="edit_nombres(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 
             <div class="edit-h2__container"><h2>Apellidos</h2></div>
             <hr class="divider">
             <div class="edit__container">
-                <input type="text" name="apellido" value="{{current_user.apellido}}" maxlength="20" id="editApellido">
-                <input type="text" name="segundoApellido" value="{{current_user.segundoApellido}}" maxlength="20" id="editSegundoApellido">
+                <input type="text" name="apellido" value="{{current_user.apellido}}" maxlength="20" id="editApellido" onkeypress="return validarTecla(event)">
+                <input type="text" name="segundoApellido" value="{{current_user.segundoApellido}}" maxlength="20" id="editSegundoApellido" onkeypress="return validarTecla(event)">
                 <button type="submit" class="btn btn-primary" idusuarios="{{current_user.idusuarios}}" onclick="edit_apellidos(this.getAttribute('idusuarios'))">Actualizar</button>
             </div>
 

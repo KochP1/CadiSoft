@@ -36,6 +36,119 @@ async function log_out() {
     }
 }
 
+// Registrar usuario
+
+async function regist_user(event) {
+    if (isSearching) return;
+    setSearching(true);
+    event.preventDefault()
+    const url = '/regist_user';
+    const formData = new FormData();
+
+    // Campos
+    const nombre = document.getElementById('name').value;
+    const segundoNombre = document.getElementById('surname').value;
+    const apellido = document.getElementById('lastname').value;
+    const segundoApellido = document.getElementById('second_lastname').value;
+    const cedula = document.getElementById('cedula').value;
+    const email = document.getElementById('email').value;
+    const contraseña = document.getElementById('contraseña').value;
+
+    if (!nombre) {
+        alert('El campo nombre esta vacio')
+        setSearching(false);
+        return;
+    }
+
+    if (!apellido) {
+        alert('El campo apellido esta vacio')
+        setSearching(false);
+        return;
+    }
+
+    if (!segundoApellido) {
+        alert('El campo segundo apellido esta vacio')
+        setSearching(false);
+        return;
+    }
+
+    if (!cedula) {
+        alert('El campo cedula esta vacio')
+        setSearching(false);
+        return;
+    }
+
+    if (!email) {
+        alert('El campo email esta vacio')
+        setSearching(false);
+        return;
+    }
+
+    if (!contraseña) {
+        alert('El campo contraseña esta vacio')
+        setSearching(false);
+        return;
+    }
+
+    if (cedula.length > 8) {
+        setSearching(false);
+        alert('La cédula puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (contraseña.length > 8) {
+        setSearching(false);
+        alert('La contraseña puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (nombre.length > 12 || segundoNombre.length > 12) {
+        setSearching(false);
+        alert('Los nobres pueden tener máximo 12 caracteres');
+        return;
+    }
+
+    if (apellido.length > 20 || segundoApellido.length > 20) {
+        setSearching(false);
+        alert('Los apellidos pueden tener máximo 20 caracteres');
+        return;
+    }
+
+    if (email.length > 50) {
+        setSearching(false);
+        alert('El email puede tener un máximo de 50 caracteres');
+        return;
+    }
+
+    try {
+        formData.append('nombre', nombre);
+        formData.append('segundoNombre', segundoNombre);
+        formData.append('apellido', apellido);
+        formData.append('segundoApellido', segundoApellido);
+        formData.append('cedula', cedula);
+        formData.append('email', email);
+        formData.append('contraseña', contraseña);
+
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            alert(data.error);
+            throw new Error(data.error);
+        }
+
+        alert('El usuario fue creado satisfactoriamente');
+        window.location.href = '/';
+    } catch(e) {
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+}
+
 // Olvidar contraseña
 async function olvidar_contraseña(event) {
     if (isSearching) return;
@@ -3110,4 +3223,12 @@ function toggleInputNotas() {
     })
 
     flagNotas = estado;
+}
+
+function validarTecla(event) {
+    const charCode = event.which ? event.which : event.keyCode;
+    const charStr = String.fromCharCode(charCode);
+    
+    // Permitir solo letras y espacios
+    return /[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(charStr);
 }

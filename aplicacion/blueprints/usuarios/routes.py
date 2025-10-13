@@ -113,48 +113,29 @@ def inicio_stats():
 
 @usuario.route('/regist_user', methods = ['GET', 'POST'])
 def regist_user():
+    db = current_app.config['db']
     if request.method == 'GET':
         return render_template('usuarios/regist.html')
     
     if request.method == 'POST':
-
         try:
-            db = current_app.config['db']
-            cur = db.cursor()
-
-            campos = {
-                'nombre': (request.form['nombre'], 12),
-                'segundoNombre': (request.form['segundoNombre'], 12),
-                'apellido': (request.form['apellido'], 20),
-                'segundoApellido': (request.form['segundoApellido'], 20),
-                'cedula': (request.form['cedula'], 11),
-                'email': (request.form['email'], 50),
-                'contraseña': (request.form['contraseña'], 8)
-            }
-            for campo, (valor, max_len) in campos.items():
-                if len(valor) > max_len:
-                    return render_template('usuarios/regist.html', message_error=f'El campo {campo.replace("Nombre", "nombre")} es muy largo (máx {max_len} caracteres)')
-                elif len(valor) == 0:
-                    return render_template('usuarios/regist.html', message_error=f'El campo {campo.replace("Nombre", "nombre")} esta vacio')
-            
-            nombre = request.form['nombre']
-            segundoNombre = request.form['segundoNombre']
-            apellido = request.form['apellido']
-            segundoApellido = request.form['segundoApellido']
-            cedula = request.form['cedula']
-            email = request.form['email']
-            contraseña = request.form['contraseña']
-            rol = 'administrador'
+            nombre = request.form.get('nombre')
+            segundoNombre = request.form.get('segundoNombre')
+            apellido = request.form.get('apellido')
+            segundoApellido = request.form.get('segundoApellido')
+            cedula = request.form.get('cedula')
+            email = request.form.get('email')
+            contraseña = request.form.get('contraseña')
             contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
 
-            sql = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
-            data = (nombre, segundoNombre, apellido, segundoApellido, cedula, email, contraseña_hash, rol)
-            cur.execute(sql, data)
-            db.commit()
-            flash('Usuario creado satisfactoriamente')
-            return redirect(url_for('usuario.index'))
+            with db.cursor() as cur:
+                cur.execute('INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`) VALUES (%s, %s, %s, %s, %s, %s, %s)', (nombre, segundoNombre, apellido, segundoApellido, cedula, email, contraseña_hash))
+                db.commit()
+                return jsonify({'message': 'Usuario creado satisfactoriamente'}), 200
         except Exception as e:
-            return redirect(url_for('usuario.regist_user'))
+            print(e)
+            db.rollback()
+            return jsonify({'error': f'Error al registrar usuario: {e}'}), 500
         finally:
             cur.close()
 

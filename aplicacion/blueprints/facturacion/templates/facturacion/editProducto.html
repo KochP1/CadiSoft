@@ -20,7 +20,7 @@
             <hr class="divider">
             <form idProducto="{{record.idProducto}}" onsubmit="editar_producto(event, this.getAttribute('idProducto'), this.getAttribute('idInput'))" idInput="editNombreProducto">
                 <div class="edit__container">
-                    <input type="text" value="{{record.nombre}}" id="editNombreProducto">
+                    <input type="text" value="{{record.nombre}}" id="editNombreProducto" onkeypress="return validarTecla(event)">
                     <button type="submit" class="btn btn-primary" idProducto="{{record.idProducto}}">Actualizar</button>
                 </div>
             </form>

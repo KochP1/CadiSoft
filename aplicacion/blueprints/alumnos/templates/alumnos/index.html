@@ -74,16 +74,16 @@
                         <form id="crear-registro-familiar-form" onsubmit="crear_registro_familiar(this.getAttribute('idalumno'), event)">
 
                             <label>Nombre papá</label>
-                            <input type="text" class="form-control mb-3" name="nombrepapa" id="nombrePapa" maxlength="12">
+                            <input type="text" class="form-control mb-3" name="nombrepapa" id="nombrePapa" maxlength="12" onkeypress="return validarTecla(event)">
 
                             <label>Apellido papá</label>
-                            <input type="text" class="form-control mb-3" name="apellidoPapa" id="apellidoPapa" maxlength="12">
+                            <input type="text" class="form-control mb-3" name="apellidoPapa" id="apellidoPapa" maxlength="12" onkeypress="return validarTecla(event)">
 
                             <label>Nombre mamá</label>
-                            <input type="text" class="form-control mb-3" name="nombreMama" id="nombreMama" maxlength="20">
+                            <input type="text" class="form-control mb-3" name="nombreMama" id="nombreMama" maxlength="20" onkeypress="return validarTecla(event)">
 
                             <label>Apellido mamá</label>
-                            <input type="text" class="form-control mb-3" name="apellidoMama" id="apellidoMama" maxlength="20">
+                            <input type="text" class="form-control mb-3" name="apellidoMama" id="apellidoMama" maxlength="20" onkeypress="return validarTecla(event)">
 
                             <label>Contacto</label>
                             <input type="number" class="form-control mb-3" name="contacto" id="contactoFamilia">

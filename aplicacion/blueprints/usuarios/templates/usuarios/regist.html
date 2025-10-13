@@ -8,33 +8,25 @@
             </div>
 
             <div class="login-form__container regist-form__container">
-                {% if message_error %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>{{message_error}}</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        </button>
-                    </div>
-                {% endif %}
-
-                <form action="{{url_for('usuario.regist_user')}}" method="post" class="user-form regist-form">
+                <form class="user-form regist-form" id="form-regist" onsubmit="regist_user(event)">
                     <div class="input__container">
                         <label for="name">Nombre</label>
-                        <input type="text" id="name" name="nombre">
+                        <input type="text" id="name" name="nombre" onkeypress="return validarTecla(event)">
                     </div>
 
                     <div class="input__container">
                         <label for="surname">Segundo nombre</label>
-                        <input type="text" id="surname" name="segundoNombre">
+                        <input type="text" id="surname" name="segundoNombre" onkeypress="return validarTecla(event)">
                     </div>
 
                     <div class="input__container">
                         <label for="lastname">Apellido</label>
-                        <input type="text" id="lastname" name="apellido">
+                        <input type="text" id="lastname" name="apellido" onkeypress="return validarTecla(event)">
                     </div>
 
                     <div class="input__container">
                         <label for="second_lastname">Segundo apellido</label>
-                        <input type="text" id="second_lastname" name="segundoApellido">
+                        <input type="text" id="second_lastname" name="segundoApellido" onkeypress="return validarTecla(event)">
                     </div>
 
                     <div class="input__container">
@@ -46,15 +38,13 @@
                         <label for="email">Corre electrónico</label>
                         <input type="email" placeholder="example@gmail.com" id="email" name="email">
                     </div>
-
                     <div class="input__container">
                         <label for="contraseña">Contraseña</label>
-                        <div class="password-input-login__container">
-                            <input type="password" id="contraseña" name="contraseña">
+                        <div class="password-input-login__container" style="width: 100%;">
+                            <input type="password" id="contraseña" name="contraseña" style="width: 100% !important;">
                             <i class="fa-solid fa-eye-slash" id="contraseña-icon" id-input="contraseña" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
                         </div>
                     </div>
-
                     <div class="button__container">
                         <button type="submit" class="btn btn-primary">Registrame</button>
                         <a href="{{url_for('usuario.index')}}" class="login-link">¿Ya tienes una cuenta?</a>
