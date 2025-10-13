@@ -544,12 +544,19 @@ def elim_seccion(idSeccion):
 
     try:
         with db.cursor() as cur:
+            cur.execute('SET SQL_SAFE_UPDATES = 0;')
+            cur.execute("""
+                        DELETE h 
+                        FROM horario h 
+                        JOIN horario_x_curso hc ON hc.idhorario = h.idhorario 
+                        WHERE hc.idSeccion = %s;""", (idSeccion,))
+            cur.execute('SET SQL_SAFE_UPDATES = 1;')
             sql = 'DELETE FROM secciones WHERE idSeccion = %s'
             cur.execute(sql, (idSeccion,))
-            cur.execute('DELETE h FROM horario h JOIN horario_x_curso hc ON hc.idhorario = h.idhorario WHERE hc.idSeccion = %s', (idSeccion,))
             db.commit()
             return jsonify({'message': 'Sección eliminada satisfactoriamente'})
     except Exception as e:
+        print(e)
         db.rollback()
         return jsonify({'error': 'Error al eliminar seccion'}), 500
 
