@@ -333,6 +333,7 @@ def edit_horario_seccion(idSeccion):
     try:
         data = request.get_json()
         horarios = data.get('horarios', [])
+        profesor = data.get('idProfesor')
         
         # VALIDACIÓN DE DATOS
         if not horarios:
@@ -350,14 +351,50 @@ def edit_horario_seccion(idSeccion):
                 horario.get('curso')):
                 
                 horarios_validos.append(horario)
-        
+                print(horarios_validos)
+
+        with db.cursor(pymysql.cursors.DictCursor) as cur:
+            regist = 0
+            for horario in horarios_validos:
+                cur.execute('''
+                SELECT s.idSeccion, s.seccion, h.horario_dia, h.horario_hora, h.horario_hora_final
+                FROM horario_x_curso hc 
+                JOIN horario h ON hc.idhorario = h.idhorario 
+                JOIN secciones s ON hc.idSeccion = s.idSeccion 
+                WHERE s.idProfesor = %s 
+                AND hc.idSeccion != %s
+                AND h.horario_dia = %s 
+                AND (
+                    (h.horario_hora <= %s AND h.horario_hora_final > %s) OR
+                    (h.horario_hora < %s AND h.horario_hora_final >= %s) OR
+                    (h.horario_hora >= %s AND h.horario_hora_final <= %s)
+                )''', (profesor, idSeccion,
+                    horario['dia'], 
+                    horario['horaInicio'], horario['horaInicio'],
+                    horario['horaFin'], horario['horaFin'],
+                    horario['horaInicio'], horario['horaFin']
+                    )
+                )
+                print(profesor)
+                regist = cur.fetchone()
+                print(regist)
+                print(horario['horario'])
+                print(horario['dia'])
+                print(horario['horaInicio'])
+                print(horario['horaFin'])
+                if regist:
+                    return jsonify({
+                        'error': 'El profesor ya tiene una sección en el mismo horario',
+                        'detalles': {
+                            'seccion_existente': regist['seccion'],
+                            'dia': regist['horario_dia'],
+                            'hora_inicio': str(regist['horario_hora']),
+                            'hora_fin': str(regist['horario_hora_final'])
+                        }
+                    }), 400
         with db.cursor() as cur:
-            # 1. Eliminar horarios existentes de esta sección
             cur.execute('DELETE h FROM horario h JOIN horario_x_curso hc ON hc.idhorario = h.idhorario WHERE hc.idSeccion = %s', (idSeccion,))
             db.commit()
-
-            
-            # 2. Insertar nuevos horarios
             for horario in horarios_validos:
                 try:
                     cur.execute('''

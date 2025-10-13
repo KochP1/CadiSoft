@@ -1747,13 +1747,13 @@ async function crear_Seccion(idCurso, event) {
         }
 
         alert(data.message);
+        while(horariosSeleccionados.length) {
+            horariosSeleccionados.pop();
+        }
         window.location.href = `/cursos/seccion_curso/${idCurso}`;
     } catch(e) {
         console.log(e)
     } finally {
-        while(horariosSeleccionados.length) {
-            horariosSeleccionados.pop();
-        }
         setSearching(false);
     }
     
@@ -1811,10 +1811,10 @@ async function edit_seccion(event, id, idSeccion) {
 
 async function edit_horario(idSeccion) {
     const url = `/cursos/edit_horario_seccion/${idSeccion}`;
+    const profesor = document.getElementById('profesorEditSeccion').value;
     if (isSearching) return;
     setSearching(true);
 
-    // 🔥 LIMPIAR Y VALIDAR el array ANTES de enviar
     const horariosLimpios = horariosSeleccionados.filter(item => 
         item && 
         item.celdaId && 
@@ -1824,9 +1824,8 @@ async function edit_horario(idSeccion) {
         item.curso
     );
     
-    console.log('📤 Enviando horarios limpios:', horariosLimpios);
+    console.log('Enviando horarios limpios:', horariosLimpios);
     
-    // Verificar que no hay undefined
     if (horariosLimpios.some(item => !item.celdaId)) {
         alert('Error: Hay horarios corruptos. Por favor recarga la página.');
         setSearching(false);
@@ -1834,7 +1833,8 @@ async function edit_horario(idSeccion) {
     }
 
     const requestData = {
-        horarios: horariosLimpios
+        horarios: horariosLimpios,
+        idProfesor: profesor
     };
     
     try {
@@ -1854,13 +1854,11 @@ async function edit_horario(idSeccion) {
         }
 
         alert(data.mensaje);
+        horariosSeleccionados.length = 0;
         window.location.reload();
     } catch(e) {
         console.error('Error en edit_horario:', e);
-        alert('Error al conectar con el servidor');
     } finally {
-        // Limpiar array correctamente
-        horariosSeleccionados.length = 0;
         setSearching(false);
     }
 }
@@ -2859,6 +2857,7 @@ function seleccionar_seccion(data) {
 function mostrar_horario(data) {
     document.getElementById('horario__container').style.display = 'block';
     limpiar_horario();
+    limpiar_horario_read_only();
     
     if (!data || !data.length) return;
 
@@ -2943,6 +2942,21 @@ function limpiar_horario() {
     horariosSeleccionados.push(...horariosLimpios);
     
     console.log('Array limpiado:', horariosSeleccionados);
+}
+
+function limpiar_horario_read_only() {
+    const tabla = document.getElementById('tabla-horario');
+    
+    // Reiniciar todas las celdas del horario
+    for (let i = 1; i < tabla.rows.length; i++) {
+        const fila = tabla.rows[i];
+        for (let j = 1; j < fila.cells.length; j++) {
+            const celda = fila.cells[j];
+            celda.textContent = '';
+            celda.style.backgroundColor = 'transparent';
+            celda.classList.remove('horario-curso');
+        }
+    }
 }
 
 
