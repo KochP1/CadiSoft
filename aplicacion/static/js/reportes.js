@@ -60,7 +60,7 @@ const dataProfesor = async (id) => {
     }
 }
 
-async function mostrarCargaTrabajo(profesorId, nombreProfesor) {
+async function mostrarCargaTrabajo(profesorId, nombreProfesor, profesorApellido) {
     profesorActual = profesorId;
     
     const datosReales = await dataProfesor(profesorId);
@@ -68,13 +68,14 @@ async function mostrarCargaTrabajo(profesorId, nombreProfesor) {
     if (datosReales && datosReales.secciones && datosReales.secciones.length > 0) {
         datosCarga = {
             nombre: nombreProfesor,
+            apellido: profesorApellido,
             secciones: datosReales.secciones,
             metricas: datosReales.metricas
         };
     }
     
     // Actualizar título del modal
-    document.getElementById('modalTitulo').textContent = `Carga de trabajo - ${datosCarga.nombre}`;
+    document.getElementById('modalTitulo').textContent = `Carga de trabajo - ${datosCarga.nombre} ${datosCarga.apellido}`;
     
     // Actualizar métricas
     actualizarMetricas();
@@ -105,7 +106,6 @@ function actualizarMetricas() {
 
     document.getElementById('total-secciones').textContent = totalSecciones;
     document.getElementById('total-horas').textContent = totalHoras;
-    document.getElementById('promedio-horas').textContent = promedioHoras;
 }
 
 // Función para crear el gráfico de carga de trabajo

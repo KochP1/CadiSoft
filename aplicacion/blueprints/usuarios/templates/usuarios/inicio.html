@@ -58,6 +58,11 @@
     {% if current_user.rol == 'administrador' %}
     <div class="graficos__wrapper">
         <div class="grafico__container">
+            <div class="grafico-header">
+                <button class="btn-descargar" onclick="descargarGrafica('inscripcionesChart', 'distribucion-inscripciones')" style="background-color: #833d3d;">
+                    <i class="fa-solid fa-download"></i>      
+                </button>
+            </div>
             <canvas id="inscripcionesChart"></canvas>
         </div>
     </div>

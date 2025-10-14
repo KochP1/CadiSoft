@@ -1653,7 +1653,7 @@ header h1 {
     flex: 1;
     min-width: 300px;
     max-width: 500px;
-    height: 450px; /* Aumenté la altura por los botones */
+    height: 450px;
     position: relative;
 }
 
@@ -1666,6 +1666,9 @@ header h1 {
     cursor: pointer;
     font-size: 12px;
     transition: background 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-descargar:hover {
@@ -1692,7 +1695,7 @@ header h1 {
     background: #0056b3;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1131px) {
     .graficos__wrapper {
         flex-direction: column;
         align-items: center;
@@ -1706,6 +1709,11 @@ header h1 {
         flex-direction: column;
         gap: 10px;
         text-align: center;
+    }
+
+    .btn-descargar {
+        width: 20px;
+        font-size: 0.7rem;
     }
 }
 

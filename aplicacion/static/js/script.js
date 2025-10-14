@@ -396,6 +396,7 @@ function crearGrafico(datos) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -417,13 +418,19 @@ function crearGrafico(datos) {
                     },
                     ticks: {
                         stepSize: 5
-                    }
+                    },
+                    font: {
+                            size: 12 // ← Números del eje Y más grandes
+                        }
                 },
                 x: {
                     title: {
                         display: true,
                         text: 'Meses del Año'
-                    }
+                    },
+                    font: {
+                            size: 14 // ← Eje X más grande
+                        }
                 }
             }
         }
