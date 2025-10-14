@@ -3,8 +3,9 @@
 
 {% block content %} 
     <div class="alumnos-options__wrapper">
-        <h1>Calificaciones {{data[0].nombre_curso.lower()}}, sección {{data[0].seccion}}</h1>
-        <h2>Periodo {{calificaciones[0].fecha_inscripcion}} - {{calificaciones[0].fecha_expiracion}}</h2>
+        <h1>Calificaciones {{data[0].nombre_curso}}, sección {{data[0].seccion}}</h1>
+        <h2 id="periodo-seccion">Periodo {{calificaciones[0].fecha_inscripcion}} - {{calificaciones[0].fecha_expiracion}}</h2>
+        <h3 id="curso-nombre" style="display: none;">{{data[0].nombre_curso}}, sección {{data[0].seccion}}</h3>
 
         <div class="alumnos-options__container calificaciones-opt__container" style="align-items: center;">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()" style="height: 40px;">Generar reporte</button>

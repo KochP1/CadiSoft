@@ -375,7 +375,11 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Distribución de Calificaciones Finales',
+                    text: [
+                        'Calificaciones Finales',
+                        document.getElementById('curso-nombre').textContent, 
+                        document.getElementById('periodo-seccion').textContent
+                    ],
                     font: {
                         size: 16
                     }
@@ -432,7 +436,11 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Asistencias vs Inasistencias',
+                    text:  [
+                        'Asistencias vs Inasistencias',
+                        document.getElementById('curso-nombre').textContent,
+                        document.getElementById('periodo-seccion').textContent
+                    ],
                     font: {
                         size: 16
                     }
