@@ -65,14 +65,12 @@ async function mostrarCargaTrabajo(profesorId, nombreProfesor, profesorApellido)
     
     const datosReales = await dataProfesor(profesorId);
     
-    if (datosReales && datosReales.secciones && datosReales.secciones.length > 0) {
-        datosCarga = {
-            nombre: nombreProfesor,
-            apellido: profesorApellido,
-            secciones: datosReales.secciones,
-            metricas: datosReales.metricas
-        };
-    }
+    datosCarga = {
+        nombre: nombreProfesor,
+        apellido: profesorApellido,
+        secciones: datosReales.secciones,
+        metricas: datosReales.metricas
+    };
     
     // Actualizar título del modal
     document.getElementById('modalTitulo').textContent = `Carga de trabajo - ${datosCarga.nombre} ${datosCarga.apellido}`;
