@@ -180,3 +180,53 @@ def mis_secciones():
                 return render_template('profesores/secciones.html', secciones = insertSecciones)
         except Exception as e:
             return f'Error: {e}'
+        
+@profesores.route('/carga_profesor/<int:profesor_id>')
+def carga_profesor(profesor_id):
+    try:
+        db = current_app.config['db']
+        
+        with db.cursor() as cur:
+            cur.execute('''
+                SELECT 
+                    COUNT(*) as total_secciones,
+                    SUM(c.duracionCurso) as total_horas,
+                    ROUND(SUM(c.duracionCurso) / COUNT(*), 1) as promedio
+                FROM secciones s 
+                INNER JOIN cursos c ON s.idCurso = c.idCurso 
+                WHERE s.idProfesor = %s
+            ''', (profesor_id,))
+            
+            metricas = cur.fetchone()
+            
+            cur.execute('''
+                SELECT 
+                    s.idSeccion,
+                    c.nombre_curso,
+                    s.seccion,
+                    c.duracionCurso as horas_semanales
+                FROM secciones s 
+                INNER JOIN cursos c ON s.idCurso = c.idCurso 
+                WHERE s.idProfesor = %s
+                ORDER BY c.nombre_curso, s.seccion
+            ''', (profesor_id,))
+            
+            secciones = cur.fetchall()
+            
+            return jsonify({
+                'metricas': {
+                    'total_secciones': metricas[0],
+                    'total_horas': metricas[1],
+                    'promedio_horas_seccion': float(metricas[2]) if metricas[2] else 0
+                },
+                'secciones': [
+                    {
+                        'idSeccion': seccion[0],
+                        'curso': seccion[1],
+                        'seccion': seccion[2],
+                        'horas': seccion[3]
+                    } for seccion in secciones
+                ]
+            })
+    except Exception as e:
+        return jsonify({'error': f'Error al obtener carga de trabajo: {e}'})
