@@ -280,3 +280,42 @@ def buscar_registro_familiar():
         return redirect(url_for('alumnos.registro_familiar'))
 
 # FINALIZA REGISTRO FAMILIAR
+
+# DASHBOARD DE ALUMNOS
+
+@alumnos.route('/dashboard')
+def dashboard():
+    try:
+        db = current_app.config['db']
+        with db.cursor() as cur:
+            cur.execute("""
+                SELECT 
+                    sum(c.definitiva) as sumaPromedio, COUNT(*) as cantidad
+                FROM calificaciones c 
+                JOIN inscripcion i ON c.idInscripcion = i.idInscripcion 
+                JOIN usuarios u ON c.idusuarios = u.idusuarios 
+                WHERE u.idusuarios = %s AND c.aprobado = 1;
+            """, (current_user.idusuarios,))
+            sumaPromedio = cur.fetchone()
+
+            cur.execute("""
+                SELECT sum(asistencia) as asistencias FROM inscripcion i INNER JOIN usuarios u ON i.idusuarios = u.idusuarios 
+                        WHERE u.idusuarios = %s;
+            """, (current_user.idusuarios,))
+            asistencias = cur.fetchone()
+
+            cur.execute("""
+                SELECT sum(inasistencia) as inasistencias FROM inscripcion i INNER JOIN usuarios u ON i.idusuarios = u.idusuarios 
+                        WHERE u.idusuarios = %s;
+            """, (current_user.idusuarios,))
+            inasistencias = cur.fetchone()
+
+            promedio = sumaPromedio[0]/sumaPromedio[1]
+            cursos = sumaPromedio[1]
+        return render_template('alumnos/dashboard.html', promedio = promedio, cursos = cursos, asistencias = asistencias[0], inasistencias = inasistencias[0])
+    except Exception as e:
+        db.rollback()
+        print(e)
+        return f'{e}'
+
+# FINALIZA DAHSBOARD DE ALUMNOS

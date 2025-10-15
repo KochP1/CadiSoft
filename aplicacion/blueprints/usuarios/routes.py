@@ -19,10 +19,10 @@ bcrypt = Bcrypt()
 def index():
     # Si ya está autenticado, redirigir
     if current_user.is_authenticated:
-        if current_user.rol == 'administrador':
+        if current_user.rol == 'administrador' or current_user.rol == 'profesor':
             return redirect(url_for('usuario.inicio'))
-        elif current_user.rol == 'profesor':
-            return redirect(url_for('profesores.mis_secciones'))
+        elif current_user.rol == 'alumno':
+            return redirect(url_for('alumnos.dashboard'))
     
     if request.method == 'POST':
         db = current_app.config['db']
@@ -32,16 +32,15 @@ def index():
         user = User.get_by_cedula(db, cedula)
         
         if user and bcrypt.check_password_hash(user.contraseña, contraseña):
-            print(f"Login exitoso para: {user.cedula}")
             
             login_user(user, remember=True)
             
-            print(f"Después de login_user - Autenticado: {current_user.is_authenticated}")
+            #print(f"Después de login_user - Autenticado: {current_user.is_authenticated}")
             
-            if user.rol == 'administrador':
+            if user.rol == 'administrador' or current_user.rol == 'profesor':
                 return redirect(url_for('usuario.inicio'))
-            elif user.rol == 'profesor':
-                return redirect(url_for('profesores.mis_secciones'))
+            elif current_user.rol == 'alumno':
+                return redirect(url_for('alumnos.dashboard'))
             else:
                 return render_template('usuarios/index.html', message_error='Permisos insuficientes')
         else:

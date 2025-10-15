@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Alumnos{% endblock %}
+
+{% block content %}
+
+    <style>
+        body {
+            overflow-x: hidden !important;
+        }
+    </style>
+    
+    <div class="logo-cadi-inicio">
+        <div class="logo-cadi-mov"></div>
+    </div>
+
+    <div class="inicio__wrapper alumno-inicio__wrapper">
+        <div class="info-card alumnos-info-card">
+            <div class="icon-info__container">
+                <i class="fa-solid fa-gauge"></i>
+            </div>
+            <div class="info__container" id="stats-promedio">
+                <p id="num-promedio">{{promedio}}</p>
+                <p>Promedio general</p>
+            </div>
+        </div>
+
+        <div class="info-card alumnos-info-card">
+            <div class="icon-info__container">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="info__container" id="stats-cursos-completados">
+                <p id="num-cursos">{{cursos}}</p>
+                <p>Cursos completados</p>
+            </div>
+        </div>
+    </div>
+
+        <div class="graficos__wrapper" 
+        data-asist="{{ asistencias }}" data-inasist="{{ inasistencias }}">
+        <div class="grafico__container">
+            <div class="grafico-header">
+                <button class="btn-descargar" onclick="descargarGrafica('asistenciasChart', 'asistencias-inasistencias')">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+            <canvas id="asistenciasChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        function datosAsistencias() {
+            const graficosWrapper = document.querySelector('.graficos__wrapper');
+            const asistencias = graficosWrapper.getAttribute('data-asist');
+            const inasistencias = graficosWrapper.getAttribute('data-inasist');
+
+            const data = {
+                totalAsistencias: asistencias,
+                totalInasistencias: inasistencias
+            };
+
+            crearGrafic(data)
+        }
+        
+        function crearGrafic(datosAsistencias) {
+            const ctx2 = document.getElementById('asistenciasChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Asistencias', 'Inasistencias'],
+                    datasets: [{
+                        data: [datosAsistencias.totalAsistencias, datosAsistencias.totalInasistencias],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',  // Verde azulado para asistencias
+                            'rgba(255, 99, 132, 0.8)'   // Rojo para inasistencias
+                        ],
+                        borderColor: [
+                            'rgb(75, 192, 192)',
+                            'rgb(255, 99, 132)'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text:  [
+                                'Asistencias vs Inasistencias'
+                            ],
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = datosAsistencias.totalAsistencias + datosAsistencias.totalInasistencias;
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) + '%' : '0%';
+                                    return `${label}: ${value} (${percentage})`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%' // Hace el gráfico tipo anillo
+                }
+            });
+        };
+
+        datosAsistencias();
+    </script>
+
+{% endblock %}

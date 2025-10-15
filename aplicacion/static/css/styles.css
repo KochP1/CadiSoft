@@ -1762,6 +1762,26 @@ header h1 {
 
 /* FINALIZA REPORTES */
 
+/* DASHBOARD ALUMNOS */
+
+.alumno-inicio__wrapper {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.alumnos-info-card {
+    width: 400px;
+    height: 300px;
+}
+
+.alumnos-info-card div {
+    text-align: center;
+}
+
+/* FINALIZA DASHBOARD ALUMNOS */
+
 
 /* transición de desvanecido */
 html {

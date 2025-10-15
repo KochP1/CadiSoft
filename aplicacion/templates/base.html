@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/icono-cadi.ico') }}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>{% block title %} Default {% endblock %}</title>
 </head>
 
@@ -34,7 +35,7 @@
 
     <nav class="navbar navbar-expand-xxl bg-body-tertiary px-0">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{{url_for('usuario.inicio')}}">
+          <a class="navbar-brand" href="{% if current_user.rol == 'administrador' %} {{url_for('usuario.inicio')}} {% endif %}">
             <img src="{{ url_for('static', filename='images/Cadi_logo-removeBG.png') }}" alt="Cadi" width="70px" height="70px">
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,6 +119,19 @@
               </li>
               {% endif %}
 
+              {% if current_user.rol == 'alumno' %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-graduation-cap"></i>
+                      <span>Mi aprendizaje</span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Calificaciones</a></li>
+                    <li><a class="dropdown-item" href="#">Cursos activos</a></li>
+                  </ul>
+                </li>
+              {% endif %}
+
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-circle-exclamation"></i>
@@ -157,7 +171,7 @@
               </li>
               {% endif %}
 
-              {% if current_user.rol == 'profesor' %}
+              {% if current_user.rol == 'profesor' or current_user.rol == 'alumno' %}
               <li class="nav-item dropdown  profesores-user">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="user-icon__container">
@@ -193,6 +207,5 @@
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/reportes.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

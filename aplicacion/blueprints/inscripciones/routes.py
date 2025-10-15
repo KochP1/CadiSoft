@@ -68,7 +68,7 @@ def alumnos_regulares():
         segundoApellido = request.form.get('segundoApellido')
         cedula = request.form.get('cedula')
         email = request.form.get('email')
-        contraseña = request.form.get('email')
+        contraseña = request.form.get('contraseña')
         rol = 'alumno'
         curso = request.form.get('curso')
         contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
