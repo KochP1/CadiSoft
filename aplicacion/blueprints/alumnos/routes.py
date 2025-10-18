@@ -318,4 +318,8 @@ def dashboard():
         print(e)
         return f'{e}'
 
+@alumnos.route('/mis_calificaciones')
+def mis_calificaciones():
+    return render_template('alumnos/calificaciones.html')
+
 # FINALIZA DAHSBOARD DE ALUMNOS

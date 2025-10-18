@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %} Alumnos {% endblock %}
+
+{% block content %}
+
+    <div class="container py-4">
+        <header class="mb-4">
+            <h1 class="text-center mb-2">Mis Calificaciones</h1>
+            <p class="text-center text-muted">Haz clic en cada curso para ver tus calificaciones detalladas</p>
+        </header>
+
+        <div class="row" id="cursos-container">
+            <!-- Las cards se generan dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard-alumnos.js') }}"></script>
+
+{% endblock %}

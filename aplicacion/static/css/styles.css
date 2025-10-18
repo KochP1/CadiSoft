@@ -1780,6 +1780,176 @@ header h1 {
     text-align: center;
 }
 
+:root {
+    --color-primary: #833d3d;
+    --color-secondary: #e2896b;
+    --color-light: #f8f9fa;
+    --color-white: #ffffff;
+}
+
+body {
+    background-color: var(--color-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+header h1 {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+/* Estilos para las cards de cursos */
+.curso-card {
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    border: none;
+    overflow: hidden;
+}
+
+.curso-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.curso-header {
+    padding: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.curso-info {
+    flex: 1;
+}
+
+.curso-nombre {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.curso-detalles {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.curso-profesor {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.curso-profesor i {
+    color: var(--color-secondary);
+    margin-right: 0.5rem;
+}
+
+/* Círculo de calificación */
+.calificacion-circulo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenido expandible */
+.curso-detalle {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    background-color: rgba(226, 137, 107, 0.05);
+}
+
+.curso-detalle.expandido {
+    max-height: 500px;
+}
+
+.detalle-contenido {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Tabla de calificaciones */
+.tabla-calificaciones {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-calificaciones th {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+    font-weight: 600;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.tabla-calificaciones td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tabla-calificaciones tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.tabla-calificaciones tr:hover {
+    background-color: rgba(226, 137, 107, 0.1);
+}
+
+/* Indicador de expansión */
+.expand-indicator {
+    color: var(--color-secondary);
+    transition: transform 0.3s ease;
+}
+
+.expand-indicator.rotated {
+    transform: rotate(180deg);
+}
+
+/* Estados de calificación */
+.calificacion-aprobada {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.calificacion-reprobada {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .curso-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .calificacion-circulo {
+        margin-top: 1rem;
+        align-self: flex-end;
+    }
+    
+    .tabla-calificaciones {
+        font-size: 0.9rem;
+    }
+    
+    .tabla-calificaciones th, 
+    .tabla-calificaciones td {
+        padding: 0.5rem;
+    }
+}
+
 /* FINALIZA DASHBOARD ALUMNOS */
 
 
