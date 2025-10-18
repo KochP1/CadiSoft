@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, g
 from flask_login import login_required
 
 facturacion = Blueprint('facturacion', __name__, template_folder='templates', static_folder="static")
@@ -6,13 +6,12 @@ facturacion = Blueprint('facturacion', __name__, template_folder='templates', st
 @facturacion.route('/',methods = ['GET', 'POST'])
 @login_required
 def index():
-    db = current_app.config['db']
     if request.method == 'GET':
         return render_template('facturacion/index.html')
     
     if request.method == 'POST':
-        with db.cursor() as cur:
-            try:
+        try:
+            with g.db.cursor() as cur:
                 data = request.get_json()
 
                 if not data or 'cliente' not in data or 'telefono' not in data or 'cedula' not in data or 'direccion' not in data or 'total' not in data or 'productos' not in data:
@@ -26,27 +25,27 @@ def index():
                 productos = data['productos']
                 
                 cur.execute('INSERT INTO facturas (`cliente`, `telefono`, `cedula`, `direccion`, `total`) VALUES (%s, %s, %s, %s, %s)', (cliente, telefono, cedula, direccion, total))
-                db.commit()
+                g.db.commit()
 
                 cur.execute('SELECT idFactura FROM facturas WHERE cedula = %s', (cedula,))
                 idFactura = cur.fetchone()
                 
                 for record in productos:
                     cur.execute('INSERT INTO factura_x_producto (`idFactura`, `idProducto`, `cantidad`) VALUES (%s, %s, %s)', (idFactura, record['idProducto'], record['cantidadProducto']))
-                    db.commit()
+                    g.db.commit()
                 return jsonify({'mensaje': 'Factura guardada'}), 200
-            except Exception as e:
-                db.rollback()
-                return jsonify({'error': f'Error: {e}'}), 500
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return jsonify({'error': f'Error: {e}'}), 500
 
 
 @facturacion.route('/inventario',methods = ['GET', 'POST'])
 @login_required
 def inventario():
-    db = current_app.config['db']
     if request.method == 'GET':
-        with db.cursor() as cur:
-            try:
+        try:
+            with g.db.cursor() as cur:
                 cur.execute('SELECT * FROM productos')
                 registros = cur.fetchall()
                 insertRegistros = []
@@ -55,42 +54,44 @@ def inventario():
                 for record in registros:
                     insertRegistros.append(dict(zip(columNames, record)))
                 return render_template('facturacion/inventario.html', productos = insertRegistros)
-            except Exception as e:
-                return f'Error: {e}'
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return f'Error: {e}'
     
     if request.method == 'POST':
-        with db.cursor() as cur:
-            try:
+        try:
+            with g.db.cursor() as cur:
                 nombre = request.form.get('nombre')
                 precio = request.form.get('precio')
                 stock = request.form.get('stock')
 
                 cur.execute('INSERT INTO productos (`nombre`, `precio`, `stock`) VALUES (%s, %s, %s)', (nombre, precio, stock))
-                db.commit()
+                g.db.commit()
                 return jsonify({'mensaje': 'Producto creado satisfactoriamente'}), 200
-            except Exception as e:
-                db.rollback()
-                return jsonify({'error': f'Error al crear producto: {e}'}), 500
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return jsonify({'error': f'Error al crear producto: {e}'}), 500
 
 @facturacion.route('/elim_producto/<int:idProducto>', methods = ['DELETE'])
 @login_required
 def elim_producto(idProducto):
-    db = current_app.config['db']
-
-    with db.cursor() as cur:
-        try:
+    try:
+        with g.db.cursor() as cur:
             cur.execute('DELETE FROM productos WHERE idProducto = %s', (idProducto))
-            db.commit()
+            g.db.commit()
             return jsonify({'mensaje': 'Producto eliminado'}), 200
-        except Exception as e:
-            return jsonify({'error': f'Error al eliminar producto: {e}'}), 500
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return jsonify({'error': f'Error al eliminar producto: {e}'}), 500
 
 @facturacion.route('/buscar_producto', methods = ['GET', 'POST'])
 @login_required
 def buscar_producto():
-    db = current_app.config['db']
-    with db.cursor() as cur:
-        try:
+    try:
+        with g.db.cursor() as cur:
             nombre = request.form.get('nombre')
 
             if not nombre:
@@ -104,17 +105,17 @@ def buscar_producto():
             for record in registros:
                 insertRegistros.append(dict(zip(columNames, record)))
             return render_template('facturacion/inventario.html', productos = insertRegistros)
-        except Exception as e:
-            return f'Error: {e}'
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return f'Error: {e}'
 
 @facturacion.route('/edit_producto/<int:idProducto>', methods = ['GET', 'PATCH'])
 @login_required
 def edit_producto(idProducto):
-    db = current_app.config['db']
-    
     if request.method == 'GET':
-        with db.cursor() as cur:
-            try:
+        try:
+            with g.db.cursor() as cur:
                 cur.execute('SELECT * FROM productos WHERE idProducto = %s', (idProducto,))
                 registros = cur.fetchall()
                 insertRegistros = []
@@ -124,12 +125,14 @@ def edit_producto(idProducto):
                     insertRegistros.append(dict(zip(columNames, record)))
                 
                 return render_template('facturacion/editProducto.html', producto = insertRegistros)
-            except Exception as e:
-                return f'Error: {e}'
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return f'Error: {e}'
     
     if request.method == 'PATCH':
-        with db.cursor() as cur:
-            try:
+        try:
+            with g.db.cursor() as cur:
                 nombre = request.form.get('nombre')
                 precio = request.form.get('precio')
                 stock = request.form.get('stock')
@@ -143,46 +146,50 @@ def edit_producto(idProducto):
                 if stock:
                     cur.execute('UPDATE productos SET stock = %s WHERE idProducto = %s', (stock, idProducto))
                 
-                db.commit()
+                g.db.commit()
                 return jsonify({'mensaje': 'Producto actualizado'}), 200
-            except Exception as e:
-                db.rollback()
-                return jsonify({'error': f'Error: {e}'}), 500
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return jsonify({'error': f'Error: {e}'}), 500
 
 @facturacion.route('/historial_facturas', methods = ['GET', 'POST'])
 @login_required
 def historial():
-    db = current_app.config['db']
-
     if request.method == 'GET':
-        with db.cursor() as cur:
-            cur.execute('''
-                SELECT 
-                    f.idFactura, 
-                    f.cliente, 
-                    f.telefono, 
-                    f.cedula, 
-                    f.direccion, 
-                    GROUP_CONCAT(p.nombre SEPARATOR ', ') as productos,
-                    f.total, 
-                    f.fecha 
-                FROM facturas f
-                LEFT JOIN factura_x_producto fp ON f.idFactura = fp.idFactura
-                LEFT JOIN productos p ON fp.idProducto = p.idProducto
-                GROUP BY f.idFactura
-            ''')
-            registros = cur.fetchall()
-            insertRegistros = []
-            columNames = [column[0] for column in cur.description]
+        try:
+            with g.db.cursor() as cur:
+                cur.execute('''
+                    SELECT 
+                        f.idFactura, 
+                        f.cliente, 
+                        f.telefono, 
+                        f.cedula, 
+                        f.direccion, 
+                        GROUP_CONCAT(p.nombre SEPARATOR ', ') as productos,
+                        f.total, 
+                        f.fecha 
+                    FROM facturas f
+                    LEFT JOIN factura_x_producto fp ON f.idFactura = fp.idFactura
+                    LEFT JOIN productos p ON fp.idProducto = p.idProducto
+                    GROUP BY f.idFactura
+                ''')
+                registros = cur.fetchall()
+                insertRegistros = []
+                columNames = [column[0] for column in cur.description]
 
-            for record in registros:
-                insertRegistros.append(dict(zip(columNames, record)))
-            
-            return render_template('facturacion/historial.html', facturas = insertRegistros)
+                for record in registros:
+                    insertRegistros.append(dict(zip(columNames, record)))
+                
+                return render_template('facturacion/historial.html', facturas = insertRegistros)
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return render_template('facturacion/historial.html', facturas=[])
     
     if request.method == 'POST':
-        with db.cursor() as cur:
-            try:
+        try:
+            with g.db.cursor() as cur:
                 cedula = request.form.get('cedula')
 
                 cur.execute('SELECT f.idFactura, f.cliente, f.cedula, f.direccion, p.nombre, fp.total, f.fecha FROM factura_x_producto fp JOIN facturas f ON fp.idFactura = f.idFactura JOIN productos p ON fp.idProducto = p.idProducto WHERE f.cedula = %s', (cedula,))
@@ -194,31 +201,29 @@ def historial():
                     insertRegistros.append(dict(zip(columNames, record)))
                 
                 return render_template('facturacion/historial.html', facturas = insertRegistros)
-            except Exception as e:
-                db.rollback()
-                return f'Error: {e}'
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return f'Error: {e}'
 
 @facturacion.route('/elim_factura/<int:id>', methods = ['DELETE'])
 @login_required
 def elim_factura(id):
-    db = current_app.config['db']
-
-    with db.cursor() as cur:
-        try:
+    try:
+        with g.db.cursor() as cur:
             cur.execute('DELETE FROM facturas WHERE idFactura = %s', (id,))
-            db.commit()
+            g.db.commit()
             return jsonify({'mensaje': 'Factura eliminada'}), 200
-        except Exception as e:
-            db.rollback()
-            return jsonify({'error': f'Error: {e}'}), 500
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return jsonify({'error': f'Error: {e}'}), 500
 
 @facturacion.route('/buscar_producto_factura', methods = ['POST'])
 @login_required
 def buscar_producto_factura():
-    db = current_app.config['db']
-
-    with db.cursor() as cur:
-        try:
+    try:
+        with g.db.cursor() as cur:
             nombre = request.form.get('nombre')
             cur.execute('SELECT * FROM productos WHERE nombre = %s', (nombre))
             registro = cur.fetchone()
@@ -230,6 +235,7 @@ def buscar_producto_factura():
             producto = dict(zip(columNames, registro))
             return jsonify({'producto': producto}), 200
 
-        except Exception as e:
-            db.rollback()
-            return jsonify({'error': f'Error: {e}'}), 500
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return jsonify({'error': f'Error: {e}'}), 500

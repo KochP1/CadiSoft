@@ -1,4 +1,4 @@
-from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app, flash
+from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app, flash, g
 from flask_login import login_required
 from datetime import date
 import pymysql
@@ -10,8 +10,7 @@ cursos = Blueprint('cursos', __name__, template_folder='templates', static_folde
 @cursos.route('/', methods = ['GET', 'POST'])
 @login_required
 def index():
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     if request.method == 'POST':
         facultad = request.form.get('idFacultad')
@@ -19,18 +18,19 @@ def index():
         duracion = request.form.get('duracion_curso')
 
         try:
-            with db.cursor() as cur:
+            with g.db.cursor() as cur:
                 sql = 'INSERT INTO cursos (`idFacultad`, `nombre_curso`, `duracionCurso`) VALUES (%s, %s, %s)'
                 data = (facultad, curso, duracion)
                 cur.execute(sql, data)
-                db.commit()
+                g.db.commit()
                 return jsonify({'message': 'Curso creado satisfactoriamente'}), 200
         except Exception as e:
-            db.rollback()
+            if hasattr(g, 'db'):
+                g.db.rollback()
             return jsonify({'error': f'Error al crear curso: {e}'}), 400
 
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad'
             cur.execute(sql)
             registros = cur.fetchall()
@@ -48,12 +48,10 @@ def index():
 @cursos.route('/buscar_curso', methods = ['GET', 'POST'])
 @login_required
 def buscar_curso():
-    db = current_app.config['db']
-
     try:
         curso = request.form.get('curso')
 
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.nombre_curso = %s', (curso,))
             registros = cur.fetchall()
             insertCursos = []
@@ -70,10 +68,9 @@ def buscar_curso():
 @login_required
 def buscar_facultades():
     try:
-        db = current_app.config['db']
-        db.ping(reconnect=True)
+        g.db.ping(reconnect=True)
         
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'SELECT * FROM facultades'
             cur.execute(sql)
             facultades = cur.fetchall()
@@ -91,11 +88,10 @@ def buscar_facultades():
 @cursos.route('/edit_cursos/<int:idCurso>', methods = ['GET'])
 @login_required
 def edit_cursos(idCurso):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'SELECT c.idCurso, c.idFacultad, c.nombre_curso, c.duracionCurso, c.imagen, f.facultad FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE c.idCurso = %s'
             cur.execute(sql, (idCurso,))
             registros = cur.fetchall()
@@ -131,21 +127,22 @@ def edit_cursos(idCurso):
 @cursos.route('/edit_nombre_curso/<int:idCurso>', methods = ['PATCH'])
 @login_required
 def edit_nombre_curso(idCurso):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
     curso = request.form.get('curso')
 
     if not curso:
         return jsonify({'error': 'Faltan campos'}), 400
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'UPDATE cursos SET nombre_curso = %s WHERE idCurso = %s'
             data = (curso, idCurso)
             cur.execute(sql, data)
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al modificar curso'}), 500
     
 
@@ -153,59 +150,58 @@ def edit_nombre_curso(idCurso):
 @cursos.route('/edit_facultad_curso/<int:idCurso>', methods = ['PATCH'])
 @login_required
 def edit_facultad_curso(idCurso):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
     facultad = request.form.get('facultad')
 
     if not facultad:
         return jsonify({'error': 'Faltan campos'}), 400
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'UPDATE cursos SET idFacultad = %s WHERE idCurso = %s'
             data = (facultad, idCurso)
             cur.execute(sql, data)
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al modificar curso'}), 500
 
 @cursos.route('/edit_duracion_curso/<int:idCurso>', methods = ['PATCH'])
 @login_required
 def edit_duracion_curso(idCurso):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
     duracion = request.form.get('duracion')
 
     if not duracion:
         return jsonify({'error': 'Faltan campos'}), 400
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'UPDATE cursos SET duracionCurso = %s WHERE idCurso = %s'
             data = (duracion, idCurso)
             cur.execute(sql, data)
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Curso modificado satisfactoriamente'}), 200
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al modificar curso'}), 500
 
 
 @cursos.route('/eliminar_curso/<int:idcurso>', methods = ['DELETE'])
 @login_required
 def eliminar_curso(idcurso):
-    db = current_app.config['db']
-    cur = db.cursor()
-
     try:
-        cur.execute('DELETE FROM cursos WHERE idCurso = %s', (idcurso,))
-        db.commit()
-        return jsonify({'mensaje': 'curso eliminado'}), 200
+        with g.db.cursor() as cur:
+            cur.execute('DELETE FROM cursos WHERE idCurso = %s', (idcurso,))
+            g.db.commit()
+            return jsonify({'mensaje': 'curso eliminado'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'el curso no pudo ser eliminado'}), 400
-    finally:
-        cur.close()
 
 # FINALIZA ENDPOINTS DE CURSOS
 
@@ -213,10 +209,8 @@ def eliminar_curso(idcurso):
 @cursos.route('/seccion_curso/<int:idcurso>')
 @login_required
 def seccion_curso(idcurso):
-    db = current_app.config['db']
-
-    with db.cursor() as cur:
-        db.ping(reconnect=True)
+    with g.db.cursor() as cur:
+        g.db.ping(reconnect=True)
         try:
             sql = 'SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s'
             data = (idcurso,)
@@ -242,9 +236,8 @@ def seccion_curso(idcurso):
 @cursos.route('/buscar_seccion/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def buscar_seccion(id):
-    db = current_app.config['db']
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             seccion = request.form.get('seccion')
             cur.execute('SELECT s.idSeccion, s.idCurso, u.nombre, u.apellido, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE c.idCurso = %s AND s.seccion = %s', (id, seccion))
             registros = cur.fetchall()
@@ -267,10 +260,9 @@ def buscar_seccion(id):
 @cursos.route('/edit_seccion/<int:id>/<int:idCurso>',methods = ['GET'])
 @login_required
 def edit_seccion(id, idCurso):
-    db = current_app.config['db']
     if request.method == 'GET':
         try:
-            with db.cursor() as cur:
+            with g.db.cursor() as cur:
                 cur.execute('SELECT s.idSeccion, s.seccion, s.aula, p.idProfesor, u.nombre, u.apellido FROM secciones s JOIN profesores p ON s.idProfesor = p.idProfesor JOIN usuarios u ON p.idusuarios = u.idusuarios WHERE s.idSeccion = %s', (id))
                 registros = cur.fetchall()
                 insertSecciones = []
@@ -303,10 +295,9 @@ def edit_seccion(id, idCurso):
 @cursos.route('/edit_seccion_campos/<int:id>', methods = ['PATCH'])
 @login_required
 def edit_seccion_campos(id):
-    db = current_app.config['db']
     if request.method == 'PATCH':
         try:
-            with db.cursor() as cur:
+            with g.db.cursor() as cur:
                 seccion = request.form.get('seccion')
                 profesor = request.form.get('profesor')
 
@@ -319,17 +310,16 @@ def edit_seccion_campos(id):
                 if profesor:
                     cur.execute('UPDATE secciones SET idProfesor = %s WHERE idSeccion = %s', (profesor, id))
                 
-                db.commit()
+                g.db.commit()
                 return jsonify({'mensaje': 'Seccion actualizada'}), 200
         except Exception as e:
-            db.rollback()
+            if hasattr(g, 'db'):
+                g.db.rollback()
             return jsonify({'error': f'Error: {e}'}), 500
         
 @cursos.route('/edit_horario_seccion/<int:idSeccion>', methods=['PATCH'])
 @login_required
 def edit_horario_seccion(idSeccion):
-    db = current_app.config['db']
-    
     try:
         data = request.get_json()
         horarios = data.get('horarios', [])
@@ -353,7 +343,7 @@ def edit_horario_seccion(idSeccion):
                 horarios_validos.append(horario)
                 print(horarios_validos)
 
-        with db.cursor(pymysql.cursors.DictCursor) as cur:
+        with g.db.cursor(pymysql.cursors.DictCursor) as cur:
             regist = 0
             for horario in horarios_validos:
                 cur.execute('''
@@ -392,9 +382,9 @@ def edit_horario_seccion(idSeccion):
                             'hora_fin': str(regist['horario_hora_final'])
                         }
                     }), 400
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('DELETE h FROM horario h JOIN horario_x_curso hc ON hc.idhorario = h.idhorario WHERE hc.idSeccion = %s', (idSeccion,))
-            db.commit()
+            g.db.commit()
             for horario in horarios_validos:
                 try:
                     cur.execute('''
@@ -415,12 +405,13 @@ def edit_horario_seccion(idSeccion):
                     print(f"Error insertando horario {horario}: {e}")
                     continue
             
-            db.commit()
+            g.db.commit()
         
         return jsonify({'mensaje': 'Horario actualizado correctamente'}), 200
         
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         print(f"Error general en edit_horario_seccion: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
@@ -428,8 +419,7 @@ def edit_horario_seccion(idSeccion):
 @cursos.route('/craer_seccion/<int:idCurso>', methods = ['GET', 'POST'])
 @login_required
 def crear_seccion(idCurso):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     if request.method == 'POST':
         data = request.get_json()
@@ -445,12 +435,10 @@ def crear_seccion(idCurso):
         if not isinstance(horarios, list) or len(horarios) == 0:
             return jsonify({'error': 'El horario no es válido'}), 400
 
-
-
         if not seccion or not profesor:
             return jsonify({'error': 'Faltan campos'}), 400
         try:
-            with db.cursor(pymysql.cursors.DictCursor) as cur: 
+            with g.db.cursor(pymysql.cursors.DictCursor) as cur: 
                 regist = 0
                 for record in horarios:
                     cur.execute('''
@@ -484,35 +472,31 @@ def crear_seccion(idCurso):
                             }
                         }), 400
                 
-            with db.cursor() as cur:    
+            with g.db.cursor() as cur:    
                 cur.execute('INSERT INTO secciones (`idCurso`, `idProfesor`, `seccion`, `aula`) VALUES (%s, %s, %s, %s)', (idCurso, profesor, seccion, aula))
-                db.commit()
+                g.db.commit()
 
                 cur.execute('SELECT idSeccion FROM secciones WHERE seccion = %s', (seccion,))
                 idSeccion = cur.fetchone()
 
                 for record in horarios:
                     cur.execute('INSERT INTO horario (`horario_dia`, `horario_hora`, `horario_hora_final`, `horario_aula`) VALUES (%s, %s, %s, %s)', (record['dia'], record['hora_inicio'], record['hora_fin'], aula))
-                    db.commit()
+                    g.db.commit()
                     idhorario = cur.lastrowid
 
-                    """""""""
-                    cur.execute('SELECT idhorario FROM horario ORDER BY idhorario DESC LIMIT 1')
-                    idhorario = cur.fetchone()
-                    """""""""
-
                     cur.execute('INSERT INTO horario_x_curso (`idhorario`, `idSeccion`) VALUES (%s, %s)', (idhorario, idSeccion))
-                    db.commit()
+                    g.db.commit()
 
                 return jsonify({'message': 'Sección creada satisfactoriamente'}), 200
         except Exception as e:
-            db.rollback()
+            if hasattr(g, 'db'):
+                g.db.rollback()
             print(e)
             return jsonify({'error': 'Error al crear sección'}), 500
 
     if request.method == 'GET':
         try:
-            with db.cursor() as cur:
+            with g.db.cursor() as cur:
                 sql = 'SELECT u.idusuarios, u.nombre, u.apellido, u.cedula, p.idProfesor, p.especialidad FROM profesores p JOIN usuarios u ON p.idusuarios = u.idusuarios'
                 cur.execute(sql)
                 registros = cur.fetchall()
@@ -536,14 +520,13 @@ def crear_seccion(idCurso):
 @cursos.route('/elim_seccion/<int:idSeccion>', methods = ['DELETE'])
 @login_required
 def elim_seccion(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     if not idSeccion:
         return jsonify({'error': 'Faltan campos'})
 
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('SET SQL_SAFE_UPDATES = 0;')
             cur.execute("""
                         DELETE h 
@@ -553,11 +536,12 @@ def elim_seccion(idSeccion):
             cur.execute('SET SQL_SAFE_UPDATES = 1;')
             sql = 'DELETE FROM secciones WHERE idSeccion = %s'
             cur.execute(sql, (idSeccion,))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Sección eliminada satisfactoriamente'})
     except Exception as e:
         print(e)
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al eliminar seccion'}), 500
 
 # FINALIZA ENDPOINTS DE SECCIONES
@@ -570,13 +554,12 @@ def dateToString(fecha: date) -> str:
 @cursos.route('/calificaciones/<idSeccion>', methods = ['GET'])
 @login_required
 def calificaciones(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     if request.method == 'GET':
 
         try:
-            with db.cursor() as cur:
+            with g.db.cursor() as cur:
                 cur.execute('SELECT s.idSeccion, c.nombre_curso, s.seccion FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s', (idSeccion,))
                 registro = cur.fetchall()
 
@@ -595,7 +578,6 @@ def calificaciones(idSeccion):
                         LIMIT 1
                     ''', (idSeccion,))
                 registro_periodo = cur.fetchall()
-
 
                 periodoArray = []
                 columPeriodo = [column[0] for column in cur.description]
@@ -622,18 +604,16 @@ def calificaciones(idSeccion):
                 return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
         except Exception as e:
             flash('No hay alumnos inscritos en esta sección')
-            cursor = db.cursor()
-            cursor.execute('SELECT idCurso FROM secciones WHERE idSeccion = %s', (idSeccion))
-            curso = cursor.fetchone()
-            cursor.close()
+            with g.db.cursor() as cursor:
+                cursor.execute('SELECT idCurso FROM secciones WHERE idSeccion = %s', (idSeccion))
+                curso = cursor.fetchone()
             print(e)
             return redirect(url_for('cursos.seccion_curso', idcurso = curso[0]))
 
 @cursos.route('/filtrar_periodos/<idSeccion>', methods=['POST'])
 @login_required
 def filtrar_periodos(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     if request.method == 'POST':
         try:
@@ -651,7 +631,7 @@ def filtrar_periodos(idSeccion):
                 flash('La fecha "Desde" no puede ser mayor que la fecha "Hasta"')
                 return redirect(url_for('cursos.calificaciones', idSeccion=idSeccion))
 
-            with db.cursor() as cur:
+            with g.db.cursor() as cur:
                 # Obtener información básica de la sección (igual al endpoint original)
                 cur.execute('''
                     SELECT s.idSeccion, c.nombre_curso, s.seccion 
@@ -688,11 +668,7 @@ def filtrar_periodos(idSeccion):
                     return redirect(url_for('cursos.calificaciones', idSeccion=idSeccion))
                 
                 # Obtener calificaciones para TODOS los períodos en el rango
-                # Primero obtenemos todos los idInscripcion del rango
-                id_inscripciones = [str(periodo['idInscripcion']) for periodo in periodoArray]
-                placeholders = ', '.join(['%s'] * len(id_inscripciones))
-                
-                cur.execute(f'''
+                cur.execute('''
                     SELECT 
                         c.idCalificacion, 
                         c.idusuarios, 
@@ -750,8 +726,7 @@ def filtrar_periodos(idSeccion):
 @cursos.route('/subir_logro_uno/<int:idSeccion>', methods = ['PATCH'])
 @login_required
 def subir_logro_uno(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -763,12 +738,13 @@ def subir_logro_uno(idSeccion):
     idInscripcion = data['idInscripcion']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE calificaciones SET logro_1 = %s WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (logro, idSeccion, idAlumno, idInscripcion))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
     
 
@@ -776,8 +752,7 @@ def subir_logro_uno(idSeccion):
 @cursos.route('/subir_logro_dos/<int:idSeccion>', methods = ['PATCH'])
 @login_required
 def subir_logro_dos(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -789,19 +764,19 @@ def subir_logro_dos(idSeccion):
     idInscripcion = data['idInscripcion']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE calificaciones SET logro_2 = %s WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (logro, idSeccion, idAlumno, idInscripcion))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 @cursos.route('/subir_logro_tres/<int:idSeccion>', methods = ['PATCH'])
 @login_required
 def subir_logro_tres(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -813,20 +788,20 @@ def subir_logro_tres(idSeccion):
     idInscripcion = data['idInscripcion']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE calificaciones SET logro_3 = %s WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (logro, idSeccion, idAlumno, idInscripcion))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
     
 
 
 @cursos.route('/subir_logro_cuatro/<int:idSeccion>', methods = ['PATCH'])
 def subir_logro_cuatro(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -838,12 +813,13 @@ def subir_logro_cuatro(idSeccion):
     idInscripcion = data['idInscripcion']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE calificaciones SET logro_4 = %s WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (logro, idSeccion, idAlumno, idInscripcion))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 
@@ -851,8 +827,7 @@ def subir_logro_cuatro(idSeccion):
 @cursos.route('/subir_logro_cinco/<int:idSeccion>', methods = ['PATCH'])
 @login_required
 def subir_logro_cinco(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -864,19 +839,19 @@ def subir_logro_cinco(idSeccion):
     idInscripcion = data['idInscripcion']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE calificaciones SET logro_5 = %s WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (logro, idSeccion, idAlumno, idInscripcion))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 @cursos.route('/subir_definitiva/<int:idSeccion>', methods = ['PATCH'])
 @login_required
 def subir_definitiva(idSeccion):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -888,18 +863,19 @@ def subir_definitiva(idSeccion):
     idInscripcion = data['idInscripcion']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE calificaciones SET definitiva = %s WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (definitiva, idSeccion, idAlumno, idInscripcion))
-            db.commit()
+            g.db.commit()
 
             double_def = float(definitiva)
             if (double_def > 14):
                 cur.execute('UPDATE calificaciones SET aprobado = 1 WHERE idSeccion = %s AND idusuarios = %s AND idInscripcion = %s', (idSeccion, idAlumno, idInscripcion))
-                db.commit()
+                g.db.commit()
             return jsonify({'message': 'Calificación actualizada satisfactoriamente'}), 200
     except Exception as e:
         print(e)
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES
@@ -907,8 +883,7 @@ def subir_definitiva(idSeccion):
 @cursos.route('/asistencia/<int:id>', methods = ['PATCH'])
 @login_required
 def asistencia(id):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -918,19 +893,19 @@ def asistencia(id):
     asist = data['asistencia']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE inscripcion SET asistencia = %s WHERE idInscripcion = %s', (asist, id))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Asistencia actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner asistencia'}), 500
     
 @cursos.route('/inasistencia/<int:id>', methods = ['PATCH'])
 @login_required
 def inasistencia(id):
-    db = current_app.config['db']
-    db.ping(reconnect=True)
+    g.db.ping(reconnect=True)
 
     data = request.get_json()
 
@@ -940,10 +915,11 @@ def inasistencia(id):
     asist = data['inasistencia']
     
     try:
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             cur.execute('UPDATE inscripcion SET inasistencia = %s WHERE idInscripcion = %s', (asist, id))
-            db.commit()
+            g.db.commit()
             return jsonify({'message': 'Inasistencia actualizada satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al poner inasistencia'}), 500

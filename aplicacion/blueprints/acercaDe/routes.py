@@ -1,7 +1,7 @@
 from datetime import datetime
 import io
 from os import getenv
-from flask import render_template, send_file, Blueprint, current_app, jsonify
+from flask import render_template, send_file, Blueprint, current_app, jsonify, g
 from flask_login import current_user, login_required
 import pymysql
 from dotenv import load_dotenv
@@ -21,19 +21,18 @@ def index():
 @acerca.route('/restaurar', methods = ['POST'])
 @login_required
 def restaurar():
-    db = current_app.config['db']
-
-    with db.cursor() as cur:
-        try:
+    try:
+        with g.db.cursor() as cur:
             for record in tables:
                 cur.execute(f'Delete FROM {record}')
-                db.commit()
+                g.db.commit()
                 cur.execute(f'ALTER TABLE {record} AUTO_INCREMENT = 1')
-                db.commit()
+                g.db.commit()
             return jsonify({'mensaje': 'Restauración completada'}), 200
-        except Exception as e:
-            db.rollback()
-            return jsonify({'error': f'Error al restaurar sistema: {e}'}), 500
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return jsonify({'error': f'Error al restaurar sistema: {e}'}), 500
 
 @acerca.route('/manual', methods = ['GET'])
 @login_required
@@ -44,8 +43,6 @@ def manual():
 @acerca.route('/generar-backup', methods = ['GET'])
 @login_required
 def generar_backup():
-    db = current_app.config['db']
-
     if not current_user.rol == "administrador":
         return jsonify({'error': 'No tienes permisos suficientes para realizar esta acción'}), 401
     
@@ -64,7 +61,7 @@ def generar_backup():
         script_sql += "-- Desactivar verificación de claves foráneas\n"
         script_sql += "SET FOREIGN_KEY_CHECKS = 0;\n\n"
         
-        with db.cursor(pymysql.cursors.DictCursor) as cur:
+        with g.db.cursor(pymysql.cursors.DictCursor) as cur:
             # Generar script para cada tabla
             for table in tables:
                 script_sql += f"-- Estructura y datos para tabla: {table}\n"
@@ -124,5 +121,7 @@ def generar_backup():
         )
         
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         print(e)
         return jsonify({'error': f'Error al generar backup: {str(e)}'}), 500

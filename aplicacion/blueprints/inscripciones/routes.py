@@ -1,5 +1,5 @@
 from datetime import timedelta
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, Response, g
 from flask_login import login_required
 from flask_bcrypt import Bcrypt
 
@@ -11,45 +11,52 @@ bcrypt = Bcrypt()
 @login_required
 def index():
     if request.method == 'GET':
-        db = current_app.config['db']
+        try:
+            with g.db.cursor() as cur:
+                cur.execute('SELECT * FROM preinscripcion')
+                registros = cur.fetchall()
+                insertRegistros = []
+                columNames = [columns[0] for columns in cur.description]
 
-        with db.cursor() as cur:
-            cur.execute('SELECT * FROM preinscripcion')
+                for record in registros:
+                    insertRegistros.append(dict(zip(columNames, record)))
+                return render_template('inscripciones/index.html', preinscripciones = insertRegistros)
+        except Exception as e:
+            if hasattr(g, 'db'):
+                g.db.rollback()
+            return render_template('inscripciones/index.html', preinscripciones=[])
+
+@inscripciones.route('/procesar_preinscripcion/<int:id>/<curso>', methods = ['GET'])
+@login_required
+def procesar_preinscripcion(id, curso):
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('SELECT * FROM usuarios WHERE idusuarios = %s', (id,))
             registros = cur.fetchall()
             insertRegistros = []
             columNames = [columns[0] for columns in cur.description]
 
             for record in registros:
                 insertRegistros.append(dict(zip(columNames, record)))
-            return render_template('inscripciones/index.html', preinscripciones = insertRegistros)
-
-@inscripciones.route('/procesar_preinscripcion/<int:id>/<curso>', methods = ['GET'])
-@login_required
-def procesar_preinscripcion(id, curso):
-    db = current_app.config['db']
-    with db.cursor() as cur:
-        cur.execute('SELECT * FROM usuarios WHERE idusuarios = %s', (id,))
-        registros = cur.fetchall()
-        insertRegistros = []
-        columNames = [columns[0] for columns in cur.description]
-
-        for record in registros:
-            insertRegistros.append(dict(zip(columNames, record)))
-        
-        return render_template('inscripciones/preinscripcion.html', preinscripcion = insertRegistros, idusuario = id, curso = curso)
+            
+            return render_template('inscripciones/preinscripcion.html', preinscripcion = insertRegistros, idusuario = id, curso = curso)
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return redirect(url_for('inscripciones.index'))
 
 @inscripciones.route('/elim_preinscripcion/<int:id>', methods = ['DELETE'])
 @login_required
 def elim_preinscripcion(id):
-    db = current_app.config['db']
-    
-    with db.cursor() as cur:
-        try:
+    try:
+        with g.db.cursor() as cur:
             cur.execute('DELETE FROM preinscripcion WHERE idPreinscipcion = %s', (id,))
-            db.commit()
+            g.db.commit()
             return jsonify({'mensaje': 'preinscripcion eliminada'}), 200
-        except Exception as e:
-            return jsonify({'error': 'Error al eliminar preinscripcion'}), 500
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return jsonify({'error': 'Error al eliminar preinscripcion'}), 500
 
 # INSCRIPCIONES
 @inscripciones.route('/alumnos_regulares', methods = ['POST', 'GET'])
@@ -58,10 +65,6 @@ def alumnos_regulares():
 
     # POST alumno
     if request.method == 'POST':
-        db = current_app.config['db']
-        cur = db.cursor()
-
-        
         nombre = request.form.get('nombre')
         segundoNombre = request.form.get('segundoNombre')
         apellido = request.form.get('apellido')
@@ -79,56 +82,56 @@ def alumnos_regulares():
             imagen = None
 
         try:
-            if imagen == None:
-                sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
-                contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
-                usuario = (
-                    nombre,
-                    segundoNombre,
-                    apellido,
-                    segundoApellido,
-                    cedula,
-                    email,
-                    contraseña_hash,
-                    rol
-                    )
-                
-                if curso:
-                    cur.execute(sql_usuario, usuario)
-                    db.commit()
-                    cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
-                    registro = cur.fetchone()
-                    registroStr = ''.join(map(str, registro))
-                    idusuario = int(registroStr)
-
-                    cur.execute('DELETE FROM preinscripcion WHERE cedula = %s', (cedula,))
-                    db.commit()
+            with g.db.cursor() as cur:
+                if imagen == None:
+                    sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+                    contraseña_hash = bcrypt.generate_password_hash(contraseña).decode('utf-8')
+                    usuario = (
+                        nombre,
+                        segundoNombre,
+                        apellido,
+                        segundoApellido,
+                        cedula,
+                        email,
+                        contraseña_hash,
+                        rol
+                        )
                     
-                    return redirect(url_for('inscripciones.procesar_preinscripcion', id = idusuario, curso=request.form.get('curso')))
-            
-            else:
-                sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
-                imagen_blob = imagen.read()
-                usuario = (
-                    nombre,
-                    segundoNombre,
-                    apellido,
-                    segundoApellido,
-                    cedula,
-                    email,
-                    contraseña_hash,
-                    rol,
-                    imagen_blob
-                    )
-            
-            cur.execute(sql_usuario, usuario)
-            db.commit()
-            return jsonify({'mensaje': 'Alumno creado satisfactiramente'}), 200
+                    if curso:
+                        cur.execute(sql_usuario, usuario)
+                        g.db.commit()
+                        cur.execute('SELECT idusuarios FROM usuarios WHERE cedula = %s', (cedula,))
+                        registro = cur.fetchone()
+                        registroStr = ''.join(map(str, registro))
+                        idusuario = int(registroStr)
+
+                        cur.execute('DELETE FROM preinscripcion WHERE cedula = %s', (cedula,))
+                        g.db.commit()
+                        
+                        return redirect(url_for('inscripciones.procesar_preinscripcion', id = idusuario, curso=request.form.get('curso')))
+                
+                else:
+                    sql_usuario = 'INSERT INTO usuarios (`nombre`, `segundoNombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`, `imagen`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                    imagen_blob = imagen.read()
+                    usuario = (
+                        nombre,
+                        segundoNombre,
+                        apellido,
+                        segundoApellido,
+                        cedula,
+                        email,
+                        contraseña_hash,
+                        rol,
+                        imagen_blob
+                        )
+                
+                cur.execute(sql_usuario, usuario)
+                g.db.commit()
+                return jsonify({'mensaje': 'Alumno creado satisfactiramente'}), 200
         except Exception as e:
-            db.rollback()
+            if hasattr(g, 'db'):
+                g.db.rollback()
             return jsonify({'error': 'Error al crear el usuario'}), 500
-        finally:
-            cur.close()
     
     if request.method == 'GET':
         return render_template('inscripciones/alumnosRegulares.html')
@@ -143,10 +146,7 @@ def buscar_alumno():
         return jsonify({'error': 'La cédula es requerida'}), 400
 
     try:
-        db = current_app.config['db']
-        db.ping(reconnect=True)
-        
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM usuarios u WHERE u.rol = %s AND u.cedula = %s'
             data = (rol, cedula)
             cur.execute(sql, data)
@@ -159,6 +159,8 @@ def buscar_alumno():
             else:
                 return jsonify({'success': False, 'message': 'Alumno no encontrado'}), 404
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({
             'success': False,
             'error': 'Error interno al buscar alumno',
@@ -180,10 +182,7 @@ def buscar_curso():
         return jsonify({"error": "faltan campos"}), 400
 
     try:
-        db = current_app.config['db']
-        db.ping(reconnect=True)
-        
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'SELECT s.idSeccion, s.seccion, s.idCurso, c.idFacultad, c.nombre_curso, s.idProfesor FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso WHERE c.nombre_curso = %s '
             data = (data['curso'],)
             cur.execute(sql, data)
@@ -196,6 +195,8 @@ def buscar_curso():
             else:
                 return jsonify({'success': False, 'message': 'Curso no encontrado'}), 404
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({
             'success': False,
             'error': 'Error interno al buscar curso',
@@ -226,10 +227,7 @@ def mostrar_horario():
         return jsonify({"error": "faltan campos"}), 400
     
     try:
-        db = current_app.config['db']
-        db.ping(reconnect=True)
-        
-        with db.cursor() as cur:
+        with g.db.cursor() as cur:
             sql = 'SELECT h.idhorario, h.horario_dia, h.horario_hora, h.horario_hora_final, h.horario_aula, s.idSeccion, c.nombre_curso FROM horario_x_curso hxc JOIN horario h ON hxc.idhorario = h.idhorario JOIN secciones s ON hxc.idSeccion = s.idSeccion JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idSeccion = %s'
             data = (data['idSeccion'],)
             cur.execute(sql, data)
@@ -250,6 +248,8 @@ def mostrar_horario():
             else:
                 return jsonify({'success': False, 'message': 'horario de seccion no encontrado'}), 404
     except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({
             'success': False,
             'error': 'Error interno al buscar el horario',
@@ -259,9 +259,6 @@ def mostrar_horario():
 @inscripciones.route('/inscribir_alumno', methods = ['POST'])
 @login_required
 def inscribir_alumno():
-    db = current_app.config['db']
-    cur = db.cursor()
-
     idAlumno = request.form.get('idAlumno')
     periodoInicio = request.form.get('periodoInicio')
     periodoFinal = request.form.get('periodoFinal')
@@ -270,31 +267,31 @@ def inscribir_alumno():
     idSeccion = request.form.get('idSeccion')
 
     try:
-        sql = 'INSERT INTO inscripcion (`idusuarios`, `fecha_inscripcion`, `fecha_expiracion`, `tipo`, `es_activa`) VALUES (%s, %s, %s, %s, %s)'
-        data = (
-            idAlumno,
-            periodoInicio,
-            periodoFinal,
-            tipo,
-            es_activa
-        )
-        cur.execute(sql, data)
-        db.commit()
+        with g.db.cursor() as cur:
+            sql = 'INSERT INTO inscripcion (`idusuarios`, `fecha_inscripcion`, `fecha_expiracion`, `tipo`, `es_activa`) VALUES (%s, %s, %s, %s, %s)'
+            data = (
+                idAlumno,
+                periodoInicio,
+                periodoFinal,
+                tipo,
+                es_activa
+            )
+            cur.execute(sql, data)
+            g.db.commit()
 
-        sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idusuarios = %s'
-        cur.execute(sql_idInscripcion, (idAlumno,))
-        idAlumnoInscripcion = cur.fetchone()
+            sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idusuarios = %s'
+            cur.execute(sql_idInscripcion, (idAlumno,))
+            idAlumnoInscripcion = cur.fetchone()
 
-        sql_inscripcionesXcursos = 'INSERT INTO insc_x_seccion (`idInscripcion`, `idSeccion`) VALUES (%s, %s)'
-        cur.execute(sql_inscripcionesXcursos, (idAlumnoInscripcion, idSeccion))
-        db.commit()
+            sql_inscripcionesXcursos = 'INSERT INTO insc_x_seccion (`idInscripcion`, `idSeccion`) VALUES (%s, %s)'
+            cur.execute(sql_inscripcionesXcursos, (idAlumnoInscripcion, idSeccion))
+            g.db.commit()
 
-        cur.execute('INSERT INTO calificaciones (`idusuarios`, `idSeccion`, `idInscripcion`) VALUES (%s, %s, %s)', (idAlumno, idSeccion, idAlumnoInscripcion))
-        db.commit()
-        
-        return jsonify({'mensaje': 'Alumno inscrito satisfactoriamente'}), 200
+            cur.execute('INSERT INTO calificaciones (`idusuarios`, `idSeccion`, `idInscripcion`) VALUES (%s, %s, %s)', (idAlumno, idSeccion, idAlumnoInscripcion))
+            g.db.commit()
+            
+            return jsonify({'mensaje': 'Alumno inscrito satisfactoriamente'}), 200
     except Exception as e:
-        db.rollback()
+        if hasattr(g, 'db'):
+            g.db.rollback()
         return jsonify({'error': 'Error al inscribir alumno'}), 400
-    finally:
-        cur.close()
