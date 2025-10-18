@@ -10,7 +10,7 @@ alumnos = Blueprint('alumnos', __name__, template_folder='templates', static_fol
 def index():
     try:
         with g.db.cursor() as cur:
-            sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, u.email FROM usuarios u WHERE u.rol = %s'
+            sql = 'SELECT u.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.SegundoApellido, u.cedula, u.email FROM usuarios u WHERE u.rol = %s'
             cur.execute(sql, ('alumno',))
             registros = cur.fetchall()
             InsertRegistros = []
