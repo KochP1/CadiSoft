@@ -1,0 +1,1 @@
+INSERT INTO usuarios (`nombre`, `apellido`, `segundoApellido`, `cedula`, `email`, `contraseña`, `rol`) VALUES ('Administrador', '', '', '', 'soporteCadi01@gmail.com', '$12$oue2Pk7u9.SYJpP2yqlzCuRCXLRxs2d1ls4PBrP4XzU66vNPsPNCy', 'administrador' )
