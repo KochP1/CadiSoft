@@ -1,3 +1,6 @@
+let isSearching = false;
+let resolveConfirm = null;
+
 function isLoading() {
     const loader = document.getElementById('loader');
     if (isSearching) {
@@ -5,11 +8,10 @@ function isLoading() {
     } else if (!isSearching) {
         setTimeout(() => {
             loader.style.display = 'none';
-        }, 1500);
+        }, 1000);
     }
 }
 
-let isSearching = false;
 function setSearching(value) {
     isSearching = value;
     isLoading();
@@ -17,6 +19,47 @@ function setSearching(value) {
 
 function href(url) {
     window.location.href = url;
+}
+
+function openAlert(title, text) {
+    const modal = new bootstrap.Modal(document.getElementById('dialog-alert'));
+    document.getElementById('alert-title').textContent = title;
+    document.getElementById('alert-content').textContent = text;
+    setTimeout(() => {
+        modal.show();
+    }, 1100)
+}
+
+
+function openConfirm(title, text) {
+    return new Promise((resolve) => {
+        resolveConfirm = resolve;
+        
+        const modal = new bootstrap.Modal(document.getElementById('dialog-confirm'));
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-content').textContent = text;
+        modal.show();
+    });
+}
+
+// Función para cuando el usuario acepta
+function confirmAccept() {
+    if (resolveConfirm) {
+        resolveConfirm(true);
+        resolveConfirm = null;
+    }
+    const modal = bootstrap.Modal.getInstance(document.getElementById('dialog-alert'));
+    modal.hide();
+}
+
+// Función para cuando el usuario cancela
+function confirmCancel() {
+    if (resolveConfirm) {
+        resolveConfirm(false);
+        resolveConfirm = null;
+    }
+    const modal = bootstrap.Modal.getInstance(document.getElementById('dialog-alert'));
+    modal.hide();
 }
 
 // Cierre de sesion
@@ -55,14 +98,14 @@ async function regist_user(event) {
     const contraseña = document.getElementById('contraseña').value;
 
     if (!nombre) {
-        alert('El campo nombre esta vacio')
         setSearching(false);
+        openAlert('Crear usuario', 'El campo nombre esta vacio');
         return;
     }
 
     if (!apellido) {
-        alert('El campo apellido esta vacio')
         setSearching(false);
+        openAlert('Crear usuario', 'El campo apellido esta vacio');
         return;
     }
 
@@ -73,50 +116,50 @@ async function regist_user(event) {
     }
 
     if (!cedula) {
-        alert('El campo cedula esta vacio')
         setSearching(false);
+        openAlert('Crear usuario', 'El campo cedula esta vacio');
         return;
     }
 
     if (!email) {
-        alert('El campo email esta vacio')
         setSearching(false);
+        openAlert('Crear usuario', 'El campo email esta vacio');
         return;
     }
 
     if (!contraseña) {
-        alert('El campo contraseña esta vacio')
         setSearching(false);
+        openAlert('Crear usuario', 'El campo contraseña esta vacio');
         return;
     }
 
     if (cedula.length > 8) {
         setSearching(false);
-        alert('La cédula puede tener máximo 8 caracteres');
+        openAlert('Crear usuario', 'El campo cedula esta vacio');
         return;
     }
 
     if (contraseña.length > 8) {
         setSearching(false);
-        alert('La contraseña puede tener máximo 8 caracteres');
+        openAlert('Crear usuario', 'La contraseña puede tener máximo 8 caracteres');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
         setSearching(false);
-        alert('Los nobres pueden tener máximo 12 caracteres');
+        openAlert('Crear usuario', 'Los nobres pueden tener máximo 12 caracteres');
         return;
     }
 
     if (apellido.length > 20 || segundoApellido.length > 20) {
         setSearching(false);
-        alert('Los apellidos pueden tener máximo 20 caracteres');
+        openAlert('Crear usuario', 'Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
 
     if (email.length > 50) {
         setSearching(false);
-        alert('El email puede tener un máximo de 50 caracteres');
+        openAlert('Crear usuario', 'El email puede tener un máximo de 50 caracteres')
         return;
     }
 
@@ -136,11 +179,11 @@ async function regist_user(event) {
 
         const data = await response.json();
         if (!response.ok) {
-            alert(data.error);
+            openAlert('Crear usuario', `${data.error}`);
             throw new Error(data.error);
         }
 
-        alert('El usuario fue creado satisfactoriamente');
+        openAlert('Crear usuario', 'El usuario fue creado satisfactoriamente')
         window.location.href = '/';
     } catch(e) {
         console.error(e);
@@ -159,14 +202,14 @@ async function olvidar_contraseña(event) {
     const formData = new FormData();
 
     if (!email) {
-        alert('Todos los campos son obligatorios')
         setSearching(false);
+        openAlert('Recuperar cuenta', 'Debes ingresar un email')
         return;
     }
 
     if ( email.length > 50) {
-        alert('El email puede tener 50 caracteres máximo');
         setSearching(false);
+        openAlert('Recuperar cuenta', 'El email puede tener 50 caracteres máximo')
         return;
     }
 
@@ -181,11 +224,11 @@ async function olvidar_contraseña(event) {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.error);
+            openAlert('Recuperar cuenta', `${data.error}`)
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Recuperar cuenta', `${data.message}`)
         window.location.href = `/verificacion_dos_pasos/${data.idusuario}`
     } catch (e) {
         console.log(e)
@@ -204,15 +247,15 @@ async function verificar_codigo(idusuario, event) {
     const formData = new FormData();
 
     if (!codigo) {
-        alert('Debe ingresar el codigo de verificación');
         setSearching(false);
+        openAlert('Recuperar cuenta', 'Debe ingresar el codigo de verificación')
         return;
     }
 
     
     if (codigo.length > 6) {
-        alert('Un código de verificación no puede tener más de 6 digitos');
         setSearching(false);
+        openAlert('Recuperar cuenta', 'Un código de verificación no puede tener más de 6 digitos')
         return;
     }
 
@@ -227,11 +270,11 @@ async function verificar_codigo(idusuario, event) {
         const data = await response.json();
 
         if (!response.ok) {
-            alert('Código de recuperación inválido')
+            openAlert('Recuperar cuenta', 'Código de recuperación invalido')
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Recuperar cuenta', `${data.message}`)
         window.location.href = `/recuperar_contraseña/${data.user}`
     } catch(e) {
         console.log(e)
@@ -251,20 +294,20 @@ async function recuperar_contraseña(idusuario, event) {
     const formData = new FormData();
 
     if (!contraseaNuevaConfirmar || !contraseñaNueva) {
-        alert('Todos los campos son obligatorios');
         setSearching(false);
+        openAlert('Recuperar cuenta', 'Debe ingresar una contraseña')
         return null;
     }
 
     if(contraseñaNueva !== contraseaNuevaConfirmar) {
-        alert('La confirmación de la contraseña no es igual a la nueva contraseña');
         setSearching(false);
+        openAlert('Recuperar cuenta', 'Las contraseñas no coinciden')
         return null;
     }
 
     if (contraseñaNueva.length > 8 || contraseaNuevaConfirmar.length > 8) {
-        alert('La contraseña puede tener máximo 8 caracteres');
         setSearching(false);
+        openAlert('Recuperar cuenta', 'La contraseña puede tener máximo 8 caracteres')
         return null;
     }
 
@@ -280,10 +323,11 @@ async function recuperar_contraseña(idusuario, event) {
         const data = await response.json();
 
         if (!response.ok) {
+            openAlert('Recuperar cuenta', 'Error al actualizar contraseña')
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Recuperar cuenta', `${data.message}`)
         window.location.href = '/';
 
     } catch(e) {
@@ -460,73 +504,73 @@ async function crearProfesor(event) {
 
     if (especialidad === '') {
         setSearching(false);
-        alert('El campo de especialidad esta vacio');
+        openAlert('Crear profesor', 'El campo especialidad esta vacio');
         return;
     }
 
-    if (nombre === '') {
+    if (!nombre) {
         setSearching(false);
-        alert('El nombre esta vacio');
+        openAlert('Crear profesor', 'El campo nombre esta vacio');
         return;
     }
 
-    if (apellido === '' || segundoApellido === '') {
+    if (!apellido) {
         setSearching(false);
-        alert('los campos de apellidos deben ser llenados')
+        openAlert('Crear profesor', 'El campo apellido esta vacio');
         return;
     }
 
-    if (cedula === '') {
+    if (!cedula) {
         setSearching(false);
-        alert('la cedula esta vacio')
+        openAlert('Crear profesor', 'El campo cedula esta vacio');
         return;
     }
 
-    if (email === '') {
+    if (!email) {
         setSearching(false);
-        alert('El email esta vacio')
+        openAlert('Crear profesor', 'El campo email esta vacio');
         return;
     }
 
-    if (contraseña === '') {
+    if (!contraseña) {
         setSearching(false);
-        alert('La contraseña esta vacia')
+        openAlert('Crear profesor', 'El campo contraseña esta vacio');
         return;
     }
 
     if (cedula.length > 8) {
         setSearching(false);
-        alert('La cédula puede tener máximo 8 caracteres');
+        openAlert('Crear profesor', 'El campo cedula esta vacio');
         return;
     }
 
     if (contraseña.length > 8) {
         setSearching(false);
-        alert('La contraseña puede tener máximo 8 caracteres');
+        openAlert('Crear profesor', 'La contraseña puede tener máximo 8 caracteres');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
         setSearching(false);
-        alert('Los nobres pueden tener máximo 12 caracteres');
+        openAlert('Crear profesor', 'Los nobres pueden tener máximo 12 caracteres');
         return;
     }
 
     if (apellido.length > 20 || segundoApellido.length > 20) {
         setSearching(false);
-        alert('Los apellidos pueden tener máximo 20 caracteres');
-        return;
-    }
-
-    if (especialidad.length > 20) {
-        setSearching(false);
-        alert('La especialidad puede tener un máximo de 20 caracteres');
+        openAlert('Crear profesor', 'Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
 
     if (email.length > 50) {
         setSearching(false);
-        alert('El email puede tener un máximo de 50 caracteres');
+        openAlert('Crear profesor', 'El email puede tener un máximo de 50 caracteres')
+        return;
+    }
+
+    if (especialidad.length > 12) {
+        setSearching(false);
+        openAlert('Crear profesor', 'La especialidad puede tener máximo 20 caracteres');
         return;
     }
     
@@ -553,10 +597,10 @@ async function crearProfesor(event) {
         });
     
         if (response.ok) {
-            alert('Profesor creado satisfactoriamente')
+            openAlert('Crear profesor', `Profesor creado satisfactoriamente`)
             window.location.href = '/profesores/'
         } else {
-            alert('Error al crear el usuario')
+            openAlert('Crear profesor', `Error al crear profesor`)
         }
     } catch (error) {
         console.log(error)
@@ -568,7 +612,8 @@ async function crearProfesor(event) {
 // Eliminar profesor
 async function eliminar_profesor(idusuarios) {
     try {
-        if (confirm('Estas seguro de que quieres eliminar el profesor?')) {
+        const confirm = await openConfirm('Eliminar profesor', 'Estas seguro de que quieres eliminar el profesor?');
+        if (confirm) {
             if (isSearching) return;
             setSearching(true);
             const response = await fetch(`/profesores/eliminar_profesor/${idusuarios}`, {
@@ -579,10 +624,10 @@ async function eliminar_profesor(idusuarios) {
             });
         
             if (response.ok) {
-                alert('Profesor eliminado satisfactoriamente');
+                openAlert('Eliminar profesor', `Profesor eliminado satisfactoriamente`)
                 window.location.reload();
             } else {
-                alert('Error al eliminar el profesor');
+                openAlert('Eliminar profesor', `Error al eliminar profesor`)
             }
         }
     } catch(e) {
@@ -1444,63 +1489,63 @@ async function crearAlumno(event) {
     setSearching(true);
 
 
-    if (nombre === '') {
+    if (!nombre) {
         setSearching(false);
-        alert('El nombre esta vacio');
+        openAlert('Crear alumno', 'El campo nombre esta vacio');
         return;
     }
 
-    if (apellido === '' || segundoApellido === '') {
+    if (!apellido) {
         setSearching(false);
-        alert('los campos de apellidos deben ser llenados')
+        openAlert('Crear alumno', 'El campo apellido esta vacio');
         return;
     }
 
-    if (cedula === '') {
+    if (!cedula) {
         setSearching(false);
-        alert('la cedula esta vacio')
+        openAlert('Crear alumno', 'El campo cedula esta vacio');
         return;
     }
 
-    if (email === '') {
+    if (!email) {
         setSearching(false);
-        alert('El email esta vacio')
+        openAlert('Crear alumno', 'El campo email esta vacio');
         return;
     }
 
-    if (contraseña === '') {
+    if (!contraseña) {
         setSearching(false);
-        alert('La contraseña esta vacia')
+        openAlert('Crear alumno', 'El campo contraseña esta vacio');
         return;
     }
 
     if (cedula.length > 8) {
         setSearching(false);
-        alert('La cédula puede tener máximo 8 caracteres');
+        openAlert('Crear alumno', 'El campo cedula esta vacio');
         return;
     }
 
     if (contraseña.length > 8) {
         setSearching(false);
-        alert('La contraseña puede tener máximo 8 caracteres');
+        openAlert('Crear alumno', 'La contraseña puede tener máximo 8 caracteres');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
         setSearching(false);
-        alert('Los nobres pueden tener máximo 12 caracteres');
+        openAlert('Crear alumno', 'Los nobres pueden tener máximo 12 caracteres');
         return;
     }
 
-    if (apellido.length > 20 || segundoApellido.length > 12) {
+    if (apellido.length > 20 || segundoApellido.length > 20) {
         setSearching(false);
-        alert('Los apellidos pueden tener máximo 20 caracteres');
+        openAlert('Crear alumno', 'Los apellidos pueden tener máximo 20 caracteres');
         return;
     }
 
     if (email.length > 50) {
         setSearching(false);
-        alert('El email puede tener un máximo de 50 caracteres')
+        openAlert('Crear alumno', 'El email puede tener un máximo de 50 caracteres')
         return;
     }
 
@@ -1521,11 +1566,11 @@ async function crearAlumno(event) {
         });
     
         if (response.ok) {
-            alert('Alumno creado satisfactoriamente');
+            openAlert('Crear alumno', 'Alumno creado satisfactoriamente')
             clearInputs(['nombreAlumno', 'segundoNombreAlumno', 'apellidoAlumno', 'segundoApellidoAlumno', 'cedulaAlumno', 'emailAlumno', 'contraseñaAlumno', 'imagenAlumno'])
             document.getElementById('inscripcion-buscar-cedula').value = cedula;
         } else {
-            alert('Error al crear el alumno')
+            openAlert('Crear alumno', 'Error al crear alumno')
         }
     } catch (error) {
         console.log(error)
