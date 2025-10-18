@@ -2,6 +2,8 @@ from flask import request, render_template, redirect, url_for, Blueprint, curren
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_bcrypt import Bcrypt
 
+from aplicacion.blueprints.cursos.routes import dateToString
+
 alumnos = Blueprint('alumnos', __name__, template_folder='templates', static_folder="static")
 
 # ALUMNOS 
@@ -266,6 +268,7 @@ def buscar_registro_familiar():
 # DASHBOARD DE ALUMNOS
 
 @alumnos.route('/dashboard')
+@login_required
 def dashboard():
     try:
         with g.db.cursor() as cur:
@@ -301,7 +304,42 @@ def dashboard():
         return f'{e}'
 
 @alumnos.route('/mis_calificaciones')
+@login_required
 def mis_calificaciones():
     return render_template('alumnos/calificaciones.html')
+
+@alumnos.route('/calificaciones')
+@login_required
+def calificaciones():
+    with g.db.cursor() as cur:
+        try:
+            sql = """
+                SELECT c.idCalificacion, c.idusuarios, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, i.idInscripcion, c.logro_1, 
+                c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva, s.seccion, cs.nombre_curso, up.nombre, up.apellido
+                FROM calificaciones c
+                INNER JOIN secciones s ON c.idSeccion = s.idSeccion
+                INNER JOIN cursos cs ON s.idCurso = cs.idCurso
+                INNER JOIN inscripcion i ON c.idInscripcion = i.idInscripcion
+                INNER JOIN usuarios u ON c.idusuarios = u.idusuarios
+                INNER JOIN profesores p ON s.idProfesor = p.idProfesor
+                INNER JOIN usuarios up ON p.idusuarios = up.idusuarios
+                WHERE u.idusuarios = %s
+            """
+
+            cur.execute(sql, (current_user.idusuarios,))
+            data = cur.fetchall()
+            calificaciones = []
+            columNames = [column[0] for column in cur.description]
+            for item in data:
+                calificaciones.append(dict(zip(columNames, item)))
+
+            for record in calificaciones:
+                record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+
+            return jsonify({'calificaciones': calificaciones}), 200
+
+        except Exception as e:
+            return jsonify({'error': f'Error al obtener notas: {e}'})
 
 # FINALIZA DAHSBOARD DE ALUMNOS
