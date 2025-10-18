@@ -138,8 +138,6 @@ def create_app():
     app.register_blueprint(inscripciones, url_prefix='/inscripciones')
     app.register_blueprint(acerca, url_prefix='/acerca')
 
-    # REMOVER CONEXIÓN GLOBAL - usar g.db en su lugar
-    app.config['db'] = db  # ELIMINAR ESTA LÍNEA
     
     # Actualizar Config para usar el pool
     Config.set_db_pool(get_db_connection)
@@ -150,14 +148,6 @@ def create_app():
     scheduler.start()
     
     return app
-
-    # db = pymysql.connect(
-    #     host=getenv('DB_HOST'),
-    #     port=int(getenv('DB_PORT')),
-    #     user=getenv('DB_USER'),
-    #     password=getenv('DB_PASSWORD'),
-    #     database=getenv('DB_NAME')
-    # )
 
     # Middleware para debug
     # @app.before_request
