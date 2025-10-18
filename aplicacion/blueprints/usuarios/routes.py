@@ -331,9 +331,7 @@ def recuperar_contraseña(idusuario):
 @usuario.route('/get_profile_image/<int:idusuarios>')
 @login_required
 def get_profile_image(idusuarios):
-    db = current_app.config['db']
-    with db.cursor() as cur:
-        db.ping(reconnect=True)
+    with g.db.cursor() as cur:
         cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
         image_data = cur.fetchone()[0]
 
