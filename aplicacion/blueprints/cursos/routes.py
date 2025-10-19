@@ -567,27 +567,8 @@ def calificaciones(idSeccion):
                 columNames = [column[0] for column in cur.description]
                 for record in registro:
                     insertRegistro.append(dict(zip(columNames, record)))
-                
-                cur.execute('''
-                        SELECT i.fecha_inscripcion, i.fecha_expiracion 
-                        FROM insc_x_seccion 
-                        JOIN inscripcion i ON insc_x_seccion.idInscripcion = i.idInscripcion 
-                        WHERE insc_x_seccion.idSeccion = %s 
-                        AND i.fecha_inscripcion <= CURDATE() 
-                        ORDER BY i.fecha_inscripcion DESC 
-                        LIMIT 1
-                    ''', (idSeccion,))
-                registro_periodo = cur.fetchall()
 
-                periodoArray = []
-                columPeriodo = [column[0] for column in cur.description]
-                for record in registro_periodo:
-                    periodoArray.append(dict(zip(columPeriodo, record)))
-                
-                for record in periodoArray:
-                    inicioPeriodo = record['fecha_inscripcion']
-                
-                cur.execute('SELECT c.idCalificacion, c.idusuarios, u.nombre, u.segundoNombre, u.apellido, u.segundoApellido, u.cedula, i.fecha_inscripcion, i.fecha_expiracion, i.es_activa, i.asistencia, i.inasistencia, i.idInscripcion, c.logro_1, c.logro_2, c.logro_3, c.logro_4, c.logro_5, c.definitiva FROM calificaciones c JOIN inscripcion i ON c.idInscripcion = i.idInscripcion JOIN usuarios u ON c.idusuarios = u.idusuarios WHERE c.idSeccion = %s AND i.fecha_inscripcion = %s', (idSeccion, inicioPeriodo))
+                cur.callproc('calificaciones_sp', [idSeccion])
                 registro_calificaciones = cur.fetchall()
 
                 insertCalificaciones = []
@@ -598,8 +579,6 @@ def calificaciones(idSeccion):
                 for record in insertCalificaciones:
                     record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
                     record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
-
-                print(insertCalificaciones)
                 
                 return render_template('cursos/calificaciones.html', data = insertRegistro, calificaciones = insertCalificaciones)
         except Exception as e:

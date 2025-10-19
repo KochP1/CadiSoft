@@ -268,6 +268,12 @@ def inscribir_alumno():
 
     try:
         with g.db.cursor() as cur:
+            cur.execute('SELECT idInscripcion FROM inscripcion WHERE idusuarios = %s AND fecha_inscripcion = %s AND fecha_expiracion = %s', (idAlumno, periodoInicio, periodoFinal))
+            validacion = cur.fetchone()
+
+            if validacion is not None:
+                return jsonify({'error': 'Ya existe una inscripcion para este alumno en este periodo'}), 400
+
             sql = 'INSERT INTO inscripcion (`idusuarios`, `fecha_inscripcion`, `fecha_expiracion`, `tipo`, `es_activa`) VALUES (%s, %s, %s, %s, %s)'
             data = (
                 idAlumno,
@@ -279,8 +285,8 @@ def inscribir_alumno():
             cur.execute(sql, data)
             g.db.commit()
 
-            sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idusuarios = %s'
-            cur.execute(sql_idInscripcion, (idAlumno,))
+            sql_idInscripcion = 'SELECT idInscripcion FROM inscripcion WHERE idusuarios = %s AND fecha_inscripcion = %s AND fecha_expiracion = %s'
+            cur.execute(sql_idInscripcion, (idAlumno, periodoInicio, periodoFinal))
             idAlumnoInscripcion = cur.fetchone()
 
             sql_inscripcionesXcursos = 'INSERT INTO insc_x_seccion (`idInscripcion`, `idSeccion`) VALUES (%s, %s)'
