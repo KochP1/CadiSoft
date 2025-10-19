@@ -644,7 +644,7 @@ function update_foto(idusuarios) {
     const imagen = document.getElementById('fotoPerfil').files[0];
 
     if (!imagen) {
-        alert('Por favor, seleccione una imagen');
+        openAlert('Editar usuario', 'Debe seleccionar una imágen');
         return;
     }
 
@@ -664,12 +664,10 @@ function update_foto(idusuarios) {
             });
 
             if (response.ok) {
-                alert('Imágen actualizada satisfactoriamente');
+                openAlert('Editar usuario', 'Imágen actualizada');
                 window.location.reload();
             } else {
-                console.log(response.status);
-                console.log(response.json());
-                alert('La imágen no pudo ser actualizada');
+                openAlert('Editar usuario', 'Error al actualizar imágen');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -684,13 +682,13 @@ async function edit_email(idusuarios) {
 
     if(!email) {
         setSearching(false);
-        alert('Debe ingresar el correo electrónico')
+        openAlert('Editar usuario', 'Debe ingresar un correo valido');
         return;
     }
 
     if (email.length > 50) {
         setSearching(false);
-        alert('El email puede tener un máximo de 50 caracteres');
+        openAlert('Editar usuario', 'El email puede tener máximo 50 caracteres');
         return;
     }
 
@@ -706,10 +704,10 @@ async function edit_email(idusuarios) {
         });
     
         if (response.ok) {
-            alert('Email actualizado satisfactoriamente');
+            openAlert('Editar usuario', 'Email actualizado satisfactoriamente');
             window.location.reload();
         } else {
-            alert('Error al actualizar el email');
+            openAlert('Editar usuario', 'Error al actualizar email');
         }
     } catch (e) {
         console.log(`Error: ${e}`);
@@ -724,13 +722,13 @@ async function edit_nombres(idusuarios) {
 
     if (!nombre) {
         setSearching(false);
-        alert('Debe llenar al menos un campo para actualizar');
+        openAlert('Editar usuario', 'El campo nombre no puede estar vacio');
         return;
     }
 
     if (nombre.length > 12 || segundoNombre.length > 12) {
         setSearching(false);
-        alert('los nombres pueden tener un máximo de 12 caracteres');
+        openAlert('Editar usuario', 'Los nombres pueden tener máximo 12 caracteres');
         return;
     }
 
@@ -746,10 +744,10 @@ async function edit_nombres(idusuarios) {
         });
     
         if (response.ok) {
-            alert('Nombres actualizados satisfactoriamente')
+            openAlert('Editar usuario', 'Nombres actualizados');
             window.location.reload();
         } else {
-            alert('Error actualizando nombres')
+            openAlert('Editar usuario', 'Error actualzando nombres');
         }
     } catch (e) {
         console.log(`Error: ${e}`)
@@ -764,13 +762,13 @@ async function edit_apellidos(idusuarios) {
 
     if (!apellido || !segundoApellido) {
         setSearching(false);
-        alert('Debe llenar todos los campos');
+        openAlert('Editar usuario', 'Debe llenar ambos apellidos');
         return;
     }
 
     if (apellido.length > 20 || segundoApellido.length > 20) {
         setSearching(false);
-        alert('los apellidos pueden tener un máximo de 20 caracteres');
+        openAlert('Editar usuario', 'Los apellidos pueden tener un máximo de 20 caracteres');
         return;
     }
 
@@ -786,10 +784,10 @@ async function edit_apellidos(idusuarios) {
         });
     
         if (response.ok) {
-            alert('Apellidos actualizados satisfactoriamente')
+            openAlert('Editar usuario', 'Apellidos actualizados');
             window.location.reload();
         } else {
-            alert('Error actualizando apellidos')
+            openAlert('Editar usuario', 'Error actualizando apellidos');
         }
     } catch (e) {
         console.log(`Error: ${e}`)
@@ -805,13 +803,13 @@ async function edit_cedula(idusuarios) {
 
     if(!cedula) {
         setSearching(false);
-        alert('Debe ingresar la cédula')
+        openAlert('Editar usuario', 'Debe ingresar la cédula');
         return;
     }
 
     if (cedula.length > 8) {
         setSearching(false);
-        alert('La cédula puede tener máximo 8 caracteres')
+        openAlert('Editar usuario', 'La cédula puede tener máximo 8 caracteres');
         return;
     }
 
@@ -825,10 +823,10 @@ async function edit_cedula(idusuarios) {
         });
     
         if (response.ok) {
-            alert('cedula actualizada satisfactoriamente');
+            openAlert('Editar usuario', 'Cédula actualizada satisfactoriamente');
             window.location.reload();
         } else {
-            alert('Error al actualizar la cedula');
+            openAlert('Editar usuario', 'Error al actualizar cédula');
         }
     } catch (e) {
         console.log(`Error: ${e}`);
@@ -845,13 +843,13 @@ async function edit_contraseña(idusuarios) {
 
     if (contraseaNueva.length > 8 || contraseñaActual.length > 8) {
         setSearching(false);
-        alert('La contraseña puede tener 8 caracteres máximo')
+        openAlert('Editar usuario', 'La contraseña puede tener máximo 8 caracteres');
         return;
     }
 
     if (!contraseaNueva || !contraseñaActual) {
         setSearching(false);
-        alert('Debe llenar los dos campos para actualizar la contraseña')
+        openAlert('Editar usuario', 'Debe llenar ambos campos de contraseña');
         return;
     }
 
@@ -866,10 +864,10 @@ async function edit_contraseña(idusuarios) {
         });
     
         if (response.ok) {
-            alert('La contraseña fue actualizada satisfactoriamente');
+            openAlert('Editar usuario', 'Contraseña actualizada');
             log_out();
         } else{
-            alert('La contraseña actual es incorrecta');
+            openAlert('Editar usuario', 'La contraseña actual es incorrecta');
         }
     } catch(e) {
         console.log(`Error: ${e}`);
@@ -886,13 +884,13 @@ async function crearFacultad(event) {
 
     if (nombreFacultad === '') {
         setSearching(false);
-        alert('Debe introducir el nombre de la facultad');
+        openAlert('Crear facultad', 'Debe ingresar el nombre de la facultad');
         return;
     }
 
     if (nombreFacultad.length > 30) {
         setSearching(false);
-        alert('La facultad puede tener un máximo de 30 caracteres');
+        openAlert('Crear facultad', 'La facultad puede tener un máximo de 30 caracteres');
         return;
     }
 
@@ -909,10 +907,10 @@ async function crearFacultad(event) {
         })
     
         if (response.ok) {
-            alert('Facultad creada satisfactoriamente');
+            openAlert('Crear facultad', 'Facultad creada');
             window.location.reload();
         } else{
-            alert('Error al crear la facultad')
+            openAlert('Crear facultad', 'Error al crear facultad');
         }
     } catch(e) {
         console.log(e)
@@ -938,13 +936,13 @@ async function editar_facultad(idfacultad, event) {
 
     if (nombreFacultad === '') {
         setSearching(false);
-        alert('Debe introducir el nombre de la facultad');
+        openAlert('Editar facultad', 'Debe ingresar el nombre de la facultad');
         return;
     }
 
     if (nombreFacultad.length > 30) {
         setSearching(false);
-        alert('La facultad puede tener un máximo de 30 caracteres');
+        openAlert('Editar facultad', 'La facultad puede tener un máximo de 30 caracteres');
         return;
     }
 
@@ -975,8 +973,8 @@ async function editar_facultad(idfacultad, event) {
 }
 
 async function elim_facultad(idfacultad) {
-
-    if(confirm('¿Estas seguro de quieres eliminar esta facultad?, esto afectara a los cursos que estan dentro de esta')) {
+    const confirm = await openConfirm('Eliminar facultad', '¿Estas seguro de quieres eliminar esta facultad?, esto afectara a los cursos que estan dentro de esta')
+    if(confirm) {
         try {
             if (isSearching) return;
             setSearching(true);
@@ -988,10 +986,10 @@ async function elim_facultad(idfacultad) {
             });
     
             if (response.ok) {
-                alert('Facultad eliminada satisfactoriamente')
+                openAlert('Eliminar facultad', 'Facultad eliminada');
                 window.location.href = '/facultades/'
             } else {
-                alert('Error al eliminar facultad')
+                openAlert('Eliminar facultad', 'Error al eliminar facultad');
             }
         } catch (e) {
             console.log(`Error: ${e}`)
@@ -1006,7 +1004,8 @@ async function elim_facultad(idfacultad) {
 // Eliminar alumno
 
 async function eliminar_usuario(idusuarios) {
-    if (confirm('Estas seguro de que quieres eliminar el alumno')) {
+    const confirm = await openConfirm('¿Eliminar alumno', 'Estas seguro de eliminar el alumno?')
+    if (confirm) {
         
         try {
             if (isSearching) return;
@@ -1016,10 +1015,10 @@ async function eliminar_usuario(idusuarios) {
             });
     
             if (response.ok) {
-                alert('El alumno ha sido eliminado satisfactoriamente');
+                openAlert('Eliminar alumno', 'Alumno eliminado');
                 window.location.reload();
             } else {
-                alert('Error al eliminar al alumno');
+                openAlert('Eliminar alumno', 'Error al eliminar alumno');
             }
         } catch(e) {
             console.log(`Error: ${e}`);
@@ -1045,19 +1044,19 @@ async function crear_registro_familiar(idAlumno, event) {
 
     if (!nombrePapa || !apellidoMama || !apellidoPapa || !nombreMama || !contacto) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Registro familiar', 'Todos los campos son obligatorios');
         return;
     }
 
     if (nombrePapa.length > 12 || nombreMama.length > 12) {
         setSearching(false);
-        alert('Nombres pueden tener maximo 12 caracteres');
+        openAlert('Registro familiar', 'Los nombres pueden tener un máximo de 12 caractéres');
         return;
     }
 
     if (apellidoPapa.length > 20 || apellidoMama.length > 20) {
         setSearching(false);
-        alert('Apellidos pueden tener maximo 20 caracteres');
+        openAlert('Registro familiar', 'Los apellidos pueden tener un máximo de 20 caractéres');
         return;
     }
 
@@ -1078,7 +1077,7 @@ async function crear_registro_familiar(idAlumno, event) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Registro familiar', `${data.message}`);
         window.location.reload();
     } catch(e) {
         console.log(e)
@@ -1098,19 +1097,19 @@ async function edit_datos_papa(idFamilia, event) {
 
     if (!NombrePapa || !ApellidoPapa) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Registro familiar', 'Todos los campos son obligatorios');
         return;
     }
 
     if (NombrePapa.length > 12) {
         setSearching(false);
-        alert('Los nombres pueden tener máximo 12 caracteres');
+        openAlert('Registro familiar', 'Los nombres pueden tener un máximo de 20 caractéres');
         return;
     }
 
     if (ApellidoPapa.length > 20) {
         setSearching(false);
-        alert('Los apellidos pueden tener máximo 20 caracteres');
+        openAlert('Registro familiar', 'Los apellidos pueden tener un máximo de 20 caractéres');
         return;
     }
 
@@ -1129,7 +1128,7 @@ async function edit_datos_papa(idFamilia, event) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Registro familiar', `${data.message}`);
         window.location.reload();
     } catch(e) {
         console.log(e)
@@ -1149,19 +1148,19 @@ async function edit_datos_mama(idFamilia, event) {
 
     if (!NombreMama || !ApellidoMama) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Registro familiar', 'Todos los campos son obligatorios');
         return;
     }
 
     if (NombreMama.length > 12) {
         setSearching(false);
-        alert('Los nombres pueden tener máximo 12 caracteres');
+        openAlert('Registro familiar', 'Los nombres pueden tener un máximo de 20 caractéres');
         return;
     }
 
     if (ApellidoMama.length > 20) {
         setSearching(false);
-        alert('Los apellidos pueden tener máximo 20 caracteres');
+        openAlert('Registro familiar', 'Los apellidos pueden tener un máximo de 20 caractéres');
         return;
     }
 
@@ -1180,7 +1179,7 @@ async function edit_datos_mama(idFamilia, event) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Registro familiar', `${data.message}`);
         window.location.reload();
     } catch(e) {
         console.log(e)
@@ -1199,13 +1198,13 @@ async function edit_datos_contacto(idFamilia, event) {
 
     if (!contacto) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Registro familiar', 'Todos los campos son obligatorios');
         return;
     }
 
     if (contacto.length > 11) {
         setSearching(false);
-        alert('El teléfono puede tener máximo 11 digitos');
+        openAlert('Registro familiar', 'El teléfono puede tener máximo 11 caractéres');
         return;
     }
 
@@ -1223,7 +1222,7 @@ async function edit_datos_contacto(idFamilia, event) {
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Registro familiar', `${data.message}`);
         window.location.reload();
     } catch(e) {
         console.log(e)
@@ -1234,8 +1233,9 @@ async function edit_datos_contacto(idFamilia, event) {
 
 async function eliminar_registro_familiar(idRegistro) {
     const url = `/alumnos/eliminar_registro_familiar/${idRegistro}`;
+    const confirm = await openConfirm('Registro familiar', 'Estas seguro de que quieres eliminar el registro familiar?');
 
-    if(confirm('Estas seguro de que quieres eliminar el registro familiar?')) {
+    if(confirm) {
         try {
             if (isSearching) return;
             setSearching(true);
@@ -1249,7 +1249,7 @@ async function eliminar_registro_familiar(idRegistro) {
                 throw new Error(data.error);
             }
 
-            alert(data.message);
+            openAlert('Registro familiar', `${data.message}`);
             window.location.reload();
         } catch (e) {
             console.log(e)
@@ -1263,7 +1263,6 @@ async function eliminar_registro_familiar(idRegistro) {
 
 // Buscar alumno por cédula
 function buscar_alumno() {
-    console.log('Me ejecuto')
     const form = document.getElementById('buscar-alumno-inscripcion')
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -1272,14 +1271,14 @@ function buscar_alumno() {
         setSearching(true);
 
         const formData = new FormData;
-        const cedula = document.getElementById('inscripcion-buscar-cedula').value
+        const cedula = document.getElementById('inscripcion-buscar-cedula').value.trim();
         const url = '/inscripciones/buscar_alumno'
 
         formData.append('cedula', cedula)
 
         if (!cedula) {
             setSearching(false);
-            alert('Por favor ingrese una cédula');
+            openAlert('Inscripciones', 'Debe ingresar una cédula');
             return;
         }
 
@@ -1290,7 +1289,7 @@ function buscar_alumno() {
             })
 
             if (!response.ok) {
-                alert('El alumno no existe')
+                openAlert('Inscripciones', 'No se encontro el alumno');
                 throw new Error('Hubo un error buscando al alumno')
             }
 
@@ -1326,7 +1325,7 @@ async function buscar_curso() {
         });
 
         if (!response.ok) {
-            alert('Curso no encontrado')
+            openAlert('Inscripciones', 'Curso no encontrado');
             throw new Error ('Error al buscar el curso');
         }
 
@@ -1378,8 +1377,8 @@ async function buscar_horario() {
 async function elim_preinscripcion(event, id) {
     event.preventDefault();
     const url = `/inscripciones/elim_preinscripcion/${id}`;
-
-    if (confirm('¿Estás seguro de que queires eliminar la preinscripción?')) {
+    const confirm = await openConfirm('Preinscripciones', '¿Estás seguro de que quieres eliminar la preinscripción?')
+    if (confirm) {
             if (isSearching) return;
             setSearching(true);
             try {
@@ -1393,11 +1392,11 @@ async function elim_preinscripcion(event, id) {
             const data = response.json()
 
             if (!response.ok) {
-                alert(data.error);
+                openAlert('Preinscripciones', `${data.error}`);
                 throw new Error(data.error);
             }
 
-            alert('La preinscripción fue eliminada');
+            openAlert('Preinscripciones', 'La preinscripción fue eliminada')
             window.location.reload();
         } catch(e) {
             console.error(e);
@@ -1425,25 +1424,25 @@ async function inscribir_alumno(event) {
 
     if (!periodoInicio || !periodoFinal) {
         setSearching(false);
-        alert('Debes ingresar el periodo de inscripción');
+        openAlert('Inscripciones', 'Debes ingresar el periodo de inscripcion');
         return;
     }
 
     if (periodoInicio > periodoFinal) {
         setSearching(false);
-        alert('La fecha "Inicio" no puede ser mayor que la de "Finalización"');
+        openAlert('Inscripciones', 'La fecha "Inicio" no puede ser mayor que la de "Finalización"');
         return;
     }
 
     if (!idSeccion) {
         setSearching(false);
-        alert('Debes ingresar la sección deseada');
+        openAlert('Inscripciones', 'Debes ingresar una sección');
         return;
     }
 
     if (!tipoInscripcion) {
         setSearching(false);
-        alert('Es necesario especificar el tipo de inscripción');
+        openAlert('Inscripciones', 'Es necesario especificar el tipo de inscripción');
         return;
     }
 
@@ -1463,10 +1462,10 @@ async function inscribir_alumno(event) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.mensaje || 'Error al inscribir');
                 
-        alert(data.mensaje);
+        openAlert('Inscripciones', `${data.mensaje}`);
         window.location.reload();
         } catch (e) {
-            alert(e.message);
+            openAlert('Inscripciones', `${e.message}`);
             console.error(e);
         } finally {
             setSearching(false);
@@ -1643,17 +1642,18 @@ async function crear_curso(event) {
     if (isSearching) return;
     setSearching(true);
 
-    if (!facultad || !nombre_curso) {
+    if (!facultad || !nombre_curso || duracion_curso) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Cursos', 'Todos los campos son obligatorios');
         return;
     }
 
     if (nombre_curso.length > 30) {
         setSearching(false);
-        alert('El nombre del curso puede tener 30 caracteres máximo');
+        openAlert('Cursos', 'El nombre del curso puede tener máximo 30 caracteres');
         return;
     }
+
     const formData = new FormData();
 
     formData.append('idFacultad', facultad);
@@ -1669,11 +1669,11 @@ async function crear_curso(event) {
         const data = await response.json();
 
         if(!response.ok) {
-            alert('ERROR')
+            openAlert('Cursos', `${data.error}`);
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Cursos', `${data.message}`);
         window.location.reload();
     } catch (e) {
         console.log(e)
@@ -1684,8 +1684,9 @@ async function crear_curso(event) {
 
 async function elim_curso(idcurso) {
     const url = `/cursos/eliminar_curso/${idcurso}`;
-
-    if (confirm('Quieres eliminar este curso?')) {
+    const confirm = await openConfirm('Cursos', '¿Quieres eliminar este curso?');
+    
+    if (confirm) {
         try {
             if (isSearching) return;
             setSearching(true);
@@ -1696,10 +1697,11 @@ async function elim_curso(idcurso) {
             const data = response.json();
 
             if (!response.ok) {
+                openAlert('Cursos', 'Error al eliminar curso');
                 throw new Error(`Error: ${data.error}`)
             }
 
-            alert('Curso eliminado satisfactoriamente')
+            openAlert('Cursos', 'Curso eliminado');
             window.location.reload();
         } catch (e) {
             console.log(e)
@@ -1720,13 +1722,13 @@ async function edit_nombre_curso(idCurso, event) {
 
     if (!curso) {
         setSearching(false);
-        alert('Debe ingresar un nombre para el curso');
+        openAlert('Cursos', 'Debe ingresar el nombre del curso');
         return;
     }
 
     if (curso.length > 30) {
         setSearching(false);
-        alert('El curso puede tener 30 caracteres máximo');
+        openAlert('Cursos', 'El curso puede tener máximo 30 caracteres');
         return;
     }
 
@@ -1741,10 +1743,11 @@ async function edit_nombre_curso(idCurso, event) {
         const data = await response.json();
 
         if (!response.ok) {
+            openAlert('Cursos', `${data.error}`);
             throw new Error(data.error);
         }
 
-        alert(data.message);
+        openAlert('Cursos', `${data.message}`);
         window.location.reload();
     } catch (e) {
         console.log(e)
@@ -1763,7 +1766,7 @@ async function edit_duracion_curso(idCurso, event) {
 
     if (!duracion) {
         setSearching(false);
-        alert('Debe ingresar la duracion del el curso');
+        openAlert('Cursos', 'Debe ingresar la duración del curso');
         return;
     }
 
@@ -1800,7 +1803,7 @@ async function edit_facultad_curso(idCurso, event) {
 
     if (!facultad) {
         setSearching(false);
-        alert('Debe seleccionar una facultad');
+        openAlert('Cursos', 'Debe ingresar una facultad para el curso');
         return;
     }
 
@@ -1831,8 +1834,8 @@ async function edit_facultad_curso(idCurso, event) {
 
 async function eliminar_seccion(idSeccion) {
     const url = `/cursos/elim_seccion/${idSeccion}`;
-
-    if (confirm('Estas seguro de quieres eliminar la sección')) {
+    const confirm = await openConfirm('Secciones', '¿Estás seguro de que quieres eliminar la sección');
+    if (confirm) {
         if (isSearching) return;
         setSearching(true);
         try {
@@ -1846,7 +1849,7 @@ async function eliminar_seccion(idSeccion) {
                 throw new Error(data.error);
             }
 
-            alert(data.message);
+            openAlert('Secciones', `${data.message}`);
             window.location.reload();
         } catch(e) {
             console.log(e)
@@ -1867,19 +1870,19 @@ async function crear_Seccion(idCurso, event) {
 
     if (!seccion || !profesor || horariosSeleccionados.length <= 0 || !aula) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Secciones', `Todos los campos son obligatorios`);
         return;
     }
 
     if (seccion.length > 10) {
         setSearching(false);
-        alert('La sección puede tener un máximo de 10 caracteres');
+        openAlert('Secciones', `La sección no puede tener más de 10 caracteres`);
         return;
     }
 
     if (aula.length > 10) {
         setSearching(false);
-        alert('El aula puede tener un máximo de 10 caracteres');
+        openAlert('Secciones', `El aula no puede tener más de 10 caracteres`);
         return;
     }
 
@@ -1913,11 +1916,11 @@ async function crear_Seccion(idCurso, event) {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.error);
+            openAlert('Secciones', `${data.error}`);
             throw new Error();
         }
 
-        alert(data.message);
+        openAlert('Secciones', `${data.message}`);
         while(horariosSeleccionados.length) {
             horariosSeleccionados.pop();
         }
@@ -1941,13 +1944,13 @@ async function edit_seccion(event, id, idSeccion) {
     if (id == 'editSeccion') {
         if (edit.value.trim().length > 10) {
             setSearching(false);
-            alert('La sección puede tener un máximo de 10 caracteres');
+            openAlert('Secciones', `La sección no puede tener más de 10 caracteres`);
             return;
         }
 
         if (!edit.value.trim()) {
             setSearching(false);
-            alert('El campo de estar llenado para ser actualizado');
+            openAlert('Secciones', `El campo no puede estar vacio`);
             return;
         }
 
@@ -1967,11 +1970,11 @@ async function edit_seccion(event, id, idSeccion) {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.error);
+            openAlert('Secciones', `${data.error}`);
             throw new Error(data.error);
         }
 
-        alert(data.mensaje);
+        openAlert('Secciones', `${data.mensaje}`);
         window.location.reload();
     } catch(e) {
         console.error(e)
@@ -1998,7 +2001,7 @@ async function edit_horario(idSeccion) {
     console.log('Enviando horarios limpios:', horariosLimpios);
     
     if (horariosLimpios.some(item => !item.celdaId)) {
-        alert('Error: Hay horarios corruptos. Por favor recarga la página.');
+        openAlert('Secciones', `Hay horarios corruptos. Por favor recarga la página.`);
         setSearching(false);
         return;
     }
@@ -2021,10 +2024,11 @@ async function edit_horario(idSeccion) {
 
         if (!response.ok) {
             alert(data.error || 'Error al actualizar horario');
+            openAlert('Secciones', `${data.error }` || 'Error al actualizar horario');
             throw new Error(data.error);
         }
 
-        alert(data.mensaje);
+        openAlert('Secciones', `${data.mensaje}`);
         horariosSeleccionados.length = 0;
         window.location.reload();
     } catch(e) {
@@ -2412,7 +2416,8 @@ async function restaurar() {
 }
 
 async function respaldo() {
-    if (confirm('A continuación se generara un backup de la base de datos')) {
+    const confirm = await openConfirm('Respaldo', 'A continuación se generara un backup de la base de datos')
+    if (confirm) {
         
         try {
             if (isSearching) return;
@@ -2453,7 +2458,7 @@ async function respaldo() {
             window.URL.revokeObjectURL(response_url);
             document.body.removeChild(a);
             
-            alert('Backup descargado exitosamente');
+            openAlert('Respaldo', 'Respaldo generado satisfactoriamente');
         } catch(e) {
             console.error(e);
         } finally {
@@ -2509,13 +2514,13 @@ async function crearProducto(event) {
 
     if (!producto || !precio || !stock) {
         setSearching(false);
-        alert('Todos los campos son obligatorios');
+        openAlert('Inventario', 'Todos los campos son obligatorios');
         return;
     }
 
     if (producto.length > 20) {
         setSearching(false);
-        alert('El producto puede tener un máximo de 20 caractéres');
+        openAlert('Inventario', 'El producto puede tener un máximo de 20 caracteres');
         return;
     }
 
@@ -2535,10 +2540,10 @@ async function crearProducto(event) {
 
         if (!response.ok) throw new Error(data.error);
 
-        alert(data.mensaje);
+        openAlert('Inventario', `${data.mensaje}`);
         window.location.reload();
     } catch(e) {
-        alert(e)
+        openAlert('Inventario', `${e}`);
         console.error(e)
     } finally {
         setSearching(false);
@@ -2547,8 +2552,8 @@ async function crearProducto(event) {
 
 async function elim_producto(idProducto) {
     const url = `/facturacion/elim_producto/${idProducto}`;
-
-    if (confirm('¿Estás seguro de que quieres eliminar el producto?')) {
+    const confirm = await openConfirm('Inventario' , '¿Estás seguro de que quieres eliminar el producto?')
+    if (confirm) {
         try {
             if (isSearching) return;
             setSearching(true);
@@ -2563,7 +2568,7 @@ async function elim_producto(idProducto) {
                 throw new Error(data.error);
             }
 
-            alert('Producto eliminado');
+            openAlert('Inventario', `Producto eliminado`);
             window.location.reload();
         } catch(e) {
             console.error(e)
@@ -2583,7 +2588,7 @@ async function editar_producto(event, idProducto, campo) {
 
     if (!edit) {
         setSearching(false);
-        alert('El campo a actualizar de estar lleno');
+        openAlert('Inventario', `El campo a actualizar debe estar lleno`);
         return;
     }
 
@@ -2591,7 +2596,7 @@ async function editar_producto(event, idProducto, campo) {
         
         if (edit.length > 20) {
             setSearching(false);
-            alert('El nombre del producto puede tener máximo 20 caracteres')
+            openAlert('Inventario', `El nombre del producto puede tener máximo 20 caracteres`);
             return;
         }
 
@@ -2619,7 +2624,7 @@ async function editar_producto(event, idProducto, campo) {
             throw new Error(data.error);
         }
 
-        alert(data.mensaje);
+        openAlert('Inventario', `${data.mensaje}`);
         window.location.reload();
     } catch(e) {
         console.error(e);
@@ -2630,8 +2635,8 @@ async function editar_producto(event, idProducto, campo) {
 
 async function elim_factura(idFactura) {
     const url = `/facturacion/elim_factura/${idFactura}`;
-
-    if (confirm('¿Estás seguro de que quieres eliminar la factura?')) {
+    const confirm = await openConfirm('Inventario', '¿Estás seguro de que quieres eliminar la factura?');
+    if (confirm) {
         if (isSearching) return;
         setSearching(true);
         try {
@@ -2642,11 +2647,11 @@ async function elim_factura(idFactura) {
             const data = await response.json();
 
             if (!response.ok) {
-                alert(data.error)
+                openAlert('Inventario', `${data.error}`);
                 throw new Error(data.error);
             }
 
-            alert(data.mensaje);
+            openAlert('Inventario', `${data.mensaje}`);
             window.location.reload();
         } catch(e) {
             console.error(e)
@@ -2665,7 +2670,7 @@ async function buscar_producto() {
 
     if (!producto) {
         setSearching(false);
-        alert('Ingresa un producto para agregar');
+        openAlert('Inventario', `Ingresa un producto a agregar`);
         return;
     }
 
@@ -2681,7 +2686,7 @@ async function buscar_producto() {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.error);
+            openAlert('Inventario', `${data.error}`);
             throw new Error(data.error);
         }
 
@@ -2706,37 +2711,37 @@ async function guardar_factura() {
 
     if (!cliente || !cedula || !direccion || !telefono) {
         setSearching(false);
-        alert('Todos los campos deben ser llenados');
+        openAlert('Inventario', `Todos los campos son obligatorios`);
         return;
     }
 
     if (!cliente.length > 50) {
         setSearching(false);
-        alert('El cliente puede tener un máximo de 50 caracteres');
+        openAlert('Inventario', `El cliente puede tener un máximo de 50 caracteres`);
         return;
     }
 
     if (!telefono.length > 11) {
         setSearching(false);
-        alert('EL teléfono puede tener un máximo de 10 caracteres');
+        openAlert('Inventario', `EL teléfono puede tener un máximo de 10 caracteres`);
         return;
     }
 
     if (!cedula.length > 8) {
         setSearching(false);
-        alert('La cédula puede tener un máximo de 8 caracteres');
+        openAlert('Inventario', `La cédula puede tener un máximo de 8 caracteres`);
         return;
     }
 
     if (!direccion.length > 50) {
         setSearching(false);
-        alert('La dirección puede tener un máximo de 30 caracteres');
+        openAlert('Inventario', `La dirección puede tener un máximo de 30 caracteres`);
         return;
     }
 
     if (!total || total <= 0) {
         setSearching(false);
-        alert('El monto no puede ser 0');
+        openAlert('Inventario', `El monto no puede ser 0`);
         return;
     }
 
@@ -2763,10 +2768,11 @@ async function guardar_factura() {
 
         if (!response.ok) {
             alert(data.error);
+            openAlert('Inventario', `${data.error}`);
             throw new Error(data.error);
         }
 
-        alert(data.mensaje);
+        openAlert('Inventario', `${data.mensaje}`);
     } catch(e) {
         console.error(e);
     } finally {
@@ -2898,7 +2904,7 @@ function calc_subtotal(id) {
     const precio = parseFloat(document.getElementById(`precio-factura-${id}`).value.trim());
 
     if (cantidad <= 0) {
-        alert("La cantidad no puede ser igual o menor a 0");
+        openAlert('Inventario', 'La cantidad no puede ser igual o menor a 0');
         cantidad = 1;
         document.getElementById(`cantidad-factura-${id}`).value = 1;
     }
@@ -2983,7 +2989,7 @@ function seleccionar_seccion(data) {
         });
         
     } else {
-        alert('Error al mostrar secciones')
+        openAlert('Inscripción', 'Error al mostrar secciones');
     }
 }
 
