@@ -3,7 +3,7 @@
 
 {% block content %} 
     <div class="alumnos-options__wrapper">
-        <h1>Secciones de {{cursos[0].nombre_curso.lower()}}</h1>
+        <h1>Secciones de {{cursos[0].nombre_curso}} con {{cantidad}} alumnos</h1>
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -26,9 +26,6 @@
             <a href="{{url_for('cursos.crear_seccion', idCurso=cursos[0].idCurso)}}">
                 <button class="btn btn-primary btn-reporte">Filtrar por cantidad de alumnos</button>
             </a>
-            <form action="{{url_for('cursos.buscar_seccion', id=cursos[0].idCurso)}}" method="post" class="filtrar-alumno__form">
-                <input type="search" placeholder="Buscar sección" class="filtrar-alumno__input" name="seccion">
-            </form>
         </div>
 
         <hr class="divider">

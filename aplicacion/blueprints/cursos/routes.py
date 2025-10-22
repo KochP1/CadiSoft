@@ -257,6 +257,23 @@ def buscar_seccion(id):
     except Exception as e:
         return redirect(url_for('cursos.seccion_curso', idcurso = id))
 
+@cursos.route('/filtrar_seccion_cantidad/<int:id>')
+def filtrar_seccion_cantidad(id):
+    with g.db.cursor() as cur:
+        cur.callproc('secciones_cantidad_sp', [id])
+        registros = cur.fetchall()
+        secciones = []
+        columNames = [column[0] for column in cur.description]
+
+        for record in registros:
+            secciones.append(dict(zip(columNames, record)))
+
+        if (len(secciones) > 0):
+            return render_template('cursos/secciones_filtradas_cantidad.html')
+        else:
+            flash('No hay secciones para filtrar con estos parámetros')
+            return url_for('cursos.seccion_curso', idCurso = id)
+
 @cursos.route('/edit_seccion/<int:id>/<int:idCurso>',methods = ['GET'])
 @login_required
 def edit_seccion(id, idCurso):
