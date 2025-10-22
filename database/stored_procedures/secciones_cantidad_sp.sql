@@ -1,4 +1,6 @@
-ALTER PROCEDURE `secciones_cantidad_sp`(
+USE `cadisoft`;
+DROP PROCEDURE IF EXISTS `secciones_cantidad_sp`;
+CREATE PROCEDURE `secciones_cantidad_sp`(
 	IN id_curso INT,
     IN cantidad INT,
     IN mayorMenor TINYINT

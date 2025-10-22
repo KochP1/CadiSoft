@@ -1,4 +1,5 @@
 USE `cadisoft`;
+DROP PROCEDURE IF EXISTS `calificaciones_sp`;
 ALTER PROCEDURE `calificaciones_sp`(
     IN p_idSeccion INT
 )
