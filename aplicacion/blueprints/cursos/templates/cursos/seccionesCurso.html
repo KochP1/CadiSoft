@@ -314,25 +314,29 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="filter-secciones__form" method="post" action="{{url_for('cursos.filtrar_seccion_cantidad', id=cursos[0].idCurso)}}">
-                            <div class="form-group">
+                        <form id="filter-secciones__form" method="post" action="{{url_for('cursos.filtrar_seccion_cantidad', id=cursos[0].idCurso)}}" style="display: flex; flex-direction: column; width: 100%; gap: 20px; align-items: center; justify-content: center;">
+                            <div class="form-group" style="width: 100%;">
                                 <label for="cantidad-secciones">Cantidad de participantes para filtrar</label>
                                 <input type="number" id="cantidad-secciones" class="form-control" onchange="changeFilterNumber()" name="cantidad">
                             </div>
                             
-                            <div class="form-check">
+                            <div class="form-check" style="width: 100%;">
                                 <input type="radio" id="filtrar-mayor" checked class="form-check-input" name="filtro-participantes" value="mayor">
                                 <label for="filtrar-mayor" class="form-check-label" id="filtrar-mayor-label">Filtrar por secciones con mas de 0 participantes</label>
                             </div>
 
-                            <div class="form-check">
+                            <div class="form-check" style="width: 100%;">
                                 <input type="radio" id="filtrar-menor" class="form-check-input" name="filtro-participantes" value="menor">
                                 <label for="filtrar-menor" class="form-check-label" id="filtrar-menor-label">Filtrar por secciones con menos de 0 participantes</label>
                             </div>
 
-                            <div class="form-check" >
+                            <div class="form-check" style="width: 100%;">
                                 <input type="radio" id="filtrar-igual" class="form-check-input" name="filtro-participantes" value="igual">
                                 <label for="filtrar-igual" class="form-check-label" id="filtrar-igual-label">Filtrar por secciones con 0 participantes</label>
+                            </div>
+
+                            <div class="form-group" style="width: 100%; text-align: center;">
+                                <button type="submit" class="btn btn-primary">Filtrar</button>
                             </div>
                         </form>
                     </div>
