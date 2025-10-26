@@ -3,7 +3,19 @@
 
 {% block content %} 
     <div class="alumnos-options__wrapper">
-        <h1>Secciones de {{cursos[0].nombre_curso}} con {{cantidad}} alumnos</h1>
+        {% if filtro == 'mayor' %}
+
+            <h1>Secciones de {{cursos[0].nombre_curso}} con más de {{cantidad}} alumnos</h1>
+
+        {% elif filtro == 'menor' %}
+
+            <h1>Secciones de {{cursos[0].nombre_curso}} con menos de {{cantidad}} alumnos</h1>
+
+        {% else %}
+
+            <h1>Secciones de {{cursos[0].nombre_curso}} con {{cantidad}} alumnos</h1>
+
+        {% endif %}
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -23,9 +35,10 @@
             <a href="{{url_for('cursos.crear_seccion', idCurso=cursos[0].idCurso)}}">
                 <button class="btn btn-primary btn-crear">Crear sección</button>
             </a>
-            <a href="{{url_for('cursos.crear_seccion', idCurso=cursos[0].idCurso)}}">
-                <button class="btn btn-primary btn-reporte">Filtrar por cantidad de alumnos</button>
-            </a>
+            <button class="btn btn-primary btn-reporte" data-bs-toggle="modal" data-bs-target="#filtrar-secciones-modal">Filtrar por cantidad de alumnos</button>
+            <form action="{{url_for('cursos.buscar_seccion', id=cursos[0].idCurso)}}" method="post" class="filtrar-alumno__form">
+                <input type="search" placeholder="Buscar sección" class="filtrar-alumno__input" name="seccion">
+            </form>
         </div>
 
         <hr class="divider">
@@ -304,6 +317,41 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="filtrar-secciones-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Filtrar sección</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="filter-secciones__form" method="post" action="{{url_for('cursos.filtrar_seccion_cantidad', id=cursos[0].idCurso)}}">
+                            <div class="form-group">
+                                <label for="cantidad-secciones">Cantidad de participantes para filtrar</label>
+                                <input type="number" id="cantidad-secciones" class="form-control" onchange="changeFilterNumber()" name="cantidad">
+                            </div>
+                            
+                            <div class="form-check">
+                                <input type="radio" id="filtrar-mayor" checked class="form-check-input" name="filtro-participantes" value="mayor">
+                                <label for="filtrar-mayor" class="form-check-label" id="filtrar-mayor-label">Filtrar por secciones con mas de 0 participantes</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" id="filtrar-menor" class="form-check-input" name="filtro-participantes" value="menor">
+                                <label for="filtrar-menor" class="form-check-label" id="filtrar-menor-label">Filtrar por secciones con menos de 0 participantes</label>
+                            </div>
+
+                            <div class="form-check" >
+                                <input type="radio" id="filtrar-igual" class="form-check-input" name="filtro-participantes" value="igual">
+                                <label for="filtrar-igual" class="form-check-label" id="filtrar-igual-label">Filtrar por secciones con 0 participantes</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     <script src="../../../../js/excel.js"></script>
     <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>

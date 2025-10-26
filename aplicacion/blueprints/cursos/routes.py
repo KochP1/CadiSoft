@@ -230,6 +230,7 @@ def seccion_curso(idcurso):
 
             return render_template('cursos/seccionesCurso.html', secciones = insertSecciones, cursos = insertCurso)
         except Exception as e:
+            print(e)
             return redirect(url_for('cursos.index'))
 
 
@@ -257,10 +258,18 @@ def buscar_seccion(id):
     except Exception as e:
         return redirect(url_for('cursos.seccion_curso', idcurso = id))
 
-@cursos.route('/filtrar_seccion_cantidad/<int:id>')
+@cursos.route('/filtrar_seccion_cantidad/<int:id>', methods = ['GET', 'POST'])
 def filtrar_seccion_cantidad(id):
+    cantidad = request.form.get('cantidad')
+    filtro = request.form.get('filtro-participantes')
+
     with g.db.cursor() as cur:
-        cur.callproc('secciones_cantidad_sp', [id])
+        if (filtro == 'mayor'):
+            cur.callproc('secciones_cantidad_sp', [id, cantidad, 1])  
+        elif (filtro == 'menor'):
+            cur.callproc('secciones_cantidad_sp', [id, cantidad, 0])
+        else:
+            cur.callproc('secciones_cantidad_sp', [id, cantidad, None])
         registros = cur.fetchall()
         secciones = []
         columNames = [column[0] for column in cur.description]
@@ -268,11 +277,19 @@ def filtrar_seccion_cantidad(id):
         for record in registros:
             secciones.append(dict(zip(columNames, record)))
 
+        cur.execute('SELECT * FROM cursos WHERE idCurso = %s', (id,))
+        regist = cur.fetchall()
+        cursos = []
+        columNames = [column[0] for column in cur.description]
+        for record in regist:
+            cursos.append(dict(zip(columNames, record)))
+        
+
         if (len(secciones) > 0):
-            return render_template('cursos/secciones_filtradas_cantidad.html')
+            return render_template('cursos/secciones_filtradas_cantidad.html', secciones = secciones, cantidad = cantidad, cursos = cursos, filtro = filtro)
         else:
             flash('No hay secciones para filtrar con estos parámetros')
-            return url_for('cursos.seccion_curso', idCurso = id)
+            return redirect(url_for('cursos.seccion_curso', idcurso = id))
 
 @cursos.route('/edit_seccion/<int:id>/<int:idCurso>',methods = ['GET'])
 @login_required

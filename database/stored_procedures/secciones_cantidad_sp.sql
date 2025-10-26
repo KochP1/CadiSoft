@@ -7,8 +7,10 @@ CREATE PROCEDURE `secciones_cantidad_sp`(
 )
 BEGIN
 	IF mayormenor IS NULL THEN
-		SELECT sc.* 
+		SELECT sc.*, u.nombre, u.apellido, u.cedula
 		FROM secciones sc 
+        INNER JOIN profesores p ON sc.idProfesor = p.idProfesor
+        INNER JOIN usuarios u ON p.idusuarios = u.idusuarios
 		WHERE sc.idCurso = id_curso
             AND (
                 SELECT COUNT(*) 
@@ -17,8 +19,10 @@ BEGIN
                 WHERE isc.idSeccion = sc.idSeccion
             ) = cantidad;
 	ELSEIF mayorMenor IS TRUE THEN
-		SELECT sc.* 
+		SELECT sc.*, u.nombre, u.apellido, u.cedula
 		FROM secciones sc 
+        INNER JOIN profesores p ON sc.idProfesor = p.idProfesor
+        INNER JOIN usuarios u ON p.idusuarios = u.idusuarios
 		WHERE sc.idCurso = id_curso
             AND (
                 SELECT COUNT(*) 
@@ -27,8 +31,10 @@ BEGIN
                 WHERE isc.idSeccion = sc.idSeccion
             ) > cantidad;
 	ELSE
-		SELECT sc.* 
+		SELECT sc.*, u.nombre, u.apellido, u.cedula
 		FROM secciones sc 
+        INNER JOIN profesores p ON sc.idProfesor = p.idProfesor
+        INNER JOIN usuarios u ON p.idusuarios = u.idusuarios 
 		WHERE sc.idCurso = id_curso
             AND (
             SELECT COUNT(*) 

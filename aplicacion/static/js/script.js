@@ -3252,3 +3252,16 @@ function validarTecla(event) {
     // Permitir solo letras y espacios
     return /[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(charStr);
 }
+
+function changeFilterNumber() {
+    const value = document.getElementById('cantidad-secciones').value.trim();
+    const radio1 = document.getElementById('filtrar-mayor-label');
+    const radio2 = document.getElementById('filtrar-menor-label');
+    const radio3 = document.getElementById('filtrar-igual-label');
+
+    if (value != null && typeof(value) != 'undefined') {
+        radio1.textContent = `Filtrar por secciones con mas de ${value} participantes`;
+        radio2.textContent = `Filtrar por secciones con menos de ${value} participantes`;
+        radio3.textContent = `Filtrar por secciones con ${value} participantes`;
+    }
+}
