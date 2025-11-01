@@ -18,6 +18,7 @@ BEGIN
             `es_activa` TINYINT(1) NOT NULL DEFAULT 1,
             `asistencia` INT NULL DEFAULT 0,
             `inasistencia` INT NULL DEFAULT 0,
+            `idEmpresa` INT NULL,
             PRIMARY KEY (`idInscripcion`),
             KEY `alumno_inscripcion_idx` (`idusuarios`),
             CONSTRAINT `alumno_inscripcion` FOREIGN KEY (`idusuarios`) REFERENCES `usuarios` (`idusuarios`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -56,6 +57,10 @@ BEGIN
         
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'inasistencia') THEN
             ALTER TABLE `inscripcion` ADD COLUMN `inasistencia` INT NULL DEFAULT 0;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idEmpresa') THEN
+            ALTER TABLE `inscripcion` ADD COLUMN `idEmpresa` INT NULL DEFAULT 0;
         END IF;
         
         -- Añadir foreign key si no existe

@@ -1,5 +1,5 @@
 // Array de prueba - arrayCursos
-const arrayCursos = [
+let arrayCursos = [
     { id: 1, nombre: "Matemáticas Avanzadas", categoria: "Ciencias" },
     { id: 2, nombre: "Programación en JavaScript", categoria: "Tecnología" },
     { id: 3, nombre: "Historia del Arte", categoria: "Humanidades" },
@@ -12,6 +12,22 @@ const arrayCursos = [
     { id: 10, nombre: "Biología Molecular", categoria: "Ciencias" }
 ];
 
+const getCursos = async () => {
+    const url = '/inces/cursos';
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+
+    if (data.cursos.length > 0) arrayCursos = data.cursos;
+}
+
 // Elementos del DOM
 const searchInput = document.getElementById('searchInput');
 const customSelect = document.getElementById('customSelect');
@@ -21,7 +37,8 @@ const selectedText = document.getElementById('selectedText');
 let selectedOption = null;
 
 // Función para filtrar y mostrar opciones
-function filterOptions(searchTerm = '') {
+async function filterOptions(searchTerm = '') {
+    await getCursos();
     const filteredCursos = arrayCursos.filter(curso => 
         curso.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         curso.categoria.toLowerCase().includes(searchTerm.toLowerCase())

@@ -1952,6 +1952,92 @@ header h1 {
 
 /* FINALIZA DASHBOARD ALUMNOS */
 
+/* INCES */
+
+.img-inces {
+    width: 300px;
+    height: 300px;
+    box-shadow: 0px 0px 5px 0px #333;
+    border-radius: 100%;
+}
+
+.img-inces img {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
+
+.insc-inces__form {
+    width: 60%;
+    box-shadow: 0px 0px 5px 0px #333;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.insc-inces__form div {
+    font-size: 1.7rem;
+}
+
+.insc-inces__form div input {
+    border: 1px solid #333;
+}
+
+
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ced4da;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.custom-select.show {
+    display: block;
+}
+
+.custom-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.custom-option:hover {
+    background-color: #f8f9fa;
+}
+
+.custom-option.selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.search-input {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.no-results {
+    padding: 8px 12px;
+    color: #6c757d;
+    font-style: italic;
+}
+
 
 /* transición de desvanecido */
 html {

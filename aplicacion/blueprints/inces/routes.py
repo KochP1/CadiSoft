@@ -3,7 +3,14 @@ from flask_login import login_user, logout_user, current_user, login_required
 
 inces = Blueprint('inces', __name__, template_folder='templates', static_folder='static')
 
-@inces('/cursos', methods = ['GET'])
+# INSCRIPCIONES INCES
+
+@inces.route('/')
+@login_required
+def index():
+    return render_template('inces/index.html')
+
+@inces.route('/cursos', methods = ['GET'])
 @login_required
 def cursos():
     try:
@@ -32,3 +39,24 @@ def empresas():
             return jsonify({'empresas': empresas}), 200
     except Exception as e:
         return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
+    
+@inces.route('/secciones/<int:id>')
+@login_required
+def secciones(id):
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('SELECT * FROM secciones s INNER JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idCurso = %s', (id))
+            result = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            secciones = []
+            for record in result:
+                secciones.append(dict(zip(columNames, record)))
+            return jsonify({'secciones': secciones}), 200
+    except Exception as e:
+        return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
+    
+# FINALIZAMOS INSCRIPCIONES INCES
+
+# GESTION DE CURSOS
+
+# FINALIZAMOS GESTION DE CURSOS

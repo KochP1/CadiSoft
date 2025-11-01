@@ -332,16 +332,22 @@ def recuperar_contraseña(idusuario):
 @login_required
 def get_profile_image(idusuarios):
     with g.db.cursor() as cur:
-        cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
-        image_data = cur.fetchone()[0]
+        try:
+            cur.execute('SELECT imagen FROM usuarios WHERE idusuarios = %s', (idusuarios,))
+            image_data = cur.fetchone()[0]
 
-        mime_type = 'image/jpeg'
-        if image_data.startswith(b'\x89PNG'):
-            mime_type = 'image/png'
-        elif image_data.startswith(b'\xff\xd8'):
+            if image_data == None:
+                return jsonify({'error': 'Imagen no encontrada'}), 404
+
             mime_type = 'image/jpeg'
-        
-        return Response(image_data, mimetype=mime_type)
+            if image_data.startswith(b'\x89PNG'):
+                mime_type = 'image/png'
+            elif image_data.startswith(b'\xff\xd8'):
+                mime_type = 'image/jpeg'
+            
+            return Response(image_data, mimetype=mime_type)
+        except Exception as e:
+            return jsonify({'error': f'Error al obtener la foto: {e}'}), 500
 
 
 

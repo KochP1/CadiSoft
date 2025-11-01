@@ -1,9 +1,25 @@
-const arrayEmpresas = [
+let arrayEmpresas = [
     { id: 1, nombre: "Total" },
     { id: 2, nombre: "Star gas" },
     { id: 3, nombre: "Jadever" },
     { id: 4, nombre: "Overland" }
 ];
+
+const getEmpresas = async () => {
+    const url = '/inces/empresas';
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+
+    if (data.empresas.length > 0) arrayEmpresas = data.empresas;
+}
 
 // Elementos del DOM
 
@@ -14,7 +30,8 @@ const selectedTextEmpresa = document.getElementById('selectedTextEmpresa');
 let selectEmpresa = null;
 
 // Función para filtrar y mostrar opciones
-function filterOptionsEmpresas(searchTerm = '') {
+async function filterOptionsEmpresas(searchTerm = '') {
+    await getEmpresas();
     const filteredEmpresas = arrayEmpresas.filter(empresa => 
         empresa.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );

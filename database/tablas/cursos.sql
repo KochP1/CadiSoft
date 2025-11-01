@@ -15,6 +15,7 @@ BEGIN
             `nombre_curso` VARCHAR(40) NOT NULL,
             `duracionCurso` INT NULL,
             `imagen` LONGBLOB NULL,
+            `inces` TINYINT(1)  NULL DEFAULT 0,
             PRIMARY KEY (`idCurso`),
             KEY `facultad_fk` (`idFacultad`),
             CONSTRAINT `facultad_fk` FOREIGN KEY (`idFacultad`) REFERENCES `facultades` (`idFacultad`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -38,13 +39,13 @@ BEGIN
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
             ALTER TABLE `cursos` ADD COLUMN `duracionCurso` INT NULL;
         END IF;
-
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
-            ALTER TABLE `cursos` ADD COLUMN `inces` TINYINT(1)  NULL DEFAULT 0;
-        END IF;
         
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'imagen') THEN
             ALTER TABLE `cursos` ADD COLUMN `imagen` LONGBLOB NULL;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
+            ALTER TABLE `cursos` ADD COLUMN `inces` TINYINT(1)  NULL DEFAULT 0;
         END IF;
         
         -- Añadir foreign key si no existe

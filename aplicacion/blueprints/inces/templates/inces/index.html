@@ -1,95 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>Inces</title>
+{% extends 'base.html' %}
+
+{% block title %}INCES{% endblock %}
+
+{% block content %}
 
     <style>
-        .img-inces {
-            width: 300px;
-            height: 300px;
-            background-color: gray;
-            box-shadow: 0px 0px 5px 0px #333;
-            border-radius: 100%;
-        }
-
-        .insc-inces__form {
-            width: 60%;
-            box-shadow: 0px 0px 5px 0px #333;
-            border-radius: 7px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-            gap: 10px;
-        }
-
-        .insc-inces__form div {
-            font-size: 1.7rem;
-        }
-
-        .custom-select-container {
-            position: relative;
-            width: 100%;
-        }
-        
-        .custom-select {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ced4da;
-            border-top: none;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .custom-select.show {
-            display: block;
-        }
-        
-        .custom-option {
-            padding: 8px 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #f8f9fa;
-        }
-        
-        .custom-option:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .custom-option.selected {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .search-input {
-            border-bottom-left-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-        }
-        
-        .no-results {
-            padding: 8px 12px;
-            color: #6c757d;
-            font-style: italic;
+        body{
+            overflow-x: hidden;
         }
     </style>
-</head>
-<body>
-    <div class="inces-insc__wrapper" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px;">
 
-        <div class="img-inces">
-            <img src="" alt="">
+    <div class="alumnos-options__wrapper">
+        <h1>Inscripciones INCES</h1>
+
+        <div class="alumnos-options__container">
+            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-alumno-modal">Crear Alumno</button>
         </div>
 
-        <form action="" class="insc-inces__form">
+
+        <hr class="divider">
+    </div>
+
+    <div class="cedula-input__container">
+        <form class="buscar-alumno-inscripcion__form" id="buscar-alumno-inscripcion">
+            <input type="search" class="input-cedula-inscripciones" placeholder="Ingresar cédula" id="inscripcion-buscar-cedula" name="cedula">
+            <button class="btn btn-primary" onclick="buscar_alumno()" type="submit">Buscar alumno</button>
+        </form>
+    </div>
+    <div class="inces-insc__wrapper" style="width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 30px; margin-top: 30px;" id="inces-insc__wrapper">
+
+        <div class="img-inces">
+            <img src="" alt="" id="img-alumno-inscripcion">
+        </div>
+
+        <form class="insc-inces__form" id="formInces">
             <div class="form-group">
                 <label>Alumno</label>
                 <input type="text" class="form-control mb-3" name="nombre" id="alumno-nombre-inscripcion" maxlength="12" readonly>
@@ -123,7 +67,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Buscar curo</label>
+                <label>Buscar curso</label>
                 <div class="custom-select-container">
                     <input type="text" 
                         class="form-control search-input" 
@@ -143,284 +87,62 @@
                     <small class="text-muted">Curso seleccionado: <span id="selectedText">Ninguno</span></small>
                 </div>
             </div>
+
+            <div class="form-group" style="display: none;">
+                <label>Secciones disponibles</label>
+                <select class="form-control mb-3" id="select-seccion-inscripcion">
+                    <option value="">Escoge una sección</option>
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
     </div>
 
-    <script>
-        // Array de prueba - arrayCursos
-        const arrayCursos = [
-            { id: 1, nombre: "Matemáticas Avanzadas", categoria: "Ciencias" },
-            { id: 2, nombre: "Programación en JavaScript", categoria: "Tecnología" },
-            { id: 3, nombre: "Historia del Arte", categoria: "Humanidades" },
-            { id: 4, nombre: "Física Cuántica", categoria: "Ciencias" },
-            { id: 5, nombre: "Desarrollo Web Full Stack", categoria: "Tecnología" },
-            { id: 6, nombre: "Literatura Contemporánea", categoria: "Humanidades" },
-            { id: 7, nombre: "Química Orgánica", categoria: "Ciencias" },
-            { id: 8, nombre: "Inteligencia Artificial", categoria: "Tecnología" },
-            { id: 9, nombre: "Filosofía Moderna", categoria: "Humanidades" },
-            { id: 10, nombre: "Biología Molecular", categoria: "Ciencias" }
-        ];
+    <div class="modal fade" id="crear-alumno-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Alumno</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="crear-alumno-form" onsubmit="crearAlumno(event)">
 
-        const arrayEmpresas = [
-            { id: 1, nombre: "Total" },
-            { id: 2, nombre: "Star gas" },
-            { id: 3, nombre: "Jadever" },
-            { id: 4, nombre: "Overland" }
-        ];
+                        <label>Nombre</label>
+                        <input type="text" class="form-control mb-3" name="nombre" id="nombreAlumno" onkeypress="return validarTecla(event)">
 
-        // Elementos del DOM
-        const searchInput = document.getElementById('searchInput');
-        const customSelect = document.getElementById('customSelect');
-        const selectedValue = document.getElementById('selectedValue');
-        const selectedText = document.getElementById('selectedText');
+                        <label>Segundo nombre</label>
+                        <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreAlumno" onkeypress="return validarTecla(event)">
 
-        const searchInputEmpresa = document.getElementById('searchInputEmpresa');
-        const customSelectEmpresa = document.getElementById('customSelectEmpresa');
-        const selectedValueEmpresa = document.getElementById('selectedValueEmpresa');
-        const selectedTextEmpresa = document.getElementById('selectedTextEmpresa');
+                        <label>Apellido</label>
+                        <input type="text" class="form-control mb-3" name="apellido" id="apellidoAlumno" onkeypress="return validarTecla(event)">
 
-        let selectedOption = null;
-        let selectEmpresa = null;
+                        <label>Segundo apellido</label>
+                        <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoAlumno" onkeypress="return validarTecla(event)">
 
-        // Función para filtrar y mostrar opciones
-        function filterOptions(searchTerm = '') {
-            const filteredCursos = arrayCursos.filter(curso => 
-                curso.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                curso.categoria.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+                        <label>Cedula</label>
+                        <input type="number" class="form-control mb-3" name="cedula" id="cedulaAlumno">
 
-            renderOptions(filteredCursos);
-        }
+                        <label>Email</label>
+                        <input type="email" class="form-control mb-3" name="email" id="emailAlumno">
 
-        function filterOptionsEmpresas(searchTerm = '') {
-            const filteredEmpresas = arrayEmpresas.filter(empresa => 
-                empresa.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+                        <label>Contraseña</label>
+                        <div class="contraseña-input-profesores__container">
+                            <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaAlumno"> 
+                            <i class="fa-solid fa-eye-slash icono-contraeña__profesores" id="contraseña-icon" id-input="contraseñaAlumno" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                        </div> 
 
-            renderOptionsEmpresas(filteredEmpresas);
-        }
+                        <label>Imagen</label>
+                        <input type="file" class="form-control mb-3" name="imagen" id="imagenAlumno">
 
-        // Función para renderizar las opciones
-        function renderOptions(cursos) {
-            customSelect.innerHTML = '';
+                        <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/searchSelectEmpresas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/searchSelectCursos.js') }}"></script>
 
-            if (cursos.length === 0) {
-                const noResults = document.createElement('div');
-                noResults.className = 'no-results';
-                noResults.textContent = 'No se encontraron resultados';
-                customSelect.appendChild(noResults);
-                return;
-            }
-
-            cursos.forEach(curso => {
-                const option = document.createElement('div');
-                option.className = 'custom-option';
-                option.dataset.value = curso.id;
-                option.innerHTML = `
-                    <strong>${curso.nombre}</strong>
-                    <br>
-                    <small class="text-muted">${curso.categoria}</small>
-                `;
-
-                option.addEventListener('click', () => {
-                    selectOption(option, curso);
-                });
-
-                customSelect.appendChild(option);
-            });
-        }
-
-        function renderOptionsEmpresas(empresas) {
-            customSelectEmpresa.innerHTML = '';
-
-            if (empresas.length === 0) {
-                const noResults = document.createElement('div');
-                noResults.className = 'no-results';
-                noResults.textContent = 'No se encontraron resultados';
-                customSelectEmpresa.appendChild(noResults);
-                return;
-            }
-
-            empresas.forEach(empresa => {
-                const option = document.createElement('div');
-                option.className = 'custom-option';
-                option.dataset.value = empresa.id;
-                option.innerHTML = `
-                    <strong>${empresa.nombre}</strong>
-                `;
-
-                option.addEventListener('click', () => {
-                    selectOptionEmpresas(option, empresa);
-                });
-
-                customSelectEmpresa.appendChild(option);
-            });
-        }
-
-
-        // Función para seleccionar una opción
-        function selectOption(optionElement, curso) {
-            // Remover selección anterior
-            if (selectedOption) {
-                selectedOption.classList.remove('selected');
-            }
-
-            // Marcar como seleccionado
-            optionElement.classList.add('selected');
-            selectedOption = optionElement;
-
-            // Actualizar valores
-            selectedValue.value = curso.id;
-            selectedText.textContent = curso.nombre;
-            searchInput.value = curso.nombre;
-
-            // Ocultar el dropdown
-            customSelect.classList.remove('show');
-        }
-
-        function selectOptionEmpresas(optionElement, empresa) {
-            // Remover selección anterior
-            if (selectedOption) {
-                selectedOption.classList.remove('selected');
-            }
-
-            // Marcar como seleccionado
-            optionElement.classList.add('selected');
-            selectedOption = optionElement;
-
-            // Actualizar valores
-            selectedValueEmpresa.value = empresa.id;
-            selectedTextEmpresa.textContent = empresa.nombre;
-            searchInputEmpresa.value = empresa.nombre;
-
-            // Ocultar el dropdown
-            customSelectEmpresa.classList.remove('show');
-        }
-
-        // Event Listeners
-        searchInput.addEventListener('focus', () => {
-            customSelect.classList.add('show');
-            filterOptions();
-        });
-
-        searchInput.addEventListener('input', (e) => {
-            filterOptions(e.target.value);
-        });
-
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                const firstOption = customSelect.querySelector('.custom-option');
-                if (firstOption) firstOption.focus();
-            }
-        });
-
-        // Event Listeners EMPRESAS
-        searchInputEmpresa.addEventListener('focus', () => {
-            customSelectEmpresa.classList.add('show');
-            filterOptionsEmpresas();
-        });
-
-        searchInputEmpresa.addEventListener('input', (e) => {
-            filterOptionsEmpresas(e.target.value);
-        });
-
-        searchInputEmpresa.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                const firstOption = customSelectEmpresa.querySelector('.custom-option');
-                if (firstOption) firstOption.focus();
-            }
-        });
-
-        // Cerrar dropdown al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.custom-select-container')) {
-                customSelect.classList.remove('show');
-            }
-        });
-
-        // Cerrar dropdown al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.custom-select-container')) {
-                customSelectEmpresa.classList.remove('show');
-            }
-        });
-
-
-        // Navegación con teclado
-        customSelect.addEventListener('keydown', (e) => {
-            const options = Array.from(customSelect.querySelectorAll('.custom-option'));
-            const currentIndex = options.indexOf(document.activeElement);
-
-            switch(e.key) {
-                case 'ArrowDown':
-                    e.preventDefault();
-                    if (currentIndex < options.length - 1) {
-                        options[currentIndex + 1].focus();
-                    }
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    if (currentIndex > 0) {
-                        options[currentIndex - 1].focus();
-                    } else {
-                        searchInput.focus();
-                    }
-                    break;
-                case 'Enter':
-                    e.preventDefault();
-                    if (document.activeElement.classList.contains('custom-option')) {
-                        const curso = arrayCursos.find(c => c.id == document.activeElement.dataset.value);
-                        selectOption(document.activeElement, curso);
-                    }
-                    break;
-                case 'Escape':
-                    customSelect.classList.remove('show');
-                    searchInput.focus();
-                    break;
-            }
-        });
-
-        customSelectEmpresa.addEventListener('keydown', (e) => {
-            const options = Array.from(customSelectEmpresa.querySelectorAll('.custom-option'));
-            const currentIndex = options.indexOf(document.activeElement);
-
-            switch(e.key) {
-                case 'ArrowDown':
-                    e.preventDefault();
-                    if (currentIndex < options.length - 1) {
-                        options[currentIndex + 1].focus();
-                    }
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    if (currentIndex > 0) {
-                        options[currentIndex - 1].focus();
-                    } else {
-                        searchInputEmpresa.focus();
-                    }
-                    break;
-                case 'Enter':
-                    e.preventDefault();
-                    if (document.activeElement.classList.contains('custom-option')) {
-                        const empresa = arrayEmpresas.find(c => c.id == document.activeElement.dataset.value);
-                        selectOptionEmpresas(document.activeElement, empresa);
-                    }
-                    break;
-                case 'Escape':
-                    customSelectEmpresa.classList.remove('show');
-                    searchInputEmpresa.focus();
-                    break;
-            }
-        });
-
-        // Inicializar
-        filterOptions();
-        filterOptionsEmpresas();
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}

@@ -2944,7 +2944,9 @@ function mostrar_contraseña(contraseña) {
 }
 
 function mostrar_panel_inscripcion(data) {
-    const container = document.getElementById('inscripcion-options__container');
+    let container = document.getElementById('inscripcion-options__container');
+    if (container == null) container = document.getElementById('inces-insc__wrapper');
+
     let nombre = document.getElementById('alumno-nombre-inscripcion');
     let apellido = document.getElementById('alumno-apellido-inscripcion');
     let cedula = document.getElementById('alumno-cedula-inscripcion');
