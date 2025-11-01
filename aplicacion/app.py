@@ -127,6 +127,7 @@ def create_app():
     from aplicacion.blueprints.facultades.routes import facultades
     from aplicacion.blueprints.inscripciones.routes import inscripciones
     from aplicacion.blueprints.acercaDe.routes import acerca
+    from aplicacion.blueprints.inces.routes import inces
     
     app.register_blueprint(usuario, url_prefix='/')
     app.register_blueprint(diagnostico, url_prefix='/debug')
@@ -137,6 +138,7 @@ def create_app():
     app.register_blueprint(facultades, url_prefix='/facultades')
     app.register_blueprint(inscripciones, url_prefix='/inscripciones')
     app.register_blueprint(acerca, url_prefix='/acerca')
+    app.register_blueprint(inces, url_prefix='/inces')
 
     
     # Actualizar Config para usar el pool

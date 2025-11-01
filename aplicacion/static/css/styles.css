@@ -247,7 +247,7 @@ input[type=number] {
 .user{
     display: flex;
     width: fit-content;
-    margin-left: 350px;
+    margin-left: 230px;
 
 }
 
@@ -365,7 +365,7 @@ input[type=number] {
     }
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1507px) {
     .user{
         margin-left: 0px !important;
     }
