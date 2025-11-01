@@ -1,0 +1,7 @@
+USE CADISOFT;
+
+CREATE TABLE materias (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idSeccion INT NOT NULL,
+    nombre varchar(30) NOT NULL UNIQUE
+);
