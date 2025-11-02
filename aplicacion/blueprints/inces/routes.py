@@ -1,5 +1,7 @@
 from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, g
 from flask_login import login_user, logout_user, current_user, login_required
+import pandas as pd
+import io
 
 inces = Blueprint('inces', __name__, template_folder='templates', static_folder='static')
 
@@ -107,5 +109,41 @@ def crear_curso():
             g.db.rollback()
             print(e)
             return jsonify({'error': f'Error: {e}'}), 500
+        
+
+@inces.route('/carga_masiva', methods = ['POST'])
+def carga_masiva():
+    try:
+        if 'excel' not in request.files:
+            return jsonify({'error': 'No se encontró el archivo'}), 400
+        
+        archivo = request.files['excel']
+        
+        if archivo.filename == '':
+            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
+        
+        # Leer el archivo SIN header para evitar que la primera fila sea considerada como nombres de columnas
+        if archivo.filename.lower().endswith('.csv'):
+            df = pd.read_csv(archivo, header=None)
+        else:
+            df = pd.read_excel(archivo, header=None)
+        
+        # Obtener TODOS los valores de la columna A (primera columna)
+        columna_a = []
+        if not df.empty:
+            # Seleccionar la primera columna sin eliminar NaN
+            columna_a = df.iloc[:, 0].fillna('').astype(str).tolist()
+        
+        print("Valores de la columna A:", columna_a)
+        print("Número de elementos:", len(columna_a))
+        
+        return jsonify({
+            'message': 'Archivo procesado correctamente', 
+            'columna_a': columna_a
+        }), 200
+        
+    except Exception as e:
+        print(f"Error procesando el archivo: {str(e)}")
+        return jsonify({'error': f'Error procesando el archivo: {str(e)}'}), 500
 
 # FINALIZAMOS GESTION DE CURSOS

@@ -66,13 +66,15 @@ const crear_curso_inces = async (event) => {
 
         if (!response.ok) throw new Error(data.error);
 
+        openAlert('Inces', data.message);
+
+        limpiar_materias();
+        setSearching(false);
+        window.location.reload();
+
     } catch(e) {
         openAlert('Inces', e);
         console.error(e);
-    } finally {
-        materias = [];
-        count = 0;
-        limpiar_materias();
         setSearching(false);
     }
 
@@ -149,5 +151,107 @@ const elim_materia = (div) => {
         materias = materias.filter(x => x !== span.textContent.trim());
         console.log(materias);
     }
+}
+
+const carga_masiva = async (event) => {
+    event.preventDefault();
+    if (isSearching) return;
+    setSearching(true);
+    const url = '/inces/carga_masiva';
+    const formData = new FormData();
+    const archivoInput = document.getElementById('excelMaterias');
+    const archivo = archivoInput.files[0];
+
+    // Verificar que se seleccionó un archivo
+    if (!archivo) {
+        openAlert('Inces', 'Por favor selecciona un archivo Excel');
+        setSearching(false);
+        return;
+    }
+
+    // Verificar que es un archivo Excel
+    const extensionesPermitidas = ['.xlsx', '.xls', '.csv'];
+    const nombreArchivo = archivo.name.toLowerCase();
+    const esExcel = extensionesPermitidas.some(ext => nombreArchivo.endsWith(ext));
+    
+    if (!esExcel) {
+        openAlert('Inces', 'Por favor selecciona un archivo Excel válido (.xlsx, .xls, .csv)');
+        setSearching(false);
+        return;
+    }
+
+    formData.append('excel', archivo);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error);
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('excel-modal'));
+        modal.hide();
+        openAlert('Inces', data.message);
+        // Cerrar modal o limpiar formulario
+        document.getElementById('excelMaterias').value = '';
+        //$('#excel-modal').modal('hide');
+
+        console.log(data.columna_a);
+        const arrayExcel = data.columna_a;
+
+        arrayExcel.forEach((item) => {
+            if (materias.includes(item)) {
+                return;
+            }
+            agregar_materia_excel(item);
+        })
+
+    } catch(e) {
+        openAlert('Inces', e.message);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+
+}
+
+const agregar_materia_excel = (newMateria) => {
+    const noMaterias = document.getElementById('sin-materias__container');
+    const materiasContainer = document.getElementById('materias-list__container');
+    const ul = document.getElementById('materias-ul');
+
+    console.log(newMateria);
+
+    if (newMateria == '') {
+        openAlert('Inces', 'Debe llenar el nombre de la materia');
+        return;
+    }
+
+    count++;
+    noMaterias.style.display = 'none';
+    materiasContainer.style.display = 'flex';
+
+    const li = document.createElement('li');
+    const divNum = document.createElement('div');
+    const span = document.createElement('span');
+
+    divNum.classList.add('numero-materia');
+    divNum.textContent = count;
+    divNum.addEventListener('click', function() {
+        elim_materia(this);
+    });
+
+    span.innerHTML = newMateria;
+
+    li.appendChild(divNum);
+    li.appendChild(span)
+    ul.appendChild(li);
+
+    materias.push(newMateria);
+    console.log(materias);
+    console.log(count);
 }
 
