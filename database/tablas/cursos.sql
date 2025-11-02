@@ -12,7 +12,7 @@ BEGIN
         CREATE TABLE `cursos` (
             `idCurso` INT NOT NULL AUTO_INCREMENT,
             `idFacultad` INT NOT NULL,
-            `nombre_curso` VARCHAR(40) NOT NULL,
+            `nombre_curso` VARCHAR(40) NOT NULL UNIQUE,
             `duracionCurso` INT NULL,
             `imagen` LONGBLOB NULL,
             `inces` TINYINT(1)  NULL DEFAULT 0,
@@ -33,7 +33,7 @@ BEGIN
         END IF;
         
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'nombre_curso') THEN
-            ALTER TABLE `cursos` ADD COLUMN `nombre_curso` VARCHAR(40) NOT NULL;
+            ALTER TABLE `cursos` ADD COLUMN `nombre_curso` VARCHAR(40) NOT NULL UNIQUE;
         END IF;
         
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
@@ -46,6 +46,31 @@ BEGIN
 
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
             ALTER TABLE `cursos` ADD COLUMN `inces` TINYINT(1)  NULL DEFAULT 0;
+        END IF;
+
+        -- Verificar y modificar columnas si existen
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'idCurso') THEN
+            ALTER TABLE `cursos` MODIFY `idCurso` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'idFacultad') THEN
+            ALTER TABLE `cursos` MODIFY `idFacultad` INT NOT NULL;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'nombre_curso') THEN
+            ALTER TABLE `cursos` MODIFY `nombre_curso` VARCHAR(40) NOT NULL UNIQUE;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
+            ALTER TABLE `cursos` MODIFY `duracionCurso` INT NULL;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'imagen') THEN
+            ALTER TABLE `cursos` MODIFY `imagen` LONGBLOB NULL;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
+            ALTER TABLE `cursos` MODIFY `inces` TINYINT(1)  NULL DEFAULT 0;
         END IF;
         
         -- Añadir foreign key si no existe

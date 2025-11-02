@@ -59,4 +59,14 @@ def secciones(id):
 
 # GESTION DE CURSOS
 
+@inces.route('/gestion_cursos')
+@login_required
+def gestion_cursos():
+    return render_template('inces/cursos.html')
+
+@inces.route('/crear_curso')
+@login_required
+def crear_curso():
+    return render_template('inces/crearCurso.html')
+
 # FINALIZAMOS GESTION DE CURSOS

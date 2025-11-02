@@ -1,5 +1,3 @@
-USE CADISOFT;
-
 USE cadisoft;
 
 -- Tabla: cursos
@@ -27,12 +25,13 @@ BEGIN
 
         -- Verificar y modificar columnas si existen
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'empresas' AND column_name = 'id') THEN
-            ALTER TABLE `empresas` CHANGE `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+            ALTER TABLE `empresas` MODIFY `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
         END IF;
         
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'empresas' AND column_name = 'nombre') THEN
-            ALTER TABLE `empresas` CHANGE `nombre` varchar(30) NOT NULL;
+            ALTER TABLE `empresas` MODIFY `nombre` varchar(30) NOT NULL;
         END IF;
+    END IF
 END$$
 DELIMITER ;
 

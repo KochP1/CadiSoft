@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}INCES{% endblock %}
+
+{% block content %}
+    <div class="alumnos-options__wrapper">
+        <h1>Crear cursos INCES</h1>
+
+        <hr class="divider">
+    </div>
+    <div class="inces-curso__container">
+        <form class="form-inces-cursos">
+            <h2>Crear curso</h2>
+            <div class="form-group">
+                <label>Nombre del curso</label>
+                <input type="text" name="curso-inces" id="cursoinces" class="form-control mb-3">
+            </div>
+
+            <h2>Materias del curso</h2>
+            <div class="form-group">
+                <label>Nombre de la materia</label>
+                <input type="text" name="curso-inces" id="materiaInces" class="form-control mb-3">
+                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary" style="width: 150px;" onclick="agregar_materia()">Agregar materia</button>
+                    <button type="button" class="btn btn-success" style="width: 150px;">Cargar excel</button>
+                    <button type="button" class="btn btn-danger" style="width: 150px;" onclick="limpiar_materias()">Limpiar</button>
+                </div>
+            </div>
+
+            <div class="sin-materias__container" id="sin-materias__container">
+                <i class="fa-solid fa-folder-plus"></i>
+            </div>
+
+            <div class="materias-crear__container" id="materias-list__container">
+                <ul id="materias-ul">
+                    <!-- Reenderizamos materias a agregar -->
+                </ul>
+            </div>
+
+            <button class="btn btn-primary">Crear curso</button>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='js/crear_cursos_inces.js') }}"></script>
+{% endblock %}
