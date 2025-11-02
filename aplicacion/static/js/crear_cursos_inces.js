@@ -49,7 +49,7 @@ const crear_curso_inces = async (event) => {
 }
 
 const agregar_materia = () => {
-    const newMateria = document.getElementById('materiaInces').value.trim();
+    let newMateria = document.getElementById('materiaInces').value.trim();
     const noMaterias = document.getElementById('sin-materias__container');
     const materiasContainer = document.getElementById('materias-list__container');
     const ul = document.getElementById('materias-ul');
@@ -88,7 +88,7 @@ const agregar_materia = () => {
 }
 
 const limpiar_materias = () => {
-    const newMateria = document.getElementById('materiaInces').value.trim();
+    let newMateria = document.getElementById('materiaInces').value.trim();
     const ul = document.getElementById('materias-ul');
     const noMaterias = document.getElementById('sin-materias__container');
     const materiasContainer = document.getElementById('materias-list__container');
@@ -103,6 +103,7 @@ const limpiar_materias = () => {
 }
 
 const elim_materia = (div) => {
+    const span = div.nextElementSibling;
     // Eliminar el elemento padre del div
     div.parentElement.remove();
     
@@ -113,5 +114,10 @@ const elim_materia = (div) => {
         count++;
         item.textContent = count;
     })
+
+    if (span) {
+        materias = materias.filter(x => x !== span.textContent.trim());
+        console.log(materias);
+    }
 }
 
