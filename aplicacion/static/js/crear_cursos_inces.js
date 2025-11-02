@@ -195,9 +195,7 @@ const carga_masiva = async (event) => {
         const modal = bootstrap.Modal.getInstance(document.getElementById('excel-modal'));
         modal.hide();
         openAlert('Inces', data.message);
-        // Cerrar modal o limpiar formulario
         document.getElementById('excelMaterias').value = '';
-        //$('#excel-modal').modal('hide');
 
         console.log(data.columna_a);
         const arrayExcel = data.columna_a;
