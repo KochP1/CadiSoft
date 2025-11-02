@@ -10,7 +10,10 @@ const crear_curso_inces = async (event) => {
     if (isSearching) return;
     setSearching(true);
     const url = '/inces/crear_curso';
-    const curso = document.getElementById('').value.trim();
+    const curso = document.getElementById('cursoinces').value.trim();
+    const facultad = parseInt(document.getElementById('selectedValue').value);
+    const imagen = null;
+    const duracion = document.getElementById('duracionInces').value;
 
     if (curso === '') {
         openAlert('Inces', 'Debe llenar el nombre del curso');
@@ -18,8 +21,35 @@ const crear_curso_inces = async (event) => {
         return;
     }
 
+    if (curso.length > 30) {
+        openAlert('Inces', 'El curso puede tener máximo 30 caracteres');
+        setSearching(false);
+        return;
+    }
+
+    if (facultad < 0) {
+        openAlert('Inces', 'Seleccione una facultad');
+        setSearching(false);
+        return;
+    }
+
+    if (duracion <= 0) {
+        openAlert('Inces', 'Ingrese una duracion para el curso');
+        setSearching(false);
+        return;
+    }
+
+    if (materias.length == 0) {
+        openAlert('Inces', 'Debe crear al menos una materia para el curso');
+        setSearching(false);
+        return;
+    }
+
     const requestData = {
         curso: curso,
+        facultad: facultad,
+        imagen: imagen,
+        duracion: duracion,
         materias: materias
     }
 
@@ -29,7 +59,7 @@ const crear_curso_inces = async (event) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: requestData
+            body: JSON.stringify(requestData)
         });
 
         const data = await response.json();
@@ -37,7 +67,7 @@ const crear_curso_inces = async (event) => {
         if (!response.ok) throw new Error(data.error);
 
     } catch(e) {
-        openAlert('Inces', data.error);
+        openAlert('Inces', e);
         console.error(e);
     } finally {
         materias = [];

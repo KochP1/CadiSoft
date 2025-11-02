@@ -64,9 +64,48 @@ def secciones(id):
 def gestion_cursos():
     return render_template('inces/cursos.html')
 
-@inces.route('/crear_curso')
+@inces.route('/crear_curso', methods = ['GET', 'POST'])
 @login_required
 def crear_curso():
-    return render_template('inces/crearCurso.html')
+    if request.method == 'GET':
+        return render_template('inces/crearCurso.html')
+    
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            curso = data['curso']
+            facultad = data['facultad']
+            duracion = data['duracion']
+            imagen = data['imagen']
+            materias = data['materias']
+            print(data)
+
+            if not data or 'curso' not in data or 'materias' not in data or 'facultad' not in data or 'duracion' not in data:
+                return jsonify({'error': 'Datos incompletos'}), 400
+            
+            if not isinstance(materias, list) or len(materias) == 0:
+                return jsonify({'error': 'Formato de materias incorrectos'}), 400
+            
+            sql = 'INSERT INTO cursos (`idFacultad`, `nombre_curso`, `duracionCurso`, `imagen`, `inces`) VALUES (%s, %s, %s, %s, %s)'
+            
+            print(F'Curso: {curso}')
+            print(f'Materias: {materias}')
+            print(f'Facultad: {facultad}')
+
+            with g.db.cursor() as cur:
+                cur.execute(sql, (facultad, curso, duracion, imagen, 1))
+                g.db.commit()
+
+                cur.execute('SELECT idCurso FROM cursos WHERE nombre_curso = %s', (curso,))
+                idCurso = cur.fetchone()
+
+                for record in materias:
+                    cur.execute('INSERT INTO materias (`idCurso`, `nombre`) VALUES (%s, %s)', (idCurso[0], record))
+                    g.db.commit()
+                return jsonify({'message': 'Curso creado'}), 201
+        except Exception as e:
+            g.db.rollback()
+            print(e)
+            return jsonify({'error': f'Error: {e}'}), 500
 
 # FINALIZAMOS GESTION DE CURSOS

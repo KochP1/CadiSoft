@@ -12,8 +12,8 @@ let arrayCursos = [
     { id: 10, nombre: "Biología Molecular", categoria: "Ciencias" }
 ];
 
-const getCursos = async () => {
-    const url = '/inces/cursos';
+const getFacultades = async () => {
+    const url = '/cursos/buscar_facultades';
 
     const response = await fetch(url, {
         method: 'GET',
@@ -25,7 +25,7 @@ const getCursos = async () => {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error);
 
-    if (data.cursos.length > 0) arrayCursos = data.cursos;
+    if (data.facultades.length > 0) arrayCursos = data.facultades;
 }
 
 // Elementos del DOM
@@ -38,9 +38,9 @@ let selectedOption = null;
 
 // Función para filtrar y mostrar opciones
 async function filterOptions(searchTerm = '') {
-    await getCursos();
+    await getFacultades();
     const filteredCursos = arrayCursos.filter(curso => 
-        curso.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        curso.facultad.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     renderOptions(filteredCursos);
@@ -61,11 +61,9 @@ function renderOptions(cursos) {
     cursos.forEach(curso => {
         const option = document.createElement('div');
         option.className = 'custom-option';
-        option.dataset.value = curso.id;
+        option.dataset.value = curso.idFacultad;
         option.innerHTML = `
-            <strong>${curso.nombre}</strong>
-            <br>
-            <small class="text-muted">${curso.categoria}</small>
+            <strong>${curso.facultad}</strong>
         `;
 
         option.addEventListener('click', () => {
@@ -88,9 +86,9 @@ function selectOption(optionElement, curso) {
     selectedOption = optionElement;
 
     // Actualizar valores
-    selectedValue.value = curso.id;
-    selectedText.textContent = curso.nombre;
-    searchInput.value = curso.nombre;
+    selectedValue.value = curso.idFacultad;
+    selectedText.textContent = curso.facultad;
+    searchInput.value = curso.facultad;
 
     // Ocultar el dropdown
     customSelect.classList.remove('show');
@@ -145,7 +143,7 @@ customSelect.addEventListener('keydown', (e) => {
         case 'Enter':
             e.preventDefault();
             if (document.activeElement.classList.contains('custom-option')) {
-                const curso = arrayCursos.find(c => c.id == document.activeElement.dataset.value);
+                const curso = arrayCursos.find(c => c.idFacultad == document.activeElement.dataset.value);
                 selectOption(document.activeElement, curso);
             }
             break;
