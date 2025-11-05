@@ -10,7 +10,7 @@ CREATE PROCEDURE CreateTable_materias()
             CREATE TABLE `materias` (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 idCurso INT NOT NULL,
-                nombre varchar(30) NOT NULL UNIQUE
+                nombre varchar(40) NOT NULL UNIQUE
             );
 
         ELSE
@@ -30,7 +30,7 @@ CREATE PROCEDURE CreateTable_materias()
 
             -- Verificar y modificar columnas si existen
             IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'materias' AND column_name = 'id') THEN
-                ALTER TABLE `materias` MODIFY `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+                ALTER TABLE `materias` MODIFY `id` INT NOT NULL AUTO_INCREMENT FIRST;
             END IF;
             
             IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'materias' AND column_name = 'idCurso') THEN

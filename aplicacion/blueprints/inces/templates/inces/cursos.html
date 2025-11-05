@@ -17,4 +17,73 @@
 
         <hr class="divider">
     </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped-columns table-alumnos" id="tablaAlumnos">
+            <tr>
+                <th>ID</th>
+                <th>Facultad</th>
+                <th>Nombre</th>
+                <th>Materias</th>
+                <th>Duración</th>
+            </tr>
+
+            {% for curso in cursos %}
+                <tr>
+                    <td>{{curso.idCurso}}</td>
+                    <td>{{curso.facultad}}</td>
+                    <td>{{curso.nombre_curso}}</td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#materiasModal{{curso.idCurso}}">
+                            {{ curso.materias|length }} materias
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="materiasModal{{curso.idCurso}}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Materias - {{curso.nombre_curso}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group">
+                                            {% for materia in curso.materias %}
+                                                <li class="list-group-item">{{ materia }}</li>
+                                            {% else %}
+                                                <li class="list-group-item text-muted">No hay materias registradas</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{% if curso.duracionCurso != None %} {{curso.duracionCurso}} horas {% endif %}</td>
+                    <td class="tabla-btn">
+                        <a href="{{url_for('cursos.seccion_curso', idcurso=curso.idCurso)}}" class="editar-link">
+                            <button class="btn btn-primary btn-secciones">
+                                Gestionar secciones
+                            </button>
+                        </a>
+                    </td>
+                    <td class="tabla-btn">
+                        <a href="{{url_for('cursos.edit_cursos', idCurso=curso.idCurso)}}" class="editar-link">
+                            <button class="btn btn-primary">
+                                Editar
+                            </button>
+                        </a>
+                    </td>
+                    <td class="tabla-btn">
+                        <button class="btn btn-danger" idcursos="{{curso.idCurso}}" onclick="elim_curso(this.getAttribute('idcursos'))">
+                            Eliminar
+                        </button>
+                    </td>
+                    
+                </tr>
+
+            {% endfor %}
+
+        </table>
+    </div>
 {% endblock %}

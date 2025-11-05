@@ -1,16 +1,5 @@
 // Array de prueba - arrayCursos
-let arrayCursos = [
-    { id: 1, nombre: "Matemáticas Avanzadas", categoria: "Ciencias" },
-    { id: 2, nombre: "Programación en JavaScript", categoria: "Tecnología" },
-    { id: 3, nombre: "Historia del Arte", categoria: "Humanidades" },
-    { id: 4, nombre: "Física Cuántica", categoria: "Ciencias" },
-    { id: 5, nombre: "Desarrollo Web Full Stack", categoria: "Tecnología" },
-    { id: 6, nombre: "Literatura Contemporánea", categoria: "Humanidades" },
-    { id: 7, nombre: "Química Orgánica", categoria: "Ciencias" },
-    { id: 8, nombre: "Inteligencia Artificial", categoria: "Tecnología" },
-    { id: 9, nombre: "Filosofía Moderna", categoria: "Humanidades" },
-    { id: 10, nombre: "Biología Molecular", categoria: "Ciencias" }
-];
+let arrayCursos = [];
 
 const getCursos = async () => {
     const url = '/inces/cursos';
@@ -40,7 +29,7 @@ let selectedOption = null;
 async function filterOptions(searchTerm = '') {
     await getCursos();
     const filteredCursos = arrayCursos.filter(curso => 
-        curso.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        curso.nombre_curso.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     renderOptions(filteredCursos);
@@ -63,9 +52,7 @@ function renderOptions(cursos) {
         option.className = 'custom-option';
         option.dataset.value = curso.id;
         option.innerHTML = `
-            <strong>${curso.nombre}</strong>
-            <br>
-            <small class="text-muted">${curso.categoria}</small>
+            <strong>${curso.nombre_curso}</strong>
         `;
 
         option.addEventListener('click', () => {
@@ -77,7 +64,7 @@ function renderOptions(cursos) {
 }
 
 // Función para seleccionar una opción
-function selectOption(optionElement, curso) {
+async function selectOption(optionElement, curso) {
     // Remover selección anterior
     if (selectedOption) {
         selectedOption.classList.remove('selected');
@@ -88,12 +75,13 @@ function selectOption(optionElement, curso) {
     selectedOption = optionElement;
 
     // Actualizar valores
-    selectedValue.value = curso.id;
-    selectedText.textContent = curso.nombre;
-    searchInput.value = curso.nombre;
+    selectedValue.value = curso.idCurso;
+    selectedText.textContent = curso.nombre_curso;
+    searchInput.value = curso.nombre_curso;
 
     // Ocultar el dropdown
     customSelect.classList.remove('show');
+    await getSecciones();
 }
 
 // Event Listeners
@@ -145,7 +133,7 @@ customSelect.addEventListener('keydown', (e) => {
         case 'Enter':
             e.preventDefault();
             if (document.activeElement.classList.contains('custom-option')) {
-                const curso = arrayCursos.find(c => c.id == document.activeElement.dataset.value);
+                const curso = arrayCursos.find(c => c.idCurso == document.activeElement.dataset.value);
                 selectOption(document.activeElement, curso);
             }
             break;

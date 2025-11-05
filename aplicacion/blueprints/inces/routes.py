@@ -38,7 +38,7 @@ def empresas():
             empresas = []
             for record in result:
                 empresas.append(dict(zip(columNames, record)))
-            return jsonify({'empresas': empresas}), 200
+            return render_template('inces/empresas.html', empresas = empresas)
     except Exception as e:
         return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
     
@@ -64,6 +64,48 @@ def secciones(id):
 @inces.route('/gestion_cursos')
 @login_required
 def gestion_cursos():
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('''
+                SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso, m.nombre as materia_nombre 
+                FROM cursos c 
+                INNER JOIN materias m ON c.idCurso = m.idCurso 
+                INNER JOIN facultades f ON c.idFacultad = f.idFacultad
+                ORDER BY c.nombre_curso, m.nombre
+            ''')
+            resultados = cur.fetchall()
+            
+            cursos_dict = {}
+            for row in resultados:
+                # Acceder por índice
+                id_curso = row[0]
+                idFacultad = row[1] 
+                facultad = row[2] 
+                nombre_curso = row[3]
+                duracionCurso = row[4] 
+                
+                # Si es la primera vez que encontramos este curso, inicializarlo
+                if id_curso not in cursos_dict:
+                    cursos_dict[id_curso] = {
+                        'idCurso': id_curso,
+                        'idFacultad': idFacultad,
+                        'facultad': facultad,
+                        'nombre_curso': nombre_curso,
+                        'duracionCurso': duracionCurso,
+                        'materias': []
+                    }
+                
+                materia_nombre = row[-1]  # Última columna del SELECT
+                if materia_nombre:
+                    cursos_dict[id_curso]['materias'].append(materia_nombre)
+            
+            # Convertir el diccionario a lista
+            cursos_array = list(cursos_dict.values())
+            
+            return render_template('inces/cursos.html', cursos = cursos_array)
+    except Exception as e:
+        print(e)
+        return jsonify({'error': f'Error: {e}'}), 500
     return render_template('inces/cursos.html')
 
 @inces.route('/crear_curso', methods = ['GET', 'POST'])
@@ -98,7 +140,7 @@ def crear_curso():
                 cur.execute(sql, (facultad, curso, duracion, imagen, 1))
                 g.db.commit()
 
-                cur.execute('SELECT idCurso FROM cursos WHERE nombre_curso = %s', (curso,))
+                cur.execute('SELECT idCurso FROM cursos WHERE nombre_curso = %s AND inces = 1', (curso,))
                 idCurso = cur.fetchone()
 
                 for record in materias:

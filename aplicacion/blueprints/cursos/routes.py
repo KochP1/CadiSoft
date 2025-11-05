@@ -31,7 +31,7 @@ def index():
 
     try:
         with g.db.cursor() as cur:
-            sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad'
+            sql = 'SELECT c.idCurso, f.idFacultad, f.facultad, c.nombre_curso, c.duracionCurso FROM cursos c JOIN facultades f ON c.idFacultad = f.idFacultad WHERE inces < 1'
             cur.execute(sql)
             registros = cur.fetchall()
             insertCursos = []
