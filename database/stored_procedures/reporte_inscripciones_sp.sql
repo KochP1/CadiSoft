@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS `reporte_inscripciones_sp`;
 
 DELIMITER $$
 CREATE PROCEDURE `reporte_inscripciones_sp`(
-    IN p_idusuarios INT,
+    IN p_cedula INT,
     IN p_fecha_inscripcion DATE,
     IN p_idSeccion INT,
     IN p_fecha_expiracion DATE,
@@ -15,8 +15,8 @@ BEGIN
     DECLARE v_sql_query VARCHAR(2000);
     
     
-    IF p_idusuarios IS NOT NULL THEN
-        SET v_where_clause = CONCAT(v_where_clause, ' AND u.idusuarios = ', p_idusuarios);
+    IF p_cedula IS NOT NULL THEN
+        SET v_where_clause = CONCAT(v_where_clause, ' AND u.cedula = ', p_cedula);
     END IF;
 
     IF p_es_activa IS NOT NULL THEN
@@ -42,7 +42,7 @@ BEGIN
     
     SET v_sql_query = CONCAT(
         'SELECT 
-            u.nombre, u.apellido, u.cedula,
+            u.idusuarios, u.nombre, u.apellido, u.cedula,
             i.fecha_inscripcion, i.fecha_expiracion, i.tipo,
             c.nombre_curso, s.nombre as nombre_seccion
         FROM inscripcion i
