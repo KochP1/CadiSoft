@@ -9,7 +9,7 @@
         <div class="alumnos-options__container">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
-            <button class="btn btn-primary btn-crear" onclick="location.href = '/inces/crear_curso'">Crear empresa</button>
+            <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-empresa-modal">Crear empresa</button>
             <form action="{{url_for('cursos.buscar_curso')}}" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar empresa" class="filtrar-alumno__input" name="empresa">
             </form>
@@ -30,11 +30,9 @@
                     <td>{{empresa.id}}</td>
                     <td>{{empresa.nombre}}</td>
                     <td class="tabla-btn">
-                        <a class="editar-link">
-                            <button class="btn btn-primary">
-                                Editar
-                            </button>
-                        </a>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar-facultad-modal">
+                            Editar
+                        </button>
                     </td>
                     <td class="tabla-btn">
                         <button class="btn btn-danger" idEmpresa="{{empresa.id}}" onclick="elim_curso(this.getAttribute('idEmpresa'))">
@@ -47,5 +45,43 @@
             {% endfor %}
 
         </table>
+    </div>
+
+    <div class="modal fade" id="crear-empresa-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Nueva empresa</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="crear-empresa-form" onsubmit="crear_empresa(event)">
+
+                <label>Nombre de la empresa</label>
+                <input type="text" class="form-control mb-3" name="empresa" id="nombreEmpresa" onkeypress="return validarTecla(event)">
+                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="edit-empresa-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar empresa</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-facultad-form" idEmpresa="" onsubmit="editar_empresa(event, this.getAttribute('idEmpresa'))">
+
+                <label>Nombre de la empresa</label>
+                <input type="text" class="form-control mb-3" name="empresa" id="edit-nombreEmpresa" onkeypress="return validarTecla(event)">
+                <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Guardar</button>
+                </form>
+            </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -81,7 +81,7 @@ async function selectOption(optionElement, curso) {
 
     // Ocultar el dropdown
     customSelect.classList.remove('show');
-    await getSecciones();
+    await getSecciones(curso.idCurso);
 }
 
 // Event Listeners

@@ -6,7 +6,7 @@ let arrayEmpresas = [
 ];
 
 const getEmpresas = async () => {
-    const url = '/inces/empresas';
+    const url = '/inces/json_empresas';
 
     const response = await fetch(url, {
         method: 'GET',

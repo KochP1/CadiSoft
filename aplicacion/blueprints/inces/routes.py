@@ -1,5 +1,5 @@
-from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, flash, g
-from flask_login import login_user, logout_user, current_user, login_required
+from flask import request, render_template, redirect, url_for, Blueprint, current_app, jsonify, g
+from flask_login import current_user, login_required
 import pandas as pd
 import io
 
@@ -7,10 +7,42 @@ inces = Blueprint('inces', __name__, template_folder='templates', static_folder=
 
 # INSCRIPCIONES INCES
 
-@inces.route('/')
+@inces.route('/', methods = ['GET', 'POST'])
 @login_required
 def index():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            idAlumno = data['alumno']
+            idEmpresa = data['empresa']
+            inicio = data['inicio']
+            final = data['final']
+            idSeccion = data['seccion']
+            tipo = 'Inces'
+
+            if not data or 'alumno' not in data or 'empresa' not in data or 'inicio' not in data or 'final' not in data or 'seccion' not in data:
+                return jsonify({'error': 'Faltan campos'}), 400
+            
+            print(idAlumno)
+            print(idEmpresa)
+            print(inicio)
+            print(final)
+            print(idSeccion)
+            print(tipo)
+            
+            with g.db.cursor() as cur:
+                cur.callproc('inscripcion_inces_sp', [idAlumno, inicio, idSeccion, final, tipo, idEmpresa])
+                g.db.commit()
+                print('Me ejecuto antes del json status OK')
+                return jsonify({'message': 'Alumno inscrito'}), 200
+        except Exception as e:
+            print(e)
+            return jsonify({'error': f'Error al crear empresas: {e}'})
     return render_template('inces/index.html')
+    
+# FINALIZAMOS INSCRIPCIONES INCES
+
+# GESTION DE CURSOS
 
 @inces.route('/cursos', methods = ['GET'])
 @login_required
@@ -27,40 +59,6 @@ def cursos():
     except Exception as e:
         return jsonify({'error': f'Error al obtener cursos: {e}'}), 500
 
-@inces.route('/empresas')
-@login_required
-def empresas():
-    try:
-        with g.db.cursor() as cur:
-            cur.execute('SELECT * FROM empresas')
-            result = cur.fetchall()
-            columNames = [column[0] for column in cur.description]
-            empresas = []
-            for record in result:
-                empresas.append(dict(zip(columNames, record)))
-            return render_template('inces/empresas.html', empresas = empresas)
-    except Exception as e:
-        return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
-    
-@inces.route('/secciones/<int:id>')
-@login_required
-def secciones(id):
-    try:
-        with g.db.cursor() as cur:
-            cur.execute('SELECT * FROM secciones s INNER JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idCurso = %s', (id))
-            result = cur.fetchall()
-            columNames = [column[0] for column in cur.description]
-            secciones = []
-            for record in result:
-                secciones.append(dict(zip(columNames, record)))
-            return jsonify({'secciones': secciones}), 200
-    except Exception as e:
-        return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
-    
-# FINALIZAMOS INSCRIPCIONES INCES
-
-# GESTION DE CURSOS
-
 @inces.route('/gestion_cursos')
 @login_required
 def gestion_cursos():
@@ -71,6 +69,7 @@ def gestion_cursos():
                 FROM cursos c 
                 INNER JOIN materias m ON c.idCurso = m.idCurso 
                 INNER JOIN facultades f ON c.idFacultad = f.idFacultad
+                WHERE c.inces = 1
                 ORDER BY c.nombre_curso, m.nombre
             ''')
             resultados = cur.fetchall()
@@ -154,6 +153,7 @@ def crear_curso():
         
 
 @inces.route('/carga_masiva', methods = ['POST'])
+@login_required
 def carga_masiva():
     try:
         if 'excel' not in request.files:
@@ -187,5 +187,92 @@ def carga_masiva():
     except Exception as e:
         print(f"Error procesando el archivo: {str(e)}")
         return jsonify({'error': f'Error procesando el archivo: {str(e)}'}), 500
+    
+@inces.route('/secciones/<int:id>')
+@login_required
+def secciones(id):
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('SELECT * FROM secciones s INNER JOIN cursos c ON s.idCurso = c.idCurso WHERE s.idCurso = %s', (id))
+            result = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            secciones = []
+            for record in result:
+                secciones.append(dict(zip(columNames, record)))
+            return jsonify({'secciones': secciones}), 200
+    except Exception as e:
+        return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
 
 # FINALIZAMOS GESTION DE CURSOS
+
+# GESTIÓN DE EMPRESAS
+
+@inces.route('/json_empresas')
+@login_required
+def json_empresas():
+    with g.db.cursor() as cur:
+        if request.method == 'GET':
+            try:
+                    cur.execute('SELECT * FROM empresas')
+                    result = cur.fetchall()
+                    columNames = [column[0] for column in cur.description]
+                    empresas = []
+                    for record in result:
+                        empresas.append(dict(zip(columNames, record)))
+                    return jsonify({'empresas': empresas}), 200
+            except Exception as e:
+                return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
+
+@inces.route('/empresas', methods = ['GET', 'POST'])
+@login_required
+def empresas():
+    with g.db.cursor() as cur:
+        if request.method == 'GET':
+            try:
+                    cur.execute('SELECT * FROM empresas')
+                    result = cur.fetchall()
+                    columNames = [column[0] for column in cur.description]
+                    empresas = []
+                    for record in result:
+                        empresas.append(dict(zip(columNames, record)))
+                    return render_template('inces/empresas.html', empresas = empresas)
+            except Exception as e:
+                return jsonify({'error': f'Error al obtener empresas: {e}'}), 500
+        elif request.method == 'POST':
+            try:
+                data = request.get_json()
+                nombre = data['nombre']
+                if not data or 'nombre' not in data:
+                    return  jsonify({'error': 'No hay campos para actualizar'}), 400
+                sql = 'INSERT INTO empresas (`nombre`) VALUES (%s)'
+                cur.execute(sql, (nombre,))
+                g.db.commit()
+                return jsonify({'message': 'Empresa creada'}), 200
+            except Exception as e:
+                return jsonify({'error': f'Error al crear empresa: {e}'}), 500
+
+@inces.route('/mod_empresa/<int:id>', methods = ['DELETE', 'PUT'])
+@login_required
+def mod_empresa(id):
+    try:
+        with g.db.cursor() as cur:
+            if request.method == 'DELETE':
+                sql = 'DELETE FROM empresas WHERE id = %s'
+                cur.execute(sql, (id,))
+                g.db.commit()
+                return jsonify({'message': 'Empresa eliminada'}), 200
+            else:
+                data = request.get_json()
+                nombre = data['nombre']
+                if not data or 'nombre' not in data:
+                    return  jsonify({'error': 'No hay campos para actualizar'}), 400
+                
+                sql = 'UPDATE FROM empresas SET nombre = %s WHERE id = %s'
+                cur.execute(sql, (nombre, id))
+                g.db.commit()
+                return jsonify({'message': 'Empresa actualizada'}), 200
+    except Exception as e:
+        return jsonify({'error': f'Error: {e}'}), 500
+
+# FINALIZAMOS GESTIÓN DE EMPRESAS
+

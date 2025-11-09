@@ -32,7 +32,7 @@ const searchInputSecciones = document.getElementById('searchInputSecciones');
 const customSelectSecciones = document.getElementById('customSelectSecciones');
 const selectedValueSecciones = document.getElementById('selectedValueSecciones');
 const selectedTextSecciones = document.getElementById('selectedTextSecciones');
-let selectEmpresa = null;
+let selectSec = null;
 
 // Función para filtrar y mostrar opciones
 async function filterOptionsSecciones(searchTerm = '') {

@@ -60,7 +60,7 @@ BEGIN
         END IF;
 
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idEmpresa') THEN
-            ALTER TABLE `inscripcion` ADD COLUMN `idEmpresa` INT NULL DEFAULT 0;
+            ALTER TABLE `inscripcion` ADD COLUMN `idEmpresa` INT NULL DEFAULT NULL;
         END IF;
 
         -- Verificar y añadir modificar si existen
@@ -97,7 +97,7 @@ BEGIN
         END IF;
 
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idEmpresa') THEN
-            ALTER TABLE `inscripcion` MODIFY `idEmpresa` INT NULL DEFAULT 0;
+            ALTER TABLE `inscripcion` MODIFY `idEmpresa` INT NULL DEFAULT NULL;
         END IF;
         
         -- Añadir foreign key si no existe

@@ -2781,6 +2781,211 @@ async function guardar_factura() {
 
 
 }
+
+// INCES
+
+async function inscribir_inces(event) {
+    event.preventDefault();
+    if (isSearching) return;
+    setSearching(true);
+
+    const url = '/inces/'
+    const alumno = document.getElementById('alumno-id-inscripcion').value;
+    const inicio = document.getElementById('InicioPeriodo').value;
+    const final = document.getElementById('FinPeriodo').value;
+    const empresa = document.getElementById('selectedValueEmpresa').value;
+    const seccion = document.getElementById('selectedValueSecciones').value;
+
+    if (!alumno || alumno == '') {
+        setSearching(false);
+        openAlert('INCES', 'Debe Buscar un alumno para inscribir');
+        return;
+    }
+
+    if (!inicio || inicio == '') {
+        setSearching(false);
+        openAlert('INCES', 'Debe escoger una fecha de inicio');
+        return;
+    }
+
+    if (inicio > final) {
+        setSearching(false);
+        openAlert('Inscripciones', 'La fecha "Inicio" no puede ser mayor que la de "Finalización"');
+        return;
+    }
+
+    if (!empresa || empresa == '') {
+        setSearching(false);
+        openAlert('INCES', 'Debe escoger la empresa que representa al alumno');
+        return;
+    }
+
+    if (!final || final == '') {
+        setSearching(false);
+        openAlert('INCES', 'Debe escoger una fecha de finalización');
+        return;
+    }
+
+    if (!seccion || seccion == '') {
+        setSearching(false);
+        openAlert('INCES', 'Debe escoger una sección para inscribir');
+        return;
+    }
+
+    const requestData = {
+        'alumno': alumno,
+        'empresa': empresa,
+        'inicio': inicio,
+        'final': final,
+        'seccion': seccion,
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        openAlert('INCES', data.message);
+        setTimeout(() => {
+            window.location.href = '/inces/gestion_cursos';
+        }, 1300)
+    } catch(e) {
+        openAlert('INCES', e);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+}
+
+// EMPRESAS
+async function crear_empresa(event) {
+    event.preventDefault();
+    if (isSearching) return;
+    setSearching(true);
+    const url = '/inces/empresas'
+    const nombre = document.getElementById('nombreEmpresa').value.trim();
+
+    if (!nombre || nombre == '') {
+        setSearching(false);
+        openAlert('Empresas', 'Debe llenar el campo');
+        return;
+    }
+
+    if (nombre.length > 30) {
+        setSearching(false);
+        openAlert('Empresas', 'La empresa puede tener máximo 30 caracteres');
+        return;
+    }
+
+    const requestData = {
+        'nombre': nombre
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error);
+    }
+
+    openAlert('Empresas', data.message);
+    window.location.reload();
+    } catch(e) {
+        openAlert('Empresas', data.error);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+}
+
+async function editar_empresa(event, id) {
+    event.preventDefault();
+    if (isSearching) return;
+    setSearching(true);
+    const url = `/inces/mod_empresas/${id}`
+    const nombre = document.getElementById('').value.trim();
+
+    if (!nombre || nombre == '') {
+        setSearching(false);
+        openAlert('Empresas', 'Debe llenar el campo');
+        return;
+    }
+
+    const requestData = {
+        'nombre': nombre
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error);
+    }
+
+    openAlert('Empresas', data.message);
+    window.location.reload();
+    } catch(e) {
+        openAlert('Empresas', data.error);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+}
+
+async function eliminar_empresa(id) {
+    if (isSearching) return;
+    setSearching(true);
+    const url = `/inces/mod_empresas/${id}`
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error);
+    }
+
+    openAlert('Empresas', data.message);
+    window.location.reload();
+    } catch(e) {
+        openAlert('Empresas', data.error);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+}
 // FRONT END 
 
 function generar_factura() {
