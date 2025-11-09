@@ -62,6 +62,43 @@ BEGIN
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idEmpresa') THEN
             ALTER TABLE `inscripcion` ADD COLUMN `idEmpresa` INT NULL DEFAULT 0;
         END IF;
+
+        -- Verificar y añadir modificar si existen
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idInscripcion') THEN
+            ALTER TABLE `inscripcion` MODIFY `idInscripcion` INT NOT NULL AUTO_INCREMENT FIRST;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idusuarios') THEN
+            ALTER TABLE `inscripcion` MODIFY `idusuarios` INT NOT NULL;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'fecha_inscripcion') THEN
+            ALTER TABLE `inscripcion` MODIFY `fecha_inscripcion` DATE NOT NULL;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'fecha_expiracion') THEN
+            ALTER TABLE `inscripcion` MODIFY `fecha_expiracion` DATE NOT NULL;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'tipo') THEN
+            ALTER TABLE `inscripcion` MODIFY `tipo` ENUM('Privada','Inces') NOT NULL;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'es_activa') THEN
+            ALTER TABLE `inscripcion` MODIFY `es_activa` TINYINT(1) NOT NULL DEFAULT 1;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'asistencia') THEN
+            ALTER TABLE `inscripcion` MODIFY `asistencia` INT NULL DEFAULT 0;
+        END IF;
+        
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'inasistencia') THEN
+            ALTER TABLE `inscripcion` MODIFY `inasistencia` INT NULL DEFAULT 0;
+        END IF;
+
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND column_name = 'idEmpresa') THEN
+            ALTER TABLE `inscripcion` MODIFY `idEmpresa` INT NULL DEFAULT 0;
+        END IF;
         
         -- Añadir foreign key si no existe
         IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE table_schema = 'cadisoft' AND table_name = 'inscripcion' AND constraint_name = 'alumno_inscripcion') THEN
