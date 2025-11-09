@@ -2920,8 +2920,8 @@ async function editar_empresa(event, id) {
     event.preventDefault();
     if (isSearching) return;
     setSearching(true);
-    const url = `/inces/mod_empresas/${id}`
-    const nombre = document.getElementById('').value.trim();
+    const url = `/inces/mod_empresa/${id}`
+    const nombre = document.getElementById('edit-nombreEmpresa').value.trim();
 
     if (!nombre || nombre == '') {
         setSearching(false);
@@ -2949,7 +2949,9 @@ async function editar_empresa(event, id) {
     }
 
     openAlert('Empresas', data.message);
-    window.location.reload();
+    setTimeout(() => {
+        window.location.reload();
+    }, 1300)
     } catch(e) {
         openAlert('Empresas', data.error);
         console.error(e);
@@ -2961,30 +2963,40 @@ async function editar_empresa(event, id) {
 async function eliminar_empresa(id) {
     if (isSearching) return;
     setSearching(true);
-    const url = `/inces/mod_empresas/${id}`
+    const url = `/inces/mod_empresa/${id}`
 
-    try {
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
+    const confirm = await openConfirm('INCES' , '¿Estás seguro de que quieres eliminar la empresa?')
+    if (confirm) {
+        try {
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error);
             }
-        });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.error);
+            openAlert('Empresas', data.message);
+            window.location.reload();
+        } catch(e) {
+            openAlert('Empresas', data.error);
+            console.error(e);
+        } finally {
+            setSearching(false);
+        }
     }
+}
 
-    openAlert('Empresas', data.message);
-    window.location.reload();
-    } catch(e) {
-        openAlert('Empresas', data.error);
-        console.error(e);
-    } finally {
-        setSearching(false);
-    }
+function obtenerDataEditEmpresa(id, empresa) {
+    const form = document.getElementById('edit-empresa-form');
+    form.setAttribute('idEmpresa', id);
+    const input = document.getElementById('edit-nombreEmpresa');
+    input.value = empresa;
 }
 // FRONT END 
 

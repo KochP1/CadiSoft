@@ -10,7 +10,7 @@
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()">Generar reporte</button>
             <button class="btn btn-primary btn-excel" onclick="migrarExcel()">Migrar a excel</button>
             <button class="btn btn-primary btn-crear" data-bs-toggle="modal" data-bs-target="#crear-empresa-modal">Crear empresa</button>
-            <form action="{{url_for('cursos.buscar_curso')}}" method="post" class="filtrar-alumno__form">
+            <form action="{{url_for('inces.buscar_empresa')}}" method="post" class="filtrar-alumno__form">
                 <input type="search" placeholder="Buscar empresa" class="filtrar-alumno__input" name="empresa">
             </form>
         </div>
@@ -30,12 +30,12 @@
                     <td>{{empresa.id}}</td>
                     <td>{{empresa.nombre}}</td>
                     <td class="tabla-btn">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar-facultad-modal">
+                        <button class="btn btn-primary" idEmpresa="{{empresa.id}}" empresa="{{empresa.nombre}}" data-bs-toggle="modal" data-bs-target="#edit-empresa-modal" onclick="obtenerDataEditEmpresa(this.getAttribute('idEmpresa'), this.getAttribute('empresa'))">
                             Editar
                         </button>
                     </td>
                     <td class="tabla-btn">
-                        <button class="btn btn-danger" idEmpresa="{{empresa.id}}" onclick="elim_curso(this.getAttribute('idEmpresa'))">
+                        <button class="btn btn-danger" idEmpresa="{{empresa.id}}" onclick="eliminar_empresa(this.getAttribute('idEmpresa'))">
                             Eliminar
                         </button>
                     </td>
@@ -74,7 +74,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="edit-facultad-form" idEmpresa="" onsubmit="editar_empresa(event, this.getAttribute('idEmpresa'))">
+                <form id="edit-empresa-form" onsubmit="editar_empresa(event, this.getAttribute('idEmpresa'))">
 
                 <label>Nombre de la empresa</label>
                 <input type="text" class="form-control mb-3" name="empresa" id="edit-nombreEmpresa" onkeypress="return validarTecla(event)">

@@ -267,12 +267,30 @@ def mod_empresa(id):
                 if not data or 'nombre' not in data:
                     return  jsonify({'error': 'No hay campos para actualizar'}), 400
                 
-                sql = 'UPDATE FROM empresas SET nombre = %s WHERE id = %s'
+                sql = 'UPDATE empresas SET nombre = %s WHERE id = %s'
                 cur.execute(sql, (nombre, id))
                 g.db.commit()
                 return jsonify({'message': 'Empresa actualizada'}), 200
     except Exception as e:
+        print(e)
         return jsonify({'error': f'Error: {e}'}), 500
+    
+
+@inces.route('/buscar_empresa', methods = ['POST'])
+def buscar_empresa():
+    try:
+        nombre = request.form.get('empresa')
+        with g.db.cursor() as cur:
+            cur.execute('SELECT * FROM empresas WHERE nombre = %s', (nombre,))
+            result = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            empresas = []
+            for record in result:
+                empresas.append(dict(zip(columNames, record)))
+            return render_template('inces/empresas.html', empresas = empresas)
+    except Exception as e:
+        print(e)
+        return redirect(url_for('inces.empresas'))
 
 # FINALIZAMOS GESTIÓN DE EMPRESAS
 
