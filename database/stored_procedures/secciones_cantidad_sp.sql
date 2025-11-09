@@ -1,5 +1,6 @@
 USE `cadisoft`;
 DROP PROCEDURE IF EXISTS `secciones_cantidad_sp`;
+DELIMITER $$
 CREATE PROCEDURE `secciones_cantidad_sp`(
 	IN id_curso INT,
     IN cantidad INT,
@@ -43,4 +44,5 @@ BEGIN
             WHERE isc.idSeccion = sc.idSeccion
             ) < cantidad;
     END IF;
-END
+END$$
+DELIMITER ;

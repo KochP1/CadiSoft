@@ -1,6 +1,7 @@
 USE `cadisoft`;
 DROP PROCEDURE IF EXISTS `calificaciones_sp`;
-ALTER PROCEDURE `calificaciones_sp`(
+DELIMITER $$
+CREATE PROCEDURE `calificaciones_sp`(
     IN p_idSeccion INT
 )
 BEGIN
@@ -57,7 +58,5 @@ BEGIN
     WHERE c.idSeccion = p_idSeccion 
     AND i.fecha_inscripcion = v_fecha_inscripcion 
     AND i.fecha_expiracion = v_fecha_expiracion;
-    
-    
-
-END
+END$$
+DELIMITER ;

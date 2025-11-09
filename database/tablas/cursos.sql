@@ -44,7 +44,7 @@ BEGIN
             ALTER TABLE `cursos` ADD COLUMN `imagen` LONGBLOB NULL;
         END IF;
 
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'inces') THEN
             ALTER TABLE `cursos` ADD COLUMN `inces` TINYINT(1)  NULL DEFAULT 0;
         END IF;
 
@@ -69,7 +69,7 @@ BEGIN
             ALTER TABLE `cursos` MODIFY `imagen` LONGBLOB NULL;
         END IF;
 
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'duracionCurso') THEN
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'inces') THEN
             ALTER TABLE `cursos` MODIFY `inces` TINYINT(1)  NULL DEFAULT 0;
         END IF;
         

@@ -1,13 +1,13 @@
 USE cadisoft;
 
 -- Tabla: cursos
-DROP PROCEDURE IF EXISTS CreateTable_cursos;
+DROP PROCEDURE IF EXISTS CreateTable_empresas;
 
 DELIMITER $$
 CREATE PROCEDURE CreateTable_empresas()
 BEGIN
 -- Verificar si la tabla existe
-    IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'cadisoft' AND table_name = 'cursos') THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'cadisoft' AND table_name = 'empresas') THEN
         -- Crear la tabla si no existe
         CREATE TABLE `empresas`(
             id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -25,7 +25,7 @@ BEGIN
 
         -- Verificar y modificar columnas si existen
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'empresas' AND column_name = 'id') THEN
-            ALTER TABLE `empresas` MODIFY `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+            ALTER TABLE `empresas` MODIFY `id` INT NOT NULL AUTO_INCREMENT FIRST;
         END IF;
         
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'empresas' AND column_name = 'nombre') THEN
