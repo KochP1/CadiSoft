@@ -50,7 +50,7 @@ BEGIN
 
         -- Verificar y modificar columnas si existen
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'idCurso') THEN
-            ALTER TABLE `cursos` MODIFY `idCurso` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+            ALTER TABLE `cursos` MODIFY `idCurso` INT NOT NULL AUTO_INCREMENT FIRST;
         END IF;
         
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'cursos' AND column_name = 'idFacultad') THEN

@@ -31,7 +31,7 @@ BEGIN
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'empresas' AND column_name = 'nombre') THEN
             ALTER TABLE `empresas` MODIFY `nombre` varchar(30) NOT NULL;
         END IF;
-    END IF
+    END IF;
 END$$
 DELIMITER ;
 
