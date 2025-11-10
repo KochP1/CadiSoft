@@ -306,37 +306,99 @@
             </div>
         </div>
 
-        <div class="modal fade" id="filtrar-secciones-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade" id="filtrar-secciones-modal" tabindex="-1" aria-labelledby="filtrarSeccionesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Filtrar sección</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- Header -->
+                    <div class="modal-header bg-primary text-white">
+                        <h1 class="modal-title fs-5" id="filtrarSeccionesModalLabel">Filtrar secciones</h1>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    
+                    <!-- Body -->
                     <div class="modal-body">
-                        <form id="filter-secciones__form" method="post" action="{{url_for('cursos.filtrar_seccion_cantidad', id=cursos[0].idCurso)}}" style="display: flex; flex-direction: column; width: 100%; gap: 20px; align-items: center; justify-content: center;">
-                            <div class="form-group" style="width: 100%;">
-                                <label for="cantidad-secciones">Cantidad de participantes para filtrar</label>
-                                <input type="number" id="cantidad-secciones" class="form-control" onchange="changeFilterNumber()" name="cantidad">
+                        <form id="filter-secciones__form" method="post" action="{{url_for('cursos.filtrar_seccion_cantidad', id=cursos[0].idCurso)}}">
+                            <!-- Cantidad de participantes -->
+                            <div class="mb-4">
+                                <label for="cantidad-secciones" class="form-label fw-semibold">Cantidad de participantes</label>
+                                <input type="number" 
+                                    id="cantidad-secciones" 
+                                    class="form-control form-control-lg" 
+                                    name="cantidad"
+                                    min="0"
+                                    value="0"
+                                    placeholder="Ingrese la cantidad">
+                                <div class="form-text">Establezca el número de participantes para filtrar</div>
                             </div>
                             
-                            <div class="form-check" style="width: 100%;">
-                                <input type="radio" id="filtrar-mayor" checked class="form-check-input" name="filtro-participantes" value="mayor">
-                                <label for="filtrar-mayor" class="form-check-label" id="filtrar-mayor-label">Filtrar por secciones con mas de 0 participantes</label>
+                            <!-- Opciones de filtro -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold mb-3">Tipo de filtro</label>
+                                
+                                <div class="form-options">
+                                    <!-- Mayor que -->
+                                    <div class="form-check card-option mb-2">
+                                        <input type="radio" 
+                                            id="filtrar-mayor" 
+                                            class="form-check-input" 
+                                            name="filtro-participantes" 
+                                            value="mayor" 
+                                            checked>
+                                        <label for="filtrar-mayor" class="form-check-label w-100 p-3 rounded border" id="filtrar-mayor-label">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-arrow-up text-success me-3"></i>
+                                                <div>
+                                                    <div class="fw-medium">Mayor que</div>
+                                                    <small class="text-muted">Secciones con más participantes</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Menor que -->
+                                    <div class="form-check card-option mb-2">
+                                        <input type="radio" 
+                                            id="filtrar-menor" 
+                                            class="form-check-input" 
+                                            name="filtro-participantes" 
+                                            value="menor">
+                                        <label for="filtrar-menor" class="form-check-label w-100 p-3 rounded border" id="filtrar-menor-label">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-arrow-down text-warning me-3"></i>
+                                                <div>
+                                                    <div class="fw-medium">Menor que</div>
+                                                    <small class="text-muted">Secciones con menos participantes</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Igual a -->
+                                    <div class="form-check card-option">
+                                        <input type="radio" 
+                                            id="filtrar-igual" 
+                                            class="form-check-input" 
+                                            name="filtro-participantes" 
+                                            value="igual">
+                                        <label for="filtrar-igual" class="form-check-label w-100 p-3 rounded border" id="filtrar-igual-label">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-equals text-info me-3"></i>
+                                                <div>
+                                                    <div class="fw-medium">Igual a</div>
+                                                    <small class="text-muted">Secciones con exactamente esta cantidad</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-check" style="width: 100%;">
-                                <input type="radio" id="filtrar-menor" class="form-check-input" name="filtro-participantes" value="menor">
-                                <label for="filtrar-menor" class="form-check-label" id="filtrar-menor-label">Filtrar por secciones con menos de 0 participantes</label>
-                            </div>
-
-                            <div class="form-check" style="width: 100%;">
-                                <input type="radio" id="filtrar-igual" class="form-check-input" name="filtro-participantes" value="igual">
-                                <label for="filtrar-igual" class="form-check-label" id="filtrar-igual-label">Filtrar por secciones con 0 participantes</label>
-                            </div>
-
-                            <div class="form-group" style="width: 100%; text-align: center;">
-                                <button type="submit" class="btn btn-primary">Filtrar</button>
+                            <!-- Botón de enviar -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-filter me-2"></i>
+                                    Aplicar filtro
+                                </button>
                             </div>
                         </form>
                     </div>

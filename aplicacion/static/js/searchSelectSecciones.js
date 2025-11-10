@@ -15,10 +15,11 @@ const getSecciones = async (id) => {
 
         if (!response.ok) throw new Error(data.error);
 
-        arraySecciones = data.secciones;
-
-        if (arraySecciones.length > 0) {
+        if (data.secciones.length > 0) {
+            arraySecciones = data.secciones;
             document.getElementById('selectSeccion').style.display = 'block';
+        } else {
+            document.getElementById('selectSeccion').style.display = 'none';
         }
 
     } catch(e) {

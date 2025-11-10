@@ -1055,6 +1055,40 @@ input[type=number] {
 
 /* SECCIONES */
 
+.form-options .card-option {
+    position: relative;
+}
+
+.form-options .form-check-input {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.form-options .form-check-label {
+    padding-left: 45px !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8f9fa;
+}
+
+.form-options .form-check-label:hover {
+    background: #e9ecef;
+    border-color: #0d6efd !important;
+}
+
+.form-options .form-check-input:checked + .form-check-label {
+    background: #e7f1ff;
+    border-color: #0d6efd !important;
+    color: #0d6efd;
+}
+
+.form-options .form-check-input:checked + .form-check-label .text-muted {
+    color: #6ea8fe !important;
+}
+
 /* VISTA DE CREAR SECCIONES */
 
 .crear-seccion__wrapper {
