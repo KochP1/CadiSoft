@@ -3,9 +3,175 @@ from flask_login import current_user, login_required
 import pandas as pd
 import io
 
+from aplicacion.blueprints.cursos.routes import dateToString
+from aplicacion.blueprints.shared.reporte_inscripciones import reporte_inscripciones
+
 inces = Blueprint('inces', __name__, template_folder='templates', static_folder='static')
 
 # INSCRIPCIONES INCES
+
+@inces.route('/secciones_filtrado')
+def secciones_filtrado():
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('SELECT s.idSeccion, s.seccion, c.nombre_curso AS curso FROM secciones s JOIN cursos c ON s.idCurso = c.idCurso')
+            result = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            secciones = []
+
+            for record in result:
+                secciones.append(dict(zip(columNames, record)))
+            
+            return jsonify({'secciones': secciones}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': f'Error: {e}'}), 500
+
+@inces.route('/gestion_insc', methods = ['GET', 'POST'])
+def gestion_insc():
+    try:
+        if request.method == 'POST':
+            p_cedula = request.form.get('cedula')
+            p_fecha_inscripcion = request.form.get('inicio')
+            p_idSeccion = request.form.get('seccion')
+            p_fecha_expiracion = request.form.get('fin')
+            p_es_activa = request.form.get('status')  # Puede ser '1', '0' o None
+
+            # Limpiar valores vacíos
+            p_cedula = p_cedula if p_cedula else None
+            p_fecha_inscripcion = p_fecha_inscripcion if p_fecha_inscripcion else None
+            p_fecha_expiracion = p_fecha_expiracion if p_fecha_expiracion else None
+            p_idSeccion = int(p_idSeccion) if p_idSeccion else None
+            p_es_activa = int(p_es_activa) if p_es_activa else None
+            
+            with g.db.cursor() as cur:
+                cur.callproc('reporte_inscripciones_sp', [p_cedula, p_fecha_inscripcion, p_idSeccion, p_fecha_expiracion, 'Inces', p_es_activa])
+
+                result = cur.fetchall()
+                columNames = [column[0] for column in cur.description]
+                
+                # Agrupar inscripciones
+                inscripciones_dict = {}
+                
+                for record in result:
+                    record_dict = dict(zip(columNames, record))
+                    
+                    key = f"{record_dict['idusuarios']}_{record_dict['fecha_inscripcion']}_{record_dict['fecha_expiracion']}"
+                    
+                    if key not in inscripciones_dict:
+                        inscripciones_dict[key] = {
+                            'idInscripcion': record_dict['idInscripcion'],
+                            'idusuarios': record_dict['idusuarios'],
+                            'nombre': record_dict['nombre'],
+                            'apellido': record_dict['apellido'],
+                            'cedula': record_dict['cedula'],
+                            'fecha_inscripcion': record_dict['fecha_inscripcion'],
+                            'fecha_expiracion': record_dict['fecha_expiracion'],
+                            'tipo': record_dict['tipo'],
+                            'status': record_dict['status'],
+                            'imagen': record_dict['imagen'],
+                            'secciones': []  # Array para múltiples secciones
+                        }
+                
+                    # Agregar la sección actual al array
+                    inscripciones_dict[key]['secciones'].append({
+                        'curso': record_dict['curso'],
+                        'seccion': record_dict['seccion']
+                    })
+            
+                # Convertir a lista para el template
+                inscripciones = list(inscripciones_dict.values())
+
+                for record in inscripciones:
+                    record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                    record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+                
+            return render_template('inces/inscripciones.html', inscripciones=inscripciones, cedula = p_cedula, fecha_inscripcion = p_fecha_inscripcion, fecha_expiracion = p_fecha_expiracion, idSeccion = p_idSeccion, status = p_es_activa)
+
+        with g.db.cursor() as cur:
+            cur.callproc('reporte_inscripciones_sp', [None, None, None, None, 'Inces', None])
+            result = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            
+            # Agrupar inscripciones
+            inscripciones_dict = {}
+            
+            for record in result:
+                record_dict = dict(zip(columNames, record))
+                
+                key = f"{record_dict['idusuarios']}_{record_dict['fecha_inscripcion']}_{record_dict['fecha_expiracion']}"
+                
+                if key not in inscripciones_dict:
+                    inscripciones_dict[key] = {
+                        'idInscripcion': record_dict['idInscripcion'],
+                        'idusuarios': record_dict['idusuarios'],
+                        'nombre': record_dict['nombre'],
+                        'apellido': record_dict['apellido'],
+                        'cedula': record_dict['cedula'],
+                        'fecha_inscripcion': record_dict['fecha_inscripcion'],
+                        'fecha_expiracion': record_dict['fecha_expiracion'],
+                        'tipo': record_dict['tipo'],
+                        'status': record_dict['status'],
+                        'imagen': record_dict['imagen'],
+                        'secciones': []  # Array para múltiples secciones
+                    }
+                
+                # Agregar la sección actual al array
+                inscripciones_dict[key]['secciones'].append({
+                    'curso': record_dict['curso'],
+                    'seccion': record_dict['seccion']
+                })
+            
+            # Convertir a lista para el template
+            inscripciones = list(inscripciones_dict.values())
+
+            for record in inscripciones:
+                record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+            
+        return render_template('inces/inscripciones.html', inscripciones=inscripciones)
+    
+    except Exception as e:
+        print(e)
+        return f'{e}'
+
+@inces.route('/reporte_insc', methods = ['GET'])
+def reporte_insc():
+    try:
+        p_cedula = request.args.get('cedula', type=str)
+        p_fecha_inscripcion = request.args.get('fecha_inscripcion', type=str)
+        p_idSeccion = request.args.get('idSeccion', type=int)
+        p_fecha_expiracion = request.args.get('fecha_expiracion', type=str)
+        p_es_activa = request.args.get('status', type=int)
+
+        # Convertir a None si están vacíos o son 'None'
+        p_cedula = None if p_cedula in [None, 'None', ''] else p_cedula
+        p_fecha_inscripcion = None if p_fecha_inscripcion in [None, 'None', ''] else p_fecha_inscripcion
+        p_idSeccion = None if p_idSeccion in [None, 0] else p_idSeccion
+        p_fecha_expiracion = None if p_fecha_expiracion in [None, 'None', ''] else p_fecha_expiracion
+        p_es_activa = None if p_es_activa in [None] else p_es_activa
+
+        response = reporte_inscripciones(g.db, 'Inces', p_cedula, p_fecha_inscripcion, p_idSeccion, p_fecha_expiracion, p_es_activa)
+        return response
+    except Exception as e:
+        print(e)
+        return jsonify({'error': f'Error: {e}'}), 500
+
+@inces.route('/mod_status/<int:id>', methods = ['PATCH'])
+def mod_status(id):
+    try:
+        data = request.get_json()
+        status = data['status']
+
+        if not data or 'status' not in data or not id:
+            return jsonify({'error': 'Datos incompletos'}), 400
+        
+        with g.db.cursor() as cur:
+            cur.execute('UPDATE inscripcion SET es_activa = %s WHERE idInscripcion = %s', (status, id))
+            g.db.commit()
+            return jsonify({'message': 'Status de inscripcion actualizado'}), 200
+    except Exception as e:
+        return jsonify({'error': f'{e}'}), 500
 
 @inces.route('/', methods = ['GET', 'POST'])
 @login_required
@@ -23,17 +189,9 @@ def index():
             if not data or 'alumno' not in data or 'empresa' not in data or 'inicio' not in data or 'final' not in data or 'seccion' not in data:
                 return jsonify({'error': 'Faltan campos'}), 400
             
-            print(idAlumno)
-            print(idEmpresa)
-            print(inicio)
-            print(final)
-            print(idSeccion)
-            print(tipo)
-            
             with g.db.cursor() as cur:
                 cur.callproc('inscripcion_inces_sp', [idAlumno, inicio, idSeccion, final, tipo, idEmpresa])
                 g.db.commit()
-                print('Me ejecuto antes del json status OK')
                 return jsonify({'message': 'Alumno inscrito'}), 200
         except Exception as e:
             print(e)

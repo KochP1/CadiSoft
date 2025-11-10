@@ -48,8 +48,14 @@ function confirmAccept() {
         resolveConfirm(true);
         resolveConfirm = null;
     }
-    const modal = bootstrap.Modal.getInstance(document.getElementById('dialog-alert'));
-    modal.hide();
+    
+    // Pequeño delay para asegurar que Bootstrap ha procesado el modal
+    setTimeout(() => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('dialog-alert'));
+        if (modal) {
+            modal.hide();
+        }
+    }, 10);
 }
 
 // Función para cuando el usuario cancela
@@ -2857,7 +2863,7 @@ async function inscribir_inces(event) {
 
         openAlert('INCES', data.message);
         setTimeout(() => {
-            window.location.href = '/inces/gestion_cursos';
+            window.location.href = '/inces/gestion_insc';
         }, 1300)
     } catch(e) {
         openAlert('INCES', e);
@@ -2865,6 +2871,52 @@ async function inscribir_inces(event) {
     } finally {
         setSearching(false);
     }
+}
+
+async function cambiarStatus(idusuarios, idInscripcion, attribute) {
+    if (isSearching) return;
+    setSearching(true);
+
+    const url = `/inces/mod_status/${idInscripcion}`;
+    console.log(url);
+    console.log(idusuarios);
+    console.log(attribute);
+    console.log(idInscripcion);
+    const status = attribute == '1' ? 0: 1;
+
+    const mensaje = attribute == '1' ? 'desactivar': 'activar';
+
+    const requestData = {
+        'status': status
+    }
+    try {
+        const confirm = await openConfirm('INCES', `¿Estás seguro de que quieres ${mensaje} la inscripción?`)
+        if (confirm) {
+            const response = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error);
+            };
+
+            openAlert('INCES', data.message);
+            document.getElementById(`btn-status-${idusuarios}`).setAttribute('status', status.toString())
+            validarStatusInsc(idusuarios);
+        }
+    } catch(e) {
+        openAlert('INCES', e);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+
 }
 
 // EMPRESAS
@@ -3483,4 +3535,13 @@ function changeFilterNumber() {
         radio2.textContent = `Filtrar por secciones con menos de ${value} participantes`;
         radio3.textContent = `Filtrar por secciones con ${value} participantes`;
     }
+}
+
+function validarStatusInsc(id) {
+    const btn = document.getElementById(`btn-status-${id}`)
+    const status = btn.getAttribute('status');
+    btn.classList.remove(status == '1' ? 'btn-danger' : 'btn-success');
+    btn.textContent = status == true ? 'Activa' : 'Inactiva';
+    const clase = status == '1' ? 'btn-success' : 'btn-danger';
+    btn.classList.add(clase);
 }

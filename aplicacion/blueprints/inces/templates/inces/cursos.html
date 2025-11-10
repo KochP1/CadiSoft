@@ -24,7 +24,7 @@
                 <th>ID</th>
                 <th>Facultad</th>
                 <th>Nombre</th>
-                <th>Materias</th>
+                <th class="tabla-btn">Materias</th>
                 <th>Duración</th>
             </tr>
 
@@ -33,7 +33,7 @@
                     <td>{{curso.idCurso}}</td>
                     <td>{{curso.facultad}}</td>
                     <td>{{curso.nombre_curso}}</td>
-                    <td>
+                    <td class="tabla-btn">
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#materiasModal{{curso.idCurso}}">
                             {{ curso.materias|length }} materias
                         </button>
@@ -86,4 +86,9 @@
 
         </table>
     </div>
+
+    <script src="../../../../js/excel.js"></script>
+    <script src="https://unpkg.com/xlsx@latest/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/file-saverjs@latest/FileSaver.min.js"></script>
+    <script src="https://unpkg.com/tableexport@latest/dist/js/tableexport.min.js"></script>
 {% endblock %}

@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block title %}INCES{% endblock %}
+
+{% block content %}
+
+    <div class="alumnos-options__wrapper">
+        <h1>Inscripciones INCES</h1>
+
+        <div class="alumnos-options__container">
+            <button class="btn btn-primary btn-reporte" data-bs-toggle="modal" data-bs-target="#filtrar-insc-modal">Filtrar inscripciones</button>
+        <a class="btn btn-primary btn-excel" 
+        href="{{ url_for('inces.reporte_insc', 
+                cedula=cedula if cedula else '',
+                fecha_inscripcion=fecha_inscripcion if fecha_inscripcion else '',
+                idSeccion=idSeccion if idSeccion else '',
+                fecha_expiracion=fecha_expiracion if fecha_expiracion else '',
+                status=status if status is not none else '') }}">
+            Migrar a excel
+        </a>
+            <button class="btn btn-primary btn-crear" onclick="window.location.href = '/inces/'">Inscribir alumnos</button>
+        </div>
+
+        <hr class="divider">
+    </div>
+
+    <div class="gestion-insc__wrapper">
+        {% for record in inscripciones %}
+            <div class="gestion-insc__card">
+                <span class="insc-card-border">6</span>
+                <div class="img-inces-insc">
+                    {% if record.imagen == Fasle %}
+                        <img src="../../../../images/Portrait_Placeholder.png">
+                    {% else %}
+                        <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
+                    {% endif %}
+                </div>
+
+                <div class="card-insc__info">
+                    <span>{{record.nombre}} {{record.apellido}}</span>
+                    <span>C.I {{record.cedula}}</span>
+                    <span>{{record.fecha_inscripcion}} - {{record.fecha_expiracion}}</span>
+                    <!-- Mostrar todas las secciones -->
+                    <div class="secciones-container">
+                        {% if record.secciones|length <= 1 %}
+                            {% for seccion in record.secciones %}
+                                <span class="seccion-item">{{seccion.curso}} - {{seccion.seccion}}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="seccion-item" data-bs-toggle="modal" data-bs-target="#secciones-insc-modal-{{record.idusuarios}}" style="cursor: pointer;">Ver {{record.secciones|length}} secciones</span>
+                            <div class="modal fade" id="secciones-insc-modal-{{record.idusuarios}}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Secciones</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul class="list-group">
+                                                {% for seccion in record.secciones %}
+                                                    <li class="list-group-item">{{seccion.curso}} - {{seccion.seccion}}</li>
+                                                {% else %}
+                                                    <li class="list-group-item text-muted">No hay materias registradas</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <button class="btn" idusuarios="{{record.idusuarios}}" id="btn-status-{{record.idusuarios}}" status="{{record.status}}" idInscripcion="{{record.idInscripcion}}" onclick="cambiarStatus(this.getAttribute('idusuarios'), this.getAttribute('idInscripcion'), this.getAttribute('status'))"></button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal fade" id="filtrar-insc-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h1 class="modal-title fs-5">Filtrar inscripciones INCES</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="filter-insc__form" method="post" action="{{ url_for('inces.gestion_insc') }}">
+                        <div class="row">
+                            <!-- Columna 1 -->
+                            <div class="col-md-6">
+                                <!-- Cédula -->
+                                <div class="mb-3">
+                                    <label for="cedula" class="form-label fw-bold">Cédula del estudiante</label>
+                                    <input type="text" class="form-control" id="cedula" name="cedula" 
+                                        placeholder="Ej: 12345678" value="{{ cedula if cedula }}">
+                                </div>
+
+                                <!-- Rango de fechas -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Rango de fechas</label>
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text">Desde</span>
+                                        <input type="date" class="form-control" id="inicio" name="inicio" 
+                                            value="{{ fecha_inscripcion if fecha_inscripcion }}">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Hasta</span>
+                                        <input type="date" class="form-control" id="fin" name="fin" 
+                                            value="{{ fecha_expiracion if fecha_expiracion }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Columna 2 -->
+                            <div class="col-md-6">
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Buscar seccion</label>
+                                    <div class="custom-select-container">
+                                        <input type="text" 
+                                            class="form-control search-input" 
+                                            id="searchInputSecciones" 
+                                            placeholder="Buscar seccion..."
+                                            autocomplete="off">
+                                        
+                                        <div class="custom-select" id="customSelectSecciones">
+                                            <!-- Las opciones se generarán dinámicamente -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Input oculto para almacenar el valor seleccionado -->
+                                    <input type="hidden" id="selectedValueSecciones" name="seccion">
+                                    
+                                    <div class="mt-3" style="display: none;">
+                                        <small class="text-muted">Curso seleccionado: <span id="selectedTextSecciones">Ninguno</span></small>
+                                    </div>
+                                </div>
+
+                                <!-- Estado -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Estado</label>
+                                    <div class="border rounded p-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="status" value="" 
+                                                id="status_null">
+                                            <label class="form-check-label text-success" for="status_null">
+                                                🌐 Todas
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="status" value="1" 
+                                                id="status_activa">
+                                            <label class="form-check-label text-success" for="status_activa">
+                                                ✅ Activas
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="status" value="0" 
+                                                id="status_inactiva">
+                                            <label class="form-check-label text-danger" for="status_inactiva">
+                                                ❌ Inactivas
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()">
+                                Limpiar filtros
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-filter"></i> Aplicar filtros
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function limpiarFiltros() {
+            document.getElementById('cedula').value = '';
+            document.getElementById('inicio').value = '';
+            document.getElementById('fin').value = '';
+            document.getElementById('searchInputSecciones').value = '';
+            document.getElementById('selectedValueSecciones').value = '';
+            document.getElementById('status_activa').checked = false;
+            document.getElementById('status_inactiva').checked = false;
+            document.getElementById('status_null').checked = false;
+        }
+
+        // Manejar checkboxes exclusivos
+        // document.getElementById('status_activa').addEventListener('change', function() {
+        //     if (!this.checked && !document.getElementById('status_inactiva').checked) {
+        //         document.getElementById('status_inactiva').checked = true;
+        //     }
+        // });
+
+        // document.getElementById('status_inactiva').addEventListener('change', function() {
+        //     if (!this.checked && !document.getElementById('status_activa').checked) {
+        //         document.getElementById('status_activa').checked = true;
+        //     }
+        // });
+
+        // document.getElementById('status_null').addEventListener('change', function() {
+        //     if (!this.checked && !document.getElementById('status_null').checked) {
+        //         document.getElementById('status_null').checked = true;
+        //     }
+        // });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[id^="btn-status-"]').forEach(btn => {
+                const status = btn.getAttribute('status');
+                btn.textContent = status === '1' ? 'Activa' : 'Inactiva';
+                btn.classList.add(status === '1' ? 'btn-success' : 'btn-danger');
+            });
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/searchSeccionesFiltro,.js') }}"></script>
+
+{% endblock %}

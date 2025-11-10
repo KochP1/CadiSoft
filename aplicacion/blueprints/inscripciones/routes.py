@@ -3,6 +3,9 @@ from flask import request, render_template, redirect, url_for, Blueprint, curren
 from flask_login import login_required
 from flask_bcrypt import Bcrypt
 
+from aplicacion.blueprints.cursos.routes import dateToString
+from aplicacion.blueprints.shared.reporte_inscripciones import reporte_inscripciones
+
 inscripciones = Blueprint('inscripciones', __name__, template_folder='templates', static_folder="static")
 bcrypt = Bcrypt()
 
@@ -59,6 +62,134 @@ def elim_preinscripcion(id):
         return jsonify({'error': 'Error al eliminar preinscripcion'}), 500
 
 # INSCRIPCIONES
+
+@inscripciones.route('/reporte_insc', methods = ['GET'])
+def reporte_insc():
+    try:
+        p_cedula = request.args.get('cedula', type=str)
+        p_fecha_inscripcion = request.args.get('fecha_inscripcion', type=str)
+        p_idSeccion = request.args.get('idSeccion', type=int)
+        p_fecha_expiracion = request.args.get('fecha_expiracion', type=str)
+        p_es_activa = request.args.get('status', type=int)
+
+        # Convertir a None si están vacíos o son 'None'
+        p_cedula = None if p_cedula in [None, 'None', ''] else p_cedula
+        p_fecha_inscripcion = None if p_fecha_inscripcion in [None, 'None', ''] else p_fecha_inscripcion
+        p_idSeccion = None if p_idSeccion in [None, 0] else p_idSeccion
+        p_fecha_expiracion = None if p_fecha_expiracion in [None, 'None', ''] else p_fecha_expiracion
+        p_es_activa = None if p_es_activa in [None] else p_es_activa
+
+        response = reporte_inscripciones(g.db, 'Privada', p_cedula, p_fecha_inscripcion, p_idSeccion, p_fecha_expiracion, p_es_activa)
+        return response
+    except Exception as e:
+        print(e)
+        return jsonify({'error': f'Error: {e}'}), 500
+@inscripciones.route('/gestion_insc', methods = ['GET', 'POST'])
+def gestion_insc():
+    try:
+        if request.method == 'POST':
+            p_cedula = request.form.get('cedula')
+            p_fecha_inscripcion = request.form.get('inicio')
+            p_idSeccion = request.form.get('seccion')
+            p_fecha_expiracion = request.form.get('fin')
+            p_es_activa = request.form.get('status')  # Puede ser '1', '0' o None
+
+            # Limpiar valores vacíos
+            p_cedula = p_cedula if p_cedula else None
+            p_fecha_inscripcion = p_fecha_inscripcion if p_fecha_inscripcion else None
+            p_fecha_expiracion = p_fecha_expiracion if p_fecha_expiracion else None
+            p_idSeccion = int(p_idSeccion) if p_idSeccion else None
+            p_es_activa = int(p_es_activa) if p_es_activa else None
+            
+            with g.db.cursor() as cur:
+                cur.callproc('reporte_inscripciones_sp', [p_cedula, p_fecha_inscripcion, p_idSeccion, p_fecha_expiracion, 'Privada', p_es_activa])
+
+                result = cur.fetchall()
+                columNames = [column[0] for column in cur.description]
+                
+                # Agrupar inscripciones
+                inscripciones_dict = {}
+                
+                for record in result:
+                    record_dict = dict(zip(columNames, record))
+                    
+                    key = f"{record_dict['idusuarios']}_{record_dict['fecha_inscripcion']}_{record_dict['fecha_expiracion']}"
+                    
+                    if key not in inscripciones_dict:
+                        inscripciones_dict[key] = {
+                            'idInscripcion': record_dict['idInscripcion'],
+                            'idusuarios': record_dict['idusuarios'],
+                            'nombre': record_dict['nombre'],
+                            'apellido': record_dict['apellido'],
+                            'cedula': record_dict['cedula'],
+                            'fecha_inscripcion': record_dict['fecha_inscripcion'],
+                            'fecha_expiracion': record_dict['fecha_expiracion'],
+                            'tipo': record_dict['tipo'],
+                            'status': record_dict['status'],
+                            'imagen': record_dict['imagen'],
+                            'secciones': []  # Array para múltiples secciones
+                        }
+                
+                    # Agregar la sección actual al array
+                    inscripciones_dict[key]['secciones'].append({
+                        'curso': record_dict['curso'],
+                        'seccion': record_dict['seccion']
+                    })
+            
+                # Convertir a lista para el template
+                inscripciones = list(inscripciones_dict.values())
+
+                for record in inscripciones:
+                    record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                    record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+                
+            return render_template('inscripciones/gestionar_inscripciones.html', inscripciones=inscripciones, cedula = p_cedula, fecha_inscripcion = p_fecha_inscripcion, fecha_expiracion = p_fecha_expiracion, idSeccion = p_idSeccion, status = p_es_activa)
+        with g.db.cursor() as cur:
+            cur.callproc('reporte_inscripciones_sp', [None, None, None, None, 'Privada', None])
+            result = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            
+            # Agrupar inscripciones
+            inscripciones_dict = {}
+            
+            for record in result:
+                record_dict = dict(zip(columNames, record))
+                
+                key = f"{record_dict['idusuarios']}_{record_dict['fecha_inscripcion']}_{record_dict['fecha_expiracion']}"
+                
+                if key not in inscripciones_dict:
+                    inscripciones_dict[key] = {
+                        'idInscripcion': record_dict['idInscripcion'],
+                        'idusuarios': record_dict['idusuarios'],
+                        'nombre': record_dict['nombre'],
+                        'apellido': record_dict['apellido'],
+                        'cedula': record_dict['cedula'],
+                        'fecha_inscripcion': record_dict['fecha_inscripcion'],
+                        'fecha_expiracion': record_dict['fecha_expiracion'],
+                        'tipo': record_dict['tipo'],
+                        'status': record_dict['status'],
+                        'imagen': record_dict['imagen'],
+                        'secciones': []  # Array para múltiples secciones
+                    }
+                
+                # Agregar la sección actual al array
+                inscripciones_dict[key]['secciones'].append({
+                    'curso': record_dict['curso'],
+                    'seccion': record_dict['seccion']
+                })
+            
+            # Convertir a lista para el template
+            inscripciones = list(inscripciones_dict.values())
+
+            for record in inscripciones:
+                record['fecha_inscripcion'] = dateToString(record['fecha_inscripcion'])
+                record['fecha_expiracion'] = dateToString(record['fecha_expiracion'])
+            
+        return render_template('inscripciones/gestionar_inscripciones.html', inscripciones=inscripciones)
+    
+    except Exception as e:
+        print(e)
+        return f'{e}'
 @inscripciones.route('/alumnos_regulares', methods = ['POST', 'GET'])
 @login_required
 def alumnos_regulares():
