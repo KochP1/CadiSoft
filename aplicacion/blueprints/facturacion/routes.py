@@ -27,8 +27,8 @@ def index():
                 cur.execute('INSERT INTO facturas (`cliente`, `telefono`, `cedula`, `direccion`, `total`) VALUES (%s, %s, %s, %s, %s)', (cliente, telefono, cedula, direccion, total))
                 g.db.commit()
 
-                cur.execute('SELECT idFactura FROM facturas WHERE cedula = %s', (cedula,))
-                idFactura = cur.fetchone()
+                cur.execute('SELECT LAST_INSERT_ID()')
+                idFactura = cur.fetchone()[0] 
                 
                 for record in productos:
                     cur.execute('INSERT INTO factura_x_producto (`idFactura`, `idProducto`, `cantidad`) VALUES (%s, %s, %s)', (idFactura, record['idProducto'], record['cantidadProducto']))
@@ -165,23 +165,59 @@ def historial():
                         f.cliente, 
                         f.telefono, 
                         f.cedula, 
-                        f.direccion, 
-                        GROUP_CONCAT(p.nombre SEPARATOR ', ') as productos,
+                        f.direccion,
                         f.total, 
-                        f.fecha 
+                        f.fecha,
+                        p.idProducto,
+                        p.nombre as producto_nombre,
+                        p.precio as producto_precio,
+                        fp.cantidad as producto_cantidad
                     FROM facturas f
                     LEFT JOIN factura_x_producto fp ON f.idFactura = fp.idFactura
                     LEFT JOIN productos p ON fp.idProducto = p.idProducto
-                    GROUP BY f.idFactura
+                    ORDER BY f.idFactura, p.idProducto
                 ''')
                 registros = cur.fetchall()
-                insertRegistros = []
-                columNames = [column[0] for column in cur.description]
-
-                for record in registros:
-                    insertRegistros.append(dict(zip(columNames, record)))
                 
-                return render_template('facturacion/historial.html', facturas = insertRegistros)
+                facturas_dict = {}
+                productos_procesados_por_factura = {}  # Un set diferente por cada factura
+                
+                for record in registros:
+                    factura_id = record[0]
+                    
+                    # Si es la primera vez que encontramos esta factura, crear la estructura
+                    if factura_id not in facturas_dict:
+                        facturas_dict[factura_id] = {
+                            'idFactura': factura_id,
+                            'cliente': record[1],
+                            'telefono': record[2],
+                            'cedula': record[3],
+                            'direccion': record[4],
+                            'total': float(record[5]),
+                            'fecha': record[6],
+                            'productos': []
+                        }
+                        productos_procesados_por_factura[factura_id] = set()  # Nuevo set para esta factura
+                    
+                    # Si hay producto asociado y no lo hemos agregado ya, agregarlo al array
+                    if record[7] is not None:  # idProducto
+                        producto_key = record[7]  # Solo necesitamos el idProducto ya que el set es por factura
+                        
+                        if producto_key not in productos_procesados_por_factura[factura_id]:
+                            productos_procesados_por_factura[factura_id].add(producto_key)
+                            producto = {
+                                'idProducto': record[7],
+                                'nombre': record[8],
+                                'precio': float(record[9]),
+                                'cantidad': record[10]
+                            }
+                            facturas_dict[factura_id]['productos'].append(producto)
+                
+                # Convertir el diccionario a lista para el template
+                facturas_array = list(facturas_dict.values())
+                print(facturas_array)
+                
+                return render_template('facturacion/historial.html', facturas=facturas_array)
         except Exception as e:
             if hasattr(g, 'db'):
                 g.db.rollback()
