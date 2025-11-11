@@ -32,7 +32,7 @@
                     <select name="" id="profesorCrearSeccion">
                         <option value="Seleccione un profesor">Seleccione un profesor</option>
                         {% for record in profesores %}
-                            <option value="{{record.idProfesor}}">{{record.nombre}} {{record.apellido}}</option>
+                            <option value="{{record.idProfesor}}">{{record.nombre}} {{record.apellido}} - {{record.especialidad}}</option>
                         {% endfor %}
                     </select>
                 </div>
