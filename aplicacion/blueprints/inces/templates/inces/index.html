@@ -23,7 +23,7 @@
 
     <div class="cedula-input__container">
         <form class="buscar-alumno-inscripcion__form" id="buscar-alumno-inscripcion">
-            <input type="search" class="input-cedula-inscripciones" placeholder="Ingresar cédula" id="inscripcion-buscar-cedula" name="cedula">
+            <input type="search" class="input-cedula-inscripciones" placeholder="Ingresar cédula" id="inscripcion-buscar-cedula" name="cedula" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
             <button class="btn btn-primary" onclick="buscar_alumno()" type="submit">Buscar alumno</button>
         </form>
     </div>
