@@ -842,8 +842,8 @@ async function edit_cedula(idusuarios) {
 }
 
 async function edit_contraseña(idusuarios) {
-    const contraseñaActual = document.getElementById('edit-contraseña').value;
-    const contraseaNueva = document.getElementById('contraseña-nueva').value;
+    const contraseñaActual = document.getElementById('edit-contraseña').value.trim();
+    const contraseaNueva = document.getElementById('contraseña-nueva').value.trim();
     if (isSearching) return;
     setSearching(true);
 
@@ -874,6 +874,46 @@ async function edit_contraseña(idusuarios) {
             log_out();
         } else{
             openAlert('Editar usuario', 'La contraseña actual es incorrecta');
+        }
+    } catch(e) {
+        console.log(`Error: ${e}`);
+    } finally {
+        setSearching(false);
+    }
+}
+
+async function edit_especialidad(idusuarios) {
+    const especialidad = document.getElementById('especialidad-edit').value.trim();
+    if (isSearching) return;
+    setSearching(true);
+
+    if (especialidad.length > 20) {
+        setSearching(false);
+        openAlert('Editar usuario', 'La especialidad puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (!especialidad) {
+        setSearching(false);
+        openAlert('Editar usuario', 'Debe llenar el campo de especialidad');
+        return;
+    }
+
+    
+    try {
+        const response = await fetch(`/profesores/edit_especialidad/${idusuarios}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'especialidad': especialidad})
+        });
+    
+        if (response.ok) {
+            openAlert('Editar usuario', 'Especialidad actualizada');
+            window.location.reload();
+        } else{
+            openAlert('Editar usuario', 'Error al editar especialidad');
         }
     } catch(e) {
         console.log(`Error: ${e}`);

@@ -100,6 +100,22 @@ def eliminar_profesor(idusuarios):
         if hasattr(g, 'db'):
             g.db.rollback()
         return jsonify({'error': 'el profesor no pudo ser eliminado'}), 400
+    
+@profesores.route('/edit_especialidad/<int:idusuarios>', methods = ['PATCH'])
+@login_required
+def edit_especialidad(idusuarios):
+    try:
+        data = request.get_json()
+        especialidad = data['especialidad']
+        with g.db.cursor() as cur:
+            cur.execute('UPDATE profesores SET especialidad = %s WHERE idusuarios = %s', (especialidad, idusuarios))
+            g.db.commit()
+            return jsonify({'mensaje': 'profesor actualizado'}), 200
+    except Exception as e:
+        print(e)
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        return jsonify({'error': 'el profesor no pudo ser actualizado'}), 500
 
 @profesores.route('edit_profesores/<int:idusuarios>')
 @login_required
