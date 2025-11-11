@@ -575,6 +575,7 @@ def elim_seccion(idSeccion):
                         FROM horario h 
                         JOIN horario_x_curso hc ON hc.idhorario = h.idhorario 
                         WHERE hc.idSeccion = %s;""", (idSeccion,))
+            cur.execute('DELETE FROM periodo_materias where idSeccion = %s', (idSeccion,))
             cur.execute('SET SQL_SAFE_UPDATES = 1;')
             sql = 'DELETE FROM secciones WHERE idSeccion = %s'
             cur.execute(sql, (idSeccion,))
