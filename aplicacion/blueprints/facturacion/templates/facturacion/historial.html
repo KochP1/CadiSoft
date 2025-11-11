@@ -38,7 +38,7 @@
                     <td>{{record.telefono}}</td>
                     <td>{{record.cedula}}</td>
                     <td>{{record.direccion}}</td>
-                    <td>{% for p in record.productos %} {{p.nombre}} {% endfor %}</td>
+                    <td>{% for p in record.productos %} {{p.nombre}}- {% endfor %}</td>
                     <td>{{record.total}}</td>
                     <td>{{record.fecha}}</td>
                     <td class="tabla-btn"><button class="btn btn-danger" idFactura="{{record.idFactura}}" onclick="elim_factura(this.getAttribute('idFactura'))">Eliminar</button></td>
