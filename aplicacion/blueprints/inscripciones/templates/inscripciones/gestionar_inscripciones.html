@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}INCES{% endblock %}
+{% block title %}Inscripciones{% endblock %}
 
 {% block content %}
 
@@ -29,7 +29,7 @@
             <div class="gestion-insc__card">
                 <span class="insc-card-border">6</span>
                 <div class="img-inces-insc">
-                    {% if record.imagen == Fasle %}
+                    {% if record.imagen == False %}
                         <img src="../../../../images/Portrait_Placeholder.png">
                     {% else %}
                         <img src="{{url_for('usuario.get_profile_image', idusuarios=record.idusuarios)}}" alt="{{record.nombre}} {{record.apellido}}">
