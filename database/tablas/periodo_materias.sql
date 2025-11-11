@@ -28,6 +28,14 @@ BEGIN
             ALTER TABLE `periodo_materias` ADD COLUMN `materia` varchar(40) NOT NULL;
         END IF;
 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'periodo_materias' AND column_name = 'inicio') THEN
+            ALTER TABLE `periodo_materias` ADD COLUMN `inicio` DATE NOT NULL;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'periodo_materias' AND column_name = 'fin') THEN
+            ALTER TABLE `periodo_materias` ADD COLUMN `fin` DATE NOT NULL;
+        END IF;
+
         -- Verificar y modificar columnas si existen
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'periodo_materias' AND column_name = 'id') THEN
             ALTER TABLE `periodo_materias` MODIFY `id` INT NOT NULL AUTO_INCREMENT FIRST;
@@ -39,6 +47,14 @@ BEGIN
         
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'periodo_materias' AND column_name = 'materia') THEN
             ALTER TABLE `periodo_materias` MODIFY `materia` varchar(40) NOT NULL;
+        END IF;
+
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'periodo_materias' AND column_name = 'inicio') THEN
+            ALTER TABLE `periodo_materias` MODIFY `inicio` DATE NOT NULL;
+        END IF;
+
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'cadisoft' AND table_name = 'periodo_materias' AND column_name = 'fin') THEN
+            ALTER TABLE `periodo_materias` MODIFY `fin` DATE NOT NULL;
         END IF;
     END IF;
 END$$

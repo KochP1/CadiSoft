@@ -309,6 +309,22 @@ def crear_curso():
             print(e)
             return jsonify({'error': f'Error: {e}'}), 500
         
+@inces.route('/materias/<int:id>')
+def materias(id):
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('SELECT * FROM materias WHERE idCurso = %s', (id,))
+            result = cur.fetchall()
+            materias = []
+
+            for record in result:
+                materias.append(record[2])
+            print(materias)
+
+            return jsonify({'materias': materias}), 200
+    except Exception as e:
+        return jsonify({'error': f'Error: {e}'}), 500
+        
 
 @inces.route('/carga_masiva', methods = ['POST'])
 @login_required
@@ -345,6 +361,202 @@ def carga_masiva():
     except Exception as e:
         print(f"Error procesando el archivo: {str(e)}")
         return jsonify({'error': f'Error procesando el archivo: {str(e)}'}), 500
+
+    
+@inces.route('/carga_masiva_materias', methods=['POST'])
+@login_required
+def carga_masiva_materias():
+    try:
+        if 'excel' not in request.files:
+            return jsonify({'error': 'No se encontró el archivo'}), 400
+        
+        archivo = request.files['excel']
+        
+        if archivo.filename == '':
+            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
+        
+        if not archivo.filename.lower().endswith(('.xlsx', '.xls', '.csv')):
+            return jsonify({'error': 'El archivo debe ser Excel (.xlsx, .xls) o CSV'}), 400
+        
+        # Leer el archivo
+        if archivo.filename.lower().endswith('.csv'):
+            df = pd.read_csv(archivo, header=None)
+        else:
+            df = pd.read_excel(archivo, header=None)
+        
+        materias_array = []
+        errores = []
+        
+        for index, row in df.iterrows():
+            # Saltar filas completamente vacías
+            if row.isna().all():
+                continue
+                
+            if len(row) >= 3:
+                materia = str(row[0]).strip() if pd.notna(row[0]) else ""
+                fecha_inicio = str(row[1]).strip() if pd.notna(row[1]) else ""
+                fecha_final = str(row[2]).strip() if pd.notna(row[2]) else ""
+                
+                # Validaciones
+                if not materia:
+                    errores.append(f"Fila {index + 1}: Materia vacía")
+                    continue
+                
+                # Validar formato de fechas (opcional)
+                if fecha_inicio and not es_fecha_valida(fecha_inicio):
+                    errores.append(f"Fila {index + 1}: Formato de fecha inicio inválido: {fecha_inicio}")
+                
+                if fecha_final and not es_fecha_valida(fecha_final):
+                    errores.append(f"Fila {index + 1}: Formato de fecha final inválido: {fecha_final}")
+                
+                materia_obj = {
+                    'materia': materia,
+                    'inicio': fecha_inicio,
+                    'final': fecha_final,
+                    'fila': index + 1
+                }
+                materias_array.append(materia_obj)
+            else:
+                errores.append(f"Fila {index + 1}: No tiene suficientes columnas (se esperaban 3)")
+        
+        print(f"Procesadas {len(materias_array)} materias correctamente")
+        if errores:
+            print(f"Errores encontrados: {len(errores)}")
+            for error in errores:
+                print(f"  - {error}")
+        
+        return jsonify({
+            'message': 'Archivo procesado correctamente', 
+            'materias': materias_array,
+            'total_materias': len(materias_array),
+            'errores': errores,
+            'total_errores': len(errores)
+        }), 200
+        
+    except Exception as e:
+        print(f"Error procesando el archivo: {str(e)}")
+        return jsonify({'error': f'Error procesando el archivo: {str(e)}'}), 500
+
+# Función auxiliar para validar fechas (opcional)
+def es_fecha_valida(fecha_str):
+    """Valida si un string tiene formato de fecha básico"""
+    try:
+        # Intentar parsear como fecha
+        from datetime import datetime
+        # Intentar varios formatos comunes
+        formatos = ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%d-%m-%Y', '%Y/%m/%d']
+        for formato in formatos:
+            try:
+                datetime.strptime(fecha_str, formato)
+                return True
+            except ValueError:
+                continue
+        return False
+    except:
+        return False
+    
+@inces.route('/crear_seccion/<int:id>', methods = ['POST'])
+def crear_seccion(id):
+    try:
+        data = request.get_json()
+        seccion = data['seccion']
+        profesor = data['profesor']
+        aula = data['aula']
+        materias = data['materias']
+
+        if not data or 'seccion' not in data or 'profesor' not in data or 'aula' not in data or 'materias' not in data or len(materias) <= 0:
+            return jsonify({'error': 'Faltan campos'}), 400
+
+        with g.db.cursor() as cur:
+            cur.execute('INSERT INTO secciones (`idCurso`, `idProfesor`, `seccion`, `aula`) VALUES (%s, %s, %s, %s)', (id, profesor, seccion, aula))
+            g.db.commit()
+
+            cur.execute('SELECT idSeccion FROM secciones WHERE seccion = %s', (seccion,))
+            res = cur.fetchone()
+            idSeccion = res[0]
+
+            for record in materias:
+                inicio_mysql = convertir_fecha_mysql(record['inicio'])
+                final_mysql = convertir_fecha_mysql(record['final'])
+                
+                if inicio_mysql and final_mysql:
+                    cur.execute('INSERT INTO periodo_materias (`idSeccion`, `materia`, `inicio`, `fin`) VALUES (%s, %s, %s, %s)', 
+                            (idSeccion, record['materia'], inicio_mysql, final_mysql))
+                    g.db.commit()
+
+            return jsonify({'message': 'Sección creada satisfactoriamente'}), 200
+
+    except Exception as e:
+        g.db.rollback()
+        return jsonify({'error': f'Error: {e}'}), 500
+    
+from datetime import datetime
+
+def convertir_fecha_mysql(fecha_str):
+    """Convierte formato YYYY/DD/MM a YYYY-MM-DD para MySQL"""
+    if not fecha_str:
+        return None
+    
+    try:
+        # Para formato: 2025/31/10 → 2025-10-31
+        fecha_dt = datetime.strptime(fecha_str, '%Y/%d/%m')
+        return fecha_dt.strftime('%Y-%m-%d')
+    except ValueError:
+        # Si falla, intentar otros formatos
+        try:
+            fecha_dt = datetime.strptime(fecha_str, '%Y-%m-%d')
+            return fecha_str
+        except ValueError:
+            try:
+                fecha_dt = datetime.strptime(fecha_str, '%d/%m/%Y')
+                return fecha_dt.strftime('%Y-%m-%d')
+            except ValueError:
+                print(f"Formato de fecha no reconocido: {fecha_str}")
+                return None
+            
+@inces.route('/materias_by_id/<int:id>')
+def materias_by_id(id):
+    try:
+        with g.db.cursor() as cur:
+            cur.execute('SELECT idSeccion, materia, inicio, fin AS final FROM periodo_materias WHERE idSeccion = %s', (id))
+            res = cur.fetchall()
+            materias = []
+            columNamesMaterias = [column[0] for column in cur.description]
+            for record in res:
+                materias.append(dict(zip(columNamesMaterias, record)))
+            print(materias)
+            return jsonify({'materias': materias}), 200
+    except Exception as e:
+        return jsonify({'error': f'Error al obtener materias: {e}'}), 500
+
+@inces.route('/edit_seccion_inces/<int:id>', methods = ['PUT'])
+def edit_seccion_inces(id):
+    try:
+        data = request.get_json()
+        materias = data['materias']
+
+        if not data or 'materias' not in data or len(materias) <= 0:
+            return jsonify({'error': 'Faltan campos'}), 400
+
+        with g.db.cursor() as cur:
+
+            cur.execute('DELETE FROM periodo_materias WHERE idSeccion = %s', (id,))
+
+            for record in materias:
+                inicio_mysql = convertir_fecha_mysql(record['inicio'])
+                final_mysql = convertir_fecha_mysql(record['final'])
+                
+                if inicio_mysql and final_mysql:
+                    cur.execute('INSERT INTO periodo_materias (`idSeccion`, `materia`, `inicio`, `fin`) VALUES (%s, %s, %s, %s)', 
+                            (id, record['materia'], inicio_mysql, final_mysql))
+            g.db.commit()
+
+            return jsonify({'message': 'Sección creada satisfactoriamente'}), 200
+
+    except Exception as e:
+        print(e)
+        g.db.rollback()
+        return jsonify({'error': f'Error: {e}'}), 500
     
 @inces.route('/secciones/<int:id>')
 @login_required

@@ -61,7 +61,7 @@
             </div>
         </form>
 
-            <div class="crear-seccion__main-container">
+            <div class="crear-seccion__main-container" {% if cursos[0].inces == 1 %} style="display: none;" {% endif %}>
                 <div class="edit-h2__container crear-seccion__container"><h2>Creación de horario para la sección</h2></div>
                 <hr class="divider">
                 <div class="table-responsive horario__container crear-horario" id="horario__container">
@@ -277,19 +277,70 @@
                     </table>
                 </div>
             </div>
-            <div class="btn-crearSeccion__container">
-                <button type="button" class="btn btn-primary" idSeccion="{{record.idSeccion}}" onclick="edit_horario(this.getAttribute('idSeccion'))">Actualizar</button>
+
+            <div class="plan-estudio__wrapper" {% if cursos[0].inces == 1 %} style="display: flex;" {% endif %}>
+                <div class="plan-estudio__container">
+                    <div class="plan-estudio__titulo">
+                        <h2>Plan de estudio para {{cursos[0].nombre_curso}}</h2>
+                    </div>
+
+                    <div class="plan-estudio__content" id="planEstudioContent">
+                    {% for record in materias %}
+                        <div class="plan-estudio__card">
+                            <span class="plan-estudio-card__border">6</span>
+                            <div class="plan-estudio__num">{{loop.index}}</div>
+                            <div class="plan-estudio__materia">
+                                <span>{{record.materia}}</span>
+                                <span>{{record.inicio}} - {{record.fin}}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    
+                    <div class="botonera-plan-estudio">
+                        <button class="btn btn-success" type="button" style="width: 200px;" data-bs-toggle="modal" data-bs-target="#excel-modal">Cargar excel</button>
+                        <button class="btn btn-primary" type="button" style="width: 200px;"  idSeccion="{{record.idSeccion}}" onclick="edit_seccion_inces(this.getAttribute('idSeccion'))">Editar</button>
+                        <button class="btn btn-danger" type="button" style="width: 200px;" onclick="limpiar()">Limpiar</button>
+                    </div>
+                </div>
             </div>
+            <div class="btn-crearSeccion__container">
+                <button type="button" class="btn btn-primary" {% if cursos[0].inces == 1 %} style="display: none;" {% endif %} idSeccion="{{record.idSeccion}}" onclick="edit_horario(this.getAttribute('idSeccion'))">Actualizar</button>
+            </div>
+    </div>
+
+    <div class="modal fade" id="excel-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Subir excel</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="crear-facultad-form" onsubmit="carga_masiva_materias(event)">
+                    <label>Archivo excel</label>
+                    <input type="file" class="form-control mb-3" name="excel" id="excelMaterias" idCurso="{{cursos[0].idCurso}}">
+                    <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Subir</button>
+                </form>
+            </div>
+            </div>
+        </div>
     </div>
 
     <input type="hidden" value="{{record.idSeccion}}" id="id-seccion-edit">
 
     <script>
         const idSeccion = document.getElementById('id-seccion-edit').value.trim();
-        document.addEventListener('DOMContentLoaded', function() {
-            buscar_horario_seccion(idSeccion);
-        });
+        try {
+            document.addEventListener('DOMContentLoaded', function() {
+                buscar_horario_seccion(idSeccion);
+            });
+        } catch(e) {
+            console.error(e);
+        }
     </script>
     {% endfor %}
+
+    <script src="{{ url_for('static', filename='js/carga_masiva_materias.js') }}"></script>
 
 {% endblock %}

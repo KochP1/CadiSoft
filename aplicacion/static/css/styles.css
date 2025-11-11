@@ -2073,7 +2073,7 @@ header h1 {
 }
 
 .plan-estudio__wrapper {
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -2099,6 +2099,7 @@ header h1 {
     width: 100%;
     gap: 20px;
     padding: 10px;
+    flex-wrap: wrap;
 }
 
 .plan-estudio__titulo {
@@ -2151,6 +2152,15 @@ header h1 {
     width: 5px;
     color: transparent;
     border-radius: 10px;
+}
+
+.botonera-plan-estudio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 15px;
 }
 
 @media (max-width: 1005px) {

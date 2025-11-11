@@ -321,7 +321,15 @@ def edit_seccion(id, idCurso):
                 for record in registro_curso:
                     insertCurso.append(dict(zip(columNamesCursos, record)))
                 
-                return render_template('cursos/editSeccion.html', secciones = insertSecciones, profesores = insertRegistros, cursos = insertCurso)
+                insertMaterias = []
+                if insertCurso[0]['inces'] > 0:
+                    cur.execute('SELECT * FROM periodo_materias WHERE idSeccion = %s', (id))
+                    res = cur.fetchall()
+                    columNamesMaterias = [column[0] for column in cur.description]
+                    for record in res:
+                        insertMaterias.append(dict(zip(columNamesMaterias, record)))
+                
+                return render_template('cursos/editSeccion.html', secciones = insertSecciones, profesores = insertRegistros, cursos = insertCurso, materias = insertMaterias)
         except Exception as e:
             return f'Error: {e}'
 

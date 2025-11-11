@@ -16,7 +16,7 @@
     </div>
 
     <div class="crear-seccion__wrapper">
-        <form idcurso="{{cursos[0].idCurso}}" onsubmit="crear_Seccion(this.getAttribute('idcurso'), event)">
+        <form idcurso="{{cursos[0].idCurso}}" {% if cursos[0].inces == 1 %} onsubmit="crear_seccion_inces(event)" {% else %} onsubmit="crear_Seccion(this.getAttribute('idcurso'), event)" {% endif %}>
             <div class="crear-seccion__main-container">
                 <div class="edit-h2__container crear-seccion__container"><h2>Sección</h2></div>
                 <hr class="divider">
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="crear-seccion__main-container">
+            <div class="crear-seccion__main-container" {% if cursos[0].inces == 1 %} style="display: none;" {% endif %}>
                 <div class="edit-h2__container crear-seccion__container"><h2>Creación de horario para la sección</h2></div>
                 <hr class="divider">
                     <div class="table-responsive horario__container crear-horario" id="horario__container">
@@ -262,10 +262,48 @@
                     </table>
                 </div>
             </div>
+
+            <div class="plan-estudio__wrapper" {% if cursos[0].inces == 1 %} style="display: flex;" {% endif %}>
+                <div class="plan-estudio__container">
+                    <div class="plan-estudio__titulo">
+                        <h2>Plan de estudio para {{cursos[0].nombre_curso}}</h2>
+                    </div>
+
+                    <div class="plan-estudio__content" id="planEstudioContent">
+                        <!-- Aqui se reenderizan las materias -->
+                    </div>
+                    
+                    <div class="botonera-plan-estudio">
+                        <button class="btn btn-success" type="button" style="width: 200px;" data-bs-toggle="modal" data-bs-target="#excel-modal">Cargar excel</button>
+                        <button class="btn btn-danger" type="button" style="width: 200px;" onclick="limpiar()">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="btn-crearSeccion__container">
                 <button type="submit" class="btn btn-primary">Crear</button>
             </div>
         </form>
     </div>
+
+    <div class="modal fade" id="excel-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Subir excel</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="crear-facultad-form" onsubmit="carga_masiva_materias(event)">
+                    <label>Archivo excel</label>
+                    <input type="file" class="form-control mb-3" name="excel" id="excelMaterias" idCurso="{{cursos[0].idCurso}}">
+                    <button type="submit" class="btn btn-primary w-100 btn-crear-profesor">Subir</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/carga_masiva_materias.js') }}"></script>
 
 {% endblock %}
