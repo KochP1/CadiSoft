@@ -2568,7 +2568,7 @@ async function crearProducto(event) {
         return;
     }
 
-    if (producto.length > 20) {
+    if (producto.length > 50) {
         setSearching(false);
         openAlert('Inventario', 'El producto puede tener un máximo de 20 caracteres');
         return;
