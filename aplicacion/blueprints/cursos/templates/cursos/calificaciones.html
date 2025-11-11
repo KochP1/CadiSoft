@@ -4,7 +4,7 @@
 {% block content %} 
     <div class="alumnos-options__wrapper">
         <h1>Calificaciones {{data[0].nombre_curso}}, sección {{data[0].seccion}}</h1>
-        <h2 id="periodo-seccion">Periodo {{calificaciones[0].fecha_inscripcion}} - {{calificaciones[0].fecha_expiracion}}</h2>
+        <h2 id="periodo-seccion">Periodo {% if calificaciones|length > 0 %} {{calificaciones[0].fecha_inscripcion}} - {{calificaciones[0].fecha_expiracion}} {% endif %}</h2>
         <h3 id="curso-nombre" style="display: none;">{{data[0].nombre_curso}}, sección {{data[0].seccion}}</h3>
 
         <div class="alumnos-options__container calificaciones-opt__container" style="align-items: center;">
