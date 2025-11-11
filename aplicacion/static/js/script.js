@@ -1648,7 +1648,11 @@ async function crear_curso(event) {
     if (isSearching) return;
     setSearching(true);
 
-    if (!facultad || !nombre_curso || duracion_curso) {
+    console.log(facultad)
+    console.log(nombre_curso)
+    console.log(duracion_curso)
+
+    if (!facultad || !nombre_curso || !duracion_curso) {
         setSearching(false);
         openAlert('Cursos', 'Todos los campos son obligatorios');
         return;
