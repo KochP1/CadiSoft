@@ -899,6 +899,10 @@ def subir_definitiva(idSeccion):
         if hasattr(g, 'db'):
             g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
+    
+@cursos.route('/carga_notas', methods = ['POST'])
+def carga_notas():
+    return jsonify({'message': 'Notas cargadas'}), 200
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES
 
