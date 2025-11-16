@@ -9,7 +9,7 @@
 
         <div class="alumnos-options__container calificaciones-opt__container" style="align-items: center;">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()" style="height: 40px;">Generar reporte</button>
-            <button class="btn btn-primary btn-excel" onclick="migrarExcel()" style="height: 40px;">Migrar a excel</button>
+            <button class="btn btn-primary btn-excel" data-bs-toggle="modal" data-bs-target="#reportes-calificaciones-modal" style="height: 40px;">Opciones excel</button>
             <button class="btn btn-primary btn-crear" id="toggle-calificacion" onclick="toggleInputNotas()" style="height: 40px;">Activar modificación</button>
             <form id="formFechas" action="{{url_for('cursos.filtrar_periodos', idSeccion=data[0].idSeccion)}}" method="post" class="filtrar-alumno__form" style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
                 <div class="fecha-group mb-3">
@@ -134,6 +134,66 @@
 
         </table>
     </div>
+
+    <div class="modal fade" id="reportes-calificaciones-modal" tabindex="-1" aria-labelledby="filtrarSeccionesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Header -->
+                    <div class="modal-header bg-primary text-white">
+                        <h1 class="modal-title fs-5" id="filtrarSeccionesModalLabel">Reportes calificaciones</h1>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- Body -->
+                    <div class="modal-body">
+                        <div style="
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center; 
+                        gap: 50px; 
+                        width: 100%;
+                        margin-bottom: 30px;">
+                            <a href="" style="
+                            border: none; 
+                            color: transparent;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            gap: 20px;
+                            width: max-content;
+                            ">
+                                <i class="fa-solid fa-file-excel"
+                                style="
+                                color: #333;
+                                font-size: 4rem;
+                                font-weight: 500;"
+                                ></i>
+                                <span style="color: #333; font-size: 1.2rem;">Cargar notas</span>
+                            </a>
+
+                            <a href="" style="
+                            border: none; 
+                            color: transparent;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            gap: 20px;
+                            width: max-content;">
+                            <i class="fa-solid fa-graduation-cap"
+                            style="
+                            color: #333;
+                            font-size: 4rem;
+                            font-weight: 500;"
+                            ></i>
+                            <span style="color: #333; font-size: 1.2rem;">Obtener planilla de sección</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <script>
         // Validación del formulario de fechas

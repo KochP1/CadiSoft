@@ -5,7 +5,7 @@ DELIMITER $$
 CREATE PROCEDURE `obtener_planilla_seccion_sp`(
     IN p_idSeccion VARCHAR(10),
     IN p_fecha_inscripcion DATE,
-    IN p_fecha_expiracion DATE,
+    IN p_fecha_expiracion DATE
 )
 BEGIN
     SELECT 
@@ -14,7 +14,13 @@ BEGIN
     u.apellido, 
     u.segundoApellido, 
     u.cedula, 
-    s.seccion, 
+    s.seccion,
+    '' as logro_1,
+    '' as logro_2,
+    '' as logro_3,
+    '' as logro_4,
+    '' as logro_5,
+    '' as definitiva,
     i.fecha_inscripcion, 
     i.fecha_expiracion 
     FROM inscripcion i 

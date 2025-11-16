@@ -3,6 +3,8 @@ from flask_login import login_required
 from datetime import date
 import pymysql
 
+from aplicacion.blueprints.shared import planilla_calificaciones
+
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
 
 # ENDPOINTS DE CURSOS
@@ -899,6 +901,20 @@ def subir_definitiva(idSeccion):
         if hasattr(g, 'db'):
             g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
+
+
+@cursos.route('/obtener_planilla/<curso>/<seccion>')
+def obtener_planilla(curso, seccion):
+    with g.db.cursor() as cur:
+        cur.callproc('obtener_planilla_seccion_sp')
+        res = cur.fecthall()
+        columNames = [column[0] for column in cur.description]
+        planilla = []
+
+        for record in res:
+            planilla.append(dict(zip(columNames, record)))
+        
+        return planilla_calificaciones(planilla, curso, seccion)
     
 @cursos.route('/carga_notas', methods = ['POST'])
 def carga_notas():
