@@ -9,7 +9,7 @@ def planilla_calificaciones(planilla, curso, seccion):
         df = pd.DataFrame(planilla)
         
         # Reordenar columnas para mejor presentación
-        column_order = ['nombre', 'segundoNombre', 'apellido', 'segundoApellido' 'cedula', 'logro_1', 'logro_2', 'logro_3', 'logro_4', 'logro_5', 'definitiva', 'fecha_inscripcion', 'fecha_expiracion']
+        column_order = ['nombre', 'segundoNombre', 'apellido', 'segundoApellido',  'cedula', 'logro_1', 'logro_2', 'logro_3', 'logro_4', 'logro_5', 'definitiva', 'fecha_inscripcion', 'fecha_expiracion']
         df = df[column_order]
         
         # Renombrar columnas en español

@@ -172,7 +172,7 @@
                                 <span style="color: #333; font-size: 1.2rem;">Cargar notas</span>
                             </a>
 
-                            <a href="" style="
+                            <a href="{{url_for('cursos.obtener_planilla', curso=data[0].nombre_curso, seccion=data[0].seccion, fecha_inscripcion= calificaciones[0].fecha_inscripcion, fecha_expiracion= calificaciones[0].fecha_expiracion, idSeccion=data[0].idSeccion)}}" style="
                             border: none; 
                             color: transparent;
                             display: flex;

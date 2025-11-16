@@ -1,9 +1,9 @@
 from flask import jsonify, request, render_template, redirect, url_for, Blueprint, current_app, flash, g
 from flask_login import login_required
-from datetime import date
+from datetime import date, datetime
 import pymysql
 
-from aplicacion.blueprints.shared import planilla_calificaciones
+from aplicacion.blueprints.shared.planilla_calificaciones import planilla_calificaciones
 
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
 
@@ -901,20 +901,38 @@ def subir_definitiva(idSeccion):
         if hasattr(g, 'db'):
             g.db.rollback()
         return jsonify({'error': 'Error al poner calificación'}), 500
+    
+def convertir_fecha_a_sql(fecha_str):
+    if fecha_str:
+        return datetime.strptime(fecha_str, '%d/%m/%Y').strftime('%Y-%m-%d')
+    return None
 
 
-@cursos.route('/obtener_planilla/<curso>/<seccion>')
-def obtener_planilla(curso, seccion):
-    with g.db.cursor() as cur:
-        cur.callproc('obtener_planilla_seccion_sp')
-        res = cur.fecthall()
-        columNames = [column[0] for column in cur.description]
-        planilla = []
+@cursos.route('/obtener_planilla')
+def obtener_planilla():
+    try:
+        curso = request.args.get('curso', type=str)
+        seccion = request.args.get('seccion', type=str)
+        fecha_inscripcion = request.args.get('fecha_inscripcion', type=str)
+        fecha_expiracion = request.args.get('fecha_expiracion', type=str)
+        idSeccion = request.args.get('idSeccion', type=int)
 
-        for record in res:
-            planilla.append(dict(zip(columNames, record)))
+        fecha_inscripcion = convertir_fecha_a_sql(fecha_inscripcion)
+        fecha_expiracion = convertir_fecha_a_sql(fecha_expiracion)
         
-        return planilla_calificaciones(planilla, curso, seccion)
+        with g.db.cursor() as cur:
+            cur.callproc('obtener_planilla_seccion_sp', [idSeccion, fecha_inscripcion, fecha_expiracion])
+            res = cur.fetchall()
+            columNames = [column[0] for column in cur.description]
+            planilla = []
+
+            for record in res:
+                planilla.append(dict(zip(columNames, record)))
+            print(planilla)
+            return planilla_calificaciones(planilla, curso, seccion)
+    except Exception as e:
+        print(e)
+        return jsonify({'error': f'Error: {e}'}), 500
     
 @cursos.route('/carga_notas', methods = ['POST'])
 def carga_notas():

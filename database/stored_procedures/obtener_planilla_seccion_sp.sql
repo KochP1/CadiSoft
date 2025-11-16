@@ -24,11 +24,12 @@ BEGIN
     i.fecha_inscripcion, 
     i.fecha_expiracion 
     FROM inscripcion i 
-    JOIN secciones s ON i.idSeccion = s.idSeccion
+    JOIN insc_x_seccion ics ON i.idInscripcion = ics.idInscripcion
+    JOIN secciones s ON ics.idSeccion = s.idSeccion
     JOIN usuarios u ON i.idusuarios = u.idusuarios
-    WHERE i.idSeccion = p_idSeccion 
+    WHERE s.idSeccion = p_idSeccion
     AND i.fecha_inscripcion = p_fecha_inscripcion 
-    AND i.fecha_expiracion = p_fecha_expiracion 
+    AND i.fecha_expiracion = p_fecha_expiracion
     AND i.es_activa = 1;
 END$$
 DELIMITER ;
