@@ -61,3 +61,17 @@ def planilla_calificaciones(planilla, curso, seccion):
             as_attachment=True,
             download_name=filename
         )
+
+def carga_masiva_calificaciones(archivo):
+    if archivo.filename.lower().endswith('.csv'):
+        df = pd.read_csv(archivo, header=None)
+    else:
+        df = pd.read_excel(archivo, header=None)
+    
+    if df.empty:
+        return []
+    
+    headers = df.iloc[0].tolist()
+    notas = [dict(zip(headers, row)) for row in df.iloc[1:].values]
+    
+    return notas

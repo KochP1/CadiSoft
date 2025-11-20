@@ -30,7 +30,7 @@ BEGIN
     
     START TRANSACTION;
     
-    IF p_idusuarios IS NULL OR p_idSeccionIS IS NULL THEN
+    IF p_idusuarios IS NULL OR p_idSeccion IS NULL THEN
         -- Lanzar error personalizado
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Error: No se encontró el usuario con la cédula proporcionada';

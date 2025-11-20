@@ -7,6 +7,11 @@
         <h2 id="periodo-seccion">Periodo {% if calificaciones|length > 0 %} {{calificaciones[0].fecha_inscripcion}} - {{calificaciones[0].fecha_expiracion}} {% endif %}</h2>
         <h3 id="curso-nombre" style="display: none;">{{data[0].nombre_curso}}, sección {{data[0].seccion}}</h3>
 
+        {% if calificaciones|length > 0 %}
+            <input type="hidden" id="fechaInicio" value="{{calificaciones[0].fecha_inscripcion}}">
+            <input type="hidden" id="fechaFin" value="{{calificaciones[0].fecha_expiracion}}">
+        {% endif %}
+
         <div class="alumnos-options__container calificaciones-opt__container" style="align-items: center;">
             <button class="btn btn-primary btn-reporte" onclick="imprimirReporte()" style="height: 40px;">Generar reporte</button>
             <button class="btn btn-primary btn-excel" data-bs-toggle="modal" data-bs-target="#reportes-calificaciones-modal" style="height: 40px;">Opciones excel</button>
@@ -153,7 +158,7 @@
                         gap: 50px; 
                         width: 100%;
                         margin-bottom: 30px;">
-                            <a href="" style="
+                            <a data-bs-toggle="modal" data-bs-target="#carga-calificaciones-modal" style="
                             border: none; 
                             color: transparent;
                             display: flex;
@@ -194,6 +199,29 @@
                 </div>
             </div>
         </div>
+
+    <div class="modal fade" id="carga-calificaciones-modal" tabindex="-1" aria-labelledby="filtrarSeccionesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
+                    <h1 class="modal-title fs-5" id="filtrarSeccionesModalLabel">Cargar excel</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <!-- Body -->
+                <div class="modal-body">
+                    <form seccion="{{data[0].seccion}}" {% if calificaciones|length > 0 %} inicio="{{calificaciones[0].fecha_inscripcion}}" fin="{{calificaciones[0].fecha_expiracion}}" onsubmit="carga_masiva_notas(event, this.getAttribute('seccion'))" {% endif %}>
+                        <div class="form-group">
+                            <label for="plnatillaNotas">Plantilla excel</label>
+                            <input type="file" class="form-control" id="plnatillaNotas">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Validación del formulario de fechas

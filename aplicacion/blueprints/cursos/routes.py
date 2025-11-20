@@ -3,7 +3,7 @@ from flask_login import login_required
 from datetime import date, datetime
 import pymysql
 
-from aplicacion.blueprints.shared.planilla_calificaciones import planilla_calificaciones
+from aplicacion.blueprints.shared.planilla_calificaciones import carga_masiva_calificaciones, planilla_calificaciones
 
 cursos = Blueprint('cursos', __name__, template_folder='templates', static_folder="static")
 
@@ -928,15 +928,44 @@ def obtener_planilla():
 
             for record in res:
                 planilla.append(dict(zip(columNames, record)))
-            print(planilla)
             return planilla_calificaciones(planilla, curso, seccion)
     except Exception as e:
         print(e)
         return jsonify({'error': f'Error: {e}'}), 500
     
-@cursos.route('/carga_notas', methods = ['POST'])
-def carga_notas():
-    return jsonify({'message': 'Notas cargadas'}), 200
+@cursos.route('/carga_notas/<seccion>', methods = ['POST'])
+def carga_notas(seccion):
+    try:
+        if 'excel' not in request.files:
+            return jsonify({'error': 'No se encontró el archivo'}), 400
+        
+        archivo = request.files['excel']
+        fechas = request.form.get('fechas')
+
+        if archivo.filename == '':
+            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
+        
+        notas = carga_masiva_calificaciones(archivo)
+
+        if len(notas) <= 0:
+            return jsonify({'error': 'La planilla esta vacia'}), 400
+        
+        # fechaInicio = convertir_fecha_a_sql(fechas[0])
+        # fechaFin = convertir_fecha_a_sql(fechas[1])
+        
+        # for record in notas:
+        #     if record['Fecha Inscripción'] != fechaInicio or record['Fecha Expiración'] != fechaFin:
+        #         return jsonify({'error': 'Las fechas del periodo en la planilla no coinciden con las del portal web'}), 400
+        with g.db.cursor() as cur:
+            for record in notas:
+                cur.callproc('cargar_calificacion_sp', [record['Cédula'], seccion, record['Fecha Inscripción'], record['Fecha Expiración'], record['Logro 1'], record['Logro 2'], record['Logro 3'], record['Logro 4'], record['Logro 5'], record['Definitiva']])
+                g.db.commit()
+            return jsonify({'message': 'Notas cargadas'}), 200
+    except Exception as e:
+        if hasattr(g, 'db'):
+            g.db.rollback()
+        print(e)
+        return jsonify({'error': f'Error: {e}'}), 500
 
 # FINALIZA ENDPOINTS DE CALIFICACIONES
 

@@ -279,7 +279,6 @@ def crear_curso():
             duracion = data['duracion']
             imagen = data['imagen']
             materias = data['materias']
-            print(data)
 
             if not data or 'curso' not in data or 'materias' not in data or 'facultad' not in data or 'duracion' not in data:
                 return jsonify({'error': 'Datos incompletos'}), 400
@@ -288,10 +287,6 @@ def crear_curso():
                 return jsonify({'error': 'Formato de materias incorrectos'}), 400
             
             sql = 'INSERT INTO cursos (`idFacultad`, `nombre_curso`, `duracionCurso`, `imagen`, `inces`) VALUES (%s, %s, %s, %s, %s)'
-            
-            print(F'Curso: {curso}')
-            print(f'Materias: {materias}')
-            print(f'Facultad: {facultad}')
 
             with g.db.cursor() as cur:
                 cur.execute(sql, (facultad, curso, duracion, imagen, 1))
@@ -359,7 +354,6 @@ def carga_masiva():
         }), 200
         
     except Exception as e:
-        print(f"Error procesando el archivo: {str(e)}")
         return jsonify({'error': f'Error procesando el archivo: {str(e)}'}), 500
 
     

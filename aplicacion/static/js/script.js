@@ -2360,6 +2360,67 @@ async function calcular_definitiva(idSeccion, idAlumno, idInscripcion) {
     }
 }
 
+async function carga_masiva_notas(event, seccion) {
+    event.preventDefault();
+    if (isSearching) return;
+    setSearching(true);
+
+    let fechas = [];
+    fechas.push(document.getElementById('fechaInicio').value);
+    fechas.push(document.getElementById('fechaFin').value);
+
+    const url = `/cursos/carga_notas/${seccion}`;
+    const file = document.getElementById('plnatillaNotas').files[0];
+    const formData = new FormData();
+
+    if (!file) {
+        setSearching(false);
+        openAlert('Calificaciones', 'Debe seleccionar un archivo');
+    }
+
+    // Verificar que es un archivo Excel
+    const extensionesPermitidas = ['.xlsx', '.xls', '.csv'];
+    const nombreArchivo = file.name.toLowerCase();
+    const esExcel = extensionesPermitidas.some(ext => nombreArchivo.endsWith(ext));
+
+    if (!esExcel) {
+        openAlert('Calificaciones', 'Por favor selecciona un archivo Excel válido (.xlsx, .xls, .csv)');
+        setSearching(false);
+        return;
+    }
+
+    formData.append('excel', file);
+    //formData.append('fechas', fechas);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('carga-calificaciones-modal'));
+        modal.hide();
+        
+        openAlert('Calificaciones', data.message);
+        setTimeout(() => {
+            window.location.reload();
+        }, 1800)
+
+    } catch(e) {
+        openAlert('Calificaciones', e);
+        console.error(e);
+    } finally {
+        setSearching(false);
+    }
+}
+
 async function asistencia(id, idAlumno) {
     const url = `/cursos/asistencia/${id}`;
     const inputNota = document.getElementById(`asistencia-${idAlumno}`).value.trim();
