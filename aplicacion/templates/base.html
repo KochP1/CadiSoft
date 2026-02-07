@@ -64,7 +64,7 @@
                     <span>Profesores</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{{url_for('profesores.index')}}">Vista de profesores</a></li>
+                  <li><a class="dropdown-item" href="{{url_for('profesores.index')}}">Vista de Profesores</a></li>
                 </ul>
               </li>
 
@@ -124,14 +124,14 @@
 
               {% endif %}
 
-              {% if current_user.rol == 'profesor' %}
+              {% if current_user.rol == 'profesores' %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-chalkboard"></i>
                     <span>Mis secciones</span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{{url_for('profesores.mis_secciones')}}">Secciones</a></li>
+                  <li><a class="dropdown-item" href="{{url_for('Usuarioes.mis_secciones')}}">Secciones</a></li>
                 </ul>
               </li>
               {% endif %}
@@ -160,6 +160,7 @@
                   {% if current_user.rol == 'administrador' %}
                   <li><a class="dropdown-item" onclick="respaldo()" style="cursor: pointer;">Respaldo</a></li>
                   <li><a class="dropdown-item"  onclick="restaurar()" style="cursor: pointer;">Restaurar</a></li>
+                  <li><a class="dropdown-item" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#crear-user-modal">Crear usuario admnistrador</a></li>
                   {% endif %}
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{{url_for('acerca.index')}}">Acerca del sistema</a></li>
@@ -188,8 +189,8 @@
               </li>
               {% endif %}
 
-              {% if current_user.rol == 'profesor' or current_user.rol == 'alumno' %}
-              <li class="nav-item dropdown  profesores-user">
+              {% if current_user.rol == 'Usuario' or current_user.rol == 'alumno' %}
+              <li class="nav-item dropdown  Usuarioes-user">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="user-icon__container">
                       {% if current_user.imagen == None %}
@@ -222,6 +223,50 @@
         <script src="{{ url_for('static', filename='js/darkMode.js') }}"></script>
     {% endif %}
     -->
+
+    <div class="modal fade" id="crear-user-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Usuario</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="crear-user-form" onsubmit="crearUsuario(event)">
+
+                <label>Nombre</label>
+                <input type="text" class="form-control mb-3" name="nombre" id="nombreUsuario" onkeypress="return validarTecla(event)">
+
+                <label>Segundo nombre</label>
+                <input type="text" class="form-control mb-3" name="segundoNombre" id="segundoNombreUsuario" onkeypress="return validarTecla(event)">
+
+                <label>Apellido</label>
+                <input type="text" class="form-control mb-3" name="apellido" id="apellidoUsuario" onkeypress="return validarTecla(event)">
+
+                <label>Segundo apellido</label>
+                <input type="text" class="form-control mb-3" name="segundoApellido" id="segundoApellidoUsuario" onkeypress="return validarTecla(event)">
+
+                <label>Cedula</label>
+                <input type="number" class="form-control mb-3" name="cedula" id="cedulaUsuario">
+
+                <label>Email</label>
+                <input type="email" class="form-control mb-3" name="email" id="emailUsuario">
+
+                <label>Contraseña</label>
+                <div class="contraseña-input-Usuarioes__container">
+                    <input type="password" class="form-control mb-3" name="contraseña" id="contraseñaUsuario"> 
+                    <i class="fa-solid fa-eye-slash icono-contraeña__Usuarioes" id="contraseña-icon" id-input="contraseñaUsuario" onclick="mostrar_contraseña(this.getAttribute('id-input'))"></i>
+                </div> 
+
+                <label>Imagen</label>
+                <input type="file" class="form-control mb-3" name="imagen" id="imagenUsuario">
+
+                <button type="submit" class="btn btn-primary w-100 btn-crear-Usuario">Guardar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/reportes.js') }}"></script>

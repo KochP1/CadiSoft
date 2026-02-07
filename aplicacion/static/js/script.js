@@ -492,6 +492,119 @@ function crearGrafico(datos) {
 if (window.location.pathname === '/inicio') {
     stats();
 }
+
+async function crearUsuario(event) {
+    event.preventDefault();
+    const rol = 'administrador'
+    const nombre = document.getElementById('nombreUsuario').value.trim();
+    const segundoNombre = document.getElementById('segundoNombreUsuario').value.trim();
+    const apellido = document.getElementById('apellidoUsuario').value.trim();
+    const segundoApellido = document.getElementById('segundoApellidoUsuario').value.trim();
+    const cedula = document.getElementById('cedulaUsuario').value.trim();
+    const email = document.getElementById('emailUsuario').value.trim();
+    const contraseña = document.getElementById('contraseñaUsuario').value.trim();
+    const imagen = document.getElementById('imagenProfesor').files[0];
+
+
+    if (!nombre) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El campo nombre esta vacio');
+        return;
+    }
+
+    if (!apellido) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El campo apellido esta vacio');
+        return;
+    }
+
+    if (!cedula) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El campo cedula esta vacio');
+        return;
+    }
+
+    if (!email) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El campo email esta vacio');
+        return;
+    }
+
+    if (!contraseña) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El campo contraseña esta vacio');
+        return;
+    }
+
+    if (cedula.length > 8) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El campo cedula esta vacio');
+        return;
+    }
+
+    if (contraseña.length > 8) {
+        setSearching(false);
+        openAlert('Crear usuario', 'La contraseña puede tener máximo 8 caracteres');
+        return;
+    }
+
+    if (nombre.length > 12 || segundoNombre.length > 12) {
+        setSearching(false);
+        openAlert('Crear usuario', 'Los nobres pueden tener máximo 12 caracteres');
+        return;
+    }
+
+    if (apellido.length > 20 || segundoApellido.length > 20) {
+        setSearching(false);
+        openAlert('Crear usuario', 'Los apellidos pueden tener máximo 20 caracteres');
+        return;
+    }
+
+    if (email.length > 50) {
+        setSearching(false);
+        openAlert('Crear usuario', 'El email puede tener un máximo de 50 caracteres')
+        return;
+    }
+
+    if (especialidad.length > 12) {
+        setSearching(false);
+        openAlert('Crear usuario', 'La especialidad puede tener máximo 20 caracteres');
+        return;
+    }
+    
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('segundoNombre', segundoNombre);
+    formData.append('apellido', apellido);
+    formData.append('segundoApellido', segundoApellido);
+    formData.append('cedula', cedula);
+    formData.append('email', email);
+    formData.append('contraseña', contraseña);
+    formData.append('rol', rol);
+    formData.append('imagen', imagen);
+
+    if (isSearching) return;
+    setSearching(true);
+
+    try {
+        const response = await fetch('/crear', {
+            method: 'POST',
+            body: formData
+        });
+    
+        if (response.ok) {
+            openAlert('Crear usuario', `Usuario creado satisfactoriamente`)
+            window.location.href = '/profesores/'
+        } else {
+            openAlert('Crear usuario', `Error al crear usuario`)
+        }
+    } catch (error) {
+        console.log(error)
+    } finally {
+        setSearching(false);
+    }
+}
 // Profesores
 
 async function crearProfesor(event) {
